@@ -1,4 +1,4 @@
-module = angular.module('Root', ['RootServices', 'ui'])
+module = angular.module('Root', ['RootServices', 'ui', 'dynamic'])
     .controller 'Desktop', ($scope, $compile, Database) ->
         $scope.database = Database.sample()
     .config ->
