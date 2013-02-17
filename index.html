@@ -15,12 +15,12 @@
 <script src="lib/angular/angular-resource.js"></script>
 <script src="lib/angular-ui/angular-ui.js"></script>
 <!--application source files-->
-<script type="text/coffeescript" src="src/controllers/root.coffee"></script>
-<script type="text/coffeescript" src="src/services/root.coffee"></script>
+<script type="text/coffeescript" src="src/controllers.coffee"></script>
+<script type="text/coffeescript" src="src/services.coffee"></script>
 <script type="text/coffeescript" src="src/modules/dynamic.coffee"></script>
 <script type="text/coffeescript" src="src/app.coffee"></script>
 </head>
-<body data-ng-controller="Desktop">
+<body ng-controller="Desktop">
   <dynamic-include src="'src/views/taskpad.html'"/>
 </body>
 
