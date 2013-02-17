@@ -32,11 +32,12 @@ module = angular.module('dynamic', [])
                 #returning a linking function
                 (scope, element) ->
                     watchCounter = 0
+                    fetchCounter = 0
                     childScope = null
                     content = null
                     load = (src, counter) ->
                         #here is the actual dynamic include
-                        $http.get(src).success (response, status, headers) ->
+                        $http.get(src, {params: {__fetch__: fetchCounter++}}).success (response, status, headers) ->
                             if content isnt response
                                 content = response
                                 console.log "loading #{src}"
