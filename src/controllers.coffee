@@ -1,4 +1,4 @@
-module = angular.module('Root', ['RootServices', 'ui', 'dynamic'])
+module = angular.module('Root', ['RootServices', 'ui', 'dynamic', 'editable'])
     .controller 'Desktop', ($scope, $compile, Database) ->
         $scope.database = Database.sample()
         $scope.selected = $scope.database.boxes[0]
