@@ -1,7 +1,7 @@
 <ul class="nav nav-list">
     <li class="nav-header">Todo Lists</li>
     <li class="divider"> </li>
-    <li ng-repeat="(name, box) in database.boxes">
-    <a href="#">{{name}}<i class="icon-double-angle-right"></i></a>
+    <li ng-repeat="box in database.boxes">
+    <a href="#">{{box.name}}<i ng-show="box.selected" class="icon-double-angle-right"></i></a>
     </li>
 </ul>
