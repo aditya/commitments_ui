@@ -3,11 +3,22 @@ module = angular.module('RootServices', ['ngResource'])
         sample: ->
             boxes:
                 Todo:
-                    link: ''
+                    link: '/lists/todo'
+                    selected: true
+                    items: [
+                        link: '/items/a'
+                        message: 'I am but a simple task'
+                    ,
+                        link: '/items/b'
+                        message: 'There is always more to do'
+
+                    ]
                 Delegated:
-                    link: ''
+                    link: '/lists/delegated'
+                    selected: false
                 Done:
-                    link: ''
+                    link: '/lists/done'
+                    selected: false
     .config ->
         console.log 'Root services online'
     .run ->
