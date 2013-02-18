@@ -65,6 +65,36 @@ module = angular.module('editable', [])
 
 
     ])
+    .directive('editableDate', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            element.addClass 'editableDate'
+            icon = angular.element('<span class="icon-calendar editableDateIcon"/>')
+            display = angular.element('<span class="editableDateDisplay"/>')
+            element.append(icon, display)
+
+            icon.bind 'click', (event) ->
+                picker = angular.element('<div/>')
+                touchup = (picker) ->
+                    console.log 'a'
+                    $('.ui-datepicker-next', picker).append ('<div class="icon-chevron-right"/>')
+                    $('.ui-datepicker-prev', picker).append ('<div class="icon-chevron-left"/>')
+                picker.datepicker
+                    onSelect: (date, picker) ->
+                        icon.popover 'destroy'
+                        $scope.$apply () ->
+                            ngModel.$setViewValue date
+                            ngModel.$render()
+                    onChangeMonthYear:  (year, month, o) ->
+                        console.log o, year, month
+                        setTimeout -> touchup(o)
+                icon.popover {content: picker, html: true, placement: 'bottom'}
+                icon.popover 'show'
+            ngModel.$render = () ->
+                console.log 'render', ngModel
+                display.text ngModel.$viewValue
+    ])
 
 
 

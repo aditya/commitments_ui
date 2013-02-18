@@ -44,7 +44,21 @@ body {
     }
 }
 
-.actionHover {
+.shadowed {
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+}
+
+.pop-text {
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+}
+
+.caption {
+    .shadowed;
+    color: @textColor;
+}
+
+.bigger {
+    font-size: 120%;
 }
 
 .toolbox {
@@ -55,8 +69,12 @@ body {
     .box-shadow(0 2px 5px rgba(0,0,0,.75));
     background-image: url('../images/body-bg-texture.png');
     .nav {
+        .nav-header {
+            .bigger;
+            .shadowed;
+        }
         a {
-            .action
+            .action;
         }
         .divider {
             background-color: @gray;
@@ -95,15 +113,58 @@ body {
         background-color: darken(@wellBackground, 10%);
         background-image: url('../images/body-bg-texture-heavy.png');
     }
+    .pop-text;
 }
 
 .editableText {
     cursor: pointer;
 }
 
+.editableDate {
+
+}
+
+.editableDateIcon {
+    cursor: pointer;
+    .action;
+}
+
+.editableDateDisplay {
+
+}
+
+.ui-datepicker-next, .ui-datepicker-prev {
+    margin-top: @defaultMargin !important;
+    .action;
+    text-decoration: none !important;
+}
+
+.ui-icon-circle-triangle-e {
+    left: -8px !important;
+    text-indent: 0px !important;
+}
+
+.ui-icon-circle-triangle-w {
+    left: 16px !important;
+    text-indent: 0px !important;
+}
+
+.ui-datepicker-title {
+    .caption;
+    .bigger;
+}
+
+.ui-datepicker-calendar {
+    th {
+        .caption;
+    }
+    .ui-state-default {
+        .action;
+    }
+}
+
 .editableListAdd {
     margin: @defaultMargin;
     .icon-2x;
-    color: @linkColor;
     .action;
 }

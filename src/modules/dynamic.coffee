@@ -30,7 +30,7 @@ module = angular.module('dynamic', [])
             replace: true
             compile: (sourceElement, sourceAttributes) ->
                 #returning a linking function
-                (scope, element) ->
+                ($scope, element) ->
                     watchCounter = 0
                     fetchCounter = 0
                     childScope = null
@@ -42,7 +42,7 @@ module = angular.module('dynamic', [])
                                 content = response
                                 console.log "loading #{src}"
                                 childScope.$destroy() if childScope
-                                childScope = scope.$new()
+                                childScope = $scope.$new()
                                 response = angular.element(response)
                                 element.replaceWith(response)
                                 element = response
@@ -53,7 +53,7 @@ module = angular.module('dynamic', [])
                     #reload on the source expression changing, this is in a
                     #sense double dynamic, like ng-include it will reload
                     #if you change the expression for the template path
-                    scope.$watch sourceAttributes.src, (src) ->
+                    $scope.$watch sourceAttributes.src, (src) ->
                         content = null
                         load(src, ++watchCounter) if src
 
