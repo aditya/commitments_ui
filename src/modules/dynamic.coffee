@@ -23,21 +23,25 @@ module.
 
 ###
 
+running_object_table = {}
+
+window.refreshDynamicTemplates = ->
+    for _, f of running_object_table
+        f()
+
 module = angular.module('dynamic', [])
-    .directive('dynamicInclude', ['$http', '$compile', '$timeout', ($http, $compile, $timeout) ->
+    .directive('dynamicInclude', ['$http', '$compile', ($http, $compile) ->
             restrict: 'ECA'
             terminal: true
             replace: true
             compile: (sourceElement, sourceAttributes) ->
                 #returning a linking function
                 ($scope, element) ->
-                    watchCounter = 0
-                    fetchCounter = 0
                     childScope = null
                     content = null
-                    load = (src, counter) ->
+                    load = (src) ->
                         #here is the actual dynamic include
-                        $http.get(src, {params: {__fetch__: fetchCounter++}}).success (response, status, headers) ->
+                        $http.get(src).success (response, status, headers) ->
                             if content isnt response
                                 content = response
                                 console.log "loading #{src}"
@@ -47,18 +51,12 @@ module = angular.module('dynamic', [])
                                 element.replaceWith(response)
                                 element = response
                                 $compile(element)(childScope)
-                            if watchCounter is counter
-                                $timeout ( -> load src, counter), 1000
-
                     #reload on the source expression changing, this is in a
                     #sense double dynamic, like ng-include it will reload
                     #if you change the expression for the template path
                     $scope.$watch sourceAttributes.src, (src) ->
                         content = null
-                        load(src, ++watchCounter) if src
-
-
-
+                        if src
+                            load(src)
+                            running_object_table[sourceAttributes.src] = -> load(src)
     ])
-
-

@@ -103,7 +103,6 @@ module = angular.module('editable', [])
                 icon.popover {content: picker, html: true, placement: 'bottom'}
                 icon.popover 'show'
             ngModel.$render = () ->
-                console.log 'render', ngModel
                 display.text ngModel.$viewValue
     ])
 
