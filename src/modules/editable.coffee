@@ -74,21 +74,32 @@ module = angular.module('editable', [])
             display = angular.element('<span class="editableDateDisplay"/>')
             element.append(icon, display)
 
+            clearCapture = ->
+                icon.popover 'destroy'
+                $(document).off 'keydown.editableDate'
+                $(document).off 'mousedown.editableDate'
+
             icon.bind 'click', (event) ->
+
                 picker = angular.element('<div/>')
-                touchup = (picker) ->
-                    console.log 'a'
-                    $('.ui-datepicker-next', picker).append ('<div class="icon-chevron-right"/>')
-                    $('.ui-datepicker-prev', picker).append ('<div class="icon-chevron-left"/>')
                 picker.datepicker
                     onSelect: (date, picker) ->
-                        icon.popover 'destroy'
+                        clearCapture()
                         $scope.$apply () ->
                             ngModel.$setViewValue date
                             ngModel.$render()
-                    onChangeMonthYear:  (year, month, o) ->
-                        console.log o, year, month
-                        setTimeout -> touchup(o)
+
+                $(document).on 'keydown.editableDate', (event) ->
+                    if event.which is 27 #escape
+                        clearCapture()
+                    event.stopPropagation()
+                $(document).on 'mousedown.editableDate', (event) ->
+                    parent = event.originalEvent.target
+                    while parent
+                        parent = parent.parentElement
+                        if parent is picker[0]
+                            return
+                    clearCapture()
                 icon.popover {content: picker, html: true, placement: 'bottom'}
                 icon.popover 'show'
             ngModel.$render = () ->
