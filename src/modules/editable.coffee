@@ -121,19 +121,36 @@ module = angular.module('editable', [])
                 input = $('.editableTagsDisplay', element)
                 icon.bind 'click', ->
                     $('.select2-input', element).focus()
-                tagFormatter = (e) ->
-                    console.log e
-                    return "<span class='label label-info'>#{e.text}</span>"
-                $timeout ->
-                    input.select2
-                        tags: []
-                        tokenSeparators: [',', ' ']
-                        multiple: true
-                        formatResultCssClass: (o) ->
-                            console.log o
-                            'label label-info'
+                input.select2
+                    tokenSeparators: [',', ' ']
+                    multiple: true
+                    createSearchChoice: (term) ->
+                        id: term
+                        text: term
+                    initSelection: (element, callback) ->
+                        ret = []
+                        for _ in (ngModel.$viewValue or [])
+                            ret.push
+                                id: _
+                                text: _
+                        callback ret
+                    query: (query) ->
+                        ret =
+                            results: [
+                                id: query.term
+                                text: query.term
+                            ]
+                        query.callback ret
+
+                #just propagate tag values back to the model
+                element.bind 'change', () ->
+                    ngModel.$setViewValue(input.select2('val'))
+                    $('input', element).removeClass 'select2-active'
+                    console.log ngModel.$viewValue
+
+                #rendering is really just setting the values
                 ngModel.$render = () ->
-                    input.val ngModel.$viewValue or []
+                    input.select2 'val',  ngModel.$viewValue or []
     ])
 
 
