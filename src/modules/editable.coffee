@@ -139,6 +139,9 @@ module = angular.module('editable', [])
                             results: [
                                 id: query.term
                                 text: query.term
+                            ,
+                                id: 'sample'
+                                text: 'sample'
                             ]
                         query.callback ret
 

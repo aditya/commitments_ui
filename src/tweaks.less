@@ -114,6 +114,9 @@ body {
         background-color: darken(@wellBackground, 10%);
         background-image: url('../images/body-bg-texture-heavy.png');
     }
+    .spaced {
+        margin-bottom: @defaultMargin;
+    }
     .pop-text;
 }
 
@@ -142,12 +145,13 @@ body {
 
 .editableTagsDisplay {
     min-width: 100px;
+    margin-top: -2px;
     background-color: transparent !important;
 }
 
 .popover {
-    background-color: @wellBackground;
-    background-image: url('../images/body-bg-texture.png');
+    background-color: @wellBackground !important;
+    border: 1px solid rgba(0,0,0,0.25) !important;
 }
 
 .ui-datepicker-next, .ui-datepicker-prev {
@@ -189,7 +193,7 @@ body {
 .select2-search-choice {
     .label;
     .pop-text;
-    margin: 0 0 0 3px !important;
+    margin: 2px 0 0 3px !important;
     color: @textColor !important;
     background-color: @linkColor !important;
     background-image: none !important;
@@ -212,7 +216,25 @@ body {
 
 .select2-choices {
     border: none !important;
+    .border-radius(@baseBorderRadius) !important;
     background-color: transparent !important;
     background-image: none !important;
+    .pop-text;
 }
 
+.select2-drop {
+    .border-radius(@baseBorderRadius) !important;
+    background-image: none !important;
+    .popover;
+}
+
+.select2-input {
+    .pop-text;
+    color: @textColor !important;
+    margin: 0 0 0 0 !important;
+}
+
+.select2-highlighted {
+    .border-radius(@baseBorderRadius) !important;
+    background-color: @linkColor !important;
+}
