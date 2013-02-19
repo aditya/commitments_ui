@@ -105,6 +105,36 @@ module = angular.module('editable', [])
             ngModel.$render = () ->
                 display.text ngModel.$viewValue
     ])
+    .directive('editableTags', ['$timeout', ($timeout) ->
+        restrict: 'A'
+        require: 'ngModel'
+        compile: (templateElement, templateAttrs) ->
+            templateElement.addClass 'editableTags'
+            icon = angular.element('<span class="icon-tags editableTagsIcon"/>')
+            display = angular.element('<input type="hidden" class="editableTagsDisplay"/>')
+            templateElement.append(icon, display)
+            ($scope, element, attrs, ngModel) ->
+                element.on 'keydown', (event) ->
+                    if event.which is 27 #escape
+                        document.activeElement.blur()
+                icon = $('.editableTagsIcon', element)
+                input = $('.editableTagsDisplay', element)
+                icon.bind 'click', ->
+                    $('.select2-input', element).focus()
+                tagFormatter = (e) ->
+                    console.log e
+                    return "<span class='label label-info'>#{e.text}</span>"
+                $timeout ->
+                    input.select2
+                        tags: []
+                        tokenSeparators: [',', ' ']
+                        multiple: true
+                        formatResultCssClass: (o) ->
+                            console.log o
+                            'label label-info'
+                ngModel.$render = () ->
+                    input.val ngModel.$viewValue or []
+    ])
 
 
 

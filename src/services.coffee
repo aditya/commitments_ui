@@ -8,6 +8,7 @@ module = angular.module('RootServices', ['ngResource'])
                 items: [
                     link: '/items/a'
                     message: 'I am but a simple task'
+                    tags: ['Tagged', 'Important']
                 ,
                     link: '/items/b'
                     message: 'There is always more to do'

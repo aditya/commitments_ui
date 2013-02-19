@@ -1,7 +1,9 @@
 <ul editable-list ng-model="selected.items" class="unstyled items">
     <li ng-repeat="item in selected.items">
     <div editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
-    <div editable-date ng-model="item.due"></div>
-    <div editable-tags ng-model="item.tags"></div>
+    <div>
+        <span editable-date ng-model="item.due"/>
+        <span editable-tags ng-model="item.tags"/>
+    </div>
     </li>
 </ul>
