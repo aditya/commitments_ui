@@ -8,16 +8,14 @@ module = angular.module('RootServices', ['ngResource'])
                 items: [
                     link: '/items/a'
                     message: 'I am but a simple task'
+                    due: '02/24/2013'
                     tags: ['Tagged', 'Important']
+                    delegates: ['ian.groff@glgroup.com']
                 ,
                     link: '/items/b'
                     message: 'There is always more to do'
 
                 ]
-            ,
-                name: 'Delegated'
-                link: '/lists/delegated'
-                selected: false
             ,
                 name: 'Done'
                 link: '/lists/done'

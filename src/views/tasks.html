@@ -1,9 +1,14 @@
 <ul editable-list ng-model="selected.items" class="unstyled items">
-    <li ng-repeat="item in selected.items">
-    <div class="spaced" editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
-    <div>
-        <span editable-date ng-model="item.due"/>
-        <span editable-tags ng-model="item.tags"/>
-    </div>
-    </li>
+  <li ng-repeat="item in selected.items">
+  <div class="spaced" editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
+  <div>
+    <span class="icon-check-empty action"></span>
+    <span editable-date ng-model="item.due"></span>
+    <span editable-tags icon="tags" ng-model="item.tags"></span>
+    <span editable-tags icon="user" ng-model="item.delegates"></span>
+    <span class="icon-comments-alt action"></span><span class="action">2</span>
+    <span class="icon-paper-clip action"></span><span class="action">1</span>
+    <span class="icon-hand-right action"></span>
+  </div>
+  </li>
 </ul>

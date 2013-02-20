@@ -110,7 +110,9 @@ module = angular.module('editable', [])
         require: 'ngModel'
         compile: (templateElement, templateAttrs) ->
             templateElement.addClass 'editableTags'
-            icon = angular.element('<span class="icon-tags editableTagsIcon"/>')
+            templateAttrs.icon = templateAttrs.icon or 'tags'
+            console.log templateAttrs
+            icon = angular.element("<span class='icon-#{templateAttrs.icon} editableTagsIcon'/>")
             display = angular.element('<input type="hidden" class="editableTagsDisplay"/>')
             templateElement.append(icon, display)
             ($scope, element, attrs, ngModel) ->
