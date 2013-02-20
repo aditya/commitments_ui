@@ -183,7 +183,14 @@ module = angular.module('editable', [])
                     if ngModel.$viewValue
                         icon.addClass 'icon-check'
                         icon.removeClass 'icon-check-empty'
-
     ])
+    .directive('tooltip',  ->
+        restrict: 'A'
+        compile: (templateElement, templateAttrs) ->
+            ($scope, element, attrs) ->
+                if attrs.tooltip
+                    element.tooltip
+                        title: attrs.tooltip
+    )
 
 

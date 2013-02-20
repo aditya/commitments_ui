@@ -2,7 +2,7 @@
   <li ng-repeat="item in selected.items">
   <div class="spaced" editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
   <div>
-    <span editable-check ng-model="item.done"></span>
+    <span editable-check ng-model="item.done" tooltip="Click to mark done"></span>
     <span editable-date ng-model="item.due"></span>
     <span editable-tags icon="tags" ng-model="item.tags"></span>
     <span editable-tags icon="user" ng-model="item.delegates"></span>
