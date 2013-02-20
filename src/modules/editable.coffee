@@ -1,9 +1,15 @@
 ###
-Inline edit capabilities are capture here. Just add these to supported tags.
+Inline edit capabilities are captured here. These depend on
+* FontAwesome
+* jQuery
+* Select2
+
+The idea is to create a set of data input components that are not FORM based
+in any way.
 
 Editable Text
 -------------
-Put this on a div, with ng-model indicating the binding target:
+Put this on a block element, with ng-model indicating the binding target:
 
     <div editable-text ng-model="item.message"></div>
 
@@ -23,6 +29,12 @@ Put this on a list, with ng-model indicating the binding target:
 Attributes:
     focus-on-add
         when specified, set the focus here to start editing right away
+
+Editable Check
+--------------
+Put this on a block elemnt, it makes a nice checkbox binding to a boolean.
+
+    <div editable-check ng-model="item.done"></div>
 ###
 module = angular.module('editable', [])
     .directive('editableText', [() ->
@@ -146,17 +158,32 @@ module = angular.module('editable', [])
                                 text: 'sample'
                             ]
                         query.callback ret
-
                 #just propagate tag values back to the model
                 element.bind 'change', () ->
                     ngModel.$setViewValue(input.select2('val'))
                     $('input', element).removeClass 'select2-active'
-                    console.log ngModel.$viewValue
-
                 #rendering is really just setting the values
                 ngModel.$render = () ->
                     input.select2 'val',  ngModel.$viewValue or []
     ])
+    .directive('editableCheck', [ ->
+        restrict: 'A'
+        require: 'ngModel'
+        compile: (templateElement, templateAttrs) ->
+            ($scope, element, attrs, ngModel) ->
+                icon = angular.element("<span class='editableCheckIcon'/>")
+                element.append(icon)
+                element.bind 'click', ->
+                    $scope.$apply () ->
+                        ngModel.$setViewValue not(ngModel.$viewValue or false)
+                        ngModel.$render()
+                ngModel.$render = ->
+                    icon.removeClass 'icon-check'
+                    icon.addClass 'icon-check-empty'
+                    if ngModel.$viewValue
+                        icon.addClass 'icon-check'
+                        icon.removeClass 'icon-check-empty'
 
+    ])
 
 
