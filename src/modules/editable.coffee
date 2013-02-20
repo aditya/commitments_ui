@@ -137,7 +137,7 @@ module = angular.module('editable', [])
                 icon = $('.editableTagsIcon', element)
                 input = $('.editableTagsDisplay', element)
                 icon.bind 'click', ->
-                    $('.select2-input', element).focus()
+                    input.select2 'focusSearch'
                 input.select2
                     tokenSeparators: [',', ' ']
                     multiple: true
