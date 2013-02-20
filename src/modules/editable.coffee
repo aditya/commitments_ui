@@ -36,6 +36,9 @@ Put this on a block elemnt, it makes a nice checkbox binding to a boolean.
 
     <div editable-check ng-model="item.done"></div>
 ###
+
+AUTOHIDE_DELAY = 3000
+
 module = angular.module('editable', [])
     .directive('editableText', [() ->
         restrict: 'A'
@@ -184,13 +187,21 @@ module = angular.module('editable', [])
                         icon.addClass 'icon-check'
                         icon.removeClass 'icon-check-empty'
     ])
-    .directive('tooltip',  ->
+    .directive('tooltip', ['$timeout', ($timeout)  ->
         restrict: 'A'
         compile: (templateElement, templateAttrs) ->
             ($scope, element, attrs) ->
-                if attrs.tooltip
+                $scope.$watch templateAttrs.tooltip, (tooltip) ->
+                    element.tooltip 'destroy'
                     element.tooltip
-                        title: attrs.tooltip
-    )
+                        title: tooltip
+                        delay:
+                            show: 100
+                            hide: 100
+                element.bind 'shown', ->
+                    console.log 'ha'
+                    $timeout (-> element.tooltip 'hide'), AUTOHIDE_DELAY
+
+    ])
 
 
