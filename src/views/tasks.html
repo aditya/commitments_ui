@@ -1,5 +1,5 @@
 <ul editable-list ng-model="selected.items" class="unstyled items">
-  <li ng-repeat="item in selected.items">
+  <li ng-repeat="item in selected.items" class="item">
   <div class="spaced" editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
   <div>
     <span editable-check ng-model="item.done" tooltip="'click here to mark done'"></span>

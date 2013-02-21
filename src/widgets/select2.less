@@ -1,0 +1,89 @@
+.select2-container {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.select2-search-choice {
+    .label;
+    .pop-text;
+    margin: 2px 0 0 3px;
+    color: @textColor;
+    background-color: @linkColor;
+    .box-shadow(0 1px 2px rgba(0,0,0,.5));
+    .border-radius(@baseBorderRadius);
+    &:hover{
+        .box-shadow(0 2px 5px rgba(0,0,0,.5));
+        background-color: lighten(@linkColor, 5%);
+    }
+}
+
+.select2-search-choice-close {
+    color: @textColor;
+    cursor: pointer;
+}
+
+.select2-search-field {
+    input {
+        background-color: transparent;
+        .box-shadow(none);
+        border: 0;
+    }
+    input:focus {
+        background-color: transparent;
+        .box-shadow(none);
+        border: 0;
+    }
+}
+
+
+.select2-drop {
+    .border-radius(@baseBorderRadius) !important;
+    .popover;
+}
+
+.select2-input {
+    .pop-text;
+    color: @textColor !important;
+    margin: 0 0 0 0 !important;
+}
+
+.select2-highlighted {
+    .border-radius(@baseBorderRadius) !important;
+    background-color: @linkColor !important;
+}
+
+//when a query is active
+.select2-active {
+}
+
+.select2-offscreen {
+    position: absolute;
+    left: -10000px;
+}
+
+.select2-choices {
+    border: none;
+    background-color: transparent;
+    .pop-text;
+    position: relative;
+    margin: 0px;
+    li {
+    float: left;
+    list-style: none;
+    }
+}
+
+.select2-results {
+    max-height: 200px;
+    position: relative;
+    overflow-y: auto;
+    margin: 0px;
+    ul {
+        margin: 0px;
+    }
+    li {
+        padding: @defaultPad;
+        list-style: none;
+        display: list-item;
+    }
+}
