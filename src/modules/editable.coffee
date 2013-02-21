@@ -88,22 +88,22 @@ module = angular.module('editable', [])
             icon = angular.element('<span class="icon-calendar editableDateIcon"/>')
             display = angular.element('<span class="editableDateDisplay"/>')
             element.append(icon, display)
-
+            #make sure to unhook the dialog like keyboard capture
             clearCapture = ->
                 icon.popover 'destroy'
                 $(document).off 'keydown.editableDate'
                 $(document).off 'mousedown.editableDate'
-
-            icon.bind 'click', (event) ->
-
+            #entire field is editable, just click it
+            startEdit = (event) ->
                 picker = angular.element('<div/>')
                 picker.datepicker
+                    prevText: ''
+                    nextText: ''
                     onSelect: (date, picker) ->
                         clearCapture()
                         $scope.$apply () ->
                             ngModel.$setViewValue date
                             ngModel.$render()
-
                 $(document).on 'keydown.editableDate', (event) ->
                     if event.which is 27 #escape
                         clearCapture()
@@ -117,6 +117,8 @@ module = angular.module('editable', [])
                     clearCapture()
                 icon.popover {content: picker, html: true, placement: 'bottom'}
                 icon.popover 'show'
+            icon.bind 'click', startEdit
+            display.bind 'click', startEdit
             ngModel.$render = () ->
                 display.text ngModel.$viewValue
     ])
