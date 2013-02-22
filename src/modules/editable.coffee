@@ -141,26 +141,9 @@ module = angular.module('editable', [])
                     input.select2 'focusSearch'
                 input.select2
                     tokenSeparators: [',', ' ']
-                    createSearchChoice: (term) ->
-                        id: term
-                        text: term
-                    initSelection: (element, callback) ->
-                        ret = []
-                        for _ in (ngModel.$viewValue or [])
-                            ret.push
-                                id: _
-                                text: _
-                        callback ret
                     query: (query) ->
-                        ret =
-                            results: [
-                                id: query.term
-                                text: query.term
-                            ,
-                                id: 'sample'
-                                text: 'sample'
-                            ]
-                        query.callback ret
+                        query.callback
+                            results: [query.term, sample]
                 #just propagate tag values back to the model
                 element.bind 'change', () ->
                     ngModel.$setViewValue(input.select2('val'))

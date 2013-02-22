@@ -1,8 +1,6 @@
 
 (function ($, undefined) {
     "use strict";
-    /*global document, window, jQuery, console */
-
     if (window.Select2 !== undefined) {
         return;
     }
@@ -98,22 +96,6 @@
         return val;
     }
 
-    function installKeyUpChangeEvent(element) {
-        var key="keyup-change-value";
-        element.bind("keydown", function () {
-            if ($.data(element, key) === undefined) {
-                $.data(element, key, element.val());
-            }
-        });
-        element.bind("keyup", function () {
-            var val= $.data(element, key);
-            if (val !== undefined && element.val() !== val) {
-                $.removeData(element, key);
-                element.trigger("keyup-change");
-            }
-        });
-    }
-
     /**
      * A simple implementation of a thunk
      * @param formula function used to lazily initialize the thunk
@@ -128,45 +110,18 @@
         };
     };
 
-    function focus($el) {
-        if ($el[0] === document.activeElement) return;
-
-        /* set the focus in a 0 timeout - that way the focus is set after the processing
-            of the current event has finished - which seems like the only reliable way
-            to set focus */
-        window.setTimeout(function() {
-            var el=$el[0], pos=$el.val().length, range;
-
-            $el.focus();
-
-            /* after the focus is set move the caret to the end, necessary when we val()
-                just before setting focus */
-            if(el.setSelectionRange)
-            {
-                el.setSelectionRange(pos, pos);
-            }
-            else if (el.createTextRange) {
-                range = el.createTextRange();
-                range.collapse(true);
-                range.moveEnd('character', pos);
-                range.moveStart('character', pos);
-                range.select();
-            }
-
-        }, 0);
-    }
-
     function killEvent(event) {
         event.preventDefault();
         event.stopPropagation();
     }
+
     function killEventImmediately(event) {
         event.preventDefault();
         event.stopImmediatePropagation();
     }
 
     function measureTextWidth(e, force) {
-        if (e.val().length == 0 && !force)  return 0;
+        if (e.text().length == 0 && !force)  return 0;
         if (!sizer){
         	sizer = $(document.createElement("div"));
         	$("body").append(sizer);
@@ -187,35 +142,9 @@
             textTransform: style.textTransform,
             whiteSpace: "nowrap"
         });
-        sizer.text(e.val() + '__');
+        sizer.text(e.text() + '__');
         return sizer.width();
     }
-
-    function syncCssClasses(dest, src, adapter) {
-        var classes, replacements = [], adapted;
-
-        classes = dest.attr("class");
-        if (typeof classes === "string") {
-            $(classes.split(" ")).each(function() {
-                if (this.indexOf("select2-") === 0) {
-                    replacements.push(this);
-                }
-            });
-        }
-        classes = src.attr("class");
-        if (typeof classes === "string") {
-            $(classes.split(" ")).each(function() {
-                if (this.indexOf("select2-") !== 0) {
-                    adapted = adapter(this);
-                    if (typeof adapted === "string" && adapted.length > 0) {
-                        replacements.push(this);
-                    }
-                }
-            });
-        }
-        dest.attr("class", replacements.join(" "));
-    }
-
 
     function markMatch(text, term, markup, escapeMarkup) {
         var match=text.toUpperCase().indexOf(term.toUpperCase()),
@@ -330,35 +259,22 @@
         // abstract
         init: function (opts) {
             var results, search, resultsSelector = ".select2-results", mask;
-
             // prepare options
             this.opts = opts = this.prepareOpts(opts);
-
             this.id=opts.id;
-
             // destroy if called on an existing component
             if (opts.element.data("select2") !== undefined &&
                 opts.element.data("select2") !== null) {
                 this.destroy();
             }
-
             this.enabled=true;
             this.container = this.createContainer();
-
             this.containerId="s2id_"+(opts.element.attr("id") || "autogen"+nextUid());
             this.containerSelector="#"+this.containerId.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
             this.container.attr("id", this.containerId);
-
             // cache the body so future lookups are cheap
             this.body = thunk(function() { return opts.element.closest("body"); });
-
-            syncCssClasses(this.container, this.opts.element, this.opts.adaptContainerCssClass);
-
-            this.container.css(evaluate(opts.containerCss));
-            this.container.addClass(evaluate(opts.containerCssClass));
-
             this.elementTabIndex = this.opts.element.attr("tabIndex");
-
             // swap container for the element
             this.opts.element
                 .data("select2", this)
@@ -367,37 +283,21 @@
                 .attr("tabIndex", "-1")
                 .before(this.container);
             this.container.data("select2", this);
-
             this.dropdown = this.container.find(".select2-drop");
             this.dropdown.addClass(evaluate(opts.dropdownCssClass));
             this.dropdown.data("select2", this);
-
             this.results = results = this.container.find(resultsSelector);
-            this.search = search = this.container.find("input.select2-input");
-
+            this.search = search = this.container.find(".select2-input");
+            //forward the tab index, this makes it a lot friendlier for full on
             search.attr("tabIndex", this.elementTabIndex);
-
+            search.bind("keyup input paste", this.bind(this.updateResults));
             this.resultsPage = 0;
             this.context = null;
-
-            // initialize the container
             this.initContainer();
-
-
-            installKeyUpChangeEvent(search);
-            search.bind("keyup-change input paste", this.bind(this.updateResults));
-
-
             // trap all mouse events from leaving the dropdown. sometimes there may be a modal that is listening
             // for mouse events outside of itself so it can close itself. since the dropdown is now outside the select2's
             // dom it will trigger the popup close, which is not what we want
             this.dropdown.bind("click mouseup mousedown", function (e) { e.stopPropagation(); });
-
-            if ($.isFunction(this.opts.initSelection)) {
-                // initialize selection based on the current value of the source element
-                this.initSelection();
-            }
-
             if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']")) this.disable();
         },
 
@@ -432,7 +332,7 @@
 
             if (select) {
                 // these options are not allowed when attached to a select because they are picked up off the element itself
-                $.each(["id", "query", "createSearchChoice", "initSelection", "data", "tags"], function () {
+                $.each(["id", "query", "createSearchChoice", "data", "tags"], function () {
                     if (this in opts) {
                         throw new Error("Option '" + this + "' is not allowed for Select2 when attached to a <select> element.");
                     }
@@ -451,11 +351,9 @@
 
                         for (i = 0, l = results.length; i < l; i = i + 1) {
                             result=results[i];
-                            disabled = (result.disabled === true);
                             node=$("<li></li>");
-                            node.addClass("select2-results-dept-"+depth);
                             node.addClass("select2-result");
-                            if (disabled) { node.addClass("select2-disabled"); }
+                            if (result.disabled) { node.addClass("select2-disabled"); }
                             node.addClass(self.opts.formatResultCssClass(result));
                             label=$(document.createElement("div"));
                             label.addClass("select2-result-label");
@@ -527,59 +425,34 @@
             if (typeof(opts.query) !== "function") {
                 throw "query function not defined" + opts.element.attr("id");
             }
-
             return opts;
         },
-
-        /**
-         * Triggers the change event on the source element
-         */
-        // abstract
         triggerChange: function (details) {
-
+            // prevents recursive triggering
+            if(this.opts.element.data("select2-change-triggered")) return;
             details = details || {};
             details= $.extend({}, details, { type: "change", val: this.val() });
-            // prevents recursive triggering
             this.opts.element.data("select2-change-triggered", true);
             this.opts.element.trigger(details);
             this.opts.element.data("select2-change-triggered", false);
-
-            // some validation frameworks ignore the change event and listen instead to keyup, click for selects
-            // so here we trigger the click event manually
-            this.opts.element.click();
-
-            // ValidationEngine ignorea the change event and listens instead to blur
-            // so here we trigger the blur event manually if so desired
-            if (this.opts.blurOnChange)
-                this.opts.element.blur();
         },
-
-        // abstract
         enable: function() {
             if (this.enabled) return;
-
             this.enabled=true;
             this.container.removeClass("select2-container-disabled");
             this.opts.element.removeAttr("disabled");
         },
-
         // abstract
         disable: function() {
             if (!this.enabled) return;
-
             this.close();
-
             this.enabled=false;
             this.container.addClass("select2-container-disabled");
             this.opts.element.attr("disabled", "disabled");
         },
-
-        // abstract
         opened: function () {
             return this.container.hasClass("select2-dropdown-open");
         },
-
-        // abstract
         positionDropdown: function() {
             var offset = this.container.offset(),
                 height = this.container.outerHeight(false),
@@ -833,10 +706,10 @@
         moveHighlight: function (delta) {
             var choices = this.findHighlightableChoices(),
                 index = this.highlight();
-            console.log(choices);
             while (index > -1 && index < choices.length) {
                 index += delta;
                 var choice = $(choices[index]);
+                result = choice
                 if (choice.hasClass("select2-result-selectable") && !choice.hasClass("select2-disabled") && !choice.hasClass("select2-selected")) {
                     this.highlight(index);
                     break;
@@ -942,12 +815,6 @@
          */
         // abstract
         updateResults: function (initial) {
-            var search = this.search, results = this.results, opts = this.opts, data, self=this, input;
-
-            // if the search is currently hidden we do not alter the results
-            if (initial !== true && (this.showSearchInput === false || !this.opened())) {
-                return;
-            }
 
             search.addClass("select2-active");
 
@@ -1067,7 +934,7 @@
 
         // abstract
         focusSearch: function () {
-            focus(this.search);
+            this.search.focus()
             this.resizeSearch(true);
         },
 
@@ -1151,9 +1018,9 @@
             var container = $(document.createElement("div")).attr({
                 "class": "select2-container select2-container-multi"
             }).html([
-                "    <ul class='select2-choices'>",
+                "<ul class='select2-choices'>",
                 "  <li class='select2-search-field'>" ,
-                "    <input type='text' autocomplete='off' class='select2-input'>" ,
+                "    <div contentEditable autocomplete='off' class='select2-input'></div>" ,
                 "  </li>" ,
                 "</ul>" ,
                 "<div class='select2-drop select2-drop-multi' style='display:none;'>" ,
@@ -1166,38 +1033,6 @@
         // multi
         prepareOpts: function () {
             var opts = this.parent.prepareOpts.apply(this, arguments);
-
-            // TODO validate placeholder is a string if specified
-
-            if (opts.element.get(0).tagName.toLowerCase() === "select") {
-                // install sthe selection initializer
-                opts.initSelection = function (element, callback) {
-
-                    var data = [];
-
-                    element.find(":selected").each(function (i, elm) {
-                        data.push({id: elm.attr("value"), text: elm.text(), element: elm[0]});
-                    });
-                    callback(data);
-                };
-            } else if ("data" in opts) {
-                // install default initSelection when applied to hidden input and data is local
-                opts.initSelection = opts.initSelection || function (element, callback) {
-                    var ids = splitVal(element.val(), opts.separator);
-                    //search in data by array of ids
-                    opts.query({
-                        matcher: function(term, text, el){
-                            return $.grep(ids, function(id) {
-                                return equal(id, opts.id(el));
-                            }).length;
-                        },
-                        callback: !$.isFunction(callback) ? $.noop : function(filtered) {
-                            callback(filtered.results);
-                        }
-                    });
-                };
-            }
-
             return opts;
         },
 
@@ -1255,117 +1090,51 @@
             }));
             //resize the search box all the time, this expands as we type
             this.search.bind("keyup", this.bind(this.resizeSearch));
-
             this.container.delegate(selector, "focus", this.bind(function () {
                 if (!this.enabled) return;
                 this.container.addClass("select2-container-active");
                 this.dropdown.addClass("select2-drop-active");
                 this.clearPlaceholder();
             }));
-
             this.initContainerWidth();
-
             // set the placeholder if necessary
             this.clearSearch();
         },
-
-        // multi
         enable: function() {
             if (this.enabled) return;
-
             this.parent.enable.apply(this, arguments);
-
             this.search.removeAttr("disabled");
         },
-
-        // multi
         disable: function() {
             if (!this.enabled) return;
-
             this.parent.disable.apply(this, arguments);
-
             this.search.attr("disabled", true);
         },
-
-        // multi
-        initSelection: function () {
-            var data;
-            if (this.opts.element.val() === "" && this.opts.element.text() === "") {
-                this.updateSelection([]);
-                this.close();
-                // set the placeholder if necessary
-                this.clearSearch();
-            }
-            if (this.select || this.opts.element.val() !== "") {
-                var self = this;
-                this.opts.initSelection.call(null, this.opts.element, function(data){
-                    if (data !== undefined && data !== null) {
-                        self.updateSelection(data);
-                        self.close();
-                        // set the placeholder if necessary
-                        self.clearSearch();
-                    }
-                });
-            }
-        },
-
-        // multi
         clearSearch: function () {
             this.search.val("");
             this.resizeSearch();
         },
-
-        // multi
         clearPlaceholder: function () {
             if (this.search.hasClass("select2-default")) {
                 this.search.val("").removeClass("select2-default");
             }
         },
-
-        // multi
         opening: function () {
             this.parent.opening.apply(this, arguments);
-
             this.clearPlaceholder();
 			this.resizeSearch();
             this.focusSearch();
-
             this.opts.element.trigger($.Event("open"));
         },
-
-        // multi
         close: function () {
             if (!this.opened()) return;
             this.parent.close.apply(this, arguments);
         },
-
-        // multi
         focus: function () {
             this.close();
-            this.search.focus();
+            this.focusSearch()
             this.opts.element.triggerHandler("focus");
         },
-
-        // multi
-        updateSelection: function (data) {
-            var ids = [], filtered = [], self = this;
-
-            // filter out duplicates
-            $(data).each(function () {
-                if (indexOf(self.id(this), ids) < 0) {
-                    ids.push(self.id(this));
-                    filtered.push(this);
-                }
-            });
-            data = filtered;
-
-            this.selection.find(".select2-search-choice").remove();
-            $(data).each(function () {
-                self.addSelectedChoice(this);
-            });
-            self.ensureSomethingHighlighted();
-        },
-
         tokenize: function() {
             var input = this.search.val();
             input = this.opts.tokenizer(input, this.data(), this.bind(this.onSelect), this.opts);
@@ -1375,17 +1144,11 @@
                     this.open();
                 }
             }
-
         },
-
-        // multi
         onSelect: function (data, options) {
             this.addSelectedChoice(data);
-
             this.opts.element.trigger({ type: "selected", val: this.id(data), choice: data });
-
             if (this.select || !this.opts.closeOnSelect) this.ensureSomethingHighlighted();
-
             if (this.opts.closeOnSelect) {
                 this.close();
                 this.resizeSearch();
@@ -1404,37 +1167,30 @@
                     this.resizeSearch();
                 }
             }
-
             // since its not possible to select an element that has already been
             // added we do not need to check if this is a new element before firing change
             this.triggerChange({ added: data });
-
             if (!options || !options.noFocus)
                 this.focusSearch();
         },
-
-        // multi
         cancel: function () {
             this.close();
             this.focusSearch();
         },
-
         addSelectedChoice: function (data) {
             var item = $(
                 "<li class='select2-search-choice'>" +
                 "    <span class='icon-remove select2-search-choice-close'></span>" +
                 "    <span>" +
-                data.text +
+                this.opts.escapeMarkup(data) +
                 "    </span>" +
                 "</li>");
-
             item.find(".select2-search-choice-close")
                 .bind("mousedown", killEvent)
                 .bind("click dblclick", this.bind(function (e) {
                   if (!this.enabled) return;
                   $(e.target).closest(".select2-search-choice").fadeOut('fast', this.bind(function(){
-                      this.close();
-                      this.focusSearch();
+                      this.cancel();
                   })).dequeue();
                   killEvent(e);
               })).bind("focus", this.bind(function () {
@@ -1442,163 +1198,63 @@
                   this.container.addClass("select2-container-active");
                   this.dropdown.addClass("select2-drop-active");
               }));
-
             item.data("select2-data", data);
             item.insertBefore(this.searchContainer);
-
-            var val = this.getVal();
-            val.push(data.id);
-            this.setVal(val);
+            this.values.push(data);
+            this.triggerChange();
         },
-
         ensureSomethingHighlighted: function () {
             if (this.highlight() == -1){
                 this.highlight(0);
             }
         },
-
-        // multi
         resizeSearch: function (force) {
             var width = measureTextWidth(this.search, force);
             this.search.width(width).show()
         },
-
-        // multi
-        getVal: function () {
-            var val;
-            if (this.select) {
-                val = this.select.val();
-                return val === null ? [] : val;
-            } else {
-                val = this.opts.element.val();
-                return splitVal(val, this.opts.separator);
-            }
-        },
-
-        // multi
-        setVal: function (val) {
-            var unique;
-            if (this.select) {
-                this.select.val(val);
-            } else {
-                unique = [];
-                // filter out duplicates
-                $(val).each(function () {
-                    if (indexOf(this, unique) < 0) unique.push(this);
-                });
-                this.opts.element.val(unique.length === 0 ? "" : unique.join(this.opts.separator));
-            }
-        },
-
-        // multi
         val: function () {
-            var val, triggerChange = false, data = [], self=this;
-
-            if (arguments.length === 0) {
-                return this.getVal();
-            }
-
-            val = arguments[0];
-
-            if (arguments.length > 1) {
-                triggerChange = arguments[1];
-            }
-
-            // val is an id. !val is true for [undefined,null,'',0] - 0 is legal
-            if (!val && val !== 0) {
-                this.opts.element.val("");
-                this.updateSelection([]);
-                this.clearSearch();
-                if (triggerChange) {
-                    this.triggerChange();
-                }
-                return;
-            }
-
-            // val is a list of ids
-            this.setVal(val);
-
-            if (this.select) {
-                this.opts.initSelection(this.select, this.bind(this.updateSelection));
-                if (triggerChange) {
-                    this.triggerChange();
-                }
-            } else {
-                if (this.opts.initSelection === undefined) {
-                    throw new Error("val() cannot be called if initSelection() is not defined");
-                }
-
-                this.opts.initSelection(this.opts.element, function(data){
-                    var ids=$(data).map(self.id);
-                    self.setVal(ids);
-                    self.updateSelection(data);
-                    self.clearSearch();
-                    if (triggerChange) {
-                        self.triggerChange();
-                    }
-                });
-            }
+            if (arguments.length === 0) return this.values || [];
+            var self = this;
+            //the actual data
+            this.values = []
+            //update the visuals
             this.clearSearch();
+            this.selection.find(".select2-search-choice").remove();
+            $(arguments[0]).each(function () {
+                self.addSelectedChoice(this);
+            });
         },
-
         // multi
         onSortStart: function() {
             if (this.select) {
                 throw new Error("Sorting of elements is not supported when attached to <select>. Attach to <input type='hidden'/> instead.");
             }
-
             // collapse search field into 0 width so its container can be collapsed as well
             this.resizeSearch();
             // hide the container
             this.searchContainer.hide();
         },
-
-        // multi
         onSortEnd:function() {
-
             var val=[], self=this;
-
             // show search and move it to the end of the list
             this.searchContainer.show();
             // make sure the search container is the last item in the list
             this.searchContainer.appendTo(this.searchContainer.parent());
             // since we collapsed the width in dragStarted, we resize it here
             this.resizeSearch();
-
             // update selection
-
             this.selection.find(".select2-search-choice").each(function() {
                 val.push(self.opts.id($(this).data("select2-data")));
             });
             this.setVal(val);
             this.triggerChange();
-        },
-
-        // multi
-        data: function(values) {
-            var self=this, ids;
-            if (arguments.length === 0) {
-                 return this.selection
-                     .find(".select2-search-choice")
-                     .map(function() { return $(this).data("select2-data"); })
-                     .get();
-            } else {
-                if (!values) { values = []; }
-                ids = $.map(values, function(e) { return self.opts.id(e); });
-                this.setVal(ids);
-                this.updateSelection(values);
-                this.clearSearch();
-            }
         }
     });
-
     $.fn.select2 = function () {
-
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
             select2,
             value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "onSortStart", "onSortEnd", "enable", "disable", "positionDropdown", "data"];
-
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);
@@ -1606,11 +1262,9 @@
                 select2 = new MultiSelect2()
                 select2.init(opts);
             } else if (typeof(args[0]) === "string") {
-
                 if (indexOf(args[0], allowedMethods) < 0) {
                     throw "Unknown method: " + args[0];
                 }
-
                 value = undefined;
                 select2 = $(this).data("select2");
                 if (select2 === undefined) return;
@@ -1626,17 +1280,8 @@
         });
         return (value === undefined) ? this : value;
     };
-
     // plugin defaults, accessible to users
     $.fn.select2.defaults = {
-        width: "copy",
-        loadMorePadding: 0,
-        closeOnSelect: true,
-        openOnEnter: true,
-        containerCss: {},
-        dropdownCss: {},
-        containerCssClass: "",
-        dropdownCssClass: "",
         formatResult: function(result, container, query, escapeMarkup) {
             var markup=[];
             markMatch(result.text, query.term, markup, escapeMarkup);
@@ -1648,18 +1293,8 @@
         sortResults: function (results, container, query) {
             return results;
         },
-        formatResultCssClass: function(data) {return undefined;},
-        formatNoMatches: function () { return "No matches found"; },
-        formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " more character" + (n == 1? "" : "s"); },
-        formatInputTooLong: function (input, max) { var n = input.length - max; return "Please enter " + n + " less character" + (n == 1? "" : "s"); },
-        formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
-        formatLoadMore: function (pageNumber) { return "Loading more results..."; },
-        formatSearching: function () { return "Searching..."; },
-        minimumResultsForSearch: 0,
         minimumInputLength: 0,
-        maximumInputLength: null,
-        maximumSelectionSize: 0,
-        id: function (e) { return e.id; },
+        maximumInputLength: 128,
         matcher: function(term, text) {
             return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
         },
@@ -1676,15 +1311,9 @@
                 "'": '&apos;',
                 "/": '&#47;'
             };
-
             return String(markup).replace(/[&<>"'/\\]/g, function (match) {
                     return replace_map[match[0]];
             });
-        },
-        blurOnChange: false,
-        selectOnBlur: false,
-        adaptContainerCssClass: function(c) { return c; },
-        adaptDropdownCssClass: function(c) { return null; }
+        }
     };
-
 }(jQuery));
