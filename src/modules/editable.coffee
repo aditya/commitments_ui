@@ -128,7 +128,6 @@ module = angular.module('editable', [])
         compile: (templateElement, templateAttrs) ->
             templateElement.addClass 'editableTags'
             templateAttrs.icon = templateAttrs.icon or 'tags'
-            console.log templateAttrs
             icon = angular.element("<span class='icon-#{templateAttrs.icon} editableTagsIcon'/>")
             display = angular.element('<input type="hidden" class="editableTagsDisplay"/>')
             templateElement.append(icon, display)
@@ -142,7 +141,6 @@ module = angular.module('editable', [])
                     input.select2 'focusSearch'
                 input.select2
                     tokenSeparators: [',', ' ']
-                    multiple: true
                     createSearchChoice: (term) ->
                         id: term
                         text: term
@@ -201,7 +199,6 @@ module = angular.module('editable', [])
                             show: 100
                             hide: 100
                 element.bind 'shown', ->
-                    console.log 'ha'
                     $timeout (-> element.tooltip 'hide'), AUTOHIDE_DELAY
 
     ])

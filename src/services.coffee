@@ -9,7 +9,7 @@ module = angular.module('RootServices', ['ngResource'])
                     link: '/items/a'
                     message: 'I am but a simple task'
                     due: '02/24/2013'
-                    tags: ['Tagged', 'Important']
+                    tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
                     delegates: ['ian.groff@glgroup.com']
                 ,
                     link: '/items/b'

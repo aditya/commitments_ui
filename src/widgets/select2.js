@@ -114,46 +114,6 @@
         });
     }
 
-    $document.bind("mousemove", function (e) {
-        lastMousePosition = {x: e.pageX, y: e.pageY};
-    });
-
-    /**
-     * filters mouse events so an event is fired only if the mouse moved.
-     *
-     * filters out mouse events that occur when mouse is stationary but
-     * the elements under the pointer are scrolled.
-     */
-    function installFilteredMouseMove(element) {
-	    element.bind("mousemove", function (e) {
-            var lastpos = lastMousePosition;
-            if (lastpos === undefined || lastpos.x !== e.pageX || lastpos.y !== e.pageY) {
-                $(e.target).trigger("mousemove-filtered", e);
-            }
-        });
-    }
-
-    /**
-     * Debounces a function. Returns a function that calls the original fn function only if no invocations have been made
-     * within the last quietMillis milliseconds.
-     *
-     * @param quietMillis number of milliseconds to wait before invoking fn
-     * @param fn function to be debounced
-     * @param ctx object to be used as this reference within fn
-     * @return debounced version of fn
-     */
-    function debounce(quietMillis, fn, ctx) {
-        ctx = ctx || undefined;
-        var timeout;
-        return function () {
-            var args = arguments;
-            window.clearTimeout(timeout);
-            timeout = window.setTimeout(function() {
-                fn.apply(ctx, args);
-            }, quietMillis);
-        };
-    }
-
     /**
      * A simple implementation of a thunk
      * @param formula function used to lazily initialize the thunk
@@ -167,13 +127,6 @@
             return value;
         };
     };
-
-    function installDebouncedScroll(threshold, element) {
-        var notify = debounce(threshold, function (e) { element.trigger("scroll-debounced", e);});
-        element.bind("scroll", function (e) {
-            if (indexOf(e.target, element.get()) >= 0) notify(e);
-        });
-    }
 
     function focus($el) {
         if ($el[0] === document.activeElement) return;
@@ -278,176 +231,6 @@
         markup.push(escapeMarkup(text.substring(match, match + tl)));
         markup.push("</span>");
         markup.push(escapeMarkup(text.substring(match + tl, text.length)));
-    }
-
-    /**
-     * Produces an ajax-based query function
-     *
-     * @param options object containing configuration paramters
-     * @param options.transport function that will be used to execute the ajax request. must be compatible with parameters supported by $.ajax
-     * @param options.url url for the data
-     * @param options.data a function(searchTerm, pageNumber, context) that should return an object containing query string parameters for the above url.
-     * @param options.dataType request data type: ajax, jsonp, other datatatypes supported by jQuery's $.ajax function or the transport function if specified
-     * @param options.traditional a boolean flag that should be true if you wish to use the traditional style of param serialization for the ajax request
-     * @param options.quietMillis (optional) milliseconds to wait before making the ajaxRequest, helps debounce the ajax function if invoked too often
-     * @param options.results a function(remoteData, pageNumber) that converts data returned form the remote request to the format expected by Select2.
-     *      The expected format is an object containing the following keys:
-     *      results array of objects that will be used as choices
-     *      more (optional) boolean indicating whether there are more results available
-     *      Example: {results:[{id:1, text:'Red'},{id:2, text:'Blue'}], more:true}
-     */
-    function ajax(options) {
-        var timeout, // current scheduled but not yet executed request
-            requestSequence = 0, // sequence used to drop out-of-order responses
-            handler = null,
-            quietMillis = options.quietMillis || 100,
-            ajaxUrl = options.url,
-            self = this;
-
-        return function (query) {
-            window.clearTimeout(timeout);
-            timeout = window.setTimeout(function () {
-                requestSequence += 1; // increment the sequence
-                var requestNumber = requestSequence, // this request's sequence number
-                    data = options.data, // ajax data function
-                    url = ajaxUrl, // ajax url string or function
-                    transport = options.transport || $.ajax,
-                    type = options.type || 'GET', // set type of request (GET or POST)
-                    params = {};
-
-                data = data ? data.call(self, query.term, query.page, query.context) : null;
-                url = (typeof url === 'function') ? url.call(self, query.term, query.page, query.context) : url;
-
-                if( null !== handler) { handler.abort(); }
-
-                if (options.params) {
-                    if ($.isFunction(options.params)) {
-                        $.extend(params, options.params.call(self));
-                    } else {
-                        $.extend(params, options.params);
-                    }
-                }
-
-                $.extend(params, {
-                    url: url,
-                    dataType: options.dataType,
-                    data: data,
-                    type: type,
-                    cache: false,
-                    success: function (data) {
-                        if (requestNumber < requestSequence) {
-                            return;
-                        }
-                        // TODO - replace query.page with query so users have access to term, page, etc.
-                        var results = options.results(data, query.page);
-                        query.callback(results);
-                    }
-                });
-                handler = transport.call(self, params);
-            }, quietMillis);
-        };
-    }
-
-    /**
-     * Produces a query function that works with a local array
-     *
-     * @param options object containing configuration parameters. The options parameter can either be an array or an
-     * object.
-     *
-     * If the array form is used it is assumed that it contains objects with 'id' and 'text' keys.
-     *
-     * If the object form is used ti is assumed that it contains 'data' and 'text' keys. The 'data' key should contain
-     * an array of objects that will be used as choices. These objects must contain at least an 'id' key. The 'text'
-     * key can either be a String in which case it is expected that each element in the 'data' array has a key with the
-     * value of 'text' which will be used to match choices. Alternatively, text can be a function(item) that can extract
-     * the text.
-     */
-    function local(options) {
-        var data = options, // data elements
-            dataText,
-            tmp,
-            text = function (item) { return ""+item.text; }; // function used to retrieve the text portion of a data item that is matched against the search
-
-		 if ($.isArray(data)) {
-            tmp = data;
-            data = { results: tmp };
-        }
-
-		 if ($.isFunction(data) === false) {
-            tmp = data;
-            data = function() { return tmp; };
-        }
-
-        var dataItem = data();
-        if (dataItem.text) {
-            text = dataItem.text;
-            // if text is not a function we assume it to be a key name
-            if (!$.isFunction(text)) {
-                dataText = data.text; // we need to store this in a separate variable because in the next step data gets reset and data.text is no longer available
-                text = function (item) { return item[dataText]; };
-            }
-        }
-
-        return function (query) {
-            var t = query.term, filtered = { results: [] }, process;
-            if (t === "") {
-                query.callback(data());
-                return;
-            }
-
-            process = function(datum, collection) {
-                var group, attr;
-                datum = datum[0];
-                if (datum.children) {
-                    group = {};
-                    for (attr in datum) {
-                        if (datum.hasOwnProperty(attr)) group[attr]=datum[attr];
-                    }
-                    group.children=[];
-                    $(datum.children).each(function(i, childDatum) { process(childDatum, group.children); });
-                    if (group.children.length || query.matcher(t, text(group), datum)) {
-                        collection.push(group);
-                    }
-                } else {
-                    if (query.matcher(t, text(datum), datum)) {
-                        collection.push(datum);
-                    }
-                }
-            };
-
-            $(data().results).each(function(i, datum) { process(datum, filtered.results); });
-            query.callback(filtered);
-        };
-    }
-
-    // TODO javadoc
-    function tags(data) {
-        var isFunc = $.isFunction(data);
-        return function (query) {
-            var t = query.term, filtered = {results: []};
-            $(isFunc ? data() : data).each(function () {
-                var isObject = this.text !== undefined,
-                    text = isObject ? this.text : this;
-                if (t === "" || query.matcher(t, text)) {
-                    filtered.results.push(isObject ? this : {id: this, text: this});
-                }
-            });
-            query.callback(filtered);
-        };
-    }
-
-    /**
-     * Checks if the formatter function should be used.
-     *
-     * Throws an error if it is not a function. Returns true if it should be used,
-     * false if no formatting should be performed.
-     *
-     * @param formatter
-     */
-    function checkFormatter(formatter, formatterName) {
-        if ($.isFunction(formatter)) return true;
-        if (!formatter) return false;
-        throw new Error("formatterName must be a function or a falsy value");
     }
 
     function evaluate(val) {
@@ -600,35 +383,10 @@
             // initialize the container
             this.initContainer();
 
-            installFilteredMouseMove(this.results);
-            this.dropdown.delegate(resultsSelector, "mousemove-filtered touchstart touchmove touchend", this.bind(this.highlightUnderEvent));
-
-            installDebouncedScroll(80, this.results);
-            this.dropdown.delegate(resultsSelector, "scroll-debounced", this.bind(this.loadMoreIfNeeded));
-
-            // if jquery.mousewheel plugin is installed we can prevent out-of-bounds scrolling of results via mousewheel
-            if ($.fn.mousewheel) {
-                results.mousewheel(function (e, delta, deltaX, deltaY) {
-                    var top = results.scrollTop(), height;
-                    if (deltaY > 0 && top - deltaY <= 0) {
-                        results.scrollTop(0);
-                        killEvent(e);
-                    } else if (deltaY < 0 && results.get(0).scrollHeight - results.scrollTop() + deltaY <= results.height()) {
-                        results.scrollTop(results.get(0).scrollHeight - results.height());
-                        killEvent(e);
-                    }
-                });
-            }
 
             installKeyUpChangeEvent(search);
             search.bind("keyup-change input paste", this.bind(this.updateResults));
 
-            this.dropdown.delegate(resultsSelector, "mouseup", this.bind(function (e) {
-                if ($(e.target).closest(".select2-result-selectable").length > 0) {
-                    this.highlightUnderEvent(e);
-                    this.selectHighlighted(e);
-                }
-            }));
 
             // trap all mouse events from leaving the dropdown. sometimes there may be a modal that is listening
             // for mouse events outside of itself so it can close itself. since the dropdown is now outside the select2's
@@ -638,10 +396,6 @@
             if ($.isFunction(this.opts.initSelection)) {
                 // initialize selection based on the current value of the source element
                 this.initSelection();
-
-                // if the user has provided a function that can set selection based on the value of the source element
-                // we monitor the change event on the element and trigger it, allowing for two way synchronization
-                this.monitorSource();
             }
 
             if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']")) this.disable();
@@ -668,7 +422,7 @@
 
         // abstract
         prepareOpts: function (opts) {
-            var element, select, idKey, ajaxUrl;
+            var element, select, idKey;
 
             element = opts.element;
 
@@ -678,7 +432,7 @@
 
             if (select) {
                 // these options are not allowed when attached to a select because they are picked up off the element itself
-                $.each(["id", "multiple", "ajax", "query", "createSearchChoice", "initSelection", "data", "tags"], function () {
+                $.each(["id", "query", "createSearchChoice", "initSelection", "data", "tags"], function () {
                     if (this in opts) {
                         throw new Error("Option '" + this + "' is not allowed for Select2 when attached to a <select> element.");
                     }
@@ -691,45 +445,25 @@
 
                     populate=function(results, container, depth) {
 
-                        var i, l, result, selectable, disabled, compound, node, label, innerContainer, formatted;
+                        var i, l, result, disabled, node, label, innerContainer, formatted;
 
                         results = opts.sortResults(results, container, query);
 
                         for (i = 0, l = results.length; i < l; i = i + 1) {
-
                             result=results[i];
-
                             disabled = (result.disabled === true);
-                            selectable = (!disabled) && (id(result) !== undefined);
-
-                            compound=result.children && result.children.length > 0;
-
                             node=$("<li></li>");
                             node.addClass("select2-results-dept-"+depth);
                             node.addClass("select2-result");
-                            node.addClass(selectable ? "select2-result-selectable" : "select2-result-unselectable");
                             if (disabled) { node.addClass("select2-disabled"); }
-                            if (compound) { node.addClass("select2-result-with-children"); }
                             node.addClass(self.opts.formatResultCssClass(result));
-
                             label=$(document.createElement("div"));
                             label.addClass("select2-result-label");
-
                             formatted=opts.formatResult(result, label, query, self.opts.escapeMarkup);
                             if (formatted!==undefined) {
                                 label.html(formatted);
                             }
-
                             node.append(label);
-
-                            if (compound) {
-
-                                innerContainer=$("<ul></ul>");
-                                innerContainer.addClass("select2-result-sub");
-                                populate(result.children, innerContainer, depth+1);
-                                node.append(innerContainer);
-                            }
-
                             node.data("select2-data", result);
                             container.append(node);
                         }
@@ -789,96 +523,12 @@
                 // this is needed because inside val() we construct choices from options and there id is hardcoded
                 opts.id=function(e) { return e.id; };
                 opts.formatResultCssClass = function(data) { return data.css; };
-            } else {
-                if (!("query" in opts)) {
-
-                    if ("ajax" in opts) {
-                        ajaxUrl = opts.element.data("ajax-url");
-                        if (ajaxUrl && ajaxUrl.length > 0) {
-                            opts.ajax.url = ajaxUrl;
-                        }
-                        opts.query = ajax.call(opts.element, opts.ajax);
-                    } else if ("data" in opts) {
-                        opts.query = local(opts.data);
-                    } else if ("tags" in opts) {
-                        opts.query = tags(opts.tags);
-                        if (opts.createSearchChoice === undefined) {
-                            opts.createSearchChoice = function (term) { return {id: term, text: term}; };
-                        }
-                        if (opts.initSelection === undefined) {
-                            opts.initSelection = function (element, callback) {
-                                var data = [];
-                                $(splitVal(element.val(), opts.separator)).each(function () {
-                                    var id = this, text = this, tags=opts.tags;
-                                    if ($.isFunction(tags)) tags=tags();
-                                    $(tags).each(function() { if (equal(this.id, id)) { text = this.text; return false; } });
-                                    data.push({id: id, text: text});
-                                });
-
-                                callback(data);
-                            };
-                        }
-                    }
-                }
             }
             if (typeof(opts.query) !== "function") {
-                throw "query function not defined for Select2 " + opts.element.attr("id");
+                throw "query function not defined" + opts.element.attr("id");
             }
 
             return opts;
-        },
-
-        /**
-         * Monitor the original element for changes and update select2 accordingly
-         */
-        // abstract
-        monitorSource: function () {
-            var el = this.opts.element, sync;
-
-            el.bind("change.select2", this.bind(function (e) {
-                if (this.opts.element.data("select2-change-triggered") !== true) {
-                    this.initSelection();
-                }
-            }));
-
-            sync = this.bind(function () {
-
-                var enabled, readonly, self = this;
-
-                // sync enabled state
-
-                enabled = this.opts.element.attr("disabled") !== "disabled";
-                readonly = this.opts.element.attr("readonly") === "readonly";
-
-                enabled = enabled && !readonly;
-
-                if (this.enabled !== enabled) {
-                    if (enabled) {
-                        this.enable();
-                    } else {
-                        this.disable();
-                    }
-                }
-
-
-                syncCssClasses(this.container, this.opts.element, this.opts.adaptContainerCssClass);
-                this.container.addClass(evaluate(this.opts.containerCssClass));
-
-                syncCssClasses(this.dropdown, this.opts.element, this.opts.adaptDropdownCssClass);
-                this.dropdown.addClass(evaluate(this.opts.dropdownCssClass));
-
-            });
-
-            // mozilla and IE
-            el.bind("propertychange.select2 DOMAttrModified.select2", sync);
-            // safari and chrome
-            if (typeof WebKitMutationObserver !== "undefined") {
-                if (this.propertyObserver) { delete this.propertyObserver; this.propertyObserver = null; }
-                this.propertyObserver = new WebKitMutationObserver(function (mutations) {
-                    mutations.forEach(sync);
-                });
-                this.propertyObserver.observe(el.get(0), { attributes:true, subtree:false });
-            }
         },
 
         /**
@@ -1142,11 +792,8 @@
             if (index < 0) return;
 
             if (index == 0) {
-
                 // if the first element is highlighted scroll all the way to the top,
-                // that way any unselectable headers above it will also be scrolled
                 // into view
-
                 results.scrollTop(0);
                 return;
             }
@@ -1179,8 +826,7 @@
 
         // abstract
         findHighlightableChoices: function() {
-            var h=this.results.find(".select2-result-selectable:not(.select2-selected):not(.select2-disabled)");
-            return this.results.find(".select2-result-selectable:not(.select2-selected):not(.select2-disabled)");
+            return this.results.find(".select2-result");
         },
 
         // abstract
@@ -1394,7 +1040,7 @@
                     window.setTimeout(function() { self.loadMoreIfNeeded(); }, 10);
                 }
 
-                this.postprocessResults(data, initial);
+                this.ensureSomethingHighlighted();
 
                 postRender();
             })});
@@ -1572,26 +1218,20 @@
 
             this.search.bind("keydown", this.bind(function (e) {
                 if (!this.enabled) return;
-
+                //key sequences that close
                 if (e.which === KEY.BACKSPACE && this.search.val() === "") {
                     this.close();
-
-                    var choices,
-                        selected = selection.find(".select2-search-choice-focus");
-                    if (selected.length > 0) {
-                        this.unselect(selected.first());
-                        killEvent(e);
-                        return;
-                    }
-
-                    choices = selection.find(".select2-search-choice:not(.select2-locked)");
-                    if (choices.length > 0) {
-                        choices.last().addClass("select2-search-choice-focus");
-                    }
-                } else {
-                    selection.find(".select2-search-choice-focus").removeClass("select2-search-choice-focus");
+                    return;
                 }
-
+                if (e.which == KEY.ESC) {
+                    this.close();
+                    return;
+                }
+                if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e)
+                 || e.which === KEY.BACKSPACE || e.which === KEY.ESC || e.which == KEY.ENTER) {
+                    return;
+                }
+                //if we are opened, key sequences that navigate selected items
                 if (this.opened()) {
                     switch (e.which) {
                     case KEY.UP:
@@ -1610,47 +1250,11 @@
                         return;
                     }
                 }
-
-                if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e)
-                 || e.which === KEY.BACKSPACE || e.which === KEY.ESC) {
-                    return;
-                }
-
-                if (e.which === KEY.ENTER) {
-                    if (this.opts.openOnEnter === false) {
-                        return;
-                    } else if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
-                        return;
-                    }
-                }
-
+                //everything else opens
                 this.open();
-
-                if (e.which === KEY.PAGE_UP || e.which === KEY.PAGE_DOWN) {
-                    // prevent the page from scrolling
-                    killEvent(e);
-                }
             }));
-
+            //resize the search box all the time, this expands as we type
             this.search.bind("keyup", this.bind(this.resizeSearch));
-
-            this.search.bind("blur", this.bind(function(e) {
-                this.container.removeClass("select2-container-active");
-                if (!this.opened()) this.clearSearch();
-                e.stopImmediatePropagation();
-            }));
-
-            this.container.delegate(selector, "mousedown", this.bind(function (e) {
-                if (!this.enabled) return;
-                if ($(e.target).closest(".select2-search-choice").length > 0) {
-                    // clicked inside a select2 search choice, do not open
-                    return;
-                }
-                this.clearPlaceholder();
-                this.open();
-                this.focusSearch();
-                e.preventDefault();
-            }));
 
             this.container.delegate(selector, "focus", this.bind(function () {
                 if (!this.enabled) return;
@@ -1759,7 +1363,7 @@
             $(data).each(function () {
                 self.addSelectedChoice(this);
             });
-            self.postprocessResults();
+            self.ensureSomethingHighlighted();
         },
 
         tokenize: function() {
@@ -1780,7 +1384,7 @@
 
             this.opts.element.trigger({ type: "selected", val: this.id(data), choice: data });
 
-            if (this.select || !this.opts.closeOnSelect) this.postprocessResults();
+            if (this.select || !this.opts.closeOnSelect) this.ensureSomethingHighlighted();
 
             if (this.opts.closeOnSelect) {
                 this.close();
@@ -1829,7 +1433,6 @@
                 .bind("click dblclick", this.bind(function (e) {
                   if (!this.enabled) return;
                   $(e.target).closest(".select2-search-choice").fadeOut('fast', this.bind(function(){
-                      this.unselect($(e.target));
                       this.close();
                       this.focusSearch();
                   })).dequeue();
@@ -1848,67 +1451,10 @@
             this.setVal(val);
         },
 
-        // multi
-        unselect: function (selected) {
-            var val = this.getVal(),
-                data,
-                index;
-
-            selected = selected.closest(".select2-search-choice");
-
-            if (selected.length === 0) {
-                throw "Invalid argument: " + selected + ". Must be .select2-search-choice";
-            }
-
-            data = selected.data("select2-data");
-
-            if (!data) {
-                // prevent a race condition when the 'x' is clicked really fast repeatedly the event can be queued
-                // and invoked on an element already removed
-                return;
-            }
-
-            index = indexOf(this.id(data), val);
-
-            if (index >= 0) {
-                val.splice(index, 1);
-                this.setVal(val);
-                if (this.select) this.postprocessResults();
-            }
-            selected.remove();
-
-            this.opts.element.trigger({ type: "removed", val: this.id(data), choice: data });
-            this.triggerChange({ removed: data });
-        },
-
-        // multi
-        postprocessResults: function () {
-            var val = this.getVal(),
-                choices = this.results.find(".select2-result"),
-                compound = this.results.find(".select2-result-with-children"),
-                self = this;
-
-            choices.each(function (i, choice) {
-                var id = self.id(choice.data("select2-data"));
-                if (indexOf(id, val) >= 0) {
-                    choice.addClass("select2-selected");
-                    // mark all children of the selected parent as selected
-                    choice.find(".select2-result-selectable").addClass("select2-selected");
-                }
-            });
-
-            compound.each(function(i, choice) {
-                // hide an optgroup if it doesnt have any selectable children
-                if (!choice.is('.select2-result-selectable')
-                    && choice.find(".select2-result-selectable:not(.select2-selected)").length === 0) {
-                    choice.addClass("select2-selected");
-                }
-            });
-
+        ensureSomethingHighlighted: function () {
             if (this.highlight() == -1){
-                self.highlight(0);
+                this.highlight(0);
             }
-
         },
 
         // multi
@@ -2051,21 +1597,13 @@
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
             select2,
-            value, multiple, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "onSortStart", "onSortEnd", "enable", "disable", "positionDropdown", "data"];
+            value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "onSortStart", "onSortEnd", "enable", "disable", "positionDropdown", "data"];
 
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);
                 opts.element = $(this);
-
-                if (opts.element.get(0).tagName.toLowerCase() === "select") {
-                    multiple = opts.element.attr("multiple");
-                } else {
-                    multiple = opts.multiple || false;
-                    if ("tags" in opts) {opts.multiple = multiple = true;}
-                }
-
-                select2 = multiple ? new MultiSelect2() : new SingleSelect2();
+                select2 = new MultiSelect2()
                 select2.init(opts);
             } else if (typeof(args[0]) === "string") {
 
@@ -2147,21 +1685,6 @@
         selectOnBlur: false,
         adaptContainerCssClass: function(c) { return c; },
         adaptDropdownCssClass: function(c) { return null; }
-    };
-
-    // exports
-    window.Select2 = {
-        query: {
-            ajax: ajax,
-            local: local,
-            tags: tags
-        }, util: {
-            debounce: debounce,
-            markMatch: markMatch
-        }, "class": {
-            "abstract": AbstractSelect2,
-            "multi": MultiSelect2
-        }
     };
 
 }(jQuery));
