@@ -143,7 +143,7 @@ module = angular.module('editable', [])
                     tokenSeparators: [',', ' ']
                     query: (query) ->
                         query.callback
-                            results: [query.term, sample]
+                            results: [query.term, 'sample']
                 #just propagate tag values back to the model
                 element.bind 'change', () ->
                     ngModel.$setViewValue(input.select2('val'))
