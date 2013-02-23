@@ -4,10 +4,7 @@
         return;
     }
 
-    var KEY, AbstractSelect2, MultiSelect2, nextUid, sizer,
-        lastMousePosition;
-
-    KEY = {
+    var KEY = {
         TAB: 9,
         ENTER: 13,
         ESC: 27,
@@ -54,43 +51,11 @@
         event.stopImmediatePropagation();
     }
 
-
-    function markMatch(text, term, markup, escapeMarkup) {
-        var match=text.toUpperCase().indexOf(term.toUpperCase()),
-            tl=term.length;
-
-        if (match<0) {
-            markup.push(escapeMarkup(text));
-            return;
-        }
-
-        markup.push(escapeMarkup(text.substring(0, match)));
-        markup.push("<span class='select2-match'>");
-        markup.push(escapeMarkup(text.substring(match, match + tl)));
-        markup.push("</span>");
-        markup.push(escapeMarkup(text.substring(match + tl, text.length)));
-    }
-
     function evaluate(val) {
         return $.isFunction(val) ? val() : val;
     }
-    /**
-     * Creates a new class
-     *
-     * @param superClass
-     * @param methods
-     */
-    function clazz(SuperClass, methods) {
-        var constructor = function () {};
-        constructor.prototype = new SuperClass;
-        constructor.prototype.constructor = constructor;
-        constructor.prototype.parent = SuperClass.prototype;
-        constructor.prototype = $.extend(constructor.prototype, methods);
-        return constructor;
-    }
 
-    AbstractSelect2 = clazz(Object, {
-
+    function TagBar(){ return {
         measureTextWidth: function(e, force) {
             if (e.text().length == 0 && !force)  return 0;
             var style = e[0].currentStyle || window.getComputedStyle(e[0], null);
@@ -212,7 +177,6 @@
             if (this.enabled) return;
             this.enabled=true;
             this.container.removeClass("select2-container-disabled");
-            this.opts.element.removeAttr("disabled");
         },
         // abstract
         disable: function() {
@@ -220,7 +184,6 @@
             this.close();
             this.enabled=false;
             this.container.addClass("select2-container-disabled");
-            this.opts.element.attr("disabled", "disabled");
         },
         opened: function () {
             return $(".select2-results", this.container).length;
@@ -369,12 +332,7 @@
             if (width !== null) {
                 this.container.css("width", width);
             }
-        }
-    });
-
-    MultiSelect2 = clazz(AbstractSelect2, {
-
-        // multi
+        },
         createContainer: function () {
             var container = $(document.createElement("div")).attr({
                 "class": "select2-container select2-container-multi"
@@ -384,14 +342,8 @@
                 "    <div contentEditable autocomplete='off' class='select2-input'></div>" ,
                 "  </li>" ,
                 "</ul>"].join(""));
-			return container;
+	        return container;
         },
-        // multi
-        prepareOpts: function () {
-            var opts = this.parent.prepareOpts.apply(this, arguments);
-            return opts;
-        },
-        // multi
         initContainer: function () {
             var selector = ".select2-choices", selection;
             this.searchContainer = this.container.find(".select2-search-field");
@@ -434,16 +386,6 @@
             this.initContainerWidth();
             // set the placeholder if necessary
             this.clearSearch();
-        },
-        enable: function() {
-            if (this.enabled) return;
-            this.parent.enable.apply(this, arguments);
-            this.search.removeAttr("disabled");
-        },
-        disable: function() {
-            if (!this.enabled) return;
-            this.parent.disable.apply(this, arguments);
-            this.search.attr("disabled", true);
         },
         clearSearch: function () {
             this.search.text("");
@@ -506,17 +448,17 @@
                 self.addSelectedChoice(this);
             });
         }
-    });
+    };}
     $.fn.select2 = function () {
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
             select2,
-            value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "positionDropdown", "data"];
+            value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "data"];
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);
                 opts.element = $(this);
-                select2 = new MultiSelect2()
+                select2 = new TagBar()
                 select2.init(opts);
             } else if (typeof(args[0]) === "string") {
                 if (indexOf(args[0], allowedMethods) < 0) {
