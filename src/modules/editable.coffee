@@ -129,7 +129,7 @@ module = angular.module('editable', [])
             templateElement.addClass 'editableTags'
             templateAttrs.icon = templateAttrs.icon or 'tags'
             icon = angular.element("<span class='icon-#{templateAttrs.icon} editableTagsIcon'/>")
-            display = angular.element('<input type="hidden" class="editableTagsDisplay"/>')
+            display = angular.element('<span class="editableTagsDisplay"/>')
             templateElement.append(icon, display)
             ($scope, element, attrs, ngModel) ->
                 element.on 'keydown', (event) ->
@@ -147,7 +147,6 @@ module = angular.module('editable', [])
                 #just propagate tag values back to the model
                 element.bind 'change', () ->
                     ngModel.$setViewValue(input.select2('val'))
-                    $('input', element).removeClass 'select2-active'
                 #rendering is really just setting the values
                 ngModel.$render = () ->
                     input.select2 'val',  ngModel.$viewValue or []

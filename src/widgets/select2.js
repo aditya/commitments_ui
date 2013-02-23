@@ -77,15 +77,12 @@
             this.sizer.text(e.text() + '__');
             return this.sizer.width();
         },
-        // abstract
         bind: function (func) {
             var self = this;
             return function () {
                 func.apply(self, arguments);
             };
         },
-
-        // abstract
         init: function (opts) {
             // prepare options
             this.opts = opts = this.prepareOpts(opts);
@@ -99,15 +96,7 @@
             this.container = this.createContainer();
             this.sizer = this.container.append($("<div class='sizer'/>")).find(".sizer");
             this.elementTabIndex = this.opts.element.attr("tabIndex");
-            // swap container for the element
-            this.opts.element
-                .data("select2", this)
-                .addClass("select2-offscreen")
-                .bind("focus.select2", function() { $(this).select2("focus"); })
-                .attr("tabIndex", "-1")
-                .before(this.container);
-            this.dropdown = this.container.find(".select2-drop");
-            this.dropdown.addClass(evaluate(opts.dropdownCssClass));
+            this.opts.element.data('tagbar', this).append(this.container);
             this.search = this.container.find(".select2-input");
             this.search.popover({content: "<ul class='select2-results'></ul>", html: true, placement: "bottom"});
             //forward the tab index, this makes it a lot friendlier for full on
@@ -115,28 +104,10 @@
             this.resultsPage = 0;
             this.context = null;
             this.initContainer();
-            // trap all mouse events from leaving the dropdown. sometimes there may be a modal that is listening
-            // for mouse events outside of itself so it can close itself. since the dropdown is now outside the select2's
-            // dom it will trigger the popup close, which is not what we want
-            this.dropdown.bind("click mouseup mousedown", function (e) { e.stopPropagation(); });
             if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']")) this.disable();
         },
         destroy: function () {
-            var select2 = this.opts.element.data("select2");
-
-            if (this.propertyObserver) { delete this.propertyObserver; this.propertyObserver = null; }
-
-            if (select2 !== undefined) {
-
-                select2.container.remove();
-                select2.dropdown.remove();
-                select2.opts.element
-                    .removeClass("select2-offscreen")
-                    .removeData("select2")
-                    .unbind(".select2")
-                    .attr({"tabIndex": this.elementTabIndex})
-                    .show();
-            }
+            this.container.remove();
         },
         populateResults: function(results, query) {
             var addTo = $(".select2-results", this.container);
@@ -178,7 +149,6 @@
             this.enabled=true;
             this.container.removeClass("select2-container-disabled");
         },
-        // abstract
         disable: function() {
             if (!this.enabled) return;
             this.close();
@@ -305,9 +275,7 @@
 	        return container;
         },
         initContainer: function () {
-            var selector = ".select2-choices", selection;
             this.searchContainer = this.container.find(".select2-search-field");
-            this.selection = selection = this.container.find(selector);
             this.search.bind("keydown", this.bind(function (e) {
                 //key sequences that close
                 if (e.which === KEY.BACKSPACE && this.search.text() === "") {
@@ -396,44 +364,44 @@
             this.search.width(width).show()
         },
         val: function () {
+            console.log(arguments);
             if (arguments.length === 0) return this.values || [];
             var self = this;
             //the actual data
             this.values = []
             //update the visuals
             this.clearSearch();
-            this.selection.find(".select2-search-choice").remove();
+            $(".select2-search-choice", this.container).remove();
             $(arguments[0]).each(function () {
+                console.log(this);
                 self.addSelectedChoice(this);
             });
         }
     };}
     $.fn.select2 = function () {
+        console.log('s', arguments);
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
-            select2,
             value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "data"];
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);
                 opts.element = $(this);
-                select2 = new TagBar()
-                select2.init(opts);
+                new TagBar().init(opts);
             } else if (typeof(args[0]) === "string") {
                 if (indexOf(args[0], allowedMethods) < 0) {
                     throw "Unknown method: " + args[0];
                 }
                 value = undefined;
-                select2 = $(this).data("select2");
-                if (select2 === undefined) return;
+                var tagbar = $(this).data("tagbar");
                 if (args[0] === "container") {
-                    value=select2.container;
+                    value=tagbar.container;
                 } else {
-                    value = select2[args[0]].apply(select2, args.slice(1));
+                    value = tagbar[args[0]].apply(tagbar, args.slice(1));
                 }
                 if (value !== undefined) {return false;}
             } else {
-                throw "Invalid arguments to select2 plugin: " + args;
+                throw "Invalid arguments to plugin: " + args;
             }
         });
         return (value === undefined) ? this : value;
