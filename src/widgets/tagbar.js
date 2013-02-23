@@ -1,6 +1,6 @@
 (function ($, undefined) {
     "use strict";
-    if (window.Select2 !== undefined) {
+    if (window.tagbar !== undefined) {
         return;
     }
 
@@ -88,8 +88,8 @@
             this.opts = opts = this.prepareOpts(opts);
             this.id=opts.id;
             // destroy if called on an existing component
-            if (opts.element.data("select2") !== undefined &&
-                opts.element.data("select2") !== null) {
+            if (opts.element.data("tagbar") !== undefined &&
+                opts.element.data("tagbar") !== null) {
                 this.destroy();
             }
             this.enabled=true;
@@ -97,8 +97,8 @@
             this.sizer = this.container.append($("<div class='sizer'/>")).find(".sizer");
             this.elementTabIndex = this.opts.element.attr("tabIndex");
             this.opts.element.data('tagbar', this).append(this.container);
-            this.search = this.container.find(".select2-input");
-            this.search.popover({content: "<ul class='select2-results'></ul>", html: true, placement: "bottom"});
+            this.search = this.container.find(".tagbar-input");
+            this.search.popover({content: "<ul class='tagbar-results'></ul>", html: true, placement: "bottom"});
             //forward the tab index, this makes it a lot friendlier for full on
             this.search.attr("tabIndex", this.elementTabIndex);
             this.resultsPage = 0;
@@ -110,18 +110,18 @@
             this.container.remove();
         },
         populateResults: function(results, query) {
-            var addTo = $(".select2-results", this.container);
+            var addTo = $(".tagbar-results", this.container);
             addTo.children().remove();
             for (var i = 0; i < results.length; i = i + 1) {
                 var result=results[i];
                 var node=$("<li></li>");
-                node.addClass("select2-result");
-                if (result.disabled) { node.addClass("select2-disabled"); }
+                node.addClass("tagbar-result");
+                if (result.disabled) { node.addClass("tagbar-disabled"); }
                 var label=$(document.createElement("div"));
-                label.addClass("select2-result-label");
+                label.addClass("tagbar-result-label");
                 label.html(result);
                 node.append(label);
-                node.data("select2-data", result);
+                node.data("tagbar-data", result);
                 addTo.append(node);
             }
         },
@@ -129,7 +129,7 @@
             var element, select, idKey;
             element = opts.element;
             opts = $.extend({}, {
-            }, $.fn.select2.defaults, opts);
+            }, $.fn.tagbar.defaults, opts);
             if (typeof(opts.query) !== "function") {
                 throw "query function not defined" + opts.element.attr("id");
             }
@@ -137,26 +137,26 @@
         },
         triggerChange: function (details) {
             // prevents recursive triggering
-            if(this.opts.element.data("select2-change-triggered")) return;
+            if(this.opts.element.data("tagbar-change-triggered")) return;
             details = details || {};
             details= $.extend({}, details, { type: "change", val: this.val() });
-            this.opts.element.data("select2-change-triggered", true);
+            this.opts.element.data("tagbar-change-triggered", true);
             this.opts.element.trigger(details);
-            this.opts.element.data("select2-change-triggered", false);
+            this.opts.element.data("tagbar-change-triggered", false);
         },
         enable: function() {
             if (this.enabled) return;
             this.enabled=true;
-            this.container.removeClass("select2-container-disabled");
+            this.container.removeClass("tagbar-container-disabled");
         },
         disable: function() {
             if (!this.enabled) return;
             this.close();
             this.enabled=false;
-            this.container.addClass("select2-container-disabled");
+            this.container.addClass("tagbar-container-disabled");
         },
         opened: function () {
-            return $(".select2-results", this.container).length;
+            return $(".tagbar-results", this.container).length;
         },
         shouldOpen: function() {
             if (this.opened()) return false;
@@ -178,14 +178,14 @@
             this.clearSearch();
         },
         ensureHighlightVisible: function () {
-            var results = $(".select2-results", this.container),
+            var results = $(".tagbar-results", this.container),
                 children, index, child, hb, rb, y, more;
             index = this.highlight();
             if (index < 0) return;
             if (index == 0) {
                 // if the first element is highlighted scroll all the way to the top,
                 // into view
-                $(".select2-results", this.container).scrollTop(0);
+                $(".tagbar-results", this.container).scrollTop(0);
                 return;
             }
             children = this.findHighlightableChoices();
@@ -202,7 +202,7 @@
             }
         },
         findHighlightableChoices: function() {
-            return $(".select2-result", this.container);
+            return $(".tagbar-result", this.container);
         },
         moveHighlight: function (delta) {
             this.highlight(this.highlight() + delta);
@@ -212,15 +212,15 @@
                 choice,
                 data;
             if (arguments.length === 0) {
-                return indexOf(choices.filter(".select2-highlighted")[0], choices.get());
+                return indexOf(choices.filter(".tagbar-highlighted")[0], choices.get());
             }
             if (index >= choices.length) index = choices.length - 1;
             if (index < 0) index = 0;
-            $(".select2-highlighted", this.container).removeClass("select2-highlighted");
+            $(".tagbar-highlighted", this.container).removeClass("tagbar-highlighted");
             choice = $(choices[index]);
-            choice.addClass("select2-highlighted");
+            choice.addClass("tagbar-highlighted");
             this.ensureHighlightVisible();
-            data = choice.data("select2-data");
+            data = choice.data("tagbar-data");
             if (data) {
                 this.opts.element.trigger({ type: "highlight", val: data, choice: data });
             }
@@ -237,16 +237,16 @@
                 return;
             }
             //now in a query
-            this.search.addClass("select2-active");
+            this.search.addClass("tagbar-active");
             this.opts.query({
                     control: this,
                     term: text,
                     callback: this.bind(function (data) {
-                // ignore a response if the select2 has been closed before it was received
+                // ignore a response if the tagbar has been closed before it was received
                 this.open();
                 this.populateResults(data.results, {term: text, page: this.resultsPage, context:null});
                 this.ensureSomethingHighlighted();
-                this.search.removeClass("select2-active");
+                this.search.removeClass("tagbar-active");
             })});
         },
         blur: function () {
@@ -257,25 +257,25 @@
             this.resizeSearch(true);
         },
         selectHighlighted: function () {
-            var highlighted = $(".select2-highlighted", this.container),
-                data = highlighted.closest('.select2-result').data("select2-data");
+            var highlighted = $(".tagbar-highlighted", this.container),
+                data = highlighted.closest('.tagbar-result').data("tagbar-data");
             if (data) {
                 this.onSelect(data)
             }
         },
         createContainer: function () {
             var container = $(document.createElement("div")).attr({
-                "class": "select2-container select2-container-multi"
+                "class": "tagbar-container tagbar-container-multi"
             }).html([
-                "<ul class='select2-choices'>",
-                "  <li class='select2-search-field'>" ,
-                "    <div contentEditable autocomplete='off' class='select2-input'></div>" ,
+                "<ul class='tagbar-choices'>",
+                "  <li class='tagbar-search-field'>" ,
+                "    <div contentEditable autocomplete='off' class='tagbar-input'></div>" ,
                 "  </li>" ,
                 "</ul>"].join(""));
 	        return container;
         },
         initContainer: function () {
-            this.searchContainer = this.container.find(".select2-search-field");
+            this.searchContainer = this.container.find(".tagbar-search-field");
             this.search.bind("keydown", this.bind(function (e) {
                 //key sequences that close
                 if (e.which === KEY.BACKSPACE && this.search.text() === "") {
@@ -334,22 +334,22 @@
         },
         addSelectedChoice: function (data) {
             var item = $(
-                "<li class='select2-search-choice'>" +
-                "    <span class='icon-remove select2-search-choice-close'></span>" +
+                "<li class='tagbar-search-choice'>" +
+                "    <span class='icon-remove tagbar-search-choice-close'></span>" +
                 "    <span>" +
                 this.opts.escapeMarkup(data) +
                 "    </span>" +
                 "</li>");
-            item.find(".select2-search-choice-close")
+            item.find(".tagbar-search-choice-close")
                 .bind("mousedown", killEvent)
                 .bind("click dblclick", this.bind(function (e) {
                   if (!this.enabled) return;
-                  $(e.target).closest(".select2-search-choice").fadeOut('fast', this.bind(function(){
+                  $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
                       this.clear();
                   })).dequeue();
                   killEvent(e);
               }));
-            item.data("select2-data", data);
+            item.data("tagbar-data", data);
             item.insertBefore(this.searchContainer);
             this.values.push(data);
             this.triggerChange();
@@ -364,22 +364,19 @@
             this.search.width(width).show()
         },
         val: function () {
-            console.log(arguments);
             if (arguments.length === 0) return this.values || [];
             var self = this;
             //the actual data
             this.values = []
             //update the visuals
             this.clearSearch();
-            $(".select2-search-choice", this.container).remove();
+            $(".tagbar-search-choice", this.container).remove();
             $(arguments[0]).each(function () {
-                console.log(this);
                 self.addSelectedChoice(this);
             });
         }
     };}
-    $.fn.select2 = function () {
-        console.log('s', arguments);
+    $.fn.tagbar = function () {
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
             value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "data"];
@@ -407,7 +404,7 @@
         return (value === undefined) ? this : value;
     };
     // plugin defaults, accessible to users
-    $.fn.select2.defaults = {
+    $.fn.tagbar.defaults = {
         minimumInputLength: 0,
         maximumInputLength: 128,
         separator: ",",

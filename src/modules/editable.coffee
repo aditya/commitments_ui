@@ -2,7 +2,7 @@
 Inline edit capabilities are captured here. These depend on
 * FontAwesome
 * jQuery
-* Select2
+* widgets
 
 The idea is to create a set of data input components that are not FORM based
 in any way.
@@ -138,18 +138,19 @@ module = angular.module('editable', [])
                 icon = $('.editableTagsIcon', element)
                 input = $('.editableTagsDisplay', element)
                 icon.bind 'click', ->
-                    input.select2 'focusSearch'
-                input.select2
-                    tokenSeparators: [',', '\\s']
+                    input.tagbar 'focusSearch'
+                input.tagbar
+                    tagSeparators: [',', '\\s']
+                    tagNamespaceSeparators: ['/', ':']
                     query: (query) ->
                         query.callback
                             results: [query.term, 'sample']
                 #just propagate tag values back to the model
                 element.bind 'change', () ->
-                    ngModel.$setViewValue(input.select2('val'))
+                    ngModel.$setViewValue(input.tagbar('val'))
                 #rendering is really just setting the values
                 ngModel.$render = () ->
-                    input.select2 'val',  ngModel.$viewValue or []
+                    input.tagbar 'val',  ngModel.$viewValue or []
     ])
     .directive('editableCheck', [ ->
         restrict: 'A'
