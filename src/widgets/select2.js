@@ -6,7 +6,7 @@
     }
 
     var KEY, AbstractSelect2, MultiSelect2, nextUid, sizer,
-        lastMousePosition, $document;
+        lastMousePosition;
 
     KEY = {
         TAB: 9,
@@ -56,10 +56,6 @@
         }
     };
 
-    $document = $(document);
-
-    nextUid=(function() { var counter=1; return function() { return counter++; }; }());
-
     function indexOf(value, array) {
         var i = 0, l = array.length;
         for (; i < l; i = i + 1) {
@@ -81,21 +77,6 @@
         if (b.constructor === String) return b === a+'';
         return false;
     }
-
-    /**
-     * Splits the string into an array of values, trimming each value. An empty array is returned for nulls or empty
-     * strings
-     * @param string
-     * @param separator
-     */
-    function splitVal(string, separator) {
-        var val, i, l;
-        if (string === null || string.length < 1) return [];
-        val = string.split(separator);
-        for (i = 0, l = val.length; i < l; i = i + 1) val[i] = $.trim(val[i]);
-        return val;
-    }
-
     /**
      * A simple implementation of a thunk
      * @param formula function used to lazily initialize the thunk
@@ -165,19 +146,6 @@
     function evaluate(val) {
         return $.isFunction(val) ? val() : val;
     }
-
-    function countResults(results) {
-        var count = 0;
-        $.each(results, function(i, item) {
-            if (item.children) {
-                count += countResults(item.children);
-            } else {
-                count++;
-            }
-        });
-        return count;
-    }
-
     /**
      * Creates a new class
      *
@@ -205,7 +173,6 @@
 
         // abstract
         init: function (opts) {
-            var results, search, resultsSelector = ".select2-results", mask;
             // prepare options
             this.opts = opts = this.prepareOpts(opts);
             this.id=opts.id;
@@ -216,9 +183,6 @@
             }
             this.enabled=true;
             this.container = this.createContainer();
-            this.containerId="s2id_"+(opts.element.attr("id") || "autogen"+nextUid());
-            this.containerSelector="#"+this.containerId.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
-            this.container.attr("id", this.containerId);
             // cache the body so future lookups are cheap
             this.body = thunk(function() { return opts.element.closest("body"); });
             this.elementTabIndex = this.opts.element.attr("tabIndex");
@@ -229,14 +193,12 @@
                 .bind("focus.select2", function() { $(this).select2("focus"); })
                 .attr("tabIndex", "-1")
                 .before(this.container);
-            this.container.data("select2", this);
             this.dropdown = this.container.find(".select2-drop");
             this.dropdown.addClass(evaluate(opts.dropdownCssClass));
-            this.dropdown.data("select2", this);
-            this.results = results = this.container.find(resultsSelector);
-            this.search = search = this.container.find(".select2-input");
+            this.search = this.container.find(".select2-input");
+            this.search.popover({content: "<ul class='select2-results'></ul>", html: true, placement: "bottom"});
             //forward the tab index, this makes it a lot friendlier for full on
-            search.attr("tabIndex", this.elementTabIndex);
+            this.search.attr("tabIndex", this.elementTabIndex);
             this.resultsPage = 0;
             this.context = null;
             this.initContainer();
@@ -263,22 +225,20 @@
                     .show();
             }
         },
-        populateResults: function(container, results, query) {
+        populateResults: function(results, query) {
+            var addTo = $(".select2-results", this.container);
+            addTo.children().remove();
             for (var i = 0; i < results.length; i = i + 1) {
                 var result=results[i];
                 var node=$("<li></li>");
                 node.addClass("select2-result");
                 if (result.disabled) { node.addClass("select2-disabled"); }
-                node.addClass(self.opts.formatResultCssClass(result));
                 var label=$(document.createElement("div"));
                 label.addClass("select2-result-label");
-                var formatted=opts.formatResult(result, label, query, self.opts.escapeMarkup);
-                if (formatted!==undefined) {
-                    label.html(formatted);
-                }
+                label.html(result);
                 node.append(label);
                 node.data("select2-data", result);
-                container.append(node);
+                addTo.append(node);
             }
         },
         prepareOpts: function (opts) {
@@ -317,187 +277,26 @@
         opened: function () {
             return this.container.hasClass("select2-dropdown-open");
         },
-        positionDropdown: function() {
-            var offset = this.container.offset(),
-                height = this.container.outerHeight(false),
-                width = this.container.outerWidth(false),
-                dropHeight = this.dropdown.outerHeight(false),
-	            viewPortRight = $(window).scrollLeft() + $(window).width(),
-                viewportBottom = $(window).scrollTop() + $(window).height(),
-                dropTop = offset.top + height,
-                dropLeft = offset.left,
-                enoughRoomBelow = dropTop + dropHeight <= viewportBottom,
-                enoughRoomAbove = (offset.top - dropHeight) >= this.body().scrollTop(),
-	            dropWidth = this.dropdown.outerWidth(false),
-	            enoughRoomOnRight = dropLeft + dropWidth <= viewPortRight,
-                aboveNow = this.dropdown.hasClass("select2-drop-above"),
-                bodyOffset,
-                above,
-                css;
-
-            // fix positioning when body has an offset and is not position: static
-
-            if (this.body().css('position') !== 'static') {
-                bodyOffset = this.body().offset();
-                dropTop -= bodyOffset.top;
-                dropLeft -= bodyOffset.left;
-            }
-
-            // always prefer the current above/below alignment, unless there is not enough room
-
-            if (aboveNow) {
-                above = true;
-                if (!enoughRoomAbove && enoughRoomBelow) above = false;
-            } else {
-                above = false;
-                if (!enoughRoomBelow && enoughRoomAbove) above = true;
-            }
-
-            if (!enoughRoomOnRight) {
-               dropLeft = offset.left + width - dropWidth;
-            }
-
-            if (above) {
-                dropTop = offset.top - dropHeight;
-                this.container.addClass("select2-drop-above");
-                this.dropdown.addClass("select2-drop-above");
-            }
-            else {
-                this.container.removeClass("select2-drop-above");
-                this.dropdown.removeClass("select2-drop-above");
-            }
-
-            css = $.extend({
-                top: dropTop,
-                left: dropLeft,
-                width: width
-            }, evaluate(this.opts.dropdownCss));
-
-            this.dropdown.css(css);
-        },
-
-        // abstract
         shouldOpen: function() {
             if (this.opened()) return false;
             if (this.search.text().length == 0) return false;
-
-            event = $.Event("opening");
-            this.opts.element.trigger(event);
-            return !event.isDefaultPrevented();
-        },
-
-        // abstract
-        clearDropdownAlignmentPreference: function() {
-            // clear the classes used to figure out the preference of where the dropdown should be opened
-            this.container.removeClass("select2-drop-above");
-            this.dropdown.removeClass("select2-drop-above");
+            return true;
         },
         open: function () {
             if (!this.shouldOpen()) return false;
-            window.setTimeout(this.bind(this.opening), 1);
-            return true;
-        },
-        opening: function() {
-            var cid = this.containerId,
-                scroll = "scroll." + cid,
-                resize = "resize."+cid,
-                orient = "orientationchange."+cid,
-                mask;
-            this.clearDropdownAlignmentPreference();
-            this.container.addClass("select2-dropdown-open").addClass("select2-container-active");
-            if(this.dropdown[0] !== this.body().children().last()[0]) {
-                this.dropdown.detach().appendTo(this.body());
-            }
-            // create the dropdown mask if doesnt already exist
-            mask = $("#select2-drop-mask");
-            if (mask.length == 0) {
-                mask = $(document.createElement("div"));
-                mask.attr("id","select2-drop-mask").attr("class","select2-drop-mask");
-                mask.hide();
-                mask.appendTo(this.body());
-                mask.bind("mousedown touchstart", function (e) {
-                    var dropdown = $("#select2-drop"), self;
-                    if (dropdown.length > 0) {
-                        self=dropdown.data("select2");
-                        if (self.opts.selectOnBlur) {
-                            self.selectHighlighted({noFocus: true});
-                        }
-                        self.close();
-                    }
-                });
-            }
-
-            // ensure the mask is always right before the dropdown
-            if (this.dropdown.prev()[0] !== mask[0]) {
-                this.dropdown.before(mask);
-            }
-
-            // move the global id to the correct dropdown
-            $("#select2-drop").removeAttr("id");
-            this.dropdown.attr("id", "select2-drop");
-
-            // show the elements
-            mask.css({
-                width: document.documentElement.scrollWidth,
-                height: document.documentElement.scrollHeight});
-            mask.show();
-            this.dropdown.show();
-            this.positionDropdown();
-
-            this.dropdown.addClass("select2-drop-active");
-            this.ensureHighlightVisible();
-
-            // attach listeners to events that can change the position of the container and thus require
-            // the position of the dropdown to be updated as well so it does not come unglued from the container
-            var that = this;
-            this.container.parents().add(window).each(function () {
-                $(this).bind(resize+" "+scroll+" "+orient, function (e) {
-                    $("#select2-drop-mask").css({
-                        width:document.documentElement.scrollWidth,
-                        height:document.documentElement.scrollHeight});
-                    that.positionDropdown();
-                });
-            });
-
+            this.container.addClass("select2-dropdown-open");
+            this.search.popover('show');
             this.focusSearch();
             this.opts.element.trigger("open");
         },
-
-        // abstract
         close: function () {
             if (!this.opened()) return;
-
-            var cid = this.containerId,
-                scroll = "scroll." + cid,
-                resize = "resize."+cid,
-                orient = "orientationchange."+cid;
-
-            // unbind event listeners
-            this.container.parents().add(window).each(function () { $(this).unbind(scroll).unbind(resize).unbind(orient); });
-
-            this.clearDropdownAlignmentPreference();
-
-            $("#select2-drop-mask").hide();
-            this.dropdown.removeAttr("id"); // only the active dropdown has the select2-drop id
-            this.dropdown.hide();
             this.container.removeClass("select2-dropdown-open");
-            this.results.empty();
+            this.search.popover('hide');
+            this.populateResults([]);
             this.clearSearch();
-
             this.opts.element.trigger("close");
         },
-
-        // abstract
-        clearSearch: function () {
-
-        },
-
-        //abstract
-        getMaximumSelectionSize: function() {
-            return evaluate(this.opts.maximumSelectionSize);
-        },
-
-        // abstract
         ensureHighlightVisible: function () {
             var results = this.results, children, index, child, hb, rb, y, more;
 
@@ -508,7 +307,7 @@
             if (index == 0) {
                 // if the first element is highlighted scroll all the way to the top,
                 // into view
-                results.scrollTop(0);
+                $(".select2-results", this.container).scrollTop(0);
                 return;
             }
 
@@ -537,13 +336,9 @@
                 results.scrollTop(results.scrollTop() + y); // y is negative
             }
         },
-
-        // abstract
         findHighlightableChoices: function() {
-            return this.results.find(".select2-result");
+            return $(".select2-result", this.container);
         },
-
-        // abstract
         moveHighlight: function (delta) {
             var choices = this.findHighlightableChoices(),
                 index = this.highlight();
@@ -571,7 +366,7 @@
             if (index >= choices.length) index = choices.length - 1;
             if (index < 0) index = 0;
 
-            this.results.find(".select2-highlighted").removeClass("select2-highlighted");
+            $(".select2-highlighted", this.container).removeClass("select2-highlighted");
 
             choice = $(choices[index]);
             choice.addClass("select2-highlighted");
@@ -580,24 +375,7 @@
 
             data = choice.data("select2-data");
             if (data) {
-                this.opts.element.trigger({ type: "highlight", val: this.id(data), choice: data });
-            }
-        },
-
-        // abstract
-        countSelectableResults: function() {
-            return this.findHighlightableChoices().length;
-        },
-
-        // abstract
-        highlightUnderEvent: function (event) {
-            var el = $(event.target).closest(".select2-result-selectable");
-            if (el.length > 0 && !el.is(".select2-highlighted")) {
-        		var choices = this.findHighlightableChoices();
-                this.highlight(choices.index(el));
-            } else if (el.length == 0) {
-                // if we are over an unselectable item remove al highlights
-                this.results.find(".select2-highlighted").removeClass("select2-highlighted");
+                this.opts.element.trigger({ type: "highlight", val: data, choice: data });
             }
         },
         updateResults: function () {
@@ -620,10 +398,9 @@
                     callback: this.bind(function (data) {
                 // ignore a response if the select2 has been closed before it was received
                 if (!this.opened()) return;
-                this.populateResults(this, data, {term: text, page: this.resultsPage, context:null});
+                this.populateResults(data.results, {term: text, page: this.resultsPage, context:null});
                 this.ensureSomethingHighlighted();
                 this.search.removeClass("select2-active");
-                this.positionDropdown();
             })});
         },
         blur: function () {
@@ -656,22 +433,6 @@
                 this.onSelect(data, options);
             }
         },
-
-        // abstract
-        getPlaceholder: function () {
-            return this.opts.element.attr("placeholder") ||
-                this.opts.element.attr("data-placeholder") || // jquery 1.4 compat
-                this.opts.element.data("placeholder") ||
-                this.opts.placeholder;
-        },
-
-        /**
-         * Get the desired width for the container element.  This is
-         * derived first from option `width` passed to select2, then
-         * the inline 'style' on the original element, and finally
-         * falls back to the jQuery calculated element width.
-         */
-        // abstract
         initContainerWidth: function () {
             function resolveContainerWidth() {
                 var style, attrs, matches, i, l;
@@ -729,11 +490,7 @@
                 "  <li class='select2-search-field'>" ,
                 "    <div contentEditable autocomplete='off' class='select2-input'></div>" ,
                 "  </li>" ,
-                "</ul>" ,
-                "<div class='select2-drop select2-drop-multi' style='display:none;'>" ,
-                "   <ul class='select2-results'>" ,
-                "   </ul>" ,
-                "</div>"].join(""));
+                "</ul>"].join(""));
 			return container;
         },
         // multi
@@ -907,11 +664,6 @@
     };
     // plugin defaults, accessible to users
     $.fn.select2.defaults = {
-        formatResult: function(result, container, query, escapeMarkup) {
-            var markup=[];
-            markMatch(result.text, query.term, markup, escapeMarkup);
-            return markup.join("");
-        },
         formatSelection: function (data, container) {
             return data ? data.text : undefined;
         },
