@@ -140,7 +140,7 @@ module = angular.module('editable', [])
                 icon.bind 'click', ->
                     input.select2 'focusSearch'
                 input.select2
-                    tokenSeparators: [',', ' ']
+                    tokenSeparators: [',', '\\s']
                     query: (query) ->
                         query.callback
                             results: [query.term, 'sample']

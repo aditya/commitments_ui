@@ -178,32 +178,6 @@
         return count;
     }
 
-    function defaultTokenizer(input, widget) {
-        var opts = widget.opts;
-        var dupe = false,
-            token,
-            index,
-            i, l,
-            separator;
-        if (!opts.tokenSeparators || opts.tokenSeparators.length < 1) return undefined;
-        while (true) {
-            index = -1;
-            for (i = 0, l = opts.tokenSeparators.length; i < l; i++) {
-                separator = opts.tokenSeparators[i];
-                index = input.indexOf(separator);
-                if (index >= 0) break;
-            }
-            //no separators
-            if (index < 0) return null;
-            token = input.substring(0, index);
-            if (token.length > 0) {
-                return token;
-            } else {
-                return null;
-            }
-        }
-    }
-
     /**
      * Creates a new class
      *
@@ -263,7 +237,6 @@
             this.search = search = this.container.find(".select2-input");
             //forward the tab index, this makes it a lot friendlier for full on
             search.attr("tabIndex", this.elementTabIndex);
-            search.bind("keyup input paste", this.bind(this.updateResults));
             this.resultsPage = 0;
             this.context = null;
             this.initContainer();
@@ -507,16 +480,11 @@
                 resize = "resize."+cid,
                 orient = "orientationchange."+cid,
                 mask;
-
             this.clearDropdownAlignmentPreference();
             this.container.addClass("select2-dropdown-open").addClass("select2-container-active");
-
-
             if(this.dropdown[0] !== this.body().children().last()[0]) {
                 this.dropdown.detach().appendTo(this.body());
             }
-            this.updateResults(true);
-
             // create the dropdown mask if doesnt already exist
             mask = $("#select2-drop-mask");
             if (mask.length == 0) {
@@ -714,27 +682,26 @@
          */
         // abstract
         updateResults: function () {
-            var search = this.search;
-            this.search.addClass("select2-active");
-
-            // give the tokenizer a chance to pre-process the input as an actual
-            // selected value
-            var input = this.tokenize();
-            if (input != undefined && input != null) {
-                this.addSelectedChoice(input);
+            var text  = this.search.text();
+            //try to pull out a parseable tag
+            var pattern = new RegExp("[" + this.opts.tokenSeparators.join("") + "]+", "g");
+            console.log(text.split(pattern), pattern, text.match(pattern));
+            if (text.match(pattern)) {
+                this.addSelectedChoice(text.split(pattern)[0]);
                 this.clearSearch();
                 this.close();
                 return;
             }
 
+            this.search.addClass("select2-active");
             this.opts.query({
                     control: this,
-                    term: this.search.text(),
+                    term: text,
                     matcher: this.opts.matcher,
                     callback: this.bind(function (data) {
                 // ignore a response if the select2 has been closed before it was received
                 if (!this.opened()) return;
-                this.opts.populateResults(this, data, {term: this.search.text(), page: this.resultsPage, context:null});
+                this.opts.populateResults(this, data, {term: text, page: this.resultsPage, context:null});
                 this.ensureSomethingHighlighted();
                 this.search.removeClass("select2-active");
                 this.positionDropdown();
@@ -867,12 +834,10 @@
             var selector = ".select2-choices", selection;
             this.searchContainer = this.container.find(".select2-search-field");
             this.selection = selection = this.container.find(selector);
-            this.search.bind("input paste", this.bind(function() {
-                if (!this.enabled) return;
-                if (!this.opened()) {
-                    this.open();
-                }
-            }));
+            this.search.bind("input paste", this.bind(this.updateResults));
+            this.search.bind("input paste", this.bind(this.open));
+            //resize the search box all the time, this expands as we type
+            this.search.bind("input paste", this.bind(this.resizeSearch));
             this.search.bind("keyup", this.bind(function (e) {
                 if (!this.enabled) return;
                 //key sequences that close
@@ -910,8 +875,6 @@
                 //everything else opens
                 this.open();
             }));
-            //resize the search box all the time, this expands as we type
-            this.search.bind("keyup", this.bind(this.resizeSearch));
             this.container.delegate(selector, "focus", this.bind(function () {
                 if (!this.enabled) return;
                 this.container.addClass("select2-container-active");
@@ -939,10 +902,6 @@
             this.close();
             this.focusSearch()
             this.opts.element.triggerHandler("focus");
-        },
-        tokenize: function() {
-            var input = this.search.text();
-            return this.opts.tokenizer(input, this);
         },
         onSelect: function (data, options) {
             this.addSelectedChoice(data);
@@ -1054,7 +1013,6 @@
         },
         separator: ",",
         tokenSeparators: [],
-        tokenizer: defaultTokenizer,
         escapeMarkup: function (markup) {
             var replace_map = {
                 '\\': '&#92;',
