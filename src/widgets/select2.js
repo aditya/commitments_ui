@@ -275,7 +275,7 @@
             this.opts.element.attr("disabled", "disabled");
         },
         opened: function () {
-            return this.container.hasClass("select2-dropdown-open");
+            return $(".select2-results", this.container).length;
         },
         shouldOpen: function() {
             if (this.opened()) return false;
@@ -284,53 +284,37 @@
         },
         open: function () {
             if (!this.shouldOpen()) return false;
-            this.container.addClass("select2-dropdown-open");
             this.search.popover('show');
             this.focusSearch();
-            this.opts.element.trigger("open");
         },
         close: function () {
             if (!this.opened()) return;
-            this.container.removeClass("select2-dropdown-open");
             this.search.popover('hide');
+        },
+        clear: function () {
+            this.close();
             this.populateResults([]);
             this.clearSearch();
-            this.opts.element.trigger("close");
         },
         ensureHighlightVisible: function () {
-            var results = this.results, children, index, child, hb, rb, y, more;
-
+            var results = $(".select2-results", this.container),
+                children, index, child, hb, rb, y, more;
             index = this.highlight();
-
             if (index < 0) return;
-
             if (index == 0) {
                 // if the first element is highlighted scroll all the way to the top,
                 // into view
                 $(".select2-results", this.container).scrollTop(0);
                 return;
             }
-
             children = this.findHighlightableChoices();
-
             child = $(children[index]);
-
             hb = child.offset().top + child.outerHeight(true);
-
-            // if this is the last child lets also make sure select2-more-results is visible
-            if (index === children.length - 1) {
-                more = results.find("li.select2-more-results");
-                if (more.length > 0) {
-                    hb = more.offset().top + more.outerHeight(true);
-                }
-            }
-
             rb = results.offset().top + results.outerHeight(true);
             if (hb > rb) {
                 results.scrollTop(results.scrollTop() + (hb - rb));
             }
             y = child.offset().top - results.offset().top;
-
             // make sure the top of the element is visible
             if (y < 0 && child.css('display') != 'none' ) {
                 results.scrollTop(results.scrollTop() + y); // y is negative
@@ -340,39 +324,21 @@
             return $(".select2-result", this.container);
         },
         moveHighlight: function (delta) {
-            var choices = this.findHighlightableChoices(),
-                index = this.highlight();
-            while (index > -1 && index < choices.length) {
-                index += delta;
-                var choice = $(choices[index]);
-                result = choice
-                if (choice.hasClass("select2-result-selectable") && !choice.hasClass("select2-disabled") && !choice.hasClass("select2-selected")) {
-                    this.highlight(index);
-                    break;
-                }
-            }
+            this.highlight(this.highlight() + delta);
         },
-
-        // abstract
         highlight: function (index) {
             var choices = this.findHighlightableChoices(),
                 choice,
                 data;
-
             if (arguments.length === 0) {
                 return indexOf(choices.filter(".select2-highlighted")[0], choices.get());
             }
-
             if (index >= choices.length) index = choices.length - 1;
             if (index < 0) index = 0;
-
             $(".select2-highlighted", this.container).removeClass("select2-highlighted");
-
             choice = $(choices[index]);
             choice.addClass("select2-highlighted");
-
             this.ensureHighlightVisible();
-
             data = choice.data("select2-data");
             if (data) {
                 this.opts.element.trigger({ type: "highlight", val: data, choice: data });
@@ -382,7 +348,6 @@
             var text  = this.search.text();
             //try to pull out a parseable tag
             var pattern = new RegExp("[" + this.opts.tokenSeparators.join("") + "]+", "g");
-            console.log(text.split(pattern), pattern, text.match(pattern));
             if (text.match(pattern)) {
                 this.addSelectedChoice(text.split(pattern)[0]);
                 this.clearSearch();
@@ -397,37 +362,23 @@
                     matcher: this.opts.matcher,
                     callback: this.bind(function (data) {
                 // ignore a response if the select2 has been closed before it was received
-                if (!this.opened()) return;
+                this.open();
                 this.populateResults(data.results, {term: text, page: this.resultsPage, context:null});
                 this.ensureSomethingHighlighted();
                 this.search.removeClass("select2-active");
             })});
         },
         blur: function () {
-            // if selectOnBlur == true, select the currently highlighted option
-            if (this.opts.selectOnBlur)
-                this.selectHighlighted({noFocus: true});
-
-            this.close();
+            this.clear();
             this.container.removeClass("select2-container-active");
-            // synonymous to .is(':focus'), which is available in jquery >= 1.6
-            if (this.search[0] === document.activeElement) { this.search.blur(); }
-            this.clearSearch();
-            this.selection.find(".select2-search-choice-focus").removeClass("select2-search-choice-focus");
         },
-
-        // abstract
         focusSearch: function () {
             this.search.focus()
             this.resizeSearch(true);
         },
-
-        // abstract
         selectHighlighted: function (options) {
-            var index=this.highlight(),
-                highlighted=this.results.find(".select2-highlighted"),
+            var highlighted = $(".select2-highlighted", this.container),
                 data = highlighted.closest('.select2-result').data("select2-data");
-
             if (data) {
                 this.highlight(index);
                 this.onSelect(data, options);
@@ -436,7 +387,6 @@
         initContainerWidth: function () {
             function resolveContainerWidth() {
                 var style, attrs, matches, i, l;
-
                 if (this.opts.width === "off") {
                     return null;
                 } else if (this.opts.width === "element"){
@@ -453,17 +403,14 @@
                                 return matches[1];
                         }
                     }
-
                     if (this.opts.width === "resolve") {
                         // next check if css('width') can resolve a width that is percent based, this is sometimes possible
                         // when attached to input type=hidden or elements hidden via css
                         style = this.opts.element.css('width');
                         if (style.indexOf("%") > 0) return style;
-
                         // finally, fallback on the calculated width of the element
                         return (this.opts.element.outerWidth(false) === 0 ? 'auto' : this.opts.element.outerWidth(false) + 'px');
                     }
-
                     return null;
                 } else if ($.isFunction(this.opts.width)) {
                     return this.opts.width();
@@ -471,7 +418,6 @@
                     return this.opts.width;
                }
             };
-
             var width = resolveContainerWidth.call(this);
             if (width !== null) {
                 this.container.css("width", width);
@@ -503,12 +449,13 @@
             var selector = ".select2-choices", selection;
             this.searchContainer = this.container.find(".select2-search-field");
             this.selection = selection = this.container.find(selector);
-            this.search.bind("input paste", this.bind(this.updateResults));
-            this.search.bind("input paste", this.bind(this.open));
+            //this.search.bind("input paste focus", this.bind(this.updateResults));
+            //this.search.bind("input paste focus", this.bind(this.open));
+            //this.search.bind("blur", this.bind(this.blur));
             //resize the search box all the time, this expands as we type
-            this.search.bind("input paste", this.bind(this.resizeSearch));
-            this.search.bind("keyup", this.bind(function (e) {
-                if (!this.enabled) return;
+            //this.search.bind("input paste focus", this.bind(this.resizeSearch));
+            this.search.bind("keydown", this.bind(function (e) {
+                console.log(e.which);
                 //key sequences that close
                 if (e.which === KEY.BACKSPACE && this.search.text() === "") {
                     this.close();
@@ -541,8 +488,6 @@
                         return;
                     }
                 }
-                //everything else opens
-                this.open();
             }));
             this.container.delegate(selector, "focus", this.bind(function () {
                 if (!this.enabled) return;
@@ -568,15 +513,12 @@
             this.resizeSearch();
         },
         focus: function () {
-            this.close();
             this.focusSearch()
             this.opts.element.triggerHandler("focus");
         },
         onSelect: function (data, options) {
             this.addSelectedChoice(data);
-            this.clearSearch();
-            this.close();
-            this.resizeSearch();
+            this.clear();
             this.focusSearch();
             this.triggerChange({ added: data });
         },
