@@ -271,7 +271,6 @@
             this.opts.query({
                     control: this,
                     term: text,
-                    matcher: this.opts.matcher,
                     callback: this.bind(function (data) {
                 // ignore a response if the select2 has been closed before it was received
                 this.open();
@@ -292,45 +291,6 @@
                 data = highlighted.closest('.select2-result').data("select2-data");
             if (data) {
                 this.onSelect(data)
-            }
-        },
-        initContainerWidth: function () {
-            function resolveContainerWidth() {
-                var style, attrs, matches, i, l;
-                if (this.opts.width === "off") {
-                    return null;
-                } else if (this.opts.width === "element"){
-                    return this.opts.element.outerWidth(false) === 0 ? 'auto' : this.opts.element.outerWidth(false) + 'px';
-                } else if (this.opts.width === "copy" || this.opts.width === "resolve") {
-                    // check if there is inline style on the element that contains width
-                    style = this.opts.element.attr('style');
-                    if (style !== undefined) {
-                        attrs = style.split(';');
-                        for (i = 0, l = attrs.length; i < l; i = i + 1) {
-                            matches = attrs[i].replace(/\s/g, '')
-                                .match(/width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/);
-                            if (matches !== null && matches.length >= 1)
-                                return matches[1];
-                        }
-                    }
-                    if (this.opts.width === "resolve") {
-                        // next check if css('width') can resolve a width that is percent based, this is sometimes possible
-                        // when attached to input type=hidden or elements hidden via css
-                        style = this.opts.element.css('width');
-                        if (style.indexOf("%") > 0) return style;
-                        // finally, fallback on the calculated width of the element
-                        return (this.opts.element.outerWidth(false) === 0 ? 'auto' : this.opts.element.outerWidth(false) + 'px');
-                    }
-                    return null;
-                } else if ($.isFunction(this.opts.width)) {
-                    return this.opts.width();
-                } else {
-                    return this.opts.width;
-               }
-            };
-            var width = resolveContainerWidth.call(this);
-            if (width !== null) {
-                this.container.css("width", width);
             }
         },
         createContainer: function () {
@@ -383,7 +343,6 @@
             this.search.bind("blur", this.bind(this.blur));
             this.search.bind("input paste focus", this.bind(this.resizeSearch));
             this.container.bind("click", this.bind(this.focusSearch));
-            this.initContainerWidth();
             // set the placeholder if necessary
             this.clearSearch();
         },
@@ -481,17 +440,8 @@
     };
     // plugin defaults, accessible to users
     $.fn.select2.defaults = {
-        formatSelection: function (data, container) {
-            return data ? data.text : undefined;
-        },
-        sortResults: function (results, container, query) {
-            return results;
-        },
         minimumInputLength: 0,
         maximumInputLength: 128,
-        matcher: function(term, text) {
-            return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-        },
         separator: ",",
         tokenSeparators: [],
         escapeMarkup: function (markup) {
