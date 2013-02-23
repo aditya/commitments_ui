@@ -24,6 +24,21 @@
         DELETE: 46
     };
 
+    function escapeMarkup(markup) {
+        var replace_map = {
+            '\\': '&#92;',
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&apos;',
+            "/": '&#47;'
+        };
+        return String(markup).replace(/[&<>"'/\\]/g, function (match) {
+                return replace_map[match[0]];
+        });
+    }
+
     function indexOf(value, array) {
         var i = 0, l = array.length;
         for (; i < l; i = i + 1) {
@@ -229,7 +244,7 @@
             var text  = this.search.text();
             if (text.length == 0) return;
             //try to pull out a parseable tag
-            var pattern = new RegExp("[" + this.opts.tokenSeparators.join("") + "]+", "g");
+            var pattern = new RegExp("[" + this.opts.tagSeparators.join("") + "]+", "g");
             if (text.match(pattern)) {
                 this.addSelectedChoice(text.split(pattern)[0]);
                 this.clearSearch();
@@ -336,10 +351,17 @@
             var item = $(
                 "<li class='tagbar-search-choice'>" +
                 "    <span class='icon-remove tagbar-search-choice-close'></span>" +
-                "    <span>" +
-                this.opts.escapeMarkup(data) +
-                "    </span>" +
+                "    <span class='tagbar-search-choice-content-container'></span>" +
                 "</li>");
+            var content = item.find(".tagbar-search-choice-content-container");
+            console.log(content);
+            var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
+            $.each(data.split(pattern), function(i) {
+                if (i) {
+                    content.append("<span class='tagbar-search-choice-content-separator'></span>");
+                }
+                content.append("<span class='tagbar-search-choice-content'>" + escapeMarkup(this) + "</span>");
+            });
             item.find(".tagbar-search-choice-close")
                 .bind("mousedown", killEvent)
                 .bind("click dblclick", this.bind(function (e) {
@@ -407,21 +429,7 @@
     $.fn.tagbar.defaults = {
         minimumInputLength: 0,
         maximumInputLength: 128,
-        separator: ",",
-        tokenSeparators: [],
-        escapeMarkup: function (markup) {
-            var replace_map = {
-                '\\': '&#92;',
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&apos;',
-                "/": '&#47;'
-            };
-            return String(markup).replace(/[&<>"'/\\]/g, function (match) {
-                    return replace_map[match[0]];
-            });
-        }
+        tagSeparators: ['\s'],
+        tagNamespaceSeparators: ['/']
     };
 }(jQuery));

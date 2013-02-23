@@ -1,3 +1,8 @@
+
+@tagColor: @linkColor;
+@tagColorHighlight: darken(@linkColor, 5%);
+@tagTextColor: lighten(@textColor, 0%);
+
 .tagbar-container {
     display: inline-block;
     vertical-align: top;
@@ -6,20 +11,38 @@
 .tagbar-search-choice {
     .label;
     .pop-text;
-    margin: 2px 0 0 3px;
-    color: @textColor;
-    background-color: @linkColor;
+    margin-left: @defaultMargin;
+    margin-top: @defaultMargin/2;
+    padding: 0px;
+    .buttonBackground(@tagColor, @tagColorHighlight);
     .box-shadow(0 1px 2px rgba(0,0,0,.5));
     .border-radius(@baseBorderRadius);
     &:hover{
         .box-shadow(0 2px 5px rgba(0,0,0,.5));
-        background-color: lighten(@linkColor, 5%);
+        background-color: lighten(@tagColor, 5%);
     }
 }
 
 .tagbar-search-choice-close {
     color: @textColor;
     cursor: pointer;
+    padding: @defaultPad / 2;
+}
+
+.tagbar-search-choice-content-container {
+    margin-right: @defaultMargin / 2;
+}
+
+.tagbar-search-choice-content {
+    color: @tagTextColor;
+    padding: @defaultPad / 2;
+    margin-left: @defaultMargin / 2;
+}
+
+.tagbar-search-choice-content-separator {
+    .box-shadow(@defaultMargin/2 0px 2px rgba(0,0,0,.5));
+    .border-radius(@baseBorderRadius);
+    padding-left: @defaultPad;
 }
 
 .tagbar-search-field {
@@ -40,23 +63,13 @@
     margin-left: @defaultMargin;
 }
 
-.tagbar-drop {
-    .border-radius(@baseBorderRadius) !important;
-    .popover;
-}
-
 .tagbar-highlighted {
-    .border-radius(@baseBorderRadius) !important;
-    background-color: @linkColor !important;
+    .border-radius(@baseBorderRadius);
+    background-color: @tagColor;
 }
 
 //when a query is active
 .tagbar-active {
-}
-
-.tagbar-offscreen {
-    position: absolute;
-    left: -10000px;
 }
 
 .tagbar-choices {
@@ -85,3 +98,4 @@
         display: list-item;
     }
 }
+
