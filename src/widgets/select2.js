@@ -246,8 +246,6 @@
             this.dropdown.bind("click mouseup mousedown", function (e) { e.stopPropagation(); });
             if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']")) this.disable();
         },
-
-        // abstract
         destroy: function () {
             var select2 = this.opts.element.data("select2");
 
@@ -265,104 +263,29 @@
                     .show();
             }
         },
-
-        // abstract
+        populateResults: function(container, results, query) {
+            for (var i = 0; i < results.length; i = i + 1) {
+                var result=results[i];
+                var node=$("<li></li>");
+                node.addClass("select2-result");
+                if (result.disabled) { node.addClass("select2-disabled"); }
+                node.addClass(self.opts.formatResultCssClass(result));
+                var label=$(document.createElement("div"));
+                label.addClass("select2-result-label");
+                var formatted=opts.formatResult(result, label, query, self.opts.escapeMarkup);
+                if (formatted!==undefined) {
+                    label.html(formatted);
+                }
+                node.append(label);
+                node.data("select2-data", result);
+                container.append(node);
+            }
+        },
         prepareOpts: function (opts) {
             var element, select, idKey;
-
             element = opts.element;
-
-            if (element.get(0).tagName.toLowerCase() === "select") {
-                this.select = select = opts.element;
-            }
-
-            if (select) {
-                // these options are not allowed when attached to a select because they are picked up off the element itself
-                $.each(["id", "query", "createSearchChoice", "data", "tags"], function () {
-                    if (this in opts) {
-                        throw new Error("Option '" + this + "' is not allowed for Select2 when attached to a <select> element.");
-                    }
-                });
-            }
-
             opts = $.extend({}, {
-                populateResults: function(container, results, query) {
-                    var populate,  data, result, children, self=this;
-                    populate=function(results, container, depth) {
-                        var i, l, result, disabled, node, label, innerContainer, formatted;
-                        results = opts.sortResults(results, container, query);
-                        for (i = 0, l = results.length; i < l; i = i + 1) {
-                            result=results[i];
-                            node=$("<li></li>");
-                            node.addClass("select2-result");
-                            if (result.disabled) { node.addClass("select2-disabled"); }
-                            node.addClass(self.opts.formatResultCssClass(result));
-                            label=$(document.createElement("div"));
-                            label.addClass("select2-result-label");
-                            formatted=opts.formatResult(result, label, query, self.opts.escapeMarkup);
-                            if (formatted!==undefined) {
-                                label.html(formatted);
-                            }
-                            node.append(label);
-                            node.data("select2-data", result);
-                            container.append(node);
-                        }
-                    };
-                    populate(results, container, 0);
-                }
             }, $.fn.select2.defaults, opts);
-
-            if (typeof(opts.id) !== "function") {
-                idKey = opts.id;
-                opts.id = function (e) { return e[idKey]; };
-            }
-
-            if ($.isArray(opts.element.data("select2Tags"))) {
-                if ("tags" in opts) {
-                    throw "tags specified as both an attribute 'data-select2-tags' and in options of Select2 " + opts.element.attr("id");
-                }
-                opts.tags=opts.element.attr("data-select2-tags");
-            }
-
-            if (select) {
-                opts.query = this.bind(function (query) {
-                    var data = { results: [], more: false },
-                        term = query.term,
-                        children, firstChild, process;
-
-                    process=function(element, collection) {
-                        var group;
-                        if (element.is("option")) {
-                            if (query.matcher(term, element.text(), element)) {
-                                collection.push({id:element.attr("value"), text:element.text(), element: element.get(), css: element.attr("class"), disabled: equal(element.attr("disabled"), "disabled") });
-                            }
-                        } else if (element.is("optgroup")) {
-                            group={text:element.attr("label"), children:[], element: element.get(), css: element.attr("class")};
-                            element.children().each(function(i, elm) { process(elm, group.children); });
-                            if (group.children.length>0) {
-                                collection.push(group);
-                            }
-                        }
-                    };
-
-                    children=element.children();
-
-                    // ignore the placeholder option if there is one
-                    if (this.getPlaceholder() !== undefined && children.length > 0) {
-                        firstChild = children[0];
-                        if ($(firstChild).text() === "") {
-                            children=children.not(firstChild);
-                        }
-                    }
-
-                    children.each(function(i, elm) { process(elm, data.results); });
-
-                    query.callback(data);
-                });
-                // this is needed because inside val() we construct choices from options and there id is hardcoded
-                opts.id=function(e) { return e.id; };
-                opts.formatResultCssClass = function(data) { return data.css; };
-            }
             if (typeof(opts.query) !== "function") {
                 throw "query function not defined" + opts.element.attr("id");
             }
@@ -677,10 +600,6 @@
                 this.results.find(".select2-highlighted").removeClass("select2-highlighted");
             }
         },
-        /**
-         * @param initial whether or not this is the call to this method right after the dropdown has been opened
-         */
-        // abstract
         updateResults: function () {
             var text  = this.search.text();
             //try to pull out a parseable tag
@@ -692,7 +611,7 @@
                 this.close();
                 return;
             }
-
+            //now in a query
             this.search.addClass("select2-active");
             this.opts.query({
                     control: this,
@@ -701,19 +620,12 @@
                     callback: this.bind(function (data) {
                 // ignore a response if the select2 has been closed before it was received
                 if (!this.opened()) return;
-                this.opts.populateResults(this, data, {term: text, page: this.resultsPage, context:null});
+                this.populateResults(this, data, {term: text, page: this.resultsPage, context:null});
                 this.ensureSomethingHighlighted();
                 this.search.removeClass("select2-active");
                 this.positionDropdown();
             })});
         },
-
-        // abstract
-        cancel: function () {
-            this.close();
-        },
-
-        // abstract
         blur: function () {
             // if selectOnBlur == true, select the currently highlighted option
             if (this.opts.selectOnBlur)
