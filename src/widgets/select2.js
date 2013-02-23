@@ -370,18 +370,16 @@
         },
         blur: function () {
             this.clear();
-            this.container.removeClass("select2-container-active");
         },
         focusSearch: function () {
             this.search.focus()
             this.resizeSearch(true);
         },
-        selectHighlighted: function (options) {
+        selectHighlighted: function () {
             var highlighted = $(".select2-highlighted", this.container),
                 data = highlighted.closest('.select2-result').data("select2-data");
             if (data) {
-                this.highlight(index);
-                this.onSelect(data, options);
+                this.onSelect(data)
             }
         },
         initContainerWidth: function () {
@@ -449,13 +447,7 @@
             var selector = ".select2-choices", selection;
             this.searchContainer = this.container.find(".select2-search-field");
             this.selection = selection = this.container.find(selector);
-            //this.search.bind("input paste focus", this.bind(this.updateResults));
-            //this.search.bind("input paste focus", this.bind(this.open));
-            //this.search.bind("blur", this.bind(this.blur));
-            //resize the search box all the time, this expands as we type
-            //this.search.bind("input paste focus", this.bind(this.resizeSearch));
             this.search.bind("keydown", this.bind(function (e) {
-                console.log(e.which);
                 //key sequences that close
                 if (e.which === KEY.BACKSPACE && this.search.text() === "") {
                     this.close();
@@ -463,10 +455,6 @@
                 }
                 if (e.which == KEY.ESC) {
                     this.close();
-                    return;
-                }
-                if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e)
-                 || e.which === KEY.BACKSPACE || e.which === KEY.ESC || e.which == KEY.ENTER) {
                     return;
                 }
                 //if we are opened, key sequences that navigate selected items
@@ -489,11 +477,10 @@
                     }
                 }
             }));
-            this.container.delegate(selector, "focus", this.bind(function () {
-                if (!this.enabled) return;
-                this.container.addClass("select2-container-active");
-                this.dropdown.addClass("select2-drop-active");
-            }));
+            this.search.bind("input paste focus", this.bind(this.updateResults));
+            this.search.bind("input paste focus", this.bind(this.open));
+            this.search.bind("blur", this.bind(this.blur));
+            this.search.bind("input paste focus", this.bind(this.resizeSearch));
             this.initContainerWidth();
             // set the placeholder if necessary
             this.clearSearch();
@@ -516,7 +503,7 @@
             this.focusSearch()
             this.opts.element.triggerHandler("focus");
         },
-        onSelect: function (data, options) {
+        onSelect: function (data) {
             this.addSelectedChoice(data);
             this.clear();
             this.focusSearch();
@@ -542,10 +529,6 @@
                       this.cancel();
                   })).dequeue();
                   killEvent(e);
-              })).bind("focus", this.bind(function () {
-                  if (!this.enabled) return;
-                  this.container.addClass("select2-container-active");
-                  this.dropdown.addClass("select2-drop-active");
               }));
             item.data("select2-data", data);
             item.insertBefore(this.searchContainer);
