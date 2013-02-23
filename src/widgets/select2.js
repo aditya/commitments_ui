@@ -24,35 +24,7 @@
         HOME: 36,
         END: 35,
         BACKSPACE: 8,
-        DELETE: 46,
-        isArrow: function (k) {
-            k = k.which ? k.which : k;
-            switch (k) {
-            case KEY.LEFT:
-            case KEY.RIGHT:
-            case KEY.UP:
-            case KEY.DOWN:
-                return true;
-            }
-            return false;
-        },
-        isControl: function (e) {
-            var k = e.which;
-            switch (k) {
-            case KEY.SHIFT:
-            case KEY.CTRL:
-            case KEY.ALT:
-                return true;
-            }
-
-            if (e.metaKey) return true;
-
-            return false;
-        },
-        isFunctionKey: function (k) {
-            k = k.which ? k.which : k;
-            return k >= 112 && k <= 123;
-        }
+        DELETE: 46
     };
 
     function indexOf(value, array) {
@@ -63,11 +35,6 @@
         return -1;
     }
 
-    /**
-     * Compares equality of a and b
-     * @param a
-     * @param b
-     */
     function equal(a, b) {
         if (a === b) return true;
         if (a === undefined || b === undefined) return false;
@@ -76,19 +43,6 @@
         if (b.constructor === String) return b === a+'';
         return false;
     }
-    /**
-     * A simple implementation of a thunk
-     * @param formula function used to lazily initialize the thunk
-     * @return {Function}
-     */
-    function thunk(formula) {
-        var evaluated = false,
-            value;
-        return function() {
-            if (evaluated === false) { value = formula(); evaluated = true; }
-            return value;
-        };
-    };
 
     function killEvent(event) {
         event.preventDefault();
@@ -100,31 +54,6 @@
         event.stopImmediatePropagation();
     }
 
-    function measureTextWidth(e, force) {
-        if (e.text().length == 0 && !force)  return 0;
-        if (!sizer){
-        	sizer = $(document.createElement("div"));
-        	$("body").append(sizer);
-        }
-      	var style = e[0].currentStyle || window.getComputedStyle(e[0], null);
-        sizer.css({
-            position: "absolute",
-            left: "-10000px",
-            top: "-10000px",
-            display: "none",
-            margin: style.margin,
-            padding: style.padding,
-            fontSize: style.fontSize,
-            fontFamily: style.fontFamily,
-            fontStyle: style.fontStyle,
-            fontWeight: style.fontWeight,
-            letterSpacing: style.letterSpacing,
-            textTransform: style.textTransform,
-            whiteSpace: "nowrap"
-        });
-        sizer.text(e.text() + '__');
-        return sizer.width();
-    }
 
     function markMatch(text, term, markup, escapeMarkup) {
         var match=text.toUpperCase().indexOf(term.toUpperCase()),
@@ -162,6 +91,27 @@
 
     AbstractSelect2 = clazz(Object, {
 
+        measureTextWidth: function(e, force) {
+            if (e.text().length == 0 && !force)  return 0;
+            var style = e[0].currentStyle || window.getComputedStyle(e[0], null);
+            this.sizer.css({
+                position: "absolute",
+                left: "-10000px",
+                top: "-10000px",
+                display: "none",
+                margin: style.margin,
+                padding: style.padding,
+                fontSize: style.fontSize,
+                fontFamily: style.fontFamily,
+                fontStyle: style.fontStyle,
+                fontWeight: style.fontWeight,
+                letterSpacing: style.letterSpacing,
+                textTransform: style.textTransform,
+                whiteSpace: "nowrap"
+            });
+            this.sizer.text(e.text() + '__');
+            return this.sizer.width();
+        },
         // abstract
         bind: function (func) {
             var self = this;
@@ -182,8 +132,7 @@
             }
             this.enabled=true;
             this.container = this.createContainer();
-            // cache the body so future lookups are cheap
-            this.body = thunk(function() { return opts.element.closest("body"); });
+            this.sizer = this.container.append($("<div class='sizer'/>")).find(".sizer");
             this.elementTabIndex = this.opts.element.attr("tabIndex");
             // swap container for the element
             this.opts.element
@@ -542,7 +491,7 @@
             }
         },
         resizeSearch: function (force) {
-            var width = measureTextWidth(this.search, force);
+            var width = this.measureTextWidth(this.search, force);
             this.search.width(width).show()
         },
         val: function () {
