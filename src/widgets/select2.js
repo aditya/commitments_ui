@@ -1,4 +1,3 @@
-
 (function ($, undefined) {
     "use strict";
     if (window.Select2 !== undefined) {
@@ -346,6 +345,7 @@
         },
         updateResults: function () {
             var text  = this.search.text();
+            if (text.length == 0) return;
             //try to pull out a parseable tag
             var pattern = new RegExp("[" + this.opts.tokenSeparators.join("") + "]+", "g");
             if (text.match(pattern)) {
@@ -481,6 +481,7 @@
             this.search.bind("input paste focus", this.bind(this.open));
             this.search.bind("blur", this.bind(this.blur));
             this.search.bind("input paste focus", this.bind(this.resizeSearch));
+            this.container.bind("click", this.bind(this.focusSearch));
             this.initContainerWidth();
             // set the placeholder if necessary
             this.clearSearch();
@@ -526,7 +527,7 @@
                 .bind("click dblclick", this.bind(function (e) {
                   if (!this.enabled) return;
                   $(e.target).closest(".select2-search-choice").fadeOut('fast', this.bind(function(){
-                      this.cancel();
+                      this.clear();
                   })).dequeue();
                   killEvent(e);
               }));
