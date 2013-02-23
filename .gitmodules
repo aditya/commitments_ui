@@ -1,3 +1,0 @@
-[submodule "lib/select2"]
-	path = lib/select2
-	url = https://github.com/wballard/select2.git
