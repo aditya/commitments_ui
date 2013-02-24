@@ -1,13 +1,12 @@
 <ul editable-list ng-model="selected.items" class="unstyled items">
-  <li ng-repeat="item in selected.items" class="item">
-  <div class="spaced" editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
+  <li editable-record ng-repeat="item in selected.items" class="item">
+  <div editable-text focus-on-add delete-when-blank="item" ng-model="item.message"></div>
   <div>
     <span editable-check ng-model="item.done" tooltip="'click here to mark done'"></span>
     <span editable-date ng-model="item.due" tooltip="'click to set a due date'"></span>
     <span editable-tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
     <span editable-tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
     <span class="icon-comments-alt action" tooltip="'comment and chat'"></span><span class="action">2</span>
-    <span class="icon-paper-clip action" tooltip="'attach files'"></span><span class="action">1</span>
     <span class="icon-hand-right action" tooltip="'poke your delegates for a status report'"></span>
   </div>
   </li>

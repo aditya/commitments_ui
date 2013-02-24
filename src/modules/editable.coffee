@@ -40,6 +40,12 @@ Put this on a block elemnt, it makes a nice checkbox binding to a boolean.
 AUTOHIDE_DELAY = 3000
 
 module = angular.module('editable', [])
+    .directive('editableRecord', [() ->
+        restrict: 'A'
+        link: ($scope, element) ->
+            element.bind 'click dblclick focus', ->
+                $scope.$broadcast 'inRecord'
+    ])
     .directive('editableText', [() ->
         restrict: 'A'
         require: 'ngModel'
@@ -59,6 +65,10 @@ module = angular.module('editable', [])
                 else
                     if attrs.focusOnAdd?
                         element.focus()
+            $scope.$on 'inRecord', ->
+                if attrs.focusOnAdd?
+                    element.focus()
+
             element.attr 'contentEditable', true
             element.addClass 'editableText'
     ])
