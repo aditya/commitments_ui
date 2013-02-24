@@ -1,10 +1,33 @@
 @defaultPad: 6px;
 @defaultMargin: 6px;
 
+.background(@color: #555, @darkenby: 15%, @edge: 90%) {
+  background-color: @color;
+  background-image: -moz-linear-gradient(top, @color, darken(@color, @darkenby)); // FF 3.6+
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@color), to(darken(@color, @darkenby))); // Safari 4+, Chrome 2+
+  background-image: -webkit-linear-gradient(top, @color @edge, darken(@color, @darkenby)); // Safari 5.1+, Chrome 10+
+  background-image: -o-linear-gradient(top, @color @edge, darken(@color, @darkenby)); // Opera 11.10
+  background-image: linear-gradient(to bottom, @color @edge, darken(@color, @darkenby)); // Standard, IE10
+  background-repeat: repeat-x;
+  .border-radius(@baseBorderRadius);
+  border-style: solid;
+  border-width: 1px 1px 0px 1px;
+  border-color: darken(@color, 1%) darken(@color, 1%) fadeout(@color, 50%) darken(@color, 1%);
+
+
+}
+
+.smallshadow {
+  .box-shadow(0 1px 2px rgba(0,0,0,.5));
+}
+
+.shadowed {
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+}
+
 .fill {
     height:100%;
 }
-
 html, body {
     margin: 0;
     padding: 0;
@@ -31,7 +54,8 @@ body {
     border: 1px solid @grayDarker;
     .box-shadow(0 1px 5px rgba(0,0,0,.75));
     .border-radius(@baseBorderRadius);
-    #gradient > .vertical(@grayDark, darken(@grayDark, 5%));
+    background-color: @grayDark;
+    background-image: url('../images/body-bg-texture.png');
 }
 
 .action {
@@ -44,11 +68,6 @@ body {
         background-color: transparent;
     }
 }
-
-.shadowed {
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.5);
-}
-
 .pop-text {
     text-shadow: 0px 1px 2px rgba(0,0,0,0.1) !important;
 }
@@ -68,7 +87,7 @@ body {
     .border-radius(@baseBorderRadius);
     border: 1px solid @grayDarker;
     .box-shadow(0 2px 5px rgba(0,0,0,.75));
-    background-image: url('../images/body-bg-texture.png');
+    background-image: url('../images/body-bg-texture-medium.png');
     .nav {
         .nav-header {
             .bigger;
@@ -101,7 +120,7 @@ body {
     .border-radius(@baseBorderRadius);
     border: 1px solid @grayDarker;
     background-color: @wellBackground;
-    background-image: url('../images/body-bg-texture-heavy.png');
+    background-image: url('../images/body-bg-texture-medium.png');
     .box-shadow(0 2px 5px rgba(0,0,0,.75));
 }
 
@@ -110,8 +129,8 @@ body {
         margin: @defaultMargin;
         padding: @defaultPad;
         .border-radius(@baseBorderRadius);
-        .box-shadow(inset 0 1px 3px rgba(0,0,0,.15));
-        background-color: darken(@wellBackground, 10%);
+        .box-shadow(inset 0 1px 2px rgba(0,0,0,.5));
+        .background(darken(@wellBackground, 10%));
         background-image: url('../images/body-bg-texture-heavy.png');
     }
     .spaced {

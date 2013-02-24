@@ -1,6 +1,5 @@
 
 @tagColor: @linkColor;
-@tagColorHighlight: darken(@linkColor, 5%);
 @tagTextColor: lighten(@textColor, 0%);
 
 .tagbar-container {
@@ -13,9 +12,8 @@
     .pop-text;
     margin-right: @defaultMargin;
     padding: 0px;
-    .buttonBackground(@tagColor, @tagColorHighlight);
-    .box-shadow(0 1px 2px rgba(0,0,0,.5));
-    .border-radius(@baseBorderRadius);
+    .background(@tagColor);
+    .smallshadow;
     &:hover{
         .box-shadow(0 2px 5px rgba(0,0,0,.5));
         background-color: lighten(@tagColor, 5%);
