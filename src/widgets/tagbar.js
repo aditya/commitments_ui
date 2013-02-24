@@ -112,7 +112,7 @@
             this.sizer = this.container.append($("<div class='sizer'/>")).find(".sizer");
             this.elementTabIndex = this.opts.element.attr("tabIndex");
             this.opts.element.data('tagbar', this).append(this.container);
-            this.search = this.container.find(".tagbar-input");
+            this.search = this.container.find(".tagbar-search-field");
             this.search.popover({content: "<ul class='tagbar-results'></ul>", html: true, placement: "bottom"});
             //forward the tab index, this makes it a lot friendlier for full on
             this.search.attr("tabIndex", this.elementTabIndex);
@@ -283,8 +283,7 @@
                 "class": "tagbar-container tagbar-container-multi"
             }).html([
                 "<ul class='tagbar-choices'>",
-                "  <li class='tagbar-search-field'>" ,
-                "    <div contentEditable autocomplete='off' class='tagbar-input'></div>" ,
+                "  <li class='tagbar-search-field' contentEditable>" ,
                 "  </li>" ,
                 "</ul>"].join(""));
 	        return container;
@@ -354,7 +353,6 @@
                 "    <span class='tagbar-search-choice-content-container'></span>" +
                 "</li>");
             var content = item.find(".tagbar-search-choice-content-container");
-            console.log(content);
             var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
             $.each(data.split(pattern), function(i) {
                 if (i) {
@@ -372,6 +370,10 @@
                   killEvent(e);
               }));
             item.data("tagbar-data", data);
+            if ($(".tagbar-search-choice", this.container).length == 0) {
+                $("<li class='tagbar-search-choice-content-bookend'></li>")
+                .insertBefore(this.searchContainer);
+            }
             item.insertBefore(this.searchContainer);
             this.values.push(data);
             this.triggerChange();
