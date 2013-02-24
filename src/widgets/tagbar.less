@@ -20,6 +20,9 @@
         .box-shadow(0 2px 5px rgba(0,0,0,.5));
         background-color: lighten(@tagColor, 5%);
     }
+    &:first-child {
+        margin-left: @defaultMargin;
+    }
 }
 
 .tagbar-search-choice-close {
@@ -49,16 +52,6 @@
 }
 
 .tagbar-search-field {
-    input {
-        background-color: transparent;
-        .box-shadow(none);
-        border: 0;
-    }
-    input:focus {
-        background-color: transparent;
-        .box-shadow(none);
-        border: 0;
-    }
 }
 
 .tagbar-input {

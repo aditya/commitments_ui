@@ -365,15 +365,12 @@
                 .bind("click dblclick", this.bind(function (e) {
                   if (!this.enabled) return;
                   $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
+                      $(e.target).parent(".tagbar-search-choice").remove();
                       this.clear();
                   })).dequeue();
                   killEvent(e);
               }));
             item.data("tagbar-data", data);
-            if ($(".tagbar-search-choice", this.container).length == 0) {
-                $("<li class='tagbar-search-choice-content-bookend'></li>")
-                .insertBefore(this.searchContainer);
-            }
             item.insertBefore(this.searchContainer);
             this.values.push(data);
             this.triggerChange();
