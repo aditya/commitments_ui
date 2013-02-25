@@ -43,8 +43,9 @@ module = angular.module('editable', [])
     .directive('editableRecord', [() ->
         restrict: 'A'
         link: ($scope, element) ->
-            element.bind 'click dblclick focus', ->
-                $scope.$broadcast 'inRecord'
+            element.bind 'click dblclick focus', (e) ->
+                if element[0] is e.target
+                    $scope.$broadcast 'inRecord'
     ])
     .directive('editableText', [() ->
         restrict: 'A'

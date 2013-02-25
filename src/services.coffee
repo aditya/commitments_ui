@@ -2,25 +2,36 @@ module = angular.module('RootServices', ['ngResource'])
     .factory 'Database', () ->
         sample: ->
             boxes: [
-                name: 'Todo'
-                link: '/lists/todo'
+                title: 'Todo'
+                uri: '/lists/todo'
                 selected: true
                 items: [
-                    link: '/items/a'
-                    message: 'I am but a simple task'
+                    uri: '/items/a'
+                    what: 'I am but a simple task'
                     due: '02/24/2013'
                     tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
-                    delegates: ['ian.groff@glgroup.com']
+                    delegates: ['igroff@glgroup.com']
                 ,
-                    link: '/items/b'
-                    message: 'There is always more to do'
-
+                    uri: '/items/b'
+                    what: 'There is always more to do'
+                    discussion:
+                        total: 2
+                        comments: [
+                            who: 'wballard@glgroup.com'
+                            when: '02/24/2013'
+                            what: 'Yeah! Comments!\nAbout stuff...'
+                        ,
+                            who: 'igroff@glgroup.com'
+                            when: '02/24/2013'
+                            what: 'Told\nYou\nSo.'
+                        ]
                 ]
             ,
-                name: 'Done'
-                link: '/lists/done'
+                title: 'Done'
+                uri: '/lists/done'
                 selected: false
             ]
+    #nothing in particular to do at the moment for config, it isjust nice to see
     .config ->
         console.log 'Root services online'
     .run ->

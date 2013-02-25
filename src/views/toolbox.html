@@ -1,6 +1,8 @@
 <ul class="nav nav-list">
     <li class="divider"> </li>
     <li ng-repeat="box in database.boxes">
-    <a href="#">{{box.name}}<i ng-show="box.selected" class="icon-double-angle-right"></i></a>
+    <h4>
+        <a href="#">{{box.title}}<i ng-show="box.selected" class="icon-double-angle-right"></i></a>
+    </h4>
     </li>
 </ul>
