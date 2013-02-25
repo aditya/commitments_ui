@@ -181,20 +181,5 @@ module = angular.module('editable', [])
                         icon.addClass 'icon-check'
                         icon.removeClass 'icon-check-empty'
     ])
-    .directive('tooltip', ['$timeout', ($timeout)  ->
-        restrict: 'A'
-        compile: (templateElement, templateAttrs) ->
-            ($scope, element, attrs) ->
-                $scope.$watch templateAttrs.tooltip, (tooltip) ->
-                    element.tooltip 'destroy'
-                    element.tooltip
-                        title: tooltip
-                        delay:
-                            show: 100
-                            hide: 100
-                element.bind 'shown', ->
-                    $timeout (-> element.tooltip 'hide'), AUTOHIDE_DELAY
-
-    ])
 
 

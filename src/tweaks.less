@@ -1,5 +1,6 @@
 @defaultPad: 6px;
 @defaultMargin: 6px;
+@transparent: rgba(0,0,0,0);
 
 .background(@color: #555, @darkenby: 15%, @edge: 90%) {
   background-color: @color;
@@ -140,13 +141,19 @@ body {
     margin: @defaultMargin;
     padding: @defaultPad;
     .pop-text;
+    .gravatar {
+      img {
+        .background(darken(@wellBackground, 10%));
+        .shadowed();
+      }
+      text-align: center;
+    }
+    .postdate {
+      text-align: center;
+    }
   }
 }
 
-.gravatar {
-  .background(darken(@wellBackground, 10%));
-  .shadowed();
-}
 
 .editableText {
     cursor: text;

@@ -18,7 +18,7 @@ module = angular.module('RootServices', ['ngResource'])
                         total: 2
                         comments: [
                             who: 'wballard@glgroup.com'
-                            when: '02/24/2013'
+                            when: '02/21/2013'
                             what: 'Yeah! Comments!\nAbout stuff...'
                         ,
                             who: 'igroff@glgroup.com'
