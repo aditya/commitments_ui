@@ -19,11 +19,11 @@ module = angular.module('RootServices', ['ngResource'])
                         comments: [
                             who: 'wballard@glgroup.com'
                             when: '02/21/2013'
-                            what: 'Yeah! Comments!\nAbout stuff...'
+                            what: 'Yeah! Comments!\n\nAbout _stuff_...'
                         ,
                             who: 'igroff@glgroup.com'
                             when: '02/24/2013'
-                            what: 'Told\nYou\nSo.'
+                            what: 'Told\n\nYou\n\nSo.'
                         ]
                 ]
             ,

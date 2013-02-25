@@ -46,7 +46,7 @@ module = angular.module('editable', [])
                 if element[0] is e.target
                     $scope.$broadcast 'inRecord'
     ])
-    .directive('editableText', [() ->
+    .directive('editableMarkdown', [() ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
@@ -61,14 +61,14 @@ module = angular.module('editable', [])
                     event.preventDefault()
             ngModel.$render = () ->
                 if ngModel.$viewValue?
-                    element.text ngModel.$viewValue
+                    console.log ngModel.$viewValue
+                    element.html(markdown.toHTML(ngModel.$viewValue))
                 else
                     if attrs.focusOnAdd?
                         element.focus()
             $scope.$on 'inRecord', ->
                 if attrs.focusOnAdd?
                     element.focus()
-
             element.attr 'contentEditable', true
             element.addClass 'editableText'
     ])
@@ -87,8 +87,6 @@ module = angular.module('editable', [])
             $scope.$on 'deleteWhenBlank', (event, item) ->
                 list = ngModel.$modelValue
                 list.splice(list.indexOf(item), 1)
-
-
     ])
     .directive('editableDate', [() ->
         restrict: 'A'
@@ -179,19 +177,4 @@ module = angular.module('editable', [])
                     if ngModel.$viewValue
                         icon.addClass 'icon-check'
                         icon.removeClass 'icon-check-empty'
-    ])
-    .directive('editableComment', [ ->
-        restrict: 'A'
-        require: 'ngModel'
-        compile: (templateElement, templateAttrs) ->
-            surround = angular.element("<div class='editableComment popover right'/>")
-            arrow = angular.element("<div class='arrow'/>")
-            surround.append(arrow)
-            templateElement.append(surround)
-            ($scope, element, attrs, ngModel) ->
-                display = angular.element("<div class='editableCommentDisplay'/>")
-                console.log element.find '.editableComment'
-                element.find('.editableComment').append(display)
-                ngModel.$render = ->
-                    display.text ngModel.$viewValue
     ])

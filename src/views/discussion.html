@@ -5,8 +5,11 @@
             <div readonly-gravatar ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
             <div readonly-postdate ng-model="comment.when"></div>
         </div>
-        <div class="span10">
-            <div editable-comment ng-model="comment.what"></div>
+        <div class="span9">
+            <div class="popover right">
+                <div class="arrow"></div>
+                <div editable-markdown ng-model="comment.what"></div>
+            <div>
         </div>
         </li>
     </ul>

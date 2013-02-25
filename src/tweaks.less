@@ -155,23 +155,20 @@ body {
     }
     .popover {
       .shadowed;
+      position: relative;
+      display: block;
+      float: left;
+      padding: @defaultPad;
+      min-width: 100%;
+      width: 100%;
     }
   }
 }
 
-.editableComment {
-  position: relative;
-  display: block;
-  float: left;
-  .editableCommentDisplay {
-    padding: @defaultPad;
-    margin: @defaultMargin;
-    .pop-text;
-  }
-}
-
-.editableText {
+.editableMarkdown {
     cursor: text;
+    min-width: 100%;
+    width: 100%;
 }
 
 .editableDate {
