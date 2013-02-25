@@ -1,6 +1,7 @@
 ###
 
 ###
+AUTOHIDE_DELAY = 3000
 module = angular.module('readonly', [])
     .directive('readonlyGravatar', [() ->
         restrict: 'A'

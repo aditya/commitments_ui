@@ -5,12 +5,14 @@
 
 .tagbar-container {
     display: inline-block;
-    vertical-align: top;
+    vertical-align: bottom;
 }
 
 .tagbar-search-choice {
-    .label;
     .pop-text;
+    font-size: 100%;
+    font-weight: bold;
+    vertical-align: middle;
     margin-right: @defaultMargin;
     padding: 0px;
     .background(@tagColor);
@@ -26,30 +28,33 @@
 }
 
 .tagbar-search-choice-close {
+    height: 100%;
     color: @textColor;
     cursor: pointer;
-    padding: @defaultPad / 2;
 }
 
 .tagbar-search-choice-content-container {
+    height: 100%;
     margin-right: @defaultMargin / 2;
     padding: 0px;
 }
 
 .tagbar-search-choice-content {
+    height: 100%;
     color: @tagTextColor;
-    padding: @defaultPad / 2;
+    margin: 0px;
     margin-left: @defaultMargin / 2;
 }
 
 .tagbar-search-choice-content-separator {
+    height: 100%;
+    border-radius: @baseBorderRadius;
     .box-shadow(@defaultMargin/2 0px 2px rgba(0,0,0,.5));
-    .bordered(@tagBorderColor);
-    border-left: 0px;
     padding-left: @defaultPad;
 }
 
 .tagbar-search-choice-content-bookend {
+    height: 100%;
     padding: @defaultPad / 2;
 }
 

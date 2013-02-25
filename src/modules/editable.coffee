@@ -37,7 +37,6 @@ Put this on a block elemnt, it makes a nice checkbox binding to a boolean.
     <div editable-check ng-model="item.done"></div>
 ###
 
-AUTOHIDE_DELAY = 3000
 
 module = angular.module('editable', [])
     .directive('editableRecord', [() ->
