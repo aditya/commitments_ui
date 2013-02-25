@@ -1,5 +1,5 @@
 <div ng-controller="Discussion">
-    <ul editable-placeholder ng-model="comments" class="container-fluid unstyled comments">
+    <ul editable-list editable-placeholder ng-model="discussion.comments" class="container-fluid unstyled comments">
         <li editable-record ng-repeat="comment in discussion.comments" class="row-fluid comment">
         <div class="span2">
             <div readonly-gravatar ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
@@ -8,7 +8,7 @@
         <div class="span9">
             <div class="popover right">
                 <div class="arrow"></div>
-                <div editable-markdown ng-model="comment.what"></div>
+                <div editable-markdown ng-model="comment.what" delete-when-blank="comment"></div>
             <div>
         </div>
         </li>

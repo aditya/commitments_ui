@@ -66,7 +66,7 @@ module = angular.module('editable', [])
                         $scope.$apply ->
                             value = codemirror.getValue().trimLeft().trimRight()
                             if attrs.deleteWhenBlank? and value is ""
-                                $scope.$emit 'deleteWhenBlank'
+                                $scope.$emit 'deleteWhenBlank', $scope.$eval(attrs.deleteWhenBlank)
                             else
                                 ngModel.$setViewValue(value)
                                 ngModel.$render()
@@ -110,8 +110,10 @@ module = angular.module('editable', [])
                     ngModel.$modelValue.push({})
             #handle propagated deletes, this will be in an apply
             $scope.$on 'deleteWhenBlank', (event, item) ->
+                console.log item, event, ngModel.$modelValue
                 list = ngModel.$modelValue
                 list.splice(list.indexOf(item), 1)
+                event.stopPropagation()
     ])
     .directive('editableDate', [() ->
         restrict: 'A'
