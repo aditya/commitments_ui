@@ -7,7 +7,7 @@ module = angular.module('RootServices', ['ngResource'])
                 selected: true
                 items: [
                     uri: '/items/a'
-                    what: 'I am but a simple task'
+                    what: 'I am but a simple task\n\n* One\n\n* Two'
                     due: '02/24/2013'
                     tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
                     delegates: ['igroff@glgroup.com']

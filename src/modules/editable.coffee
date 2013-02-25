@@ -1,17 +1,18 @@
 ###
-Inline edit capabilities are captured here. These depend on
-* FontAwesome
-* jQuery
-* widgets
+Inline edit capabilities are captured here. The idea is to enable bound
+angular JS editing without resorting to the use of a FORM or any server trip.
 
-The idea is to create a set of data input components that are not FORM based
-in any way.
+Editable Record
+---------------
+Marker you put on a repeater or container. This will broadcast an event down
+when you click in the non-field areas of a record, useful to make it really
+easy to start editing without having to aim the mouse precisely at fields.
 
-Editable Text
--------------
+Editable Markdown
+-----------------
 Put this on a block element, with ng-model indicating the binding target:
 
-    <div editable-text ng-model="item.message"></div>
+    <div editable-markdown ng-model="item.message"></div>
 
 Attributes:
     focus-on-add
@@ -25,10 +26,6 @@ Editable List
 Put this on a list, with ng-model indicating the binding target:
 
     <ul editable-list ng-model="selected.items">
-
-Attributes:
-    focus-on-add
-        when specified, set the focus here to start editing right away
 
 Editable Check
 --------------
@@ -46,31 +43,57 @@ module = angular.module('editable', [])
                 if element[0] is e.target
                     $scope.$broadcast 'inRecord'
     ])
-    .directive('editableMarkdown', [() ->
+    .directive('editableMarkdown', ['$timeout', ($timeout) ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
-            element.bind 'blur', () ->
-                $scope.$apply () ->
-                    ngModel.$setViewValue(element.text())
-                    if attrs.deleteWhenBlank? and not ngModel.$viewValue
-                        $scope.$emit 'deleteWhenBlank', $scope.$eval(attrs.deleteWhenBlank)
+            attachTo = angular.element("<div></div>")
+            attachTo.hide()
+            display = angular.element("<div></div>")
+            element.append display, attachTo
+            codemirror = null
+            #hook on to any way in the field
+            element.bind 'click dblclick focus', () ->
+                if not codemirror
+                    codemirror = CodeMirror attachTo[0]
+                    attachTo.width('100%')
+                    $('.CodeMirror', attachTo).css('height', 'auto')
+                    $('.CodeMirror-scroll', attachTo)
+                        .css('overflow-x', 'auto')
+                        .css('overflow-y', 'hidden')
+                    codemirror.on 'blur', ->
+                        $scope.$apply ->
+                            console.log codemirror.getValue()
+                            ngModel.$setViewValue(codemirror.getValue())
+                            if attrs.deleteWhenBlank? and not ngModel.$viewValue
+                                $scope.$emit 'deleteWhenBlank', $scope.$eval(attrs.deleteWhenBlank)
+                            ngModel.$render()
+                        $timeout ->
+                            display.show 100
+                            attachTo.hide 100, ->
+                                codemirror = null
+                                $('.CodeMirror', attachTo).remove()
+                codemirror.setValue ngModel.$viewValue
+                display.hide 100
+                attachTo.show 100, ->
+                    codemirror.focus()
+                    codemirror.setOption('mode', 'markdown')
+                    codemirror.setOption('theme', 'neat')
+                    codemirror.refresh()
             element.bind 'keydown', (event) ->
                 if event.which is 27 #escape
                     event.target.blur()
                     event.preventDefault()
             ngModel.$render = () ->
-                if ngModel.$viewValue?
-                    console.log ngModel.$viewValue
-                    element.html(markdown.toHTML(ngModel.$viewValue))
-                else
-                    if attrs.focusOnAdd?
-                        element.focus()
+                #markdown based display
+                if ngModel.$viewValue
+                    display.html(markdown.toHTML(ngModel.$viewValue))
+                else if attrs.focusOnAdd?
+                    element.focus()
+            #additional autofocus support
             $scope.$on 'inRecord', ->
                 if attrs.focusOnAdd?
                     element.focus()
-            element.attr 'contentEditable', true
-            element.addClass 'editableText'
     ])
     .directive('editableList', [() ->
         restrict: 'A'
