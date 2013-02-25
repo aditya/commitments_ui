@@ -12,12 +12,16 @@
   background-image: linear-gradient(to bottom, @color @edge, darken(@color, @darkenby)); // Standard, IE10
   background-repeat: repeat-x;
 */
+
+
+}
+
+.bordered(@color: @gray) {
+  @faded: fadeout(@color, 25%);
   .border-radius(@baseBorderRadius);
   border-style: solid;
-  border-width: 1px 1px 0px 1px;
-  border-color: darken(@color, 1%) darken(@color, 1%) fadeout(@color, 50%) darken(@color, 1%);
-
-
+  border-width: 1px 1px 1px 1px;
+  border-color: @faded
 }
 
 .insetshadowed {
@@ -25,7 +29,7 @@
 }
 
 .shadowed {
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+  .box-shadow(0 2px 5px rgba(0,0,0,.2));
 }
 
 .fill {
@@ -55,7 +59,7 @@ body {
     height: 100%;
     padding: @defaultPad;
     border: 1px solid @grayDarker;
-    .shadowed();
+    .shadowed;
     .border-radius(@baseBorderRadius);
     background-color: @grayDark;
     background-image: url('../images/body-bg-texture.png');
@@ -76,7 +80,7 @@ body {
 }
 
 .caption {
-    .shadowed;
+    .pop-text;
     color: @textColor;
 }
 
@@ -89,7 +93,7 @@ body {
     overflow: auto;
     .border-radius(@baseBorderRadius);
     border: 1px solid @grayDarker;
-    .shadowed();
+    .shadowed;
     background-image: url('../images/body-bg-texture-medium.png');
     .nav {
         .nav-header {
@@ -126,7 +130,7 @@ body {
         margin: @defaultMargin;
         padding: @defaultPad;
         .border-radius(@baseBorderRadius);
-        .insetshadowed();
+        .insetshadowed;
         .background(darken(@wellBackground, 10%));
         background-image: url('../images/body-bg-texture-heavy.png');
     }
@@ -138,22 +142,34 @@ body {
 
 .comments {
   .comment {
-    margin: @defaultMargin;
     padding: @defaultPad;
     .pop-text;
     .gravatar {
       img {
         .background(darken(@wellBackground, 10%));
-        .shadowed();
+        .bordered(darken(@wellBackground, 10%));
       }
       text-align: center;
     }
     .postdate {
       text-align: center;
     }
+    .popover {
+      .shadowed;
+    }
   }
 }
 
+.editableComment {
+  position: relative;
+  display: block;
+  float: left;
+  .editableCommentDisplay {
+    padding: @defaultPad;
+    margin: @defaultMargin;
+    .pop-text;
+  }
+}
 
 .editableText {
     cursor: text;
@@ -188,15 +204,15 @@ body {
     .action;
 }
 
-.popover {
-    background-color: @wellBackground !important;
-    border: 1px solid rgba(0,0,0,0.25) !important;
-}
-
 .ui-datepicker-next, .ui-datepicker-prev {
     .action;
     text-decoration: none !important;
     margin-top: @defaultMargin;
+}
+
+.ui-datepicker-inline {
+  border: 0px !important;
+  .box-shadow(none) !important;
 }
 
 .ui-datepicker-title {

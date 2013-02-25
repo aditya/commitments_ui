@@ -181,5 +181,18 @@ module = angular.module('editable', [])
                         icon.addClass 'icon-check'
                         icon.removeClass 'icon-check-empty'
     ])
-
-
+    .directive('editableComment', [ ->
+        restrict: 'A'
+        require: 'ngModel'
+        compile: (templateElement, templateAttrs) ->
+            surround = angular.element("<div class='editableComment popover right'/>")
+            arrow = angular.element("<div class='arrow'/>")
+            surround.append(arrow)
+            templateElement.append(surround)
+            ($scope, element, attrs, ngModel) ->
+                display = angular.element("<div class='editableCommentDisplay'/>")
+                console.log element.find '.editableComment'
+                element.find('.editableComment').append(display)
+                ngModel.$render = ->
+                    display.text ngModel.$viewValue
+    ])

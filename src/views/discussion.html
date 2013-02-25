@@ -1,8 +1,8 @@
 <div ng-controller="Discussion">
     <ul editable-list ng-model="comments" class="container-fluid unstyled comments">
         <li editable-record ng-repeat="comment in discussion.comments" class="row-fluid comment">
-        <div class="span2" tooltip="comment.who" tooltip-placement="left">
-            <div readonly-gravatar ng-model="comment.who"></div>
+        <div class="span2">
+            <div readonly-gravatar ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
             <div readonly-postdate ng-model="comment.when"></div>
         </div>
         <div class="span10">
