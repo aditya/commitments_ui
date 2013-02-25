@@ -54,6 +54,7 @@ module = angular.module('editable', [])
             codemirror = null
             #hook on to any way in the field
             element.bind 'click dblclick focus', () ->
+                console.log 'focus'
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
                     attachTo.width('100%')
@@ -63,17 +64,18 @@ module = angular.module('editable', [])
                         .css('overflow-y', 'hidden')
                     codemirror.on 'blur', ->
                         $scope.$apply ->
-                            console.log codemirror.getValue()
-                            ngModel.$setViewValue(codemirror.getValue())
-                            if attrs.deleteWhenBlank? and not ngModel.$viewValue
-                                $scope.$emit 'deleteWhenBlank', $scope.$eval(attrs.deleteWhenBlank)
-                            ngModel.$render()
+                            value = codemirror.getValue().trimLeft().trimRight()
+                            if attrs.deleteWhenBlank? and value is ""
+                                $scope.$emit 'deleteWhenBlank'
+                            else
+                                ngModel.$setViewValue(value)
+                                ngModel.$render()
                         $timeout ->
                             display.show 100
                             attachTo.hide 100, ->
                                 codemirror = null
                                 $('.CodeMirror', attachTo).remove()
-                codemirror.setValue ngModel.$viewValue
+                codemirror.setValue ngModel.$viewValue or '\n'
                 display.hide 100
                 attachTo.show 100, ->
                     codemirror.focus()
@@ -89,11 +91,11 @@ module = angular.module('editable', [])
                 if ngModel.$viewValue
                     display.html(markdown.toHTML(ngModel.$viewValue))
                 else if attrs.focusOnAdd?
-                    element.focus()
+                    element.click()
             #additional autofocus support
             $scope.$on 'inRecord', ->
                 if attrs.focusOnAdd?
-                    element.focus()
+                    element.click()
     ])
     .directive('editableList', [() ->
         restrict: 'A'
