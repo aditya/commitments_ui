@@ -47,9 +47,10 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
+            element.addClass 'editableMarkdown'
             attachTo = angular.element("<div></div>")
             attachTo.hide()
-            display = angular.element("<div></div>")
+            display = angular.element("<div class='display'></div>")
             element.append display, attachTo
             codemirror = null
             #hook on to any way in the field
@@ -107,7 +108,6 @@ module = angular.module('editable', [])
                 foundAt = list.indexOf(item)
                 if foundAt >= 0
                     list.splice(foundAt, 1)
-                event.stopPropagation()
     ])
     .directive('editableListAdd', [() ->
         restrict: 'A'
@@ -120,6 +120,16 @@ module = angular.module('editable', [])
             adder.bind 'click', () ->
                 $scope.$apply () ->
                     ngModel.$modelValue.push({})
+    ])
+    .directive('editableListPlaceholder', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            listDiffers = (model) ->
+                console.log 'placehold', model, $scope.user
+            compare = () ->
+                null
+            $scope.$watch attrs.ngModel, listDiffers, compare
     ])
     .directive('editableDate', [() ->
         restrict: 'A'

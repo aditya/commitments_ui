@@ -1,4 +1,10 @@
 module = angular.module('RootServices', ['ngResource'])
+    #deal with figuring out who is who
+    .factory 'Authentication', ->
+        user: ->
+            email: 'wballard@glgroup.com'
+    #deal with querying 'the database', really the services up in the cloud
+    #** for the time being this is just rigged to pretend to be a service **
     .factory 'Database', () ->
         sample: ->
             boxes: [

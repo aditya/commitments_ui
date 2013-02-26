@@ -1,8 +1,9 @@
 module = angular.module('Root', ['RootServices', 'ui', 'dynamic', 'editable', 'readonly'])
-    .controller 'Desktop', ($scope, $compile, Database) ->
+    .controller 'Desktop', ($scope, $compile, Database, Authentication) ->
         console.log 'desktop'
         $scope.database = Database.sample()
         $scope.selected = $scope.database.boxes[0]
+        $scope.user = Authentication.user()
     .controller 'Toolbox', ($scope) ->
         console.log 'toolbox'
     .controller 'Discussion', ($scope) ->

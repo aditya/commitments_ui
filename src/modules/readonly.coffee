@@ -12,6 +12,8 @@ module = angular.module('readonly', [])
             icon = angular.element("<img width=#{size} height=#{size}></img>")
             element.append(icon)
             ngModel.$render = ->
+                if not ngModel.$viewValue
+                    ngModel.$setViewValue($scope.$eval(attrs.default))
                 hash = md5(ngModel.$viewValue)
                 icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}"
     ])
