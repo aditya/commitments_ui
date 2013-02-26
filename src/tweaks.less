@@ -231,4 +231,33 @@ body {
     .action;
 }
 
+//Tweak the popover a tiny bit
+.popover {
+  .border-radius(@baseBorderRadius);
+  border-color: darken(@wellBackground, 25%);
+  &.right .arrow {
+    border-right-color: darken(@wellBackground, 25%);
+    &:after {
+      border-right-color: darken(@wellBackground, 25%);
+    }
+  }
+  &.top .arrow {
+    border-top-color: darken(@wellBackground, 25%);
+    &:after {
+      border-top-color: darken(@wellBackground, 25%);
+    }
+  }
+  &.bottom .arrow {
+    border-bottom-color: darken(@wellBackground, 25%);
+    &:after {
+      border-bottom-color: darken(@wellBackground, 25%);
+    }
+  }
+  &.left .arrow {
+    border-left-color: darken(@wellBackground, 25%);
+    &:after {
+      border-left-color: darken(@wellBackground, 25%);
+    }
+  }
+}
 
