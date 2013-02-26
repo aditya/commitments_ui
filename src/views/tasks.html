@@ -1,4 +1,4 @@
-<ul editable-list ng-model="selected.items" class="unstyled items">
+<ul editable-list editable-list-add ng-model="selected.items" class="unstyled items">
     <li editable-record ng-repeat="item in selected.items" class="item">
     <div editable-markdown focus-on-add delete-when-blank="item" ng-model="item.what" class="spaced"></div>
     <div>

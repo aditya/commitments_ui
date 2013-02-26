@@ -101,6 +101,18 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
+            #handle propagated deletes, this will be in an apply
+            $scope.$on 'deleteWhenBlank', (event, item) ->
+                list = ngModel.$modelValue
+                foundAt = list.indexOf(item)
+                if foundAt >= 0
+                    list.splice(foundAt, 1)
+                event.stopPropagation()
+    ])
+    .directive('editableListAdd', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
             #provide UI handling to add items
             wrapped = element.wrap('<div class="editableList"/>').parent()
             adder = angular.element('<div class="editableListAdd icon-plus"/>')
@@ -108,12 +120,6 @@ module = angular.module('editable', [])
             adder.bind 'click', () ->
                 $scope.$apply () ->
                     ngModel.$modelValue.push({})
-            #handle propagated deletes, this will be in an apply
-            $scope.$on 'deleteWhenBlank', (event, item) ->
-                console.log item, event, ngModel.$modelValue
-                list = ngModel.$modelValue
-                list.splice(list.indexOf(item), 1)
-                event.stopPropagation()
     ])
     .directive('editableDate', [() ->
         restrict: 'A'
