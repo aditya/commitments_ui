@@ -90,7 +90,11 @@ module = angular.module('editable', [])
             ngModel.$render = () ->
                 #markdown based display
                 if ngModel.$viewValue
+                    display.removeClass('placeholder')
                     display.html(markdown.toHTML(ngModel.$viewValue))
+                else if attrs.placeholder
+                    display.addClass('placeholder')
+                    display.html($scope.$eval(attrs.placeholder))
                 else if attrs.focusOnAdd?
                     element.click()
             #additional autofocus support

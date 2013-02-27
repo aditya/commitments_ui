@@ -14,7 +14,7 @@ module = angular.module('readonly', [])
             ngModel.$render = ->
                 if not ngModel.$viewValue
                     ngModel.$setViewValue($scope.$eval(attrs.default))
-                hash = md5(ngModel.$viewValue)
+                hash = md5(ngModel.$viewValue.toLowerCase())
                 icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}"
     ])
     .directive('tooltip', ['$timeout', ($timeout)  ->

@@ -170,6 +170,11 @@ body {
     min-width: 100%;
     min-height: @inputHeight;
     width: 100%;
+    color: @textColor;
+    .placeholder {
+      color: lighten(@textColor, 25%);
+      font-style: italic;
+    }
 }
 
 .editableDate {
