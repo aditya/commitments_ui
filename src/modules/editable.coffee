@@ -67,8 +67,10 @@ module = angular.module('editable', [])
                         $scope.$apply ->
                             value = codemirror.getValue().trimLeft().trimRight()
                             if attrs.deleteWhenBlank? and value is ""
-                                $scope.$emit 'deleteWhenBlank', $scope.$eval(attrs.deleteWhenBlank)
+                                $scope.$emit 'delete', $scope.$eval(attrs.deleteWhenBlank)
                             else
+                                #clear the placeholder flag, this is now a record
+                                $scope.$eval?(attrs.deleteWhenBlank).$$placeholder = false
                                 ngModel.$setViewValue(value)
                                 ngModel.$render()
                         $timeout ->
@@ -106,8 +108,12 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
+            $scope.$watch attrs.ngModel, ->
+                #make sure there is always a list
+                if not ngModel.$viewValue
+                    ngModel.$setViewValue([])
             #handle propagated deletes, this will be in an apply
-            $scope.$on 'deleteWhenBlank', (event, item) ->
+            $scope.$on 'delete', (event, item) ->
                 list = ngModel.$modelValue
                 foundAt = list.indexOf(item)
                 if foundAt >= 0
@@ -125,15 +131,29 @@ module = angular.module('editable', [])
                 $scope.$apply () ->
                     ngModel.$modelValue.push({})
     ])
-    .directive('editableListPlaceholder', [() ->
+    .directive('editableListBlankRecord', [() ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
             listDiffers = (model) ->
-                console.log 'placehold', model, $scope.user
-            compare = () ->
-                null
-            $scope.$watch attrs.ngModel, listDiffers, compare
+                tail = model.slice(-1)?[0]
+                console.log 'check placeholder', tail
+                if tail and tail.$$placeholder
+                    #there is already a placeholder record
+                else
+                    console.log 'blank record'
+                    model.push
+                        $$placeholder: true
+            $scope.$watch attrs.ngModel, listDiffers, true
+    ])
+    .directive('editableRecord', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            updateCount = 0
+            recordDiffers = (model) ->
+                console.log 'edited', model, updateCount++
+            $scope.$watch attrs.ngModel, recordDiffers, true
     ])
     .directive('editableDate', [() ->
         restrict: 'A'

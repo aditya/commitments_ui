@@ -1,16 +1,17 @@
-<ul editable-list editable-list-add ng-model="selected.items" class="unstyled items">
-    <li editable-record ng-repeat="item in selected.items" class="item">
-    <div editable-markdown focus-on-add delete-when-blank="item" ng-model="item.what" class="spaced"></div>
-    <div>
-        <span editable-check ng-model="item.done" tooltip="'click here to mark done'"></span>
-        <span editable-date ng-model="item.due" tooltip="'click to set a due date'"></span>
-        <span editable-tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-        <span editable-tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
-        <span class="icon-comments-alt action" tooltip="'comment and chat'"></span><span class="action">{{item.discussion.total}}</span>
-        <span class="icon-hand-right action" tooltip="'poke your delegates for a status report'"></span>
-    </div>
-    <div ng-init="discussion=item.discussion">
-        <dynamic-include src="'src/views/discussion.html'"/>
+<ul editable-list editable-list-add ng-model="selected.items" class="unstyled items"> <li ng-repeat="item in selected.items" class="item">
+    <div editable-record ng-model="item">
+        <div editable-markdown focus-on-add delete-when-blank="item" ng-model="item.what" class="spaced"></div>
+        <div>
+            <span editable-check ng-model="item.done" tooltip="'click here to mark done'"></span>
+            <span editable-date ng-model="item.due" tooltip="'click to set a due date'"></span>
+            <span editable-tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
+            <span editable-tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
+            <span class="icon-comments-alt action" tooltip="'comment and chat'"></span><span class="action">{{item.discussion.total}}</span>
+            <span class="icon-hand-right action" tooltip="'poke your delegates for a status report'"></span>
+        </div>
+        <div ng-init="discussion=item.discussion">
+            <dynamic-include src="'src/views/discussion.html'"/>
+        </div>
     </div>
     </li>
 </ul>
