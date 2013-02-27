@@ -195,8 +195,6 @@ module = angular.module('editable', [])
             icon.bind 'click', startEdit
             display.bind 'click', startEdit
             ngModel.$render = () ->
-                if not ngModel.$viewValue
-                    ngModel.$setViewValue(moment().format())
                 display.text ngModel.$viewValue
     ])
     .directive('editableTags', ['$timeout', ($timeout) ->
