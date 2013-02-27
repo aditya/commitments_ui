@@ -38,6 +38,11 @@ module = angular.module('readonly', [])
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
             element.addClass 'postdate'
+            $scope.$on 'edited', (event, record) ->
+                if not ngModel.$viewValue
+                    ngModel.$setViewValue(moment().format())
+                    ngModel.$render()
             ngModel.$render = ->
-                element.text moment(ngModel.$viewValue).fromNow()
+                if ngModel.$viewValue
+                    element.text moment(ngModel.$viewValue).fromNow()
     ])

@@ -68,11 +68,11 @@ module = angular.module('editable', [])
                             value = codemirror.getValue().trimLeft().trimRight()
                             if attrs.deleteWhenBlank? and value is ""
                                 $scope.$emit 'delete', $scope.$eval(attrs.deleteWhenBlank)
-                            else
+                            else if attrs.deleteWhenBlank?
                                 #clear the placeholder flag, this is now a record
                                 $scope.$eval?(attrs.deleteWhenBlank).$$placeholder = false
-                                ngModel.$setViewValue(value)
-                                ngModel.$render()
+                            ngModel.$setViewValue(value)
+                            ngModel.$render()
                         $timeout ->
                             display.show 100
                             attachTo.hide 100, ->
@@ -152,7 +152,8 @@ module = angular.module('editable', [])
         link: ($scope, element, attrs, ngModel) ->
             updateCount = 0
             recordDiffers = (model) ->
-                console.log 'edited', model, updateCount++
+                if updateCount++
+                    $scope.$emit 'edited', model
             $scope.$watch attrs.ngModel, recordDiffers, true
     ])
     .directive('editableDate', [() ->
