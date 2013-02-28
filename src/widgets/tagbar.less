@@ -1,5 +1,5 @@
 
-@tagColor: @linkColor;
+@tagColor: @infoText;
 @tagBorderColor: darken(@tagColor, 5%);
 @tagTextColor: lighten(@textColor, 0%);
 
@@ -9,50 +9,29 @@
 }
 
 .tagbar-search-choice {
-    font-size: 100%;
-    font-weight: bold;
-    vertical-align: middle;
     margin-right: @defaultMargin;
-    padding: 0px;
-    .background(@tagColor);
-    &:hover{
-        .box-shadow(0 2px 5px rgba(0,0,0,.5));
-        background-color: lighten(@tagColor, 5%);
-    }
-    &:first-child {
-        margin-left: @defaultMargin;
-    }
-}
-
-.tagbar-search-choice-close {
-    height: 100%;
-    color: @textColor;
-    cursor: pointer;
-}
-
-.tagbar-search-choice-content-container {
-    height: 100%;
-    margin-right: @defaultMargin / 2;
-    padding: 0px;
+    padding: 2px;
 }
 
 .tagbar-search-choice-content {
     height: 100%;
-    color: @tagTextColor;
-    margin: 0px;
-    margin-left: @defaultMargin / 2;
+    padding: @defaultPad;
+    position: relative;
 }
 
-.tagbar-search-choice-content-separator {
+.tagbar-search-choice-close {
+    color: @white;
+    cursor: pointer;
     height: 100%;
-    border-radius: @baseBorderRadius;
-    .box-shadow(@defaultMargin/2 0px 2px rgba(0,0,0,.5));
-    padding-left: @defaultPad;
+    padding: @defaultPad;
+    position: relative;
 }
 
-.tagbar-search-choice-content-bookend {
-    height: 100%;
-    padding: @defaultPad / 2;
+.underlay {
+}
+
+.overlay {
+    margin-right: -3px;
 }
 
 .tagbar-search-field {

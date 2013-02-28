@@ -131,7 +131,6 @@
                 var result=results[i];
                 var node=$("<li></li>");
                 node.addClass("tagbar-result");
-                if (result.disabled) { node.addClass("tagbar-disabled"); }
                 var label=$(document.createElement("div"));
                 label.addClass("tagbar-result-label");
                 label.html(result);
@@ -347,22 +346,20 @@
             this.focusSearch();
         },
         addSelectedChoice: function (data) {
-            var item = $(
-                "<li class='tagbar-search-choice'>" +
-                "    <span class='icon-remove tagbar-search-choice-close'></span>" +
-                "    <span class='tagbar-search-choice-content-container'></span>" +
-                "</li>");
-            var content = item.find(".tagbar-search-choice-content-container");
+            var item = $("<li class='tagbar-search-choice'></li>");
             var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
+            var underZ = 0
             $.each(data.split(pattern), function(i) {
-                if (i) {
-                    content.append("<span class='tagbar-search-choice-content-separator'></span>");
-                }
-                content.append("<span class='tagbar-search-choice-content'>" + escapeMarkup(this) + "</span>");
+                var tagbit = $("<span class='tagbar-search-choice-content overlay label'>" + escapeMarkup(this) + "</span>");
+                if (i % 2 == 0) tagbit.addClass("label-info");
+                if (i % 2 == 1) tagbit.addClass("label-inverse");
+                tagbit.css('z-index', underZ--);
+                item.append(tagbit);
             });
-            item.find(".tagbar-search-choice-close")
-                .bind("mousedown", killEvent)
-                .bind("click dblclick", this.bind(function (e) {
+            var closer = $("<span class='tagbar-search-choice-close underlay label'><span class='icon-remove-sign'></span></span>");
+            item.append(closer);
+            closer.bind("click dblclick", this.bind(function (e) {
+                    console.log('ARRR');
                   if (!this.enabled) return;
                   $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
                       $(e.target).parent(".tagbar-search-choice").remove();
