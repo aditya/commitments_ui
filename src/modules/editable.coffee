@@ -229,7 +229,7 @@ module = angular.module('editable', [])
                 icon.bind 'click', ->
                     input.tagbar 'focusSearch'
                 input.tagbar
-                    tagSeparators: [',', '\\s']
+                    tagSeparators: [',', ';']
                     tagNamespaceSeparators: ['/', ':']
                     query: (query) ->
                         query.callback
