@@ -126,7 +126,7 @@ module = angular.module('editable', [])
         link: ($scope, element, attrs, ngModel) ->
             #provide UI handling to add items
             wrapped = element.wrap('<div class="editableList"/>').parent()
-            adder = angular.element('<div class="editableListAdd icon-plus"/>')
+            adder = angular.element('<div class="icon icon-plus"/>')
             wrapped.append(adder)
             adder.bind 'click', () ->
                 $scope.$apply () ->
@@ -174,9 +174,10 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
-            element.addClass 'editableDate'
-            icon = angular.element('<span class="icon-calendar editableDateIcon"/>')
-            display = angular.element('<span class="editableDateDisplay"/>')
+            element.addClass 'date'
+            element.addClass 'editable'
+            icon = angular.element('<span class="icon-calendar icon"/>')
+            display = angular.element('<span class="date-display"/>')
             element.append(icon, display)
             #make sure to unhook the dialog like keyboard capture
             clearCapture = ->
@@ -216,17 +217,16 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         compile: (templateElement, templateAttrs) ->
-            templateElement.addClass 'editableTags'
+            templateElement.addClass 'tags'
+            templateElement.addClass 'editable'
             templateAttrs.icon = templateAttrs.icon or 'tags'
-            icon = angular.element("<span class='icon-#{templateAttrs.icon} editableTagsIcon'/>")
-            display = angular.element('<span class="editableTagsDisplay"/>')
-            templateElement.append(icon, display)
             ($scope, element, attrs, ngModel) ->
+                icon = angular.element("<span class='icon-#{templateAttrs.icon} icon'/>")
+                input = angular.element('<span class="tag-display"/>')
+                element.append(icon, input)
                 element.on 'keydown', (event) ->
                     if event.which is 27 #escape
                         document.activeElement.blur()
-                icon = $('.editableTagsIcon', element)
-                input = $('.editableTagsDisplay', element)
                 icon.bind 'click', ->
                     input.tagbar 'focusSearch'
                 input.tagbar
@@ -246,8 +246,10 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         compile: (templateElement, templateAttrs) ->
+            templateElement.addClass 'check'
+            templateElement.addClass 'editable'
             ($scope, element, attrs, ngModel) ->
-                icon = angular.element("<span class='editableCheckIcon'/>")
+                icon = angular.element("<span class='icon'/>")
                 element.append(icon)
                 element.bind 'click', ->
                     $scope.$apply () ->

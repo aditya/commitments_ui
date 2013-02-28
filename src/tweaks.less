@@ -3,6 +3,13 @@
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
 
+
+.shadowed {
+  .box-shadow(0 2px 5px rgba(0,0,0,.2));
+}
+
+
+
 //get the left navigation to stay on screen
 .sidebar-nav-fixed {
     position:fixed;
@@ -23,6 +30,7 @@
     }
 }
 
+//styles for our bits
 .taskpad {
   margin-top: 60px;
 }
@@ -46,7 +54,84 @@
   &:hover {
     border: 1px dotted darken(@wellBackground, 7%);
   }
+  cursor: text;
+  .placeholder {
+    color: lighten(@textColor, 25%);
+    font-style: italic;
+  }
 }
+
+.icon {
+  font-size: 1.5em;
+  &.icon-border {
+    border-width: 2px;
+    .border-radius(4px);
+  }
+}
+
+.discussion {
+  margin: 0px;
+  margin-top: @defaultMargin;
+}
+
+.comments {
+  .comment {
+    padding: @defaultPad;
+    .gravatar {
+      img {
+        .background(darken(@wellBackground, 10%));
+        border: 1px solid darken(@wellBackground, 7%);
+        .border-radius(@baseBorderRadius);
+      }
+      text-align: center;
+    }
+    .postdate {
+      text-align: center;
+    }
+    .popover {
+      .shadowed;
+      position: relative;
+      display: block;
+      float: left;
+      padding: @defaultPad;
+      min-width: 100%;
+      width: 100%;
+      z-index: 1;
+    }
+  }
+}
+
+//tweaking base bootstrap
+//Tweak the popover a tiny bit
+.popover {
+  .border-radius(@baseBorderRadius);
+  border-color: darken(@wellBackground, 25%);
+  &.right .arrow {
+    border-right-color: darken(@wellBackground, 25%);
+    &:after {
+      border-right-color: darken(@wellBackground, 25%);
+    }
+  }
+  &.top .arrow {
+    border-top-color: darken(@wellBackground, 25%);
+    &:after {
+      border-top-color: darken(@wellBackground, 25%);
+    }
+  }
+  &.bottom .arrow {
+    border-bottom-color: darken(@wellBackground, 25%);
+    &:after {
+      border-bottom-color: darken(@wellBackground, 25%);
+    }
+  }
+  &.left .arrow {
+    border-left-color: darken(@wellBackground, 25%);
+    &:after {
+      border-left-color: darken(@wellBackground, 25%);
+    }
+  }
+}
+
 
 .background(@color: #555, @darkenby: 15%, @edge: 90%) {
   background-color: @color;
@@ -72,9 +157,6 @@
   .box-shadow(inset 0 1px 2px rgba(0,0,0,.5));
 }
 
-.shadowed {
-  .box-shadow(0 2px 5px rgba(0,0,0,.2));
-}
 
 .fill {
     height:100%;
@@ -176,32 +258,6 @@ body {
     .pop-text;
 }
 
-.comments {
-  .comment {
-    padding: @defaultPad;
-    .pop-text;
-    .gravatar {
-      img {
-        .background(darken(@wellBackground, 10%));
-        .bordered(darken(@wellBackground, 10%));
-      }
-      text-align: center;
-    }
-    .postdate {
-      text-align: center;
-    }
-    .popover {
-      .shadowed;
-      position: relative;
-      display: block;
-      float: left;
-      padding: @defaultPad;
-      min-width: 100%;
-      width: 100%;
-      z-index: 1;
-    }
-  }
-}
 
 .editableMarkdown {
     cursor: text;
@@ -275,33 +331,4 @@ body {
     .action;
 }
 
-//Tweak the popover a tiny bit
-.popover {
-  .border-radius(@baseBorderRadius);
-  border-color: darken(@wellBackground, 25%);
-  &.right .arrow {
-    border-right-color: darken(@wellBackground, 25%);
-    &:after {
-      border-right-color: darken(@wellBackground, 25%);
-    }
-  }
-  &.top .arrow {
-    border-top-color: darken(@wellBackground, 25%);
-    &:after {
-      border-top-color: darken(@wellBackground, 25%);
-    }
-  }
-  &.bottom .arrow {
-    border-bottom-color: darken(@wellBackground, 25%);
-    &:after {
-      border-bottom-color: darken(@wellBackground, 25%);
-    }
-  }
-  &.left .arrow {
-    border-left-color: darken(@wellBackground, 25%);
-    &:after {
-      border-left-color: darken(@wellBackground, 25%);
-    }
-  }
-}
 */
