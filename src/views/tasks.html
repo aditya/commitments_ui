@@ -6,10 +6,10 @@
             <span editable-date ng-model="item.due" tooltip="'click to set a due date'"></span>
             <span editable-tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
             <span editable-tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
-            <span class="icon-comments-alt action" tooltip="'comment and chat'"></span><span class="action">{{item.discussion.total}}</span>
+            <span class="icon-comments-alt action" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'"></span><span class="action">{{item.discussion.total}}</span>
             <span class="icon-hand-right action" tooltip="'poke your delegates for a status report'"></span>
         </div>
-        <div ng-init="discussion=item.discussion">
+        <div ng-show="item.discussion.show" ng-init="discussion=item.discussion">
             <dynamic-include src="'src/views/discussion.html'"/>
         </div>
     </div>
