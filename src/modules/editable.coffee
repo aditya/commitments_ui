@@ -56,7 +56,6 @@ module = angular.module('editable', [])
             codemirror = null
             #hook on to any way in the field
             element.bind 'click dblclick focus', () ->
-                console.log 'focus'
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
                     attachTo.width('100%')
@@ -138,11 +137,9 @@ module = angular.module('editable', [])
         link: ($scope, element, attrs, ngModel) ->
             listDiffers = (model) ->
                 tail = model.slice(-1)?[0]
-                console.log 'check placeholder', tail
                 if tail and tail.$$placeholder
                     #there is already a placeholder record
                 else
-                    console.log 'blank record'
                     model.push
                         $$placeholder: true
             $scope.$watch attrs.ngModel, listDiffers, true
@@ -157,7 +154,6 @@ module = angular.module('editable', [])
                     if not item.$$placeholder
                         count++
                 $scope.$eval "#{attrs.editableListCounter}=#{count}"
-                console.log 'counter', $scope.$eval 'discussion'
             $scope.$watch attrs.ngModel, listDiffers, true
     ])
     .directive('editableRecord', [() ->
@@ -212,7 +208,6 @@ module = angular.module('editable', [])
             icon.bind 'click', startEdit
             display.bind 'click', startEdit
             deleter.bind 'click', ->
-                console.log 'clickc'
                 $scope.$apply ->
                     ngModel.$setViewValue('')
                     ngModel.$render()
@@ -287,6 +282,7 @@ module = angular.module('editable', [])
     .directive('activeIf', [ ->
         restrict: 'A'
         link: ($scope, element, attrs) ->
+            console.log attrs.activeIf
             $scope.$watch attrs.activeIf, (val) ->
                 if val
                     element.addClass 'active'

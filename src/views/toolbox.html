@@ -1,8 +1,8 @@
 <div class="well no-side-padding">
     <ul class="nav nav-list">
         <li class="nav-header">Tasks</li>
-        <li ng-repeat="box in database.boxes" active-if="box.selected">
-        <a href="#">{{box.title}}</a>
+        <li ng-repeat="box in database.boxes" active-if="selected == box">
+        <a href="#" ng-click="selectBox(box)">{{box.title}}</a>
         </li>
     </ul>
 </div>

@@ -10,7 +10,6 @@ module = angular.module('RootServices', ['ngResource'])
             boxes: [
                 title: 'Todo'
                 uri: '/lists/todo'
-                selected: true
                 items: [
                     uri: '/items/a'
                     what: 'I am but a simple task\n\n* One\n\n* Two'
@@ -36,7 +35,6 @@ module = angular.module('RootServices', ['ngResource'])
             ,
                 title: 'Done'
                 uri: '/lists/done'
-                selected: false
             ]
     #nothing in particular to do at the moment for config, it isjust nice to see
     .config ->

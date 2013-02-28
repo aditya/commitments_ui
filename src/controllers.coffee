@@ -4,6 +4,8 @@ module = angular.module('Root', ['RootServices', 'ui', 'dynamic', 'editable', 'r
         $scope.database = Database.sample()
         $scope.selected = $scope.database.boxes[0]
         $scope.user = Authentication.user()
+        $scope.selectBox = (box) ->
+            $scope.selected = box
     .controller 'Toolbox', ($scope) ->
         console.log 'toolbox'
     .controller 'Discussion', ($scope) ->
