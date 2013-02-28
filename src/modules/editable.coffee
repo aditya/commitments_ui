@@ -178,7 +178,8 @@ module = angular.module('editable', [])
             element.addClass 'editable'
             icon = angular.element('<span class="icon-calendar icon"/>')
             display = angular.element('<span class="date-display"/>')
-            element.append(icon, display)
+            deleter = angular.element('<span class="icon-remove-sign"/>')
+            element.append(icon, display, deleter)
             #make sure to unhook the dialog like keyboard capture
             clearCapture = ->
                 icon.popover 'destroy'
@@ -210,7 +211,16 @@ module = angular.module('editable', [])
                 icon.popover 'show'
             icon.bind 'click', startEdit
             display.bind 'click', startEdit
+            deleter.bind 'click', ->
+                console.log 'clickc'
+                $scope.$apply ->
+                    ngModel.$setViewValue('')
+                    ngModel.$render()
             ngModel.$render = () ->
+                if ngModel.$viewValue
+                    deleter.show()
+                else
+                    deleter.hide()
                 display.text ngModel.$viewValue
     ])
     .directive('editableTags', ['$timeout', ($timeout) ->
