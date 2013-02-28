@@ -22,6 +22,7 @@ module = angular.module('RootServices', ['ngResource'])
                     what: 'There is always more to do'
                     discussion:
                         total: 2
+                        show: true
                         comments: [
                             who: 'wballard@glgroup.com'
                             when: '02/21/2013'

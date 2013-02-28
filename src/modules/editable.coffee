@@ -146,6 +146,19 @@ module = angular.module('editable', [])
                         $$placeholder: true
             $scope.$watch attrs.ngModel, listDiffers, true
     ])
+    .directive('editableListCounter', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            listDiffers = (model) ->
+                count = 0
+                for item in model
+                    if not item.$$placeholder
+                        count++
+                $scope.$eval "#{attrs.editableListCounter}=#{count}"
+                console.log 'counter', $scope.$eval 'discussion'
+            $scope.$watch attrs.ngModel, listDiffers, true
+    ])
     .directive('editableRecord', [() ->
         restrict: 'A'
         require: 'ngModel'
@@ -245,4 +258,16 @@ module = angular.module('editable', [])
                     if ngModel.$viewValue
                         icon.addClass 'icon-check'
                         icon.removeClass 'icon-check-empty'
+    ])
+    .directive('requiresObject', [ ->
+        restrict: 'A'
+        link: ($scope, element, attrs) ->
+            if not $scope.$eval(attrs.requiresObject)
+                $scope.$eval("#{attrs.requiresObject}={}")
+    ])
+    .directive('requiresInt', [ ->
+        restrict: 'A'
+        link: ($scope, element, attrs, ngModel) ->
+            if not $scope.$eval(attrs.requiresInt)
+                $scope.$eval("#{attrs.requiresInt}=0")
     ])
