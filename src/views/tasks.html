@@ -1,7 +1,7 @@
 <ul editable-list editable-list-blank-record ng-model="selected.items" class="unstyled items">
     <li ng-repeat="item in selected.items" class="item">
     <div editable-record ng-model="item" requires-object="item.discussion">
-        <div editable-markdown focus-on-add delete-when-blank="item" ng-model="item.what" placeholder="'New task here'" class="spaced"></div>
+        <div editable-markdown focus-on-add delete-when-blank="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="spaced"></div>
         <div>
             <span editable-check ng-model="item.done" tooltip="'click here to mark done'"></span>
             <span editable-date ng-model="item.due" tooltip="'click to set a due date'"></span>

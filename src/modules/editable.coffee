@@ -47,7 +47,8 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
-            element.addClass 'editableMarkdown'
+            element.addClass 'markdown'
+            element.addClass 'editable'
             attachTo = angular.element("<div></div>")
             attachTo.hide()
             display = angular.element("<div class='display'></div>")
@@ -267,7 +268,16 @@ module = angular.module('editable', [])
     ])
     .directive('requiresInt', [ ->
         restrict: 'A'
-        link: ($scope, element, attrs, ngModel) ->
+        link: ($scope, element, attrs) ->
             if not $scope.$eval(attrs.requiresInt)
                 $scope.$eval("#{attrs.requiresInt}=0")
+    ])
+    .directive('activeIf', [ ->
+        restrict: 'A'
+        link: ($scope, element, attrs) ->
+            $scope.$watch attrs.activeIf, (val) ->
+                if val
+                    element.addClass 'active'
+                else
+                    element.removeClass 'active'
     ])

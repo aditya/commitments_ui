@@ -28,7 +28,12 @@
 <script type="text/coffeescript" src="src/app.coffee"></script>
 </head>
 <body ng-controller="Desktop">
-  <dynamic-include src="'src/views/taskpad.html'"/>
+<div>
+    <ng-include src="'src/views/navbar.html'"/>
+</div>
+<div>
+    <ng-include src="'src/views/taskpad.html'"/>
+</div>
 </body>
 
 </html>

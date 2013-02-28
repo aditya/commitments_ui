@@ -1,6 +1,52 @@
+
 @defaultPad: 6px;
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
+
+//get the left navigation to stay on screen
+.sidebar-nav-fixed {
+    position:fixed;
+    top:60px;
+    width:21.97%;
+}
+
+@media (max-width: 767px) {
+    .sidebar-nav-fixed {
+        position:static;
+        width:auto;
+    }
+}
+
+@media (max-width: 979px) {
+    .sidebar-nav-fixed {
+        top:70px;
+    }
+}
+
+.taskpad {
+  margin-top: 60px;
+}
+
+.no-side-padding {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.item {
+  padding: @defaultPad;
+  margin: @defaultMargin;
+  border: 1px solid darken(@wellBackground, 7%);
+  .border-radius(@baseBorderRadius);
+  .box-shadow(inset 0 1px 1px rgba(0,0,0,.05));
+}
+
+.editable {
+  .border-radius(@baseBorderRadius);
+  border: 1px dotted @transparent;
+  &:hover {
+    border: 1px dotted darken(@wellBackground, 7%);
+  }
+}
 
 .background(@color: #555, @darkenby: 15%, @edge: 90%) {
   background-color: @color;
@@ -13,7 +59,7 @@
   background-repeat: repeat-x;
 */
 }
-
+/*
 .bordered(@color: @gray) {
   @faded: fadeout(@color, 25%);
   .border-radius(@baseBorderRadius);
@@ -258,4 +304,4 @@ body {
     }
   }
 }
-
+*/

@@ -1,9 +1,11 @@
-<div class="container">
-    <div class="row-fluid columns">
-        <div class="span2 toolbox">
-            <dynamic-include src="'src/views/toolbox.html'"/>
+<div class="container-fluid taskpad">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="sidebar-nav-fixed">
+                <dynamic-include src="'src/views/toolbox.html'"/>
+            </div>
         </div>
-        <div class="span10 workpad">
+        <div class="span9">
             <dynamic-include src="'src/views/tasks.html'"/>
         </div>
     </div>
