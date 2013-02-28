@@ -31,6 +31,11 @@
 }
 
 //styles for our bits
+
+body {
+    background-image: url('../images/body-bg-texture-medium.png');
+}
+
 .taskpad {
   margin-top: 60px;
 }
@@ -52,11 +57,12 @@
   .border-radius(@baseBorderRadius);
   border: 1px dotted @transparent;
   &:hover {
-    border: 1px dotted darken(@wellBackground, 7%);
+    border: 1px solid darken(@wellBackground, 7%);
+    .box-shadow(0 2px 5px rgba(0,0,0,0.5));
   }
   cursor: text;
   .placeholder {
-    color: lighten(@textColor, 25%);
+    color: @linkColor;
     font-style: italic;
   }
 }
@@ -66,6 +72,9 @@
   &.icon-border {
     border-width: 2px;
     .border-radius(4px);
+  }
+  &:hover{
+      text-shadow: 0px 2px 5px rgba(0,0,0,0.5);
   }
 }
 
@@ -79,7 +88,6 @@
     padding: @defaultPad;
     .gravatar {
       img {
-        .background(darken(@wellBackground, 10%));
         border: 1px solid darken(@wellBackground, 7%);
         .border-radius(@baseBorderRadius);
       }
@@ -133,202 +141,3 @@
 }
 
 
-.background(@color: #555, @darkenby: 15%, @edge: 90%) {
-  background-color: @color;
- /*
-  background-image: -moz-linear-gradient(top, @color, darken(@color, @darkenby)); // FF 3.6+
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@color), to(darken(@color, @darkenby))); // Safari 4+, Chrome 2+
-  background-image: -webkit-linear-gradient(top, @color @edge, darken(@color, @darkenby)); // Safari 5.1+, Chrome 10+
-  background-image: -o-linear-gradient(top, @color @edge, darken(@color, @darkenby)); // Opera 11.10
-  background-image: linear-gradient(to bottom, @color @edge, darken(@color, @darkenby)); // Standard, IE10
-  background-repeat: repeat-x;
-*/
-}
-/*
-.bordered(@color: @gray) {
-  @faded: fadeout(@color, 25%);
-  .border-radius(@baseBorderRadius);
-  border-style: solid;
-  border-width: 1px 1px 1px 1px;
-  border-color: @faded
-}
-
-.insetshadowed {
-  .box-shadow(inset 0 1px 2px rgba(0,0,0,.5));
-}
-
-
-.fill {
-    height:100%;
-}
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
-
-body {
-    background-image: url('../images/bg-brown.jpg');
-}
-
-.columns {
-    height: 100%;
-    padding: @defaultPad;
-    border: 1px solid @grayDarker;
-    .shadowed;
-    .border-radius(@baseBorderRadius);
-    background-color: @grayDark;
-    background-image: url('../images/body-bg-texture.png');
-}
-
-.action {
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.5);
-    color: @linkColor !important;
-    background-image: none !important;
-    &:hover{
-        text-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-        color: lighten(@linkColor, 5%);
-        background-color: transparent;
-    }
-}
-
-.pop-text {
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.1) !important;
-}
-
-.caption {
-    .pop-text;
-    color: @textColor;
-}
-
-.bigger {
-    font-size: 120%;
-}
-
-.toolbox {
-    min-height: 100%;
-    height: 100%;
-    overflow: auto;
-    .border-radius(@baseBorderRadius);
-    border: 1px solid @grayDarker;
-    .shadowed;
-    background-image: url('../images/body-bg-texture-medium.png');
-    .nav {
-        .nav-header {
-            .bigger;
-            .shadowed;
-        }
-        a {
-            .action;
-        }
-        .divider {
-            background-color: @gray;
-            border-bottom: 1px solid @grayDark;
-        }
-        i {
-            margin-right: -12px;
-            float: right;
-        }
-    }
-}
-
-.workpad {
-    height: 100%;
-    overflow: auto;
-    padding: @defaultPad;
-    .border-radius(@baseBorderRadius);
-    border: 1px solid @grayDarker;
-    background-color: @wellBackground;
-    background-image: url('../images/body-bg-texture-medium.png');
-    .box-shadow(0 2px 5px rgba(0,0,0,.75));
-}
-
-.items {
-    .item {
-        margin: @defaultMargin;
-        padding: @defaultPad;
-        .border-radius(@baseBorderRadius);
-        .insetshadowed;
-        .background(darken(@wellBackground, 10%));
-        background-image: url('../images/body-bg-texture-heavy.png');
-    }
-    .spaced {
-        margin-bottom: @defaultMargin;
-    }
-    .pop-text;
-}
-
-
-.editableMarkdown {
-    cursor: text;
-    min-width: 100%;
-    min-height: @inputHeight;
-    width: 100%;
-    color: @textColor;
-    .placeholder {
-      color: lighten(@textColor, 25%);
-      font-style: italic;
-    }
-}
-
-.editableDate {
-
-}
-
-.editableDateIcon {
-    cursor: pointer;
-    .action;
-}
-
-.editableDateDisplay {
-}
-
-.editableTags {
-}
-
-.editableTagsIcon {
-    .action;
-}
-
-.editableTagsDisplay {
-    margin-top: -2px;
-    background-color: transparent !important;
-}
-
-.editableCheckIcon {
-    cursor: pointer;
-    .action;
-}
-
-.ui-datepicker-next, .ui-datepicker-prev {
-    .action;
-    text-decoration: none !important;
-    margin-top: @defaultMargin;
-}
-
-.ui-datepicker-inline {
-  border: 0px !important;
-  .box-shadow(none) !important;
-}
-
-.ui-datepicker-title {
-    .caption;
-    .bigger;
-}
-
-.ui-datepicker-calendar {
-    th {
-        .caption;
-    }
-    .ui-state-default {
-        .action;
-    }
-}
-
-.editableListAdd {
-    margin: @defaultMargin;
-    .icon-2x;
-    .action;
-}
-
-*/

@@ -25,6 +25,9 @@
     height: 100%;
     padding: @defaultPad;
     position: relative;
+    &:hover {
+      .box-shadow(0 2px 5px rgba(0,0,0,0.5));
+    }
 }
 
 .underlay {
@@ -35,10 +38,9 @@
 }
 
 .tagbar-search-field {
-}
-
-.tagbar-input {
-    margin-left: @defaultMargin;
+    position: relative;
+    margin-top: 5px;
+    height: 100%;
 }
 
 .tagbar-highlighted {
