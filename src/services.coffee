@@ -9,16 +9,13 @@ module = angular.module('RootServices', ['ngResource'])
         sample: ->
             boxes: [
                 title: 'Todo'
-                uri: '/lists/todo'
                 items: [
-                    uri: '/items/a'
                     what: 'I am but a simple task\n\n* One\n\n* Two'
                     due: '02/24/2013'
                     tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
                     who: 'kwokoek@gmail.com'
                     delegates: ['igroff@glgroup.com', 'wballard@glgroup.com']
                 ,
-                    uri: '/items/b'
                     what: 'There is always more to do'
                     who: 'wballard@glgroup.com'
                     discussion:
@@ -36,7 +33,6 @@ module = angular.module('RootServices', ['ngResource'])
                 ]
             ,
                 title: 'Done'
-                uri: '/lists/done'
             ]
     #nothing in particular to do at the moment for config, it isjust nice to see
     .config ->

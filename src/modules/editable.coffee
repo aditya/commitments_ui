@@ -34,11 +34,16 @@ Put this on a block elemnt, it makes a nice checkbox binding to a boolean.
     <div editable-check ng-model="item.done"></div>
 ###
 
+counter = 0;
 
 module = angular.module('editable', [])
     .directive('editableRecord', [() ->
         restrict: 'A'
-        link: ($scope, element) ->
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            $scope.$watch attrs.ngModel, (model) ->
+                if not model.id
+                    model.id = md5(moment().format() + counter++)
             element.bind 'click dblclick focus', (e) ->
                 if element[0] is e.target
                     $scope.$broadcast 'inRecord'
