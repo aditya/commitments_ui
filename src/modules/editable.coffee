@@ -258,7 +258,10 @@ module = angular.module('editable', [])
                 element.append(icon)
                 element.bind 'click', ->
                     $scope.$apply () ->
-                        ngModel.$setViewValue not(ngModel.$viewValue or false)
+                        if ngModel.$viewValue
+                            ngModel.$setViewValue ''
+                        else
+                            ngModel.$setViewValue moment().format()
                         ngModel.$render()
                 ngModel.$render = ->
                     icon.removeClass 'icon-check'
