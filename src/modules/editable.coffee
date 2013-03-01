@@ -44,6 +44,8 @@ module = angular.module('editable', [])
             $scope.$watch attrs.ngModel, (model) ->
                 if not model.id
                     model.id = md5("#{Date.now()}#{counter++}")
+                if not model.who
+                    model.who = $scope.user.email
             element.bind 'click dblclick focus', (e) ->
                 if element[0] is e.target
                     $scope.$broadcast 'inRecord'
