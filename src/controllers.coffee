@@ -6,6 +6,8 @@ module = angular.module('Root', ['RootServices', 'ui', 'dynamic', 'editable', 'r
         $scope.user = Authentication.user()
         $scope.selectBox = (box) ->
             $scope.selected = box
+        $scope.poke = (item) ->
+            console.log 'poking', item
     .controller 'Toolbox', ($scope) ->
         console.log 'toolbox'
     .controller 'Discussion', ($scope) ->
