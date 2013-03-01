@@ -15,10 +15,12 @@ module = angular.module('RootServices', ['ngResource'])
                     what: 'I am but a simple task\n\n* One\n\n* Two'
                     due: '02/24/2013'
                     tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
-                    delegates: ['igroff@glgroup.com']
+                    owner: 'kwokoek@gmail.com'
+                    delegates: ['igroff@glgroup.com', 'wballard@glgroup.com']
                 ,
                     uri: '/items/b'
                     what: 'There is always more to do'
+                    owner: 'wballard@glgroup.com'
                     discussion:
                         total: 2
                         show: true
