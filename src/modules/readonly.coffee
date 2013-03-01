@@ -3,7 +3,7 @@
 ###
 AUTOHIDE_DELAY = 3000
 module = angular.module('readonly', [])
-    .directive('readonlyGravatar', [() ->
+    .directive('gravatar', [() ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
@@ -14,7 +14,7 @@ module = angular.module('readonly', [])
             ngModel.$render = ->
                 if not ngModel.$viewValue
                     ngModel.$setViewValue($scope.$eval(attrs.default))
-                hash = md5(ngModel.$viewValue.toLowerCase())
+                hash = md5((ngModel.$viewValue or '').toLowerCase())
                 icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}"
     ])
     .directive('tooltip', ['$timeout', ($timeout)  ->
@@ -33,7 +33,7 @@ module = angular.module('readonly', [])
                 element.bind 'shown', ->
                     $timeout (-> element.tooltip 'hide'), AUTOHIDE_DELAY
     ])
-    .directive('readonlyPostdate', [() ->
+    .directive('postdate', [() ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->

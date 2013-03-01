@@ -91,16 +91,17 @@ body {
   margin-top: @defaultMargin;
 }
 
+.gravatar {
+  img {
+    border: 1px solid darken(@wellBackground, 7%);
+    .border-radius(@baseBorderRadius);
+  }
+  text-align: center;
+}
+
 .comments {
   .comment {
     padding: @defaultPad;
-    .gravatar {
-      img {
-        border: 1px solid darken(@wellBackground, 7%);
-        .border-radius(@baseBorderRadius);
-      }
-      text-align: center;
-    }
     .postdate {
       text-align: center;
     }

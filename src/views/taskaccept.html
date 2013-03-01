@@ -1,0 +1,6 @@
+<div ng-controller="TaskAccept" class="alert">
+    <span>Task from</span>
+    <span gravatar ng-model="item.who" tooltip="item.who"></span>
+    <span class="btn btn-success" ng-click="accept(item)">Accept</span>
+    <span class="btn btn-danger" ng-click="reject(item)">Reject</span>
+</div>

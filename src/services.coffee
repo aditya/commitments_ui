@@ -13,7 +13,7 @@ module = angular.module('RootServices', ['ngResource'])
                     what: 'I am but a simple task\n\n* One\n\n* Two'
                     due: '02/24/2013'
                     tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
-                    who: 'kwokoek@gmail.com'
+                    who: 'kwokoek@glgroup.com'
                     delegates: ['igroff@glgroup.com', 'wballard@glgroup.com']
                 ,
                     what: 'There is always more to do'

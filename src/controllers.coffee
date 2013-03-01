@@ -12,6 +12,10 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         console.log 'toolbox'
     .controller 'Discussion', ($scope) ->
         console.log 'comments'
+    .controller 'TaskAccept', ($scope) ->
+        console.log 'accept'
+        $scope.accept = ->
+            console.log $scope
     .config ->
         console.log 'Root controllers online'
     .run ->
