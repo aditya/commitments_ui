@@ -38,6 +38,7 @@ module = angular.module('RootServices', ['ngResource'])
                 filter: -> _.filter(todos, (x) -> x.done)
                 hide: (x) -> not x.done
             ]
+            items: todos
     #nothing in particular to do at the moment for config, it isjust nice to see
     .config ->
         console.log 'Root services online'

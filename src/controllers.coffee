@@ -6,13 +6,18 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         $scope.selectBox = (box) ->
             $scope.selected = box
             $scope.selected.items = box.filter()
+            $scope.selected.items.pusher = (x) ->
+                $scope.database.items.push x
             console.log $scope.selected.items
         $scope.poke = (item) ->
             console.log 'poking', item
         #initial view selection
         $scope.selectBox $scope.database.boxes[0]
-    .controller 'Toolbox', ($scope) ->
+    .controller 'Toolbox', ($scope, $rootScope) ->
         console.log 'toolbox'
+        $rootScope.$on 'recount', ->
+            for box in $scope.database.boxes
+                box.todo_count = _.reject(box.filter(), (x) -> x.done or x.$$placeholder).length
     .controller 'Discussion', ($scope) ->
         console.log 'comments'
     .controller 'TaskAccept', ($scope, $timeout) ->

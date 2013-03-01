@@ -79,7 +79,7 @@ module = angular.module('editable', [])
                                 $scope.$emit 'delete', $scope.$eval(attrs.deleteWhenBlank)
                             else if attrs.deleteWhenBlank?
                                 #clear the placeholder flag, this is now a record
-                                $scope.$eval?(attrs.deleteWhenBlank).$$placeholder = false
+                                $scope.$eval?(attrs.deleteWhenBlank).notAPlaceholder()
                             ngModel.$setViewValue(value)
                             ngModel.$render()
                         $timeout ->
@@ -140,7 +140,7 @@ module = angular.module('editable', [])
                 $scope.$apply () ->
                     ngModel.$modelValue.push({})
     ])
-    .directive('editableListBlankRecord', [() ->
+    .directive('editableListBlankRecord', ($rootScope) ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
@@ -149,10 +149,22 @@ module = angular.module('editable', [])
                 if tail and tail.$$placeholder
                     #there is already a placeholder record
                 else
-                    model.push
+                    p =
                         $$placeholder: true
+                        notAPlaceholder:  ->
+                            p.$$placeholder = false
+                            #a pusher is defined when you are working on a view
+                            #filter on top of the base model, otherwise you end
+                            #up putting the record on an array that ceases to exist
+                            if model.pusher
+                                model.pusher p
+                    #putting on the model makes it able to show on the screen
+                    #even if the screen is attached to a 'view' or filter of
+                    #the base model array
+                    model.push p
+                    $rootScope.$emit 'recount'
             $scope.$watch attrs.ngModel, listDiffers, true
-    ])
+    )
     .directive('editableListCounter', [() ->
         restrict: 'A'
         require: 'ngModel'
