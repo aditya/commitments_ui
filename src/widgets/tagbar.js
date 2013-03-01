@@ -345,7 +345,8 @@
             this.close();
             this.focusSearch();
         },
-        addSelectedChoice: function (data) {
+        addSelectedChoice: function (data, value) {
+            console.log(arguments);
             var item = $("<li class='tagbar-search-choice'></li>");
             var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
             var underZ = 0
@@ -359,17 +360,17 @@
             var closer = $("<span class='tagbar-search-choice-close underlay label'><span class='icon-remove-sign'></span></span>");
             item.append(closer);
             closer.bind("click dblclick", this.bind(function (e) {
-                    console.log('ARRR');
                   if (!this.enabled) return;
                   $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
                       $(e.target).parent(".tagbar-search-choice").remove();
+                      delete this.values[item.data("tagbar-data")];
                       this.clear();
                   })).dequeue();
                   killEvent(e);
               }));
             item.data("tagbar-data", data);
             item.insertBefore(this.searchContainer);
-            this.values.push(data);
+            this.values[data] = value || Date.now();
             this.triggerChange();
         },
         ensureSomethingHighlighted: function () {
@@ -382,16 +383,23 @@
             this.search.width(width).show()
         },
         val: function () {
-            if (arguments.length === 0) return this.values || [];
+            if (arguments.length === 0) return this.values || {};
             var self = this;
-            //the actual data
-            this.values = []
-            //update the visuals
-            this.clearSearch();
+            //the actual data needs to be cleared out, will be filled in
+            //by adding selected choices
+            this.values = {};
             $(".tagbar-search-choice", this.container).remove();
-            $(arguments[0]).each(function () {
-                self.addSelectedChoice(this);
-            });
+            this.clearSearch();
+            //now add in all the items, forgiving the input as an array
+            if (Array.isArray(arguments[0])) {
+                $(arguments[0]).each(function () {
+                    self.addSelectedChoice(this);
+                });
+            } else {
+                $(arguments[0].keys).each(function () {
+                    self.addSelectedChoice(this, arguments[0][this]);
+                });
+            }
         }
     };}
     $.fn.tagbar = function () {
