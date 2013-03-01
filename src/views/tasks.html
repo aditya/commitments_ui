@@ -1,5 +1,5 @@
 <ul editable-list editable-list-blank-record ng-model="selected.items" class="unstyled items">
-    <li ng-repeat="item in selected.items" animated-hide="item.who != user.email && !item.delegates[user.email]" class="item">
+    <li ng-repeat="item in selected.items" animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)" class="item">
     <div editable-record ng-model="item" requires-object="item.discussion">
         <div requires-object="item.accept">
             <ng-include src="'src/views/taskaccept.html'"/>

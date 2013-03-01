@@ -59,5 +59,7 @@ module = angular.module('readonly', [])
                         element.hide(HIDE_ANIMATION_DELAY)
                     else
                         element.hide()
+                else
+                    element.show()
                 counter++
     ])

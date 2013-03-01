@@ -2,12 +2,15 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
     .controller 'Desktop', ($scope, Database, Authentication) ->
         console.log 'desktop'
         $scope.database = Database.sample()
-        $scope.selected = $scope.database.boxes[0]
         $scope.user = Authentication.user()
         $scope.selectBox = (box) ->
             $scope.selected = box
+            $scope.selected.items = box.filter()
+            console.log $scope.selected.items
         $scope.poke = (item) ->
             console.log 'poking', item
+        #initial view selection
+        $scope.selectBox $scope.database.boxes[0]
     .controller 'Toolbox', ($scope) ->
         console.log 'toolbox'
     .controller 'Discussion', ($scope) ->
