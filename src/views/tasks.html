@@ -11,7 +11,7 @@
             <span class="icon icon-hand-right action" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
         </div>
         <div ng-show="item.discussion.show" ng-init="discussion=item.discussion">
-            <dynamic-include src="'src/views/discussion.html'"/>
+            <ng-include src="'src/views/discussion.html'"/>
         </div>
     </div>
     </li>
