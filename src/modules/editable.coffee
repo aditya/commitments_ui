@@ -56,6 +56,8 @@ module = angular.module('editable', [])
             codemirror = null
             #hook on to any way in the field
             element.bind 'click dblclick focus', () ->
+                if element.hasClass 'readonly'
+                    return
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
                     attachTo.width('100%')
@@ -285,10 +287,18 @@ module = angular.module('editable', [])
     .directive('activeIf', [ ->
         restrict: 'A'
         link: ($scope, element, attrs) ->
-            console.log attrs.activeIf
             $scope.$watch attrs.activeIf, (val) ->
                 if val
                     element.addClass 'active'
                 else
                     element.removeClass 'active'
+    ])
+    .directive('readonlyIf', [ ->
+        restrict: 'A'
+        link: ($scope, element, attrs) ->
+            $scope.$watch attrs.readonlyIf, (val) ->
+                if val
+                    element.addClass 'readonly'
+                else
+                    element.removeClass 'readonly'
     ])
