@@ -395,9 +395,9 @@
                     self.addSelectedChoice(this);
                 });
             } else {
-                $(arguments[0].keys).each(function () {
-                    self.addSelectedChoice(this, arguments[0][this]);
-                });
+                for (var tag in arguments[0]){
+                    self.addSelectedChoice(tag, arguments[0][tag]);
+                }
             }
         }
     };}

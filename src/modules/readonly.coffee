@@ -2,6 +2,7 @@
 
 ###
 AUTOHIDE_DELAY = 3000
+HIDE_ANIMATION_DELAY = 400
 module = angular.module('readonly', [])
     .directive('gravatar', [() ->
         restrict: 'A'
@@ -45,4 +46,18 @@ module = angular.module('readonly', [])
             ngModel.$render = ->
                 if ngModel.$viewValue
                     element.text moment(ngModel.$viewValue).fromNow()
+    ])
+    .directive('animatedHide', [ ->
+        restrict: 'A'
+        link: ($scope, element, attrs) ->
+            #counter is in here so an initial hide isn't animated, just hidden
+            #so we'll only animate if it was visible on the first pass
+            counter = 0
+            $scope.$watch attrs.animatedHide, (hide) ->
+                if hide
+                    if counter
+                        element.hide(HIDE_ANIMATION_DELAY)
+                    else
+                        element.hide()
+                counter++
     ])

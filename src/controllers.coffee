@@ -1,5 +1,5 @@
 module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
-    .controller 'Desktop', ($scope, $compile, Database, Authentication) ->
+    .controller 'Desktop', ($scope, Database, Authentication) ->
         console.log 'desktop'
         $scope.database = Database.sample()
         $scope.selected = $scope.database.boxes[0]
@@ -12,14 +12,16 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         console.log 'toolbox'
     .controller 'Discussion', ($scope) ->
         console.log 'comments'
-    .controller 'TaskAccept', ($scope) ->
+    .controller 'TaskAccept', ($scope, $timeout) ->
         console.log 'accept'
-        $scope.accept = ->
-            console.log $scope
+        $scope.accept = (item) ->
+            item.accept[$scope.user.email] = Date.now()
+        $scope.reject = (item) ->
+            delete item.delegates[$scope.user.email]
+            delete item.accept[$scope.user.email]
     .config ->
         console.log 'Root controllers online'
     .run ->
-        console.log angular.element(document)
         console.log 'starting application'
 
 

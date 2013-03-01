@@ -255,6 +255,11 @@ module = angular.module('editable', [])
                 #rendering is really just setting the values
                 ngModel.$render = () ->
                     input.tagbar 'val',  ngModel.$viewValue or []
+                watchCount = 0
+                $scope.$watch attrs.ngModel, (->
+                    if watchCount++
+                        ngModel.$render()
+                ), true
     ])
     .directive('editableCheck', [ ->
         restrict: 'A'
