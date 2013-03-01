@@ -40,7 +40,7 @@ module = angular.module('readonly', [])
             element.addClass 'postdate'
             $scope.$on 'edited', (event, record) ->
                 if not ngModel.$viewValue
-                    ngModel.$setViewValue(moment().format())
+                    ngModel.$setViewValue Date.now()
                     ngModel.$render()
             ngModel.$render = ->
                 if ngModel.$viewValue

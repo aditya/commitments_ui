@@ -43,7 +43,7 @@ module = angular.module('editable', [])
         link: ($scope, element, attrs, ngModel) ->
             $scope.$watch attrs.ngModel, (model) ->
                 if not model.id
-                    model.id = md5(moment().format() + counter++)
+                    model.id = md5("#{Date.now()}#{counter++}")
             element.bind 'click dblclick focus', (e) ->
                 if element[0] is e.target
                     $scope.$broadcast 'inRecord'
@@ -268,7 +268,7 @@ module = angular.module('editable', [])
                         if ngModel.$viewValue
                             ngModel.$setViewValue ''
                         else
-                            ngModel.$setViewValue moment().format()
+                            ngModel.$setViewValue Date.now()
                         ngModel.$render()
                 ngModel.$render = ->
                     icon.removeClass 'icon-check'

@@ -346,7 +346,6 @@
             this.focusSearch();
         },
         addSelectedChoice: function (data, value) {
-            console.log(arguments);
             var item = $("<li class='tagbar-search-choice'></li>");
             var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
             var underZ = 0
