@@ -30,9 +30,22 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         console.log 'toolbox'
         me = $scope.user.email
         $scope.$watch 'updates', ->
-            for box in $scope.database.boxes
+            boxes = [].concat($scope.boxes, $scope.tags)
+            for box in boxes
                 box.todo_count = _.reject(box.filter(),
                     (x) -> x.done or (x.who isnt me and not x.delegates[me])).length
+        #and here are the boxes, first get all the tags -- nothing super fancy
+        $scope.boxes = $scope.database.boxes
+        #and the dynamic tag boxes
+        tags = {}
+        for item in $scope.database.items
+            if item.tags?
+                for tag in item.tags
+                    tags[tag] =
+                        title: tag
+                        filter: -> _.filter($scope.database.items, (x) -> (x.tags or{})[tag])
+                        hide: -> false
+        $scope.tags = _.values(tags)
     .controller 'Discussion', ($scope) ->
         console.log 'comments'
     .controller 'TaskAccept', ($scope, $timeout) ->
