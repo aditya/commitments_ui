@@ -13,9 +13,13 @@ module = angular.module('editable', [])
                     model.id = md5("#{Date.now()}#{counter++}")
                 if not model.who
                     model.who = $scope.user.email
+                if model.$$required
+                    if not model.when
+                        model.when = Date.now()
                 #controller callback with the updated item
                 if attrs.onUpdate
                     $scope.$eval(attrs.onUpdate) model
+
                 $scope.$emit 'editableRecordUpdate', model
             ,true
     ])
