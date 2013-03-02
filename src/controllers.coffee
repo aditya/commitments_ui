@@ -16,6 +16,10 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
             console.log 'update item', item
         $scope.deleteItem  = (item) ->
             console.log 'delete item', item
+            list = $scope.database.items
+            foundAt = list.indexOf(item)
+            if foundAt >= 0
+                list.splice(foundAt, 1)
         #initial view selection
         $scope.selectBox $scope.database.boxes[0]
     .controller 'Toolbox', ($scope, $rootScope) ->

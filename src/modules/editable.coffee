@@ -59,25 +59,17 @@ module = angular.module('editable', [])
                     foundAt = list.indexOf(record)
                     if foundAt >= 0
                         list.splice(foundAt, 1)
+                    if attrs.onDelete
+                        $scope.$eval("#{attrs.onDelete}")(record)
                 #once you have the required field, you are no longer placeholder
+                #and are an actual new record
                 if record.$$required and record is ngModel.$modelValue.$$placeholder
                     if attrs.editableListBlankRecord?
-                        console.log 'no longer a placeholder', ngModel, record
                         ngModel.$modelValue.$$placeholder = null
                         newPlaceholder()
+                    if attrs.onCreate
+                        $scope.$eval("#{attrs.onCreate}")(record)
                 event.stopPropagation()
-    ])
-    .directive('editableListCounter', [() ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            listDiffers = (model) ->
-                count = 0
-                for item in model
-                    if item isnt model.$$placeholder
-                        count++
-                $scope.$eval "#{attrs.editableListCounter}=#{count}"
-            $scope.$watch attrs.ngModel, listDiffers, true
     ])
     .directive('markdown', ['$timeout', ($timeout) ->
         restrict: 'A'
@@ -251,6 +243,12 @@ module = angular.module('editable', [])
         link: ($scope, element, attrs) ->
             if not $scope.$eval(attrs.requiresInt)
                 $scope.$eval("#{attrs.requiresInt}=0")
+    ])
+    .directive('requiresArray', [ ->
+        restrict: 'A'
+        link: ($scope, element, attrs) ->
+            if not $scope.$eval(attrs.requiresArray)
+                $scope.$eval("#{attrs.requiresArray}=[]")
     ])
     .directive('activeIf', [ ->
         restrict: 'A'

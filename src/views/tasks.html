@@ -10,8 +10,11 @@
             <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
             <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
             <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
-            <span class="icon icon-comments-alt action" requires-int="item.discussion.total" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'"></span><span class="action">{{item.discussion.total}}</span>
-            <span class="icon icon-hand-right action" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
+            <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
+                <span class="icon icon-comments-alt" ></span>
+                <span class="">{{item.discussion.comments.length-1}}</span>
+            </span>
+            <span class="icon icon-hand-right" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
         </div>
         <div ng-show="item.discussion.show" ng-init="discussion=item.discussion">
             <ng-include src="'src/views/discussion.html'"/>
