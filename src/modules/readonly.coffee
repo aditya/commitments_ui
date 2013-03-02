@@ -63,10 +63,3 @@ module = angular.module('readonly', [])
                     element.show()
                 counter++
     ])
-    .directive('recount', ($rootScope) ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            $scope.$watch attrs.ngModel, (i)->
-                $rootScope.$emit 'recount'
-    )
