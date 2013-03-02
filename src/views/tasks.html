@@ -4,7 +4,7 @@
         <div requires-object="item.accept">
             <ng-include src="'src/views/taskaccept.html'"/>
         </div>
-        <div editable-markdown focus-on-add delete-when-blank="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="spaced"></div>
+        <div markdown focus-on-add required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="spaced"></div>
         <div>
             <span recount editable-check ng-model="item.done" tooltip="'click here to mark done'"></span>
             <span editable-date ng-model="item.due" tooltip="'click to set a due date'"></span>

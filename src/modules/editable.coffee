@@ -50,7 +50,19 @@ module = angular.module('editable', [])
                 if element[0] is e.target
                     $scope.$broadcast 'inRecord'
     ])
-    .directive('editableMarkdown', ['$timeout', ($timeout) ->
+    .directive('requiredFor', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            cycle = 0
+            $scope.$watch attrs.ngModel, (value) ->
+                if cycle++
+                    if value
+                        $scope.$emit 'create', $scope.$eval(attrs.requiredFor)
+                    else
+                        $scope.$emit 'delete', $scope.$eval(attrs.requiredFor)
+    ])
+    .directive('markdown', ['$timeout', ($timeout) ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
@@ -73,15 +85,10 @@ module = angular.module('editable', [])
                         .css('overflow-x', 'auto')
                         .css('overflow-y', 'hidden')
                     codemirror.on 'blur', ->
-                        $scope.$apply ->
-                            value = codemirror.getValue().trimLeft().trimRight()
-                            if attrs.deleteWhenBlank? and value is ""
-                                $scope.$emit 'delete', $scope.$eval(attrs.deleteWhenBlank)
-                            else if attrs.deleteWhenBlank?
-                                #clear the placeholder flag, this is now a record
-                                $scope.$eval?(attrs.deleteWhenBlank).notAPlaceholder()
-                            ngModel.$setViewValue(value)
-                            ngModel.$render()
+                        value = codemirror.getValue().trimLeft().trimRight()
+                        ngModel.$setViewValue(value)
+                        ngModel.$render()
+                        $scope.$digest()
                         $timeout ->
                             display.show 100
                             attachTo.hide 100, ->
@@ -121,24 +128,14 @@ module = angular.module('editable', [])
                 #make sure there is always a list
                 if not ngModel.$viewValue
                     ngModel.$setViewValue([])
-            #handle propagated deletes, this will be in an apply
+            #handle the list
             $scope.$on 'delete', (event, item) ->
                 list = ngModel.$modelValue
                 foundAt = list.indexOf(item)
                 if foundAt >= 0
                     list.splice(foundAt, 1)
-    ])
-    .directive('editableListAdd', [() ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            #provide UI handling to add items
-            wrapped = element.wrap('<div class="editableList"/>').parent()
-            adder = angular.element('<div class="icon icon-plus"/>')
-            wrapped.append(adder)
-            adder.bind 'click', () ->
-                $scope.$apply () ->
-                    ngModel.$modelValue.push({})
+            $scope.$on 'create', (event, item) ->
+                console.log 'create'
     ])
     .directive('editableListBlankRecord', ($rootScope) ->
         restrict: 'A'
@@ -149,21 +146,17 @@ module = angular.module('editable', [])
                 if tail and tail.$$placeholder
                     #there is already a placeholder record
                 else
-                    p =
-                        $$placeholder: true
-                        notAPlaceholder:  ->
-                            p.$$placeholder = false
-                            #a pusher is defined when you are working on a view
-                            #filter on top of the base model, otherwise you end
-                            #up putting the record on an array that ceases to exist
-                            if model.pusher
-                                model.pusher p
                     #putting on the model makes it able to show on the screen
                     #even if the screen is attached to a 'view' or filter of
                     #the base model array
-                    model.push p
-                    $rootScope.$emit 'recount'
+                    #*but*, this may not actually put it through to the base
+                    #storage array in the case of a view
+                    model.push
+                        $$placeholder: true
             $scope.$watch attrs.ngModel, listDiffers, true
+            $scope.$on 'create', (event, item) ->
+                #this is no longer a placeholder
+                item.$$placeholder = false
     )
     .directive('editableListCounter', [() ->
         restrict: 'A'
