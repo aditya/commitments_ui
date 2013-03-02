@@ -6,6 +6,8 @@ module = angular.module('RootServices', ['ngResource'])
     #deal with querying 'the database', really the services up in the cloud
     #** for the time being this is just rigged to pretend to be a service **
     .factory 'Database', () ->
+        #here is the 'database' in memory, static for now but this will
+        #need to be filled in from user home directories
         todos = [
             what: 'I am but a simple task\n\n* One\n\n* Two'
             due: '02/24/2013'
@@ -28,7 +30,7 @@ module = angular.module('RootServices', ['ngResource'])
                     what: 'Told\n\nYou\n\nSo.'
                 ]
         ]
-        sample: ->
+        ->
             boxes: [
                 title: 'Todo'
                 filter: -> _.reject(todos, (x) -> x.done)

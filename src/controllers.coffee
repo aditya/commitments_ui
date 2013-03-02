@@ -1,16 +1,21 @@
 module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
     .controller 'Desktop', ($scope, Database, Authentication) ->
         console.log 'desktop'
-        $scope.database = Database.sample()
+        $scope.database = Database()
         $scope.user = Authentication.user()
         $scope.selectBox = (box) ->
             $scope.selected = box
             $scope.selected.items = box.filter()
-            $scope.selected.items.pusher = (x) ->
-                $scope.database.items.push x
             console.log $scope.selected.items
         $scope.poke = (item) ->
             console.log 'poking', item
+        $scope.newItem = (item) ->
+            console.log 'new item', item
+            $scope.database.items.push item
+        $scope.updateItem = (item) ->
+            console.log 'update item', item
+        $scope.deleteItem  = (item) ->
+            console.log 'delete item', item
         #initial view selection
         $scope.selectBox $scope.database.boxes[0]
     .controller 'Toolbox', ($scope, $rootScope) ->

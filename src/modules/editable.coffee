@@ -1,66 +1,83 @@
-###
-Inline edit capabilities are captured here. The idea is to enable bound
-angular JS editing without resorting to the use of a FORM or any server trip.
-
-Editable Record
----------------
-Marker you put on a repeater or container. This will broadcast an event down
-when you click in the non-field areas of a record, useful to make it really
-easy to start editing without having to aim the mouse precisely at fields.
-
-Editable Markdown
------------------
-Put this on a block element, with ng-model indicating the binding target:
-
-    <div editable-markdown ng-model="item.message"></div>
-
-Attributes:
-    focus-on-add
-        when specified, set the focus here to start editing right away
-    delete-when-blank
-        when specified, fires an event up the scope to allow containing lists
-        a chance to remove the item
-
-Editable List
--------------
-Put this on a list, with ng-model indicating the binding target:
-
-    <ul editable-list ng-model="selected.items">
-
-Editable Check
---------------
-Put this on a block elemnt, it makes a nice checkbox binding to a boolean.
-
-    <div editable-check ng-model="item.done"></div>
-###
 
 counter = 0;
 
 module = angular.module('editable', [])
     .directive('editableRecord', [() ->
+        scope: true
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
             $scope.$watch attrs.ngModel, (model) ->
+                #fields that are always required
                 if not model.id
                     model.id = md5("#{Date.now()}#{counter++}")
                 if not model.who
                     model.who = $scope.user.email
-            element.bind 'click dblclick focus', (e) ->
-                if element[0] is e.target
-                    $scope.$broadcast 'inRecord'
+                #controller callback with the updated item
+                if attrs.onUpdate
+                    $scope.$eval(attrs.onUpdate) model
+                $scope.$emit 'editableRecordUpdate', model
+            ,true
     ])
     .directive('requiredFor', [() ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
-            cycle = 0
+            #ensure the property is present and has a value
             $scope.$watch attrs.ngModel, (value) ->
-                if cycle++
-                    if value
-                        $scope.$emit 'create', $scope.$eval(attrs.requiredFor)
-                    else
-                        $scope.$emit 'delete', $scope.$eval(attrs.requiredFor)
+                target = $scope.$eval(attrs.requiredFor)
+                if value
+                    target.$$required = true
+                else
+                    target.$$required = false
+    ])
+    .directive('editableList', ['$timeout', ($timeout) ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            #make sure there is a model
+            if not ngModel.$modelValue
+                ngModel.$modelValue = []
+            #ability to create a placeholder record
+            newPlaceholder = ->
+                if not ngModel.$modelValue.$$placeholder
+                    ngModel.$modelValue.$$placeholder = {}
+                    ngModel.$modelValue.push ngModel.$modelValue.$$placeholder
+            #make sure there is always a list if we change models
+            $scope.$watch attrs.ngModel, ->
+                if not ngModel.$viewValue
+                    ngModel.$setViewValue([])
+                #and the initial placeholder
+                if attrs.editableListBlankRecord?
+                    newPlaceholder()
+            #and record updates, deal with the delete logic that fires when
+            #the required field is empty
+            $scope.$on 'editableRecordUpdate', (event, record) ->
+                #this is a signal to delete the thing
+                if not record.$$required and record isnt ngModel.$modelValue.$$placeholder
+                    list = ngModel.$modelValue
+                    foundAt = list.indexOf(record)
+                    if foundAt >= 0
+                        list.splice(foundAt, 1)
+                #once you have the required field, you are no longer placeholder
+                if record.$$required and record is ngModel.$modelValue.$$placeholder
+                    if attrs.editableListBlankRecord?
+                        console.log 'no longer a placeholder', ngModel, record
+                        ngModel.$modelValue.$$placeholder = null
+                        newPlaceholder()
+                event.stopPropagation()
+    ])
+    .directive('editableListCounter', [() ->
+        restrict: 'A'
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
+            listDiffers = (model) ->
+                count = 0
+                for item in model
+                    if item isnt model.$$placeholder
+                        count++
+                $scope.$eval "#{attrs.editableListCounter}=#{count}"
+            $scope.$watch attrs.ngModel, listDiffers, true
     ])
     .directive('markdown', ['$timeout', ($timeout) ->
         restrict: 'A'
@@ -113,74 +130,8 @@ module = angular.module('editable', [])
                 else if attrs.placeholder
                     display.addClass('placeholder')
                     display.html($scope.$eval(attrs.placeholder))
-                else if attrs.focusOnAdd?
-                    element.click()
-            #additional autofocus support
-            $scope.$on 'inRecord', ->
-                if attrs.focusOnAdd?
-                    element.click()
     ])
-    .directive('editableList', [() ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            $scope.$watch attrs.ngModel, ->
-                #make sure there is always a list
-                if not ngModel.$viewValue
-                    ngModel.$setViewValue([])
-            #handle the list
-            $scope.$on 'delete', (event, item) ->
-                list = ngModel.$modelValue
-                foundAt = list.indexOf(item)
-                if foundAt >= 0
-                    list.splice(foundAt, 1)
-            $scope.$on 'create', (event, item) ->
-                console.log 'create'
-    ])
-    .directive('editableListBlankRecord', ($rootScope) ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            listDiffers = (model) ->
-                tail = model.slice(-1)?[0]
-                if tail and tail.$$placeholder
-                    #there is already a placeholder record
-                else
-                    #putting on the model makes it able to show on the screen
-                    #even if the screen is attached to a 'view' or filter of
-                    #the base model array
-                    #*but*, this may not actually put it through to the base
-                    #storage array in the case of a view
-                    model.push
-                        $$placeholder: true
-            $scope.$watch attrs.ngModel, listDiffers, true
-            $scope.$on 'create', (event, item) ->
-                #this is no longer a placeholder
-                item.$$placeholder = false
-    )
-    .directive('editableListCounter', [() ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            listDiffers = (model) ->
-                count = 0
-                for item in model
-                    if not item.$$placeholder
-                        count++
-                $scope.$eval "#{attrs.editableListCounter}=#{count}"
-            $scope.$watch attrs.ngModel, listDiffers, true
-    ])
-    .directive('editableRecord', [() ->
-        restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
-            updateCount = 0
-            recordDiffers = (model) ->
-                if updateCount++
-                    $scope.$emit 'edited', model
-            $scope.$watch attrs.ngModel, recordDiffers, true
-    ])
-    .directive('editableDate', [() ->
+    .directive('date', [() ->
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
@@ -232,7 +183,7 @@ module = angular.module('editable', [])
                     deleter.hide()
                 display.text ngModel.$viewValue
     ])
-    .directive('editableTags', ['$timeout', ($timeout) ->
+    .directive('tags', ['$timeout', ($timeout) ->
         restrict: 'A'
         require: 'ngModel'
         compile: (templateElement, templateAttrs) ->
@@ -266,7 +217,7 @@ module = angular.module('editable', [])
                         ngModel.$render()
                 ), true
     ])
-    .directive('editableCheck', [ ->
+    .directive('check', [ ->
         restrict: 'A'
         require: 'ngModel'
         compile: (templateElement, templateAttrs) ->
