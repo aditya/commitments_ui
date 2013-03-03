@@ -3,6 +3,9 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         console.log 'desktop'
         $scope.database = Database()
         $scope.user = Authentication.user()
+        $scope.messages =
+            info: 'Alerts & Messages'
+            count: 0
         $scope.updates = 0
         $scope.selectBox = (box) ->
             $scope.selected = box
