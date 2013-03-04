@@ -62,34 +62,59 @@ tokenizer = (context) ->
 Create a new index.
 ###
 @inverted = (context, pipelines) ->
-    #This is the key function, making a posting.
+    #here is our 'private data'
+    #here is the actual data structure for the index
+    perFieldPostings = {}
+    #given our pipelines, initialize them to *this* index with the passed context
+    initializedPipelines = {}
+    clear = ->
+        for field, pipeline of pipelines
+            #under each field, we'll need storage for each term
+            perFieldPostings[field] = {}
+            #initialize the pipelines in this context, making the actual functions
+            #that do the parsing and call back
+            initializedPipelines[field] = pipeline.map ((stage) -> stage(context)), context
+    #This is the key function, making a posting and store it in the index
     post = (document, field, term) ->
         console.log 'post', field, term
-    initializedPipelines = {}
-    for field, pipeline of pipelines
-        #initialize the pipelines in this context, making the actual functions
-        #that do the parsing and call back
-        initializedPipelines[field] = pipeline.map ((stage) -> stage(context)), context
+        perFieldPostings[field][term] = perFieldPostings[field][term] or []
+        perFieldPostings[field][term].push document
     #this is the tokenization pipeline, starting with a document and then
     #ending up with postings
-    tokenize = (document) ->
+    tokenize = (document, perTermAction) ->
         for field, pipeline of initializedPipelines
             callback = (term) ->
-                post document, field, term
+                perTermAction document, field, term
             #building in reverse, so the last stage points to `post`
             for stage in pipeline[..].reverse()
                 #capture the 'next' stage in a closure callback
-                next = (callback) ->
+                next = (callback, stage) ->
                     (term) ->
                         stage term, callback
-                callback = next callback
+                callback = next callback, stage
             #use the document as the first term to what is now the head of
             #the callback chain
             callback document
-
-    clear: ->
+    #all set
+    do clear
+    #and here are the methods exposed by an index
+    clear: clear
     add: (document) ->
         console.log 'add', document
-        tokenize document
+        tokenize document, post
     remove: (document) ->
         console.log 'remove', document
+    terms: (field) ->
+        ret = []
+        for term, postings of perFieldPostings[field]
+            ret.push term
+        ret
+    search: (query) ->
+        #given an object, parse it just like it was a document, but instead
+        #it is a query
+        ret = []
+        bufferQuery = (document, field, term) ->
+            console.log 'query', document, field, term
+            ret = perFieldPostings?[field]?[term]
+        tokenize query, bufferQuery
+        ret

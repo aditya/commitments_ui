@@ -30,20 +30,40 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
     .controller 'Toolbox', ($scope, $rootScope) ->
         console.log 'toolbox'
         me = $scope.user.email
+        #just pick out tags from a todo
         parseTags = (context) ->
             pattern = new RegExp("[" + $scope.tagNamespaceSeparators.join("") + "]+", "g");
             (document, callback) ->
                 for tag, _ of (document?.tags or {})
                     callback tag
+        eachLetter = (context) ->
+            (document, callback) ->
+                for letter in document
+                    callback letter
+        isDone = (context) ->
+            (document, callback) ->
+                if document?.done
+                    callback true
         index = inverted $scope,
             tags: [parseTags]
-            #done: []
+            done: [isDone]
             #text: []
         $scope.$watch 'database', (database) ->
             console.log 'reindexing'
             do index.clear
             for item in database.items
                 index.add item
+            tags = []
+            for tag in index.terms('tags')
+                console.log 'tag', tag
+                query =
+                    tags: {}
+                query.tags[tag] = 1
+                tags.push
+                    title: tag
+                    hide: -> false
+                    filter: -> index.search query
+            $scope.tags = tags
         $scope.$watch 'lastUpdatedItem', (item) ->
             index.add item
         $scope.$watch 'lastDeletedItem', (item) ->
