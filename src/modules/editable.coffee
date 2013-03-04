@@ -197,7 +197,7 @@ module = angular.module('editable', [])
                     input.tagbar 'focusSearch'
                 input.tagbar
                     tagSeparators: [',', ';']
-                    tagNamespaceSeparators: ['/', ':']
+                    tagNamespaceSeparators: $scope.tagNamespaceSeparators
                     query: (query) ->
                         query.callback
                             results: [query.term, 'sample']

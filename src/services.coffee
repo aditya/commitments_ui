@@ -11,7 +11,11 @@ module = angular.module('RootServices', ['ngResource'])
         todos = [
             what: 'I am but a simple task\n\n* One\n\n* Two'
             due: '02/24/2013'
-            tags: ['Tagged', 'Important', 'ABC/123', 'ABC/Luv']
+            tags:
+                Tagged: 1
+                Important: 1
+                'ABC/123': 1
+                'ABC/Luv': 1
             who: 'kwokoek@glgroup.com'
             delegates: ['igroff@glgroup.com', 'wballard@glgroup.com']
         ,
