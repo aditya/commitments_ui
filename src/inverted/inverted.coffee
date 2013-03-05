@@ -57,64 +57,56 @@ tokenizer = (context) ->
 
 ###
 
-
+@inverted = {}
 ###
 Create a new index.
 ###
-@inverted = (context, pipelines) ->
+@inverted.index = (context, pipeline) ->
     #here is our 'private data'
     #here is the actual data structure for the index
-    perFieldPostings = {}
+    termPostingLists = {}
+    #and reverse posting, being in memory make this easy to allow updating
+    documentTerms = {}
     #given our pipelines, initialize them to *this* index with the passed context
-    initializedPipelines = {}
+    initializedPipeline = []
     clear = ->
-        for field, pipeline of pipelines
-            #under each field, we'll need storage for each term
-            perFieldPostings[field] = {}
-            #initialize the pipelines in this context, making the actual functions
-            #that do the parsing and call back
-            initializedPipelines[field] = pipeline.map ((stage) -> stage(context)), context
+        termPostingLists = {}
+        initializedPipeline = pipeline.map ((stage) -> stage(context)), context
     #This is the key function, making a posting and store it in the index
-    post = (document, field, term) ->
-        console.log 'post', field, term
-        perFieldPostings[field][term] = perFieldPostings[field][term] or []
-        perFieldPostings[field][term].push document
+    post = (document, term, posting) ->
+        termPostingLists[term] = termPostingLists[term] or []
+        termPostingLists[term].push document
     #this is the tokenization pipeline, starting with a document and then
     #ending up with postings
     tokenize = (document, perTermAction) ->
-        for field, pipeline of initializedPipelines
-            callback = (term) ->
-                perTermAction document, field, term
-            #building in reverse, so the last stage points to `post`
-            for stage in pipeline[..].reverse()
-                #capture the 'next' stage in a closure callback
-                next = (callback, stage) ->
-                    (term) ->
-                        stage term, callback
-                callback = next callback, stage
-            #use the document as the first term to what is now the head of
-            #the callback chain
-            callback document
+        callback = (term) ->
+            perTermAction document, term
+        #building in reverse, so the last stage points to `post`
+        for stage in initializedPipeline[..].reverse()
+            #capture the 'next' stage in a closure callback
+            next = (callback, stage) ->
+                (term) ->
+                    stage term, callback
+            callback = next callback, stage
+        #use the document as the first term to what is now the head of
+        #the callback chain
+        callback document
     #all set
     do clear
     #and here are the methods exposed by an index
     clear: clear
     add: (document) ->
-        console.log 'add', document
         tokenize document, post
     remove: (document) ->
-        console.log 'remove', document
-    terms: (field) ->
-        ret = []
-        for term, postings of perFieldPostings[field]
-            ret.push term
-        ret
+    terms: ->
+        Object.keys termPostingLists
     search: (query) ->
         #given an object, parse it just like it was a document, but instead
         #it is a query
-        ret = []
-        bufferQuery = (document, field, term) ->
-            console.log 'query', document, field, term
-            ret = perFieldPostings?[field]?[term]
+        console.log 'postings', termPostingLists
+        candidate_sets = []
+        bufferQuery = (document, term) ->
+            console.log term, termPostingLists[term]
+            candidate_sets.push termPostingLists?[term] or []
         tokenize query, bufferQuery
-        ret
+        candidate_sets[0]

@@ -11,15 +11,17 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         $scope.selectBox = (box) ->
             $scope.selected = box
             $scope.selected.items = box.filter()
-            console.log $scope.selected.items
         $scope.poke = (item) ->
             console.log 'poking', item
         $scope.newItem = (item) ->
+            console.log 'new', item
             $scope.database.items.push item
             $scope.lastUpdatedItem = item
         $scope.updateItem = (item) ->
+            console.log 'update', item
             $scope.lastUpdatedItem = item
         $scope.deleteItem  = (item) ->
+            console.log 'delete', item
             list = $scope.database.items
             foundAt = list.indexOf(item)
             if foundAt >= 0
@@ -32,54 +34,45 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         me = $scope.user.email
         #just pick out tags from a todo
         parseTags = (context) ->
-            pattern = new RegExp("[" + $scope.tagNamespaceSeparators.join("") + "]+", "g");
             (document, callback) ->
                 for tag, _ of (document?.tags or {})
                     callback tag
-        eachLetter = (context) ->
-            (document, callback) ->
-                for letter in document
-                    callback letter
+        #boolean, done or not?
         isDone = (context) ->
             (document, callback) ->
-                if document?.done
-                    callback true
-        index = inverted $scope,
-            tags: [parseTags]
-            done: [isDone]
-            #text: []
+                callback (document?.done or false)
+        tagIndex = inverted.index $scope, [parseTags]
+        doneIndex = inverted.index $scope, [isDone]
+        indexItem = (item) ->
+            console.log 'indexing', item
+            tagIndex.add item
+            doneIndex.add item
         $scope.$watch 'database', (database) ->
             console.log 'reindexing'
-            do index.clear
+            do tagIndex.clear
+            do doneIndex.clear
             for item in database.items
-                index.add item
+                indexItem item
             tags = []
-            for tag in index.terms('tags')
-                console.log 'tag', tag
-                query =
-                    tags: {}
-                query.tags[tag] = 1
+            for tag in tagIndex.terms()
+                byTag = (tagValue) ->
+                    by_tag = {tags: {}}
+                    by_tag.tags[tagValue] = 1
+                    -> tagIndex.search by_tag
+                stillToDo = -> doneIndex.search {done: false}
                 tags.push
                     title: tag
                     hide: -> false
-                    filter: -> index.search query
+                    filter: byTag tag
+                    todoCount: -> 0
             $scope.tags = tags
+            console.log 'reindexing complete'
         $scope.$watch 'lastUpdatedItem', (item) ->
-            index.add item
+            indexItem item
         $scope.$watch 'lastDeletedItem', (item) ->
-            index.remove item
-        #and here are the boxes, first get all the tags -- nothing super fancy
+            indexItem item
+        #and here are the todo and done boxes
         $scope.boxes = $scope.database.boxes
-        #and the dynamic tag boxes
-        tags = {}
-        for item in $scope.database.items
-            if item.tags?
-                for tag in item.tags
-                    tags[tag] =
-                        title: tag
-                        filter: -> _.filter($scope.database.items, (x) -> (x.tags or{})[tag])
-                        hide: -> false
-        $scope.tags = _.values(tags)
     .controller 'Discussion', ($scope) ->
         console.log 'comments'
     .controller 'TaskAccept', ($scope, $timeout) ->
