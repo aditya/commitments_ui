@@ -36,7 +36,7 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         parseTags = (document, callback) ->
             for tag, _ of (document?.tags or {})
                 callback tag
-        tagIndex = inverted.index [parseTags], (x) -> x.id
+        tagIndex = $scope.tagIndex = inverted.index [parseTags], (x) -> x.id
         indexItem = (item) ->
             console.log 'indexing', item
             tagIndex.add item
@@ -45,19 +45,22 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
             do tagIndex.clear
             for item in database.items
                 indexItem item
-            $scope.tags = []
-            for tag in tagIndex.terms()
-                byTag = (tag, filter) ->
-                    () ->
-                        by_tag = {tags: {}}
-                        by_tag.tags[tag] = 1
-                        tagIndex.search by_tag, filter
-                $scope.tags.push
-                    title: tag
-                    hide: -> false
-                    filter: byTag(tag)
-                    todoCount: byTag(tag, (x) -> not x.done)
             console.log 'reindexing complete'
+        $scope.$watch 'tagIndex.revision()', ->
+            $scope.tags = do ->
+                ret = []
+                for tag in tagIndex.terms()
+                    byTag = (tag, filter) ->
+                        () ->
+                            by_tag = {tags: {}}
+                            by_tag.tags[tag] = 1
+                            tagIndex.search by_tag, filter
+                    ret.push
+                        title: tag
+                        hide: -> false
+                        filter: byTag(tag)
+                        todoCount: byTag(tag, (x) -> not x.done)
+                ret
         $scope.$watch 'lastUpdatedItem', (item) ->
             indexItem item
         $scope.$watch 'lastDeletedItem', (item) ->

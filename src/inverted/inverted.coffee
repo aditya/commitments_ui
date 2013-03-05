@@ -79,8 +79,8 @@ Create a new index, this tracks a single set of postings.
         #this is taking advantage of the face that we are in memory indexing
         #read objects
         documents[key] = document
-        termPostingLists[term] = termPostingLists[term] or {}
-        termPostingLists[term][key] = posting or true
+        postTo = (termPostingLists[term] = termPostingLists[term] or {})
+        postTo[key] = posting or true
         documentTerms[key] = documentTerms[key] or {}
         documentTerms[key][term] = posting or true
     #clear out a document and its postings
@@ -125,6 +125,8 @@ Create a new index, this tracks a single set of postings.
                 unpostFromIndex key, document
     terms: ->
         Object.keys termPostingLists
+    revision: ->
+        md5(Object.keys(termPostingLists).join(''))
     search: (query, filter) ->
         query = query or {}
         filter = filter or -> true
@@ -132,7 +134,6 @@ Create a new index, this tracks a single set of postings.
         #it is a query
         candidate_sets = []
         bufferQuery = (key, document, term) ->
-            console.log term
             candidate_sets.push termPostingLists?[term] or []
         tokenize null, query, bufferQuery
         first_set = candidate_sets.shift()
