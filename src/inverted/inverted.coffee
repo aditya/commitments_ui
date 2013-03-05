@@ -59,30 +59,37 @@ tokenizer = (context) ->
 
 @inverted = {}
 ###
-Create a new index.
+Create a new index, this tracks a single set of postings.
 ###
-@inverted.index = (context, pipeline) ->
+@inverted.index = (pipeline, keyFunction) ->
     #here is our 'private data'
     #here is the actual data structure for the index
     termPostingLists = {}
     #and reverse posting, being in memory make this easy to allow updating
     documentTerms = {}
-    #given our pipelines, initialize them to *this* index with the passed context
-    initializedPipeline = []
     clear = ->
         termPostingLists = {}
-        initializedPipeline = pipeline.map ((stage) -> stage(context)), context
+        documentTerms = {}
     #This is the key function, making a posting and store it in the index
-    post = (document, term, posting) ->
+    postToIndex = (document, term, posting) ->
+        #for the postings, this is the actual document itself, by reference
+        #this is taking advantage of the face that we are in memory indexing
+        #read objects
         termPostingLists[term] = termPostingLists[term] or []
         termPostingLists[term].push document
+        key = keyFunction document
+        documentTerms[key] = documentTerms[key] or []
+        documentTerms[key].push term
     #this is the tokenization pipeline, starting with a document and then
     #ending up with postings
     tokenize = (document, perTermAction) ->
+        #this is the 'last stage' where we go to the per term action
+        #passed in by the index itself, so all pipelines get one more stage
+        #then specified by the user
         callback = (term) ->
             perTermAction document, term
-        #building in reverse, so the last stage points to `post`
-        for stage in initializedPipeline[..].reverse()
+        #building in reverse, making the links in the pipeline
+        for stage in pipeline[..].reverse()
             #capture the 'next' stage in a closure callback
             next = (callback, stage) ->
                 (term) ->
@@ -96,7 +103,7 @@ Create a new index.
     #and here are the methods exposed by an index
     clear: clear
     add: (document) ->
-        tokenize document, post
+        tokenize document, postToIndex
     remove: (document) ->
     terms: ->
         Object.keys termPostingLists

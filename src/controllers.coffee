@@ -33,39 +33,29 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         console.log 'toolbox'
         me = $scope.user.email
         #just pick out tags from a todo
-        parseTags = (context) ->
-            (document, callback) ->
-                for tag, _ of (document?.tags or {})
-                    callback tag
-        #boolean, done or not?
-        isDone = (context) ->
-            (document, callback) ->
-                callback (document?.done or false)
-        tagIndex = inverted.index $scope, [parseTags]
-        doneIndex = inverted.index $scope, [isDone]
+        parseTags = (document, callback) ->
+            for tag, _ of (document?.tags or {})
+                callback tag
+        tagIndex = inverted.index [parseTags], (x) -> x.id
         indexItem = (item) ->
             console.log 'indexing', item
             tagIndex.add item
-            doneIndex.add item
         $scope.$watch 'database', (database) ->
             console.log 'reindexing'
             do tagIndex.clear
-            do doneIndex.clear
             for item in database.items
                 indexItem item
-            tags = []
+            $scope.tags = []
             for tag in tagIndex.terms()
-                byTag = (tagValue) ->
+                byTag = (tagValue, filter) ->
                     by_tag = {tags: {}}
                     by_tag.tags[tagValue] = 1
-                    -> tagIndex.search by_tag
-                stillToDo = -> doneIndex.search {done: false}
-                tags.push
+                    tagIndex.search by_tag, filter
+                $scope.tags.push
                     title: tag
                     hide: -> false
-                    filter: byTag tag
-                    todoCount: -> 0
-            $scope.tags = tags
+                    filter: -> byTag tag
+                    todoCount: -> byTag(tag, (x) -> not x.done).length
             console.log 'reindexing complete'
         $scope.$watch 'lastUpdatedItem', (item) ->
             indexItem item
