@@ -64,30 +64,40 @@ Create a new index, this tracks a single set of postings.
 @inverted.index = (pipeline, keyFunction) ->
     #here is our 'private data'
     #here is the actual data structure for the index
-    termPostingLists = {}
-    #and reverse posting, being in memory make this easy to allow updating
+    documents = {}
+    #and track posting, being in memory make this easy to allow updating
     documentTerms = {}
+    #and the inverted index itself
+    termPostingLists = {}
+    #big empty index awaits
     clear = ->
         termPostingLists = {}
         documentTerms = {}
     #This is the key function, making a posting and store it in the index
-    postToIndex = (document, term, posting) ->
+    postToIndex = (key, document, term, posting) ->
         #for the postings, this is the actual document itself, by reference
         #this is taking advantage of the face that we are in memory indexing
         #read objects
-        termPostingLists[term] = termPostingLists[term] or []
-        termPostingLists[term].push document
-        key = keyFunction document
-        documentTerms[key] = documentTerms[key] or []
-        documentTerms[key].push term
+        documents[key] = document
+        termPostingLists[term] = termPostingLists[term] or {}
+        termPostingLists[term][key] = posting or true
+        documentTerms[key] = documentTerms[key] or {}
+        documentTerms[key][term] = posting or true
+    #clear out a document and its postings
+    unpostFromIndex = (key, document) ->
+        for term in (documentTerms[key] or [])
+            delete termPostingLists[term][key]
+        delete documents[key]
+        delete documentTerms[key]
+        document
     #this is the tokenization pipeline, starting with a document and then
     #ending up with postings
-    tokenize = (document, perTermAction) ->
+    tokenize = (key, document, perTermAction) ->
         #this is the 'last stage' where we go to the per term action
         #passed in by the index itself, so all pipelines get one more stage
         #then specified by the user
-        callback = (term) ->
-            perTermAction document, term
+        callback = (term, posting) ->
+            perTermAction key, document, term, posting
         #building in reverse, making the links in the pipeline
         for stage in pipeline[..].reverse()
             #capture the 'next' stage in a closure callback
@@ -103,17 +113,31 @@ Create a new index, this tracks a single set of postings.
     #and here are the methods exposed by an index
     clear: clear
     add: (document) ->
-        tokenize document, postToIndex
+        if document
+            key = keyFunction document
+            if key
+                unpostFromIndex key, document
+                tokenize key, document, postToIndex
     remove: (document) ->
+        if document
+            key = keyFunction document
+            if key
+                unpostFromIndex key, document
     terms: ->
         Object.keys termPostingLists
-    search: (query) ->
+    search: (query, filter) ->
+        query = query or {}
+        filter = filter or -> true
         #given an object, parse it just like it was a document, but instead
         #it is a query
-        console.log 'postings', termPostingLists
         candidate_sets = []
-        bufferQuery = (document, term) ->
-            console.log term, termPostingLists[term]
+        bufferQuery = (key, document, term) ->
+            console.log term
             candidate_sets.push termPostingLists?[term] or []
-        tokenize query, bufferQuery
-        candidate_sets[0]
+        tokenize null, query, bufferQuery
+        first_set = candidate_sets.shift()
+        for set in candidate_sets
+            first_set = _.pick(first_set, _.keys(set))
+        #and the very handy ability to tack on any old logical predicate
+        #as a post processing filter
+        _.filter((_.keys(first_set).map (x) -> documents[x]), filter)

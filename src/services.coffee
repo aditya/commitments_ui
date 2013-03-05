@@ -9,6 +9,7 @@ module = angular.module('RootServices', ['ngResource'])
         #here is the 'database' in memory, static for now but this will
         #need to be filled in from user home directories
         todos = [
+            id: 'a'
             what: 'I am but a simple task\n\n* One\n\n* Two'
             due: '02/24/2013'
             tags:
@@ -19,8 +20,11 @@ module = angular.module('RootServices', ['ngResource'])
             who: 'kwokoek@glgroup.com'
             delegates: ['igroff@glgroup.com', 'wballard@glgroup.com']
         ,
+            id: 'b'
             what: 'There is always more to do'
             who: 'wballard@glgroup.com'
+            tags:
+                Tagged: 1
             discussion:
                 show: true
                 comments: [
@@ -32,6 +36,10 @@ module = angular.module('RootServices', ['ngResource'])
                     when: '02/24/2013'
                     what: 'Told\n\nYou\n\nSo.'
                 ]
+        ,
+            id: 'c'
+            what: 'Nothing fancy'
+            who: 'wballard@glgroup.com'
         ]
         ->
             boxes: [

@@ -47,15 +47,16 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
                 indexItem item
             $scope.tags = []
             for tag in tagIndex.terms()
-                byTag = (tagValue, filter) ->
-                    by_tag = {tags: {}}
-                    by_tag.tags[tagValue] = 1
-                    tagIndex.search by_tag, filter
+                byTag = (tag, filter) ->
+                    () ->
+                        by_tag = {tags: {}}
+                        by_tag.tags[tag] = 1
+                        tagIndex.search by_tag, filter
                 $scope.tags.push
                     title: tag
                     hide: -> false
-                    filter: -> byTag tag
-                    todoCount: -> byTag(tag, (x) -> not x.done).length
+                    filter: byTag(tag)
+                    todoCount: byTag(tag, (x) -> not x.done)
             console.log 'reindexing complete'
         $scope.$watch 'lastUpdatedItem', (item) ->
             indexItem item

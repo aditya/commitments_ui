@@ -6,7 +6,7 @@
         </li>
         <li class="divider"></li>
         <li ng-repeat="box in tags" active-if="selected == box">
-        <a href="#" ng-click="selectBox(box)">{{box.title}}<span ng-show="box.todoCount()" class="indent badge badge-inverse">{{box.todoCount()}}</a>
+        <a href="#" ng-click="selectBox(box)">{{box.title}}<span ng-show="box.todoCount().length" class="indent badge badge-inverse">{{box.todoCount().length}}</a>
         </li>
     </ul>
 </div>
