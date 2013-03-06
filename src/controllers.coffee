@@ -7,7 +7,6 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         $scope.messages =
             info: 'Alerts & Messages'
             count: 0
-        $scope.updates = 0
         $scope.selectBox = (box) ->
             $scope.selected = box
             $scope.selected.items = box.filter()
@@ -27,25 +26,35 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
             if foundAt >= 0
                 list.splice(foundAt, 1)
                 $scope.lastDeletedItem = item
-        #initial view selection
-        $scope.selectBox $scope.database.boxes[0]
     .controller 'Toolbox', ($scope, $rootScope) ->
         console.log 'toolbox'
-        me = $scope.user.email
-        #just pick out tags from a todo
+        #always have the todo and done boxes
+        $scope.boxes = [
+            title: 'Todo'
+            filter: -> _.reject($scope.database.items, (x) -> x.done)
+            hide: (x) -> x.done
+        ,
+            title: 'Done'
+            filter: -> _.filter($scope.database.items, (x) -> x.done)
+            hide: (x) -> not x.done
+        ]
+        #initial view selection
+        $scope.selectBox $scope.boxes[0]
+        #just pick out tags from a todo, these will be facets
         parseTags = (document, callback) ->
             for tag, _ of (document?.tags or {})
                 callback tag
         tagIndex = $scope.tagIndex = inverted.index [parseTags], (x) -> x.id
-        indexItem = (item) ->
-            console.log 'indexing', item
-            tagIndex.add item
+        #any time the database changes, we need to build a whole new tag
+        #index
         $scope.$watch 'database', (database) ->
             console.log 'reindexing'
             do tagIndex.clear
             for item in database.items
-                indexItem item
+                tagIndex.add item
             console.log 'reindexing complete'
+        #watch the index for changes, and if you see them rebuild all the tags
+        #so that we track the currently available facets
         $scope.$watch 'tagIndex.revision()', ->
             $scope.tags = do ->
                 ret = []
@@ -61,12 +70,14 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
                         filter: byTag(tag)
                         todoCount: byTag(tag, (x) -> not x.done)
                 ret
+        #peek at the model to see when it it time to add or remove an item
         $scope.$watch 'lastUpdatedItem', (item) ->
-            indexItem item
+            tagIndex.add item
+        , true
         $scope.$watch 'lastDeletedItem', (item) ->
-            indexItem item
+            tagIndex.remove item
+        , true
         #and here are the todo and done boxes
-        $scope.boxes = $scope.database.boxes
     .controller 'Discussion', ($scope) ->
         console.log 'comments'
     .controller 'TaskAccept', ($scope, $timeout) ->
