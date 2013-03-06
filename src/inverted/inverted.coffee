@@ -85,8 +85,12 @@ Create a new index, this tracks a single set of postings.
         documentTerms[key][term] = posting or true
     #clear out a document and its postings
     unpostFromIndex = (key, document) ->
-        for term in (documentTerms[key] or [])
+        console.log 'terms', key, documentTerms[key], documentTerms['aa']
+        for term, posting of (documentTerms[key] or {})
+            console.log 'killing', term, _.keys(termPostingLists[term]).length
             delete termPostingLists[term][key]
+            if not _.keys(termPostingLists[term]).length
+                delete termPostingLists[term]
         delete documents[key]
         delete documentTerms[key]
         document
@@ -116,6 +120,7 @@ Create a new index, this tracks a single set of postings.
         if document
             key = keyFunction document
             if key
+                console.log 'indexing', document
                 unpostFromIndex key, document
                 tokenize key, document, postToIndex
     remove: (document) ->
