@@ -35,6 +35,13 @@ module = angular.module('editable', [])
                 else
                     target.$$required = false
     ])
+    .directive('editableListReorder', [() ->
+        restrict: 'A'
+        link: ($scope, element, attrs) ->
+            #using jQuery, so this is not all that impressive
+            console.log 'sort', element
+            element.sortable()
+    ])
     .directive('editableList', ['$timeout', ($timeout) ->
         restrict: 'A'
         require: 'ngModel'

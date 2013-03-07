@@ -1,4 +1,4 @@
-<ul editable-list editable-list-blank-record on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
+<ul editable-list editable-list-blank-record editable-list-reorder on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
     <li ng-repeat="item in selected.items" animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)" class="item">
     <div editable-record ng-model="item" requires-object="item.discussion" on-update="updateItem">
         <div requires-object="item.accept">
