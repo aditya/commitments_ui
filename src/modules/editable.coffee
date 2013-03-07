@@ -1,6 +1,8 @@
 
 counter = 0;
 
+ANIMATION_SPEED = 200
+
 module = angular.module('editable', [])
     .directive('editableRecord', [() ->
         scope: true
@@ -39,8 +41,19 @@ module = angular.module('editable', [])
         restrict: 'A'
         link: ($scope, element, attrs) ->
             #using jQuery, so this is not all that impressive
-            console.log 'sort', element
-            element.sortable()
+            if attrs.handle
+                element.sortable
+                    handle: attrs.handle
+                element.on 'mouseenter', 'li', (event) ->
+                    $(attrs.handle, $(event.currentTarget)).animate
+                        opacity: 1
+                    , ANIMATION_SPEED
+                element.on 'mouseleave', 'li', (event) ->
+                    $(attrs.handle, $(event.currentTarget)).animate
+                        opacity: 0
+                    , ANIMATION_SPEED
+            else
+                element.sortable {}
     ])
     .directive('editableList', ['$timeout', ($timeout) ->
         restrict: 'A'

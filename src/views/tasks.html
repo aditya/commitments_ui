@@ -1,24 +1,26 @@
-<ul editable-list editable-list-blank-record editable-list-reorder on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
-    <li ng-repeat="item in selected.items" animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)" class="item">
-    <div editable-record ng-model="item" requires-object="item.discussion" on-update="updateItem">
-        <div requires-object="item.accept">
-            <ng-include src="'src/views/taskaccept.html'"/>
-        </div>
-        <div markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="spaced"></div>
-        <div>
-            <span check ng-model="item.done" tooltip="'click here to mark done'"></span>
-            <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
-            <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-            <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
-            <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
-                <span class="icon icon-comments-alt" ></span>
-                <span class="">{{item.discussion.comments.length-1}}</span>
-            </span>
-            <span class="icon icon-hand-right" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
-        </div>
-        <div ng-show="item.discussion.show" ng-init="discussion=item.discussion">
-            <ng-include src="'src/views/discussion.html'"/>
-        </div>
+<ul editable-list editable-list-blank-record editable-list-reorder handle=".handle" on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
+  <li ng-repeat="item in selected.items" animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)" class="">
+  <i class="icon-move icon-2x handle muted"></i>
+  <span editable-record ng-model="item" requires-object="item.discussion" on-update="updateItem" class="item handled">
+    <div requires-object="item.accept">
+      <ng-include src="'src/views/taskaccept.html'"/>
     </div>
-    </li>
+    <div markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="spaced"></div>
+    <div>
+      <span check ng-model="item.done" tooltip="'click here to mark done'"></span>
+      <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
+      <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
+      <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
+      <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
+        <span class="icon icon-comments-alt" ></span>
+        <span class="">{{item.discussion.comments.length-1}}</span>
+      </span>
+      <span class="icon icon-hand-right" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
+    </div>
+    <div ng-show="item.discussion.show" ng-init="discussion=item.discussion">
+      <ng-include src="'src/views/discussion.html'"/>
+    </div>
+  </span>
+  <span class="clearfix"></span>
+  </li>
 </ul>
