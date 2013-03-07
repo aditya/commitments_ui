@@ -369,13 +369,12 @@
                   if (!this.enabled) return;
                   $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
                       $(e.target).parent(".tagbar-search-choice").remove();
-                      delete this.values[item.data("tagbar-data")];
+                      delete this.values[data];
                       this.clear();
                       this.triggerChange();
                   })).dequeue();
                   killEvent(e);
               }));
-            item.data("tagbar-data", data);
             item.insertBefore(this.searchContainer);
             this.values[data] = value || Date.now();
         },
