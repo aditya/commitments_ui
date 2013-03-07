@@ -265,6 +265,8 @@
         },
         blur: function () {
             this.clear();
+            //propagate blur up to the root element
+            this.opts.element.trigger('blur');
         },
         focusSearch: function () {
             this.search.focus()
@@ -295,10 +297,6 @@
                     this.close();
                     return;
                 }
-                if (e.which == KEY.ESC) {
-                    this.close();
-                    return;
-                }
                 //if we are opened, key sequences that navigate selected items
                 if (this.opened()) {
                     switch (e.which) {
@@ -314,8 +312,18 @@
                         return;
                     case KEY.ESC:
                         this.cancel(e);
+                        this.search.blur();
                         killEvent(e);
                         return;
+                    }
+                } else {
+                //and when we are closed, key sequences that just exit the field
+                    switch (e.which) {
+                        case KEY.ESC:
+                        case KEY.ENTER:
+                            this.search.blur();
+                            killEvent(e);
+                            return;
                     }
                 }
             }));
@@ -339,7 +347,6 @@
             this.addSelectedChoice(data);
             this.clear();
             this.focusSearch();
-            this.triggerChange({ added: data });
         },
         cancel: function () {
             this.close();
@@ -364,13 +371,13 @@
                       $(e.target).parent(".tagbar-search-choice").remove();
                       delete this.values[item.data("tagbar-data")];
                       this.clear();
+                      this.triggerChange();
                   })).dequeue();
                   killEvent(e);
               }));
             item.data("tagbar-data", data);
             item.insertBefore(this.searchContainer);
             this.values[data] = value || Date.now();
-            this.triggerChange();
         },
         ensureSomethingHighlighted: function () {
             if (this.highlight() == -1){
@@ -394,6 +401,7 @@
                 $(arguments[0]).each(function () {
                     self.addSelectedChoice(this);
                 });
+                this.triggerChange();
             } else {
                 for (var tag in arguments[0]){
                     self.addSelectedChoice(tag, arguments[0][tag]);

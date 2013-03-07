@@ -190,9 +190,6 @@ module = angular.module('editable', [])
                 icon = angular.element("<span class='icon-#{templateAttrs.icon} icon'/>")
                 input = angular.element('<span class="tag-display"/>')
                 element.append(icon, input)
-                element.on 'keydown', (event) ->
-                    if event.which is 27 #escape
-                        document.activeElement.blur()
                 icon.bind 'click', ->
                     input.tagbar 'focusSearch'
                 input.tagbar
@@ -202,11 +199,14 @@ module = angular.module('editable', [])
                         query.callback
                             results: [query.term, 'sample']
                 #just propagate tag values back to the model
-                element.bind 'change', () ->
+                input.bind 'blur change', (event) ->
+                    console.log event, input.tagbar('val')
                     ngModel.$setViewValue(input.tagbar('val'))
                 #rendering is really just setting the values
                 ngModel.$render = () ->
-                    input.tagbar 'val',  ngModel.$viewValue or []
+                    if not ngModel.$viewValue
+                        ngModel.$setViewValue {}
+                    input.tagbar 'val', ngModel.$viewValue
                 watchCount = 0
                 $scope.$watch attrs.ngModel, (->
                     if watchCount++
