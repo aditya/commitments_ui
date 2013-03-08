@@ -284,9 +284,10 @@
                 "class": "tagbar-container tagbar-container-multi"
             }).html([
                 "<ul class='tagbar-choices'>",
-                "  <li class='tagbar-search-field' contentEditable>" ,
-                "  </li>" ,
+                "  <li class='icon icon-" + this.opts.icon + "'></li>",
+                "  <li class='tagbar-search-field' contentEditable></li>" ,
                 "</ul>"].join(""));
+            $(".icon", container).bind("click", this.bind(this.focusSearch));
 	        return container;
         },
         initContainer: function () {

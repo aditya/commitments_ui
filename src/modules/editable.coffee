@@ -221,12 +221,10 @@ module = angular.module('editable', [])
             templateElement.addClass 'editable'
             templateAttrs.icon = templateAttrs.icon or 'tags'
             ($scope, element, attrs, ngModel) ->
-                icon = angular.element("<span class='icon-#{templateAttrs.icon} icon'/>")
                 input = angular.element('<span class="tag-display"/>')
-                element.append(icon, input)
-                icon.bind 'click', ->
-                    input.tagbar 'focusSearch'
+                element.append input
                 input.tagbar
+                    icon: templateAttrs.icon
                     tagSeparators: [',', ';']
                     tagNamespaceSeparators: $scope.tagNamespaceSeparators
                     query: (query) ->
