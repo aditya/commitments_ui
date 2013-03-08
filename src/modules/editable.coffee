@@ -112,14 +112,16 @@ module = angular.module('editable', [])
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
                     codemirror.setOption 'lineWrapping', true
-                    attachTo.width('100%')
                     attachTo.height('auto')
                     $('.CodeMirror', attachTo).css('height', 'auto')
                     $('.CodeMirror-scroll', attachTo)
                         .css('overflow-x', 'auto')
                         .css('overflow-y', 'hidden')
                     if attrs.multiline?
-                        #nothing to see here
+                        #fill up the allocated space, this is more like a
+                        #textarea in this case, rather than just an self
+                        #expanding field
+                        attachTo.width('100%')
                     else
                         #trap enter, preventing multiple lines being added
                         #yet still allow 'wrapped' single line to be
