@@ -21,7 +21,6 @@ module = angular.module('editable', [])
                 #controller callback with the updated item
                 if attrs.onUpdate
                     $scope.$eval(attrs.onUpdate) model
-
                 $scope.$emit 'editableRecordUpdate', model
             ,true
     ])
