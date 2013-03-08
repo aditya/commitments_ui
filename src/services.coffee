@@ -10,7 +10,7 @@ module = angular.module('RootServices', ['ngResource'])
         #need to be filled in from user home directories
         todos = [
             id: 'a'
-            what: 'I am but a simple task\n\n* One\n\n* Two'
+            what: 'I am but a simple task'
             due: '02/24/2013'
             tags:
                 Tagged: 1
@@ -30,7 +30,7 @@ module = angular.module('RootServices', ['ngResource'])
                 comments: [
                     who: 'wballard@glgroup.com'
                     when: '02/21/2013'
-                    what: 'Yeah! Comments!\n\nAbout _stuff_...'
+                    what: 'Yeah! Comments!'
                 ,
                     who: 'igroff@glgroup.com'
                     when: '02/24/2013'

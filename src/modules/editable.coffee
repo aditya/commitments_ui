@@ -112,12 +112,25 @@ module = angular.module('editable', [])
                     return
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
+                    codemirror.setOption 'lineWrapping', true
                     attachTo.width('100%')
+                    attachTo.height('auto')
                     $('.CodeMirror', attachTo).css('height', 'auto')
                     $('.CodeMirror-scroll', attachTo)
                         .css('overflow-x', 'auto')
                         .css('overflow-y', 'hidden')
+                    if attrs.multiline?
+                        #nothing to see here
+                    else
+                        #trap enter, preventing multiple lines being added
+                        #yet still allow 'wrapped' single line to be
+                        #visually multiple lines in the DOM
+                        codemirror.setOption 'extraKeys',
+                            Enter: (cm) ->
+                                #hard core trigger a blur
+                                $('.CodeMirror', attachTo).remove()
                     codemirror.on 'blur', ->
+                        console.log 'blur', codemirror
                         value = codemirror.getValue().trimLeft().trimRight()
                         ngModel.$setViewValue(value)
                         ngModel.$render()
