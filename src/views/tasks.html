@@ -1,6 +1,6 @@
 <ul editable-list editable-list-blank-record editable-list-reorder handle=".handle" on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
   <li ng-repeat="item in selected.items" animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)" class="row-fluid">
-  <span class="icon-move icon-2x handle muted"></span>
+  <span class="icon-move icon-2x handle muted" tooltip="'drag to stack rank'"></span>
   <span editable-record ng-model="item" requires-object="item.discussion" on-update="updateItem" class="item handled">
     <div requires-object="item.accept" class="row-fluid">
       <ng-include src="'src/views/taskaccept.html'"/>
@@ -15,7 +15,7 @@
       <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
       <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
         <span class="icon icon-comments-alt" ></span>
-        <span class="">{{item.discussion.comments.length-1}}</span>
+        <span class="count-display">{{item.discussion.comments.length-1}}</span>
       </span>
       <span class="icon icon-hand-right" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
     </div>

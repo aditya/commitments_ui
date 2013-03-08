@@ -3,6 +3,9 @@
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
 
+.tooltip {
+  font-size: 1.25em;
+}
 
 .shadowed {
   .box-shadow(0 2px 5px rgba(0,0,0,.2));
@@ -68,6 +71,9 @@ body {
     padding-top: @defaultPad;
     padding-bottom: @defaultPad;
   }
+  .deleter {
+    color: @grayLight;
+  }
 }
 
 .markdown {
@@ -87,6 +93,14 @@ body {
 .markdown.readonly {
   border: 1px solid @transparent;
   .box-shadow(0 2px 5px rgba(0,0,0,0.0));
+}
+
+.date-display {
+  font-size: 1.25em;
+}
+
+.count-display {
+  font-size: 1.25em;
 }
 
 .icon {
@@ -176,4 +190,12 @@ body {
 .handled {
     float: left;
     width: 90%;
+}
+
+.ui-datepicker-title {
+  font-size: 1.25em;
+}
+
+.ui-datepicker table {
+  font-size: 1.25em;
 }

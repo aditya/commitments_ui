@@ -169,7 +169,7 @@ module = angular.module('editable', [])
             element.addClass 'editable'
             icon = angular.element('<span class="icon-calendar icon"/>')
             display = angular.element('<span class="date-display"/>')
-            deleter = angular.element('<span class="icon-remove-sign"/>')
+            deleter = angular.element('<span class="icon icon-remove-sign deleter"/>')
             element.append(icon, display, deleter)
             #make sure to unhook the dialog like keyboard capture
             clearCapture = ->
