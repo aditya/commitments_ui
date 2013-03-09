@@ -103,6 +103,10 @@ module = angular.module('editable', [])
             attachTo = angular.element("<div></div>")
             attachTo.hide()
             display = angular.element("<div class='display'></div>")
+            if attrs.multiline?
+                display.addClass 'multiline'
+            else
+                display.addClass 'oneline'
             element.append display, attachTo
             codemirror = null
             #hook on to any way in the field

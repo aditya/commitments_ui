@@ -356,7 +356,7 @@
         addSelectedChoice: function (data, value) {
             var item = $("<li class='tagbar-search-choice'></li>");
             var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
-            var underZ = 0
+            var underZ = 20;
             $.each(data.split(pattern), function(i) {
                 var tagbit = $("<span class='tagbar-search-choice-content overlay label'>" + escapeMarkup(this) + "</span>");
                 if (i % 2 == 0) tagbit.addClass("label-info");

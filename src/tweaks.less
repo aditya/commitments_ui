@@ -3,12 +3,16 @@
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
 
+.editable-shadow {
+  .box-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
 .tooltip {
   font-size: 1.25em;
 }
 
 .shadowed {
-  .box-shadow(0 2px 5px rgba(0,0,0,.2));
+  .box-shadow(0 1px 5px rgba(0,0,0,.2));
 }
 
 .display {
@@ -42,7 +46,7 @@
 //styles for our bits
 
 body {
-    background-image: url('../images/body-bg-texture-medium.png');
+    background-image: url('../images/gray_jean.png');
 }
 
 .taskpad {
@@ -59,11 +63,11 @@ body {
 }
 
 .item {
+  .well;
   padding: @defaultPad;
-  margin: @defaultMargin;
-  border: 1px solid darken(@wellBackground, 7%);
-  .border-radius(@baseBorderRadius);
-  .box-shadow(inset 0 1px 1px rgba(0,0,0,.05));
+  margin-bottom: @defaultMargin;
+  background-color: @bodyBackground;
+  background-image: url('../images/body-bg-texture-heavy.png');
 }
 
 .item-tools {
@@ -76,23 +80,32 @@ body {
   }
 }
 
+.display {
+  padding: @defaultPad;
+}
+
 .markdown {
   .border-radius(@baseBorderRadius);
   border: 1px dotted @transparent;
   &:hover {
     border: 1px solid darken(@wellBackground, 7%);
-    .box-shadow(0 2px 5px rgba(0,0,0,0.5));
+    .editable-shadow;
   }
   cursor: text;
   .placeholder {
     color: @linkColor;
     font-style: italic;
   }
+  .display, .oneline {
+    p {
+      margin: 1px;
+    }
+  }
 }
 
 .markdown.readonly {
   border: 1px solid @transparent;
-  .box-shadow(0 2px 5px rgba(0,0,0,0.0));
+  .box-shadow(0 0px 0px rgba(0,0,0,0.0));
 }
 
 .date-display {
@@ -117,6 +130,11 @@ body {
 .discussion {
   margin: 0px;
   margin-top: @defaultMargin;
+}
+
+.checkoff {
+  .display;
+  .no-side-padding;
 }
 
 .gravatar {
@@ -144,6 +162,21 @@ body {
       z-index: 1;
     }
   }
+}
+
+.userinfo {
+  margin-right: @gridGutterWidth + @defaultMargin;
+}
+
+.handle {
+    float: left;
+    width: 0%;
+    opacity: 0;
+}
+
+.handled {
+    float: left;
+    width: 90%;
 }
 
 //tweaking base bootstrap
@@ -177,21 +210,11 @@ body {
   }
 }
 
-.userinfo {
-  margin-right: @gridGutterWidth + @defaultMargin;
+.well {
+  background-color: fade(@wellBackground, 60%)
 }
 
-.handle {
-    float: left;
-    width: 0%;
-    opacity: 0;
-}
-
-.handled {
-    float: left;
-    width: 90%;
-}
-
+//tweaking jQuery UI
 .ui-datepicker-title {
   font-size: 1.25em;
 }
