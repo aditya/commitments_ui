@@ -1,7 +1,7 @@
 module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
-    .controller 'Desktop', ($scope, Database, Authentication) ->
-        console.log 'desktop'
+    .controller 'Desktop', ($scope, Database, StackRank, Authentication) ->
         $scope.tagNamespaceSeparators = [':', '/']
+        $scope.stackRank = StackRank()
         $scope.database = Database()
         $scope.user = Authentication.user()
         $scope.messages =
@@ -9,33 +9,42 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
             count: 0
         $scope.selectBox = (box) ->
             $scope.selected = box
-            $scope.selected.items = box.filter()
+            $scope.selected.items = $scope.stackRank.sort(
+                box.filter(),
+                $scope.user.email,
+                box.tag)
         $scope.poke = (item) ->
             console.log 'poking', item
         $scope.newItem = (item) ->
-            console.log 'new', item
             $scope.database.items.push item
             $scope.lastUpdatedItem = item
         $scope.updateItem = (item) ->
-            console.log 'update', item
             $scope.lastUpdatedItem = item
         $scope.deleteItem  = (item) ->
-            console.log 'delete', item
             list = $scope.database.items
             foundAt = list.indexOf(item)
             if foundAt >= 0
                 list.splice(foundAt, 1)
                 $scope.lastDeletedItem = item
     .controller 'Toolbox', ($scope, $rootScope) ->
-        console.log 'toolbox'
         #always have the todo and done boxes
         $scope.boxes = [
             title: 'Todo'
-            filter: -> _.reject($scope.database.items, (x) -> x.done)
+            tag: '*'
+            filter: ->
+                $scope.stackRank.sort(
+                    _.reject($scope.database.items, (x) -> x.done),
+                    $scope.user.email,
+                    '*')
             hide: (x) -> x.done
         ,
             title: 'Done'
-            filter: -> _.filter($scope.database.items, (x) -> x.done)
+            tag: '*'
+            filter: ->
+                $scope.stackRank.sort(
+                    _.filter($scope.database.items, (x) -> x.done),
+                    $scope.user.email,
+                    '*')
             hide: (x) -> not x.done
         ]
         #initial view selection
@@ -63,9 +72,10 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
                         () ->
                             by_tag = {tags: {}}
                             by_tag.tags[tag] = 1
-                            tagIndex.search by_tag, filter
+                            tagIndex.search(by_tag, filter)
                     ret.push
                         title: tag
+                        tag: tag
                         hide: -> false
                         filter: byTag(tag)
                         todoCount: byTag(tag, (x) -> not x.done)
@@ -77,18 +87,19 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         $scope.$watch 'lastDeletedItem', (item) ->
             tagIndex.remove item
         , true
-        #and here are the todo and done boxes
+        #
     .controller 'Discussion', ($scope) ->
-        console.log 'comments'
+        null
+    #accepting and rejecting tasks ias simply about stamping it with
+    #your user identity, or removing yourself as a delegate
     .controller 'TaskAccept', ($scope, $timeout) ->
-        console.log 'accept'
         $scope.accept = (item) ->
             item.accept[$scope.user.email] = Date.now()
         $scope.reject = (item) ->
             delete item.delegates[$scope.user.email]
             delete item.accept[$scope.user.email]
     .config ->
-        console.log 'Root controllers online'
+        null
     .run ->
         console.log 'starting application'
 

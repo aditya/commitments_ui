@@ -1,6 +1,10 @@
 <ul editable-list editable-list-blank-record editable-list-reorder handle=".handle" on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
-  <li ng-repeat="item in selected.items" animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)" class="row-fluid">
-  <span editable-record ng-model="item" requires-object="item.discussion" on-update="updateItem" class="item handled span12">
+  <li
+    ng-repeat="item in selected.items"
+    editable-record ng-model="item"
+    animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)"
+    on-update="updateItem"
+    class="row-fluid item">
     <div requires-object="item.accept" class="row-fluid">
       <ng-include src="'src/views/taskaccept.html'"/>
     </div>
@@ -9,7 +13,7 @@
       <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10"></span>
       <span class="icon-move icon-2x handle muted span1" tooltip="'drag to stack rank'"></span>
     </div>
-    <div class="row-fluid item-tools">
+    <div require-object 'item.discussion' class="row-fluid item-tools">
       <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
       <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
       <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
@@ -22,6 +26,5 @@
     <div ng-show="item.discussion.show" ng-init="discussion=item.discussion" class="row-fluid">
       <ng-include src="'src/views/discussion.html'"/>
     </div>
-  </span>
   </li>
 </ul>

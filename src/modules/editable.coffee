@@ -1,4 +1,3 @@
-
 counter = 0;
 
 ANIMATION_SPEED = 200
@@ -9,7 +8,9 @@ module = angular.module('editable', [])
         restrict: 'A'
         require: 'ngModel'
         link: ($scope, element, attrs, ngModel) ->
+            element.addClass 'editableRecord'
             $scope.$watch attrs.ngModel, (model) ->
+                element.data 'record', model
                 #fields that are always required
                 if not model.id
                     model.id = md5("#{Date.now()}#{counter++}")
@@ -38,7 +39,8 @@ module = angular.module('editable', [])
     ])
     .directive('editableListReorder', [() ->
         restrict: 'A'
-        link: ($scope, element, attrs) ->
+        require: 'ngModel'
+        link: ($scope, element, attrs, ngModel) ->
             #using jQuery, so this is not all that impressive
             if attrs.handle
                 element.sortable
@@ -53,6 +55,11 @@ module = angular.module('editable', [])
                     , ANIMATION_SPEED
             else
                 element.sortable {}
+            element.on 'sortupdate', ->
+                $scope.stackRank.renumber(
+                    element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
+                    $scope.user.email,
+                    $scope.selected.tag)
     ])
     .directive('editableList', ['$timeout', ($timeout) ->
         restrict: 'A'
@@ -110,7 +117,7 @@ module = angular.module('editable', [])
             element.append display, attachTo
             codemirror = null
             #hook on to any way in the field
-            element.bind 'click dblclick focus', () ->
+            element.on 'click dblclick focus', () ->
                 if element.hasClass 'readonly'
                     return
                 if not codemirror
@@ -152,7 +159,7 @@ module = angular.module('editable', [])
                     codemirror.setOption('mode', 'markdown')
                     codemirror.setOption('theme', 'neat')
                     codemirror.refresh()
-            element.bind 'keydown', (event) ->
+            element.on 'keydown', (event) ->
                 if event.which is 27 #escape
                     event.target.blur()
                     event.preventDefault()
@@ -204,9 +211,9 @@ module = angular.module('editable', [])
                     clearCapture()
                 icon.popover {content: picker, html: true, placement: 'bottom'}
                 icon.popover 'show'
-            icon.bind 'click', startEdit
-            display.bind 'click', startEdit
-            deleter.bind 'click', ->
+            icon.on 'click', startEdit
+            display.on 'click', startEdit
+            deleter.on 'click', ->
                 $scope.$apply ->
                     ngModel.$setViewValue('')
                     ngModel.$render()
@@ -235,7 +242,7 @@ module = angular.module('editable', [])
                         query.callback
                             results: [query.term, 'sample']
                 #just propagate tag values back to the model
-                input.bind 'blur change', (event) ->
+                input.on 'blur change', (event) ->
                     console.log event, input.tagbar('val')
                     ngModel.$setViewValue(input.tagbar('val'))
                 #rendering is really just setting the values
@@ -258,7 +265,7 @@ module = angular.module('editable', [])
             ($scope, element, attrs, ngModel) ->
                 icon = angular.element("<span class='icon'/>")
                 element.append(icon)
-                element.bind 'click', ->
+                element.on 'click', ->
                     $scope.$apply () ->
                         if ngModel.$viewValue
                             ngModel.$setViewValue ''

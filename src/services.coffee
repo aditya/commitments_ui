@@ -43,6 +43,24 @@ module = angular.module('RootServices', ['ngResource'])
         ]
         ->
             items: todos
+    .factory 'StackRank', () ->
+        ->
+            #standardized sorting function, works to provide per user / per
+            #tag stack ranking, with the when creation timestamp providing
+            #the tiebreaker, meaning time sorted items go to the end as their
+            #indexes are going to be a *lot* larger than 1..n
+            sort: (list, user, tag) ->
+                extractIndex = (item) ->
+                    item.when = item.when or Date.now()
+                    item?['sort']?[user]?[tag] or item.when
+                _.sortBy(list, extractIndex)
+            renumber: (list, user, tag) ->
+                index = 1;
+                for item in list
+                    item.sort = item.sort or {}
+                    item.sort[user] = item.sort[user] or {}
+                    item.sort[user][tag] = index++
+                    console.log item
     #nothing in particular to do at the moment for config, it isjust nice to see
     .config ->
         console.log 'Root services online'
