@@ -129,7 +129,7 @@ Create a new index, this tracks a single set of postings.
             if key
                 unpostFromIndex key, document
     terms: ->
-        Object.keys termPostingLists
+        _.keys(termPostingLists).sort()
     revision: ->
         md5(Object.keys(termPostingLists).join(''))
     search: (query, filter) ->

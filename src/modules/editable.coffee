@@ -39,13 +39,13 @@ module = angular.module('editable', [])
     ])
     .directive('editableListReorder', [() ->
         restrict: 'A'
-        require: 'ngModel'
-        link: ($scope, element, attrs, ngModel) ->
+        link: ($scope, element, attrs) ->
             #using jQuery, so this is not all that impressive
             if attrs.handle
                 element.sortable
                     handle: attrs.handle
                 element.on 'mouseenter', 'li', (event) ->
+                    console.log 'enter'
                     $(attrs.handle, $(event.currentTarget)).animate
                         opacity: 1
                     , ANIMATION_SPEED
@@ -59,7 +59,7 @@ module = angular.module('editable', [])
                 $scope.stackRank.renumber(
                     element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
                     $scope.user.email,
-                    $scope.selected.tag)
+                    $scope.$eval(attrs.editableListReorder))
     ])
     .directive('editableList', ['$timeout', ($timeout) ->
         restrict: 'A'

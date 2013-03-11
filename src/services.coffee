@@ -3,6 +3,9 @@ module = angular.module('RootServices', ['ngResource'])
     .factory 'Authentication', ->
         user: ->
             email: 'wballard@glgroup.com'
+    .factory 'Preferences', ->
+        tags: ->
+            []
     #deal with querying 'the database', really the services up in the cloud
     #** for the time being this is just rigged to pretend to be a service **
     .factory 'Database', () ->
@@ -50,17 +53,22 @@ module = angular.module('RootServices', ['ngResource'])
             #the tiebreaker, meaning time sorted items go to the end as their
             #indexes are going to be a *lot* larger than 1..n
             sort: (list, user, tag) ->
+                user = user or '-'
+                tag = tag or '-'
                 extractIndex = (item) ->
                     item.when = item.when or Date.now()
-                    item?['sort']?[user]?[tag] or item.when
+                    idx = item?['sort']?[user]?[tag] or item.when
+                    console.log idx, item
+                    idx
                 _.sortBy(list, extractIndex)
             renumber: (list, user, tag) ->
-                index = 1;
+                index = 1
+                user = user or '-'
+                tag = tag or '-'
                 for item in list
                     item.sort = item.sort or {}
                     item.sort[user] = item.sort[user] or {}
                     item.sort[user][tag] = index++
-                    console.log item
     #nothing in particular to do at the moment for config, it isjust nice to see
     .config ->
         console.log 'Root services online'

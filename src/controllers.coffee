@@ -1,9 +1,10 @@
 module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
-    .controller 'Desktop', ($scope, Database, StackRank, Authentication) ->
+    .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences) ->
         $scope.tagNamespaceSeparators = [':', '/']
         $scope.stackRank = StackRank()
         $scope.database = Database()
         $scope.user = Authentication.user()
+        $scope.tags = Preferences.tags()
         $scope.messages =
             info: 'Alerts & Messages'
             count: 0
@@ -57,21 +58,37 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         #watch the index for changes, and if you see them rebuild all the tags
         #so that we track the currently available facets
         $scope.$watch 'tagIndex.revision()', ->
-            $scope.tags = do ->
-                ret = []
-                for tag in tagIndex.terms()
-                    byTag = (tag, filter) ->
-                        () ->
-                            by_tag = {tags: {}}
-                            by_tag.tags[tag] = 1
-                            tagIndex.search(by_tag, filter)
-                    ret.push
-                        title: tag
-                        tag: tag
-                        hide: -> false
-                        filter: byTag(tag)
-                        todoCount: byTag(tag, (x) -> not x.done)
-                ret
+            #tags currently on display, which may have been updated / ordered
+            displayTags = {}
+            for tag in $scope.tags
+                displayTags[tag.tag] = tag
+            #dynamic tags from the index, these are current
+            tags = {}
+            for tagTerm in tagIndex.terms()
+                byTag = (tagTerm, filter) ->
+                    () ->
+                        by_tag = {tags: {}}
+                        by_tag.tags[tagTerm] = 1
+                        tagIndex.search(by_tag, filter)
+                dynamicTag =
+                    title: tagTerm
+                    tag: tagTerm
+                    when: Date.now()
+                dynamicTagMethods =
+                    hide: -> false
+                    filter: byTag(tagTerm)
+                    todoCount: byTag(tagTerm, (x) -> not x.done)
+                #make an object sandwich, overlaying the dynamic functions
+                #but only using the tag term as the base default, prefering
+                #what the user has updated
+                _.extend dynamicTag, displayTags[tagTerm] or {}, dynamicTagMethods
+                tags[tagTerm] = dynamicTag
+            #at this point we have all the tags currently in the index
+            #but with the 'saved' properties like sort order merged in
+            $scope.tags = $scope.stackRank.sort(
+                _.values(tags),
+                $scope.user.email)
+            $scope.stackRank.renumber($scope.tags, $scope.user.email)
         #peek at the model to see when it it time to add or remove an item
         $scope.$watch 'lastUpdatedItem', (item) ->
             tagIndex.add item

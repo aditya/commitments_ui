@@ -1,4 +1,4 @@
-<ul editable-list editable-list-blank-record editable-list-reorder handle=".handle" on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
+<ul editable-list editable-list-blank-record editable-list-reorder="selected.tag" handle=".handle" on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
   <li
     ng-repeat="item in selected.items"
     editable-record ng-model="item"
