@@ -31,20 +31,12 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
         $scope.boxes = [
             title: 'Todo'
             tag: '*'
-            filter: ->
-                $scope.stackRank.sort(
-                    _.reject($scope.database.items, (x) -> x.done),
-                    $scope.user.email,
-                    '*')
+            filter: -> _.reject($scope.database.items, (x) -> x.done)
             hide: (x) -> x.done
         ,
             title: 'Done'
             tag: '*'
-            filter: ->
-                $scope.stackRank.sort(
-                    _.filter($scope.database.items, (x) -> x.done),
-                    $scope.user.email,
-                    '*')
+            filter: -> _.filter($scope.database.items, (x) -> x.done)
             hide: (x) -> not x.done
         ]
         #initial view selection
