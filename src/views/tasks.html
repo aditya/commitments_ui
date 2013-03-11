@@ -14,14 +14,14 @@
       <span class="icon-move icon-2x handle muted span1" tooltip="'drag to stack rank'"></span>
     </div>
     <div require-object 'item.discussion' class="row-fluid item-tools">
-      <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
-      <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-      <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
       <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
         <span class="icon icon-comments-alt" ></span>
         <span class="count-display">{{item.discussion.comments.length-1}}</span>
       </span>
       <span class="icon icon-hand-right" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
+      <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
+      <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
+      <span tags icon="user" ng-model="item.delegates" tooltip="'delegate via email addresses'"></span>
     </div>
     <div ng-show="item.discussion.show" ng-init="discussion=item.discussion" class="row-fluid">
       <ng-include src="'src/views/discussion.html'"/>
