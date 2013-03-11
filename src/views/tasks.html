@@ -13,7 +13,7 @@
       <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10"></span>
       <span ng-show="item.what" tooltip="'drag to stack rank'" class="icon-move icon-2x handle muted span1" ></span>
     </div>
-    <div require-object 'item.discussion' class="row-fluid item-tools">
+    <div ng-show="item.what" require-object 'item.discussion' class="row-fluid item-tools">
       <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
         <span class="icon icon-comments-alt" ></span>
       </span>

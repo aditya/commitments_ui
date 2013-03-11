@@ -124,17 +124,16 @@ module = angular.module('editable', [])
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
                     codemirror.setOption 'lineWrapping', true
+                    attachTo.width('100%')
                     attachTo.height('auto')
-                    $('.CodeMirror', attachTo).css('height', 'auto')
-                    $('.CodeMirror-scroll', attachTo)
-                        .css('overflow-x', 'auto')
-                        .css('overflow-y', 'hidden')
                     if attrs.multiline?
-                        #fill up the allocated space, this is more like a
-                        #textarea in this case, rather than just an self
-                        #expanding field
-                        attachTo.width('100%')
+                        #automatic expanding of size
+                        $('.CodeMirror-scroll', attachTo)
+                            .css('overflow-x', 'auto')
+                            .css('overflow-y', 'hidden')
+                        $('.CodeMirror', attachTo).css('height', 'auto')
                     else
+                        $('.CodeMirror', attachTo).css('height', '100%')
                         #trap enter, preventing multiple lines being added
                         #yet still allow 'wrapped' single line to be
                         #visually multiple lines in the DOM
@@ -142,8 +141,10 @@ module = angular.module('editable', [])
                             Enter: (cm) ->
                                 #hard core trigger a blur
                                 $('.CodeMirror', attachTo).remove()
+                            Down: (cm) ->
+                                #supress, not allowing line navigation
+                                null
                     codemirror.on 'blur', ->
-                        console.log 'blur', codemirror
                         value = codemirror.getValue().trimLeft().trimRight()
                         ngModel.$setViewValue(value)
                         ngModel.$render()
