@@ -16,7 +16,6 @@
     <div require-object 'item.discussion' class="row-fluid item-tools">
       <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
         <span class="icon icon-comments-alt" ></span>
-        <span class="count-display">{{item.discussion.comments.length-1}}</span>
       </span>
       <span class="icon icon-hand-right" tooltip="'poke your delegates for a status report'" ng-click="poke(item)"></span>
       <span date ng-model="item.due" tooltip="'click to set a due date'"></span>
