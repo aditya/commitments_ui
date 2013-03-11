@@ -120,6 +120,7 @@ module = angular.module('editable', [])
             element.on 'click dblclick focus', () ->
                 if element.hasClass 'readonly'
                     return
+                #only hook up the editor if there isn't one
                 if not codemirror
                     codemirror = CodeMirror attachTo[0]
                     codemirror.setOption 'lineWrapping', true
@@ -152,13 +153,13 @@ module = angular.module('editable', [])
                             attachTo.hide 100, ->
                                 codemirror = null
                                 $('.CodeMirror', attachTo).remove()
-                codemirror.setValue ngModel.$viewValue or '\n'
-                display.hide 100
-                attachTo.show 100, ->
-                    codemirror.focus()
-                    codemirror.setOption('mode', 'markdown')
-                    codemirror.setOption('theme', 'neat')
-                    codemirror.refresh()
+                    codemirror.setValue ngModel.$viewValue or '\n'
+                    display.hide 100
+                    attachTo.show 100, ->
+                        codemirror.focus()
+                        codemirror.setOption('mode', 'markdown')
+                        codemirror.setOption('theme', 'neat')
+                        codemirror.refresh()
             element.on 'keydown', (event) ->
                 if event.which is 27 #escape
                     event.target.blur()
