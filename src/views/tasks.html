@@ -11,7 +11,7 @@
     <div class="row-fluid">
       <span check ng-model="item.done" tooltip="'click here to mark done'" class="span1 checkoff"></span>
       <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10"></span>
-      <span class="icon-move icon-2x handle muted span1" tooltip="'drag to stack rank'"></span>
+      <span ng-show="item.what" tooltip="'drag to stack rank'" class="icon-move icon-2x handle muted span1" ></span>
     </div>
     <div require-object 'item.discussion' class="row-fluid item-tools">
       <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
