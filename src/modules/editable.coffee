@@ -52,7 +52,7 @@ module = angular.module('editable', [])
                 element.on 'mouseleave', 'li', (event) ->
                     $(attrs.handle, $(event.currentTarget)).animate
                         opacity: 0
-                    , ANIMATION_SPEED
+                    , ANIMATION_SPEED / 2
             else
                 element.sortable {}
             element.on 'sortupdate', ->
