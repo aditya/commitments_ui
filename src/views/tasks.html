@@ -1,9 +1,12 @@
-<ul editable-list editable-list-blank-record editable-list-reorder="selected.tag" handle=".handle" on-create="newItem" on-delete="deleteItem" ng-model="selected.items" class="unstyled items">
+<ul editable-list
+    editable-list-blank-record
+    editable-list-reorder="selected.tag" handle=".handle"
+    on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
+    ng-model="selected.items" class="unstyled items">
   <li
     ng-repeat="item in selected.items"
     editable-record ng-model="item"
     animated-hide="(item.who != user.email && !item.delegates[user.email]) || selected.hide(item)"
-    on-update="updateItem"
     class="row-fluid item">
     <div requires-object="item.accept" class="row-fluid">
       <ng-include src="'src/views/taskaccept.html'"/>

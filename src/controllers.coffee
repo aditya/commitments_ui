@@ -21,6 +21,8 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
             $scope.lastUpdatedItem = item
         $scope.updateItem = (item) ->
             $scope.lastUpdatedItem = item
+        $scope.placeholderItem = (item) ->
+            ($scope.selected.stamp or ->)(item)
         $scope.deleteItem  = (item) ->
             list = $scope.database.items
             foundAt = list.indexOf(item)
@@ -70,6 +72,10 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
                         by_tag = {tags: {}}
                         by_tag.tags[tagTerm] = 1
                         tagIndex.search(by_tag, filter)
+                stampWithTag = (tagTerm) ->
+                    (item) ->
+                        item.tags = item.tags or {}
+                        item.tags[tagTerm] = Date.now()
                 dynamicTag =
                     title: tagTerm
                     tag: tagTerm
@@ -78,6 +84,7 @@ module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
                     hide: -> false
                     filter: byTag(tagTerm)
                     todoCount: byTag(tagTerm, (x) -> not x.done)
+                    stamp: stampWithTag(tagTerm)
                 #make an object sandwich, overlaying the dynamic functions
                 #but only using the tag term as the base default, prefering
                 #what the user has updated

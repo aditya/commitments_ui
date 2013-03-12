@@ -19,9 +19,6 @@ module = angular.module('editable', [])
                 if model.$$required
                     if not model.when
                         model.when = Date.now()
-                #controller callback with the updated item
-                if attrs.onUpdate
-                    $scope.$eval(attrs.onUpdate) model
                 $scope.$emit 'editableRecordUpdate', model
             ,true
     ])
@@ -71,8 +68,11 @@ module = angular.module('editable', [])
             #ability to create a placeholder record
             newPlaceholder = ->
                 if not ngModel.$modelValue.$$placeholder
-                    ngModel.$modelValue.$$placeholder = {}
-                    ngModel.$modelValue.push ngModel.$modelValue.$$placeholder
+                    record = {}
+                    if attrs.onPlaceholder
+                        $scope.$eval("#{attrs.onPlaceholder}")(record)
+                    ngModel.$modelValue.$$placeholder = record
+                    ngModel.$modelValue.push record
             #make sure there is always a list if we change models
             $scope.$watch attrs.ngModel, ->
                 if not ngModel.$viewValue
@@ -99,6 +99,10 @@ module = angular.module('editable', [])
                         newPlaceholder()
                     if attrs.onCreate
                         $scope.$eval("#{attrs.onCreate}")(record)
+                #and updates
+                if record.$$required and record isnt ngModel.$modelValue.$$placeholder
+                    if attrs.onUpdate
+                        $scope.$eval("#{attrs.onUpdate}")(record)
                 event.stopPropagation()
     ])
     .directive('markdown', ['$timeout', ($timeout) ->
