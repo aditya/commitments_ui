@@ -1,2 +1,4 @@
 #manual bootstrap, allows coffeescript asynch load
-angular.bootstrap document, ['Root']
+define ['angular', 'jquery', 'cs!/src/controllers'], (angular, jquery) ->
+    jquery ->
+        angular.bootstrap document, ['Root']

@@ -56,94 +56,92 @@ tokenizer = (context) ->
         callback(term)
 
 ###
-
-@inverted = {}
-###
-Create a new index, this tracks a single set of postings.
-###
-@inverted.index = (pipeline, keyFunction) ->
-    #here is our 'private data'
-    #here is the actual data structure for the index
-    documents = {}
-    #and track posting, being in memory make this easy to allow updating
-    documentTerms = {}
-    #and the inverted index itself
-    termPostingLists = {}
-    #big empty index awaits
-    clear = ->
-        termPostingLists = {}
-        documentTerms = {}
-    #This is the key function, making a posting and store it in the index
-    postToIndex = (key, document, term, posting) ->
-        #for the postings, this is the actual document itself, by reference
-        #this is taking advantage of the face that we are in memory indexing
-        #read objects
-        documents[key] = document
-        postTo = (termPostingLists[term] = termPostingLists[term] or {})
-        postTo[key] = posting or true
-        documentTerms[key] = documentTerms[key] or {}
-        documentTerms[key][term] = posting or true
-    #clear out a document and its postings
-    unpostFromIndex = (key, document) ->
-        console.log 'terms', key, documentTerms[key], documentTerms['aa']
-        for term, posting of (documentTerms[key] or {})
-            console.log 'killing', term, _.keys(termPostingLists[term]).length
-            delete termPostingLists[term][key]
-            if not _.keys(termPostingLists[term]).length
-                delete termPostingLists[term]
-        delete documents[key]
-        delete documentTerms[key]
-        document
-    #this is the tokenization pipeline, starting with a document and then
-    #ending up with postings
-    tokenize = (key, document, perTermAction) ->
-        #this is the 'last stage' where we go to the per term action
-        #passed in by the index itself, so all pipelines get one more stage
-        #then specified by the user
-        callback = (term, posting) ->
-            perTermAction key, document, term, posting
-        #building in reverse, making the links in the pipeline
-        for stage in pipeline[..].reverse()
-            #capture the 'next' stage in a closure callback
-            next = (callback, stage) ->
-                (term) ->
-                    stage term, callback
-            callback = next callback, stage
-        #use the document as the first term to what is now the head of
-        #the callback chain
-        callback document
-    #all set
-    do clear
-    #and here are the methods exposed by an index
-    clear: clear
-    add: (document) ->
-        if document
-            key = keyFunction document
-            if key
-                console.log 'indexing', document
-                unpostFromIndex key, document
-                tokenize key, document, postToIndex
-    remove: (document) ->
-        if document
-            key = keyFunction document
-            if key
-                unpostFromIndex key, document
-    terms: ->
-        _.keys(termPostingLists).sort()
-    revision: ->
-        md5(Object.keys(termPostingLists).join(''))
-    search: (query, filter) ->
-        query = query or {}
-        filter = filter or -> true
-        #given an object, parse it just like it was a document, but instead
-        #it is a query
-        candidate_sets = []
-        bufferQuery = (key, document, term) ->
-            candidate_sets.push termPostingLists?[term] or []
-        tokenize null, query, bufferQuery
-        first_set = candidate_sets.shift()
-        for set in candidate_sets
-            first_set = _.pick(first_set, _.keys(set))
-        #and the very handy ability to tack on any old logical predicate
-        #as a post processing filter
-        _.filter((_.keys(first_set).map (x) -> documents[x]), filter)
+define [], ->
+    inverted =
+        ###
+        Create a new index, this tracks a single set of postings.
+        ###
+        index: (pipeline, keyFunction) ->
+            #here is our 'private data'
+            #here is the actual data structure for the index
+            documents = {}
+            #and track posting, being in memory make this easy to allow updating
+            documentTerms = {}
+            #and the inverted index itself
+            termPostingLists = {}
+            #big empty index awaits
+            clear = ->
+                termPostingLists = {}
+                documentTerms = {}
+            #This is the key function, making a posting and store it in the index
+            postToIndex = (key, document, term, posting) ->
+                #for the postings, this is the actual document itself, by reference
+                #this is taking advantage of the face that we are in memory indexing
+                #read objects
+                documents[key] = document
+                postTo = (termPostingLists[term] = termPostingLists[term] or {})
+                postTo[key] = posting or true
+                documentTerms[key] = documentTerms[key] or {}
+                documentTerms[key][term] = posting or true
+            #clear out a document and its postings
+            unpostFromIndex = (key, document) ->
+                for term, posting of (documentTerms[key] or {})
+                    delete termPostingLists[term][key]
+                    if not _.keys(termPostingLists[term]).length
+                        delete termPostingLists[term]
+                delete documents[key]
+                delete documentTerms[key]
+                document
+            #this is the tokenization pipeline, starting with a document and then
+            #ending up with postings
+            tokenize = (key, document, perTermAction) ->
+                #this is the 'last stage' where we go to the per term action
+                #passed in by the index itself, so all pipelines get one more stage
+                #then specified by the user
+                callback = (term, posting) ->
+                    perTermAction key, document, term, posting
+                #building in reverse, making the links in the pipeline
+                for stage in pipeline[..].reverse()
+                    #capture the 'next' stage in a closure callback
+                    next = (callback, stage) ->
+                        (term) ->
+                            stage term, callback
+                    callback = next callback, stage
+                #use the document as the first term to what is now the head of
+                #the callback chain
+                callback document
+            #all set
+            do clear
+            #and here are the methods exposed by an index
+            clear: clear
+            add: (document) ->
+                if document
+                    key = keyFunction document
+                    if key
+                        console.log 'indexing', document
+                        unpostFromIndex key, document
+                        tokenize key, document, postToIndex
+            remove: (document) ->
+                if document
+                    key = keyFunction document
+                    if key
+                        unpostFromIndex key, document
+            terms: ->
+                _.keys(termPostingLists).sort()
+            revision: ->
+                md5(Object.keys(termPostingLists).join(''))
+            search: (query, filter) ->
+                query = query or {}
+                filter = filter or -> true
+                #given an object, parse it just like it was a document, but instead
+                #it is a query
+                candidate_sets = []
+                bufferQuery = (key, document, term) ->
+                    candidate_sets.push termPostingLists?[term] or []
+                tokenize null, query, bufferQuery
+                first_set = candidate_sets.shift()
+                for set in candidate_sets
+                    first_set = _.pick(first_set, _.keys(set))
+                #and the very handy ability to tack on any old logical predicate
+                #as a post processing filter
+                _.filter((_.keys(first_set).map (x) -> documents[x]), filter)

@@ -58,7 +58,6 @@ module = angular.module('RootServices', [])
                 extractIndex = (item) ->
                     item.when = item.when or Date.now()
                     idx = item?['sort']?[user]?[tag] or item.when
-                    console.log idx, item
                     idx
                 _.sortBy(list, extractIndex)
             renumber: (list, user, tag) ->
@@ -69,8 +68,5 @@ module = angular.module('RootServices', [])
                     item.sort = item.sort or {}
                     item.sort[user] = item.sort[user] or {}
                     item.sort[user][tag] = index++
-    #nothing in particular to do at the moment for config, it isjust nice to see
-    .config ->
-        console.log 'Root services online'
     .run ->
         console.log 'starting root services'
