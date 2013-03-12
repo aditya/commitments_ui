@@ -24,21 +24,6 @@
         DELETE: 46
     };
 
-    function escapeMarkup(markup) {
-        var replace_map = {
-            '\\': '&#92;',
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&apos;',
-            "/": '&#47;'
-        };
-        return String(markup).replace(/[&<>"'/\\]/g, function (match) {
-                return replace_map[match[0]];
-        });
-    }
-
     function indexOf(value, array) {
         var i = 0, l = array.length;
         for (; i < l; i = i + 1) {
@@ -142,8 +127,8 @@
         prepareOpts: function (opts) {
             var element, select, idKey;
             element = opts.element;
-            opts = $.extend({}, {
-            }, $.fn.tagbar.defaults, opts);
+            //global an instance options
+            opts = $.extend({}, $.fn.tagbar.defaults, opts);
             if (typeof(opts.query) !== "function") {
                 throw "query function not defined" + opts.element.attr("id");
             }
@@ -357,8 +342,20 @@
             var item = $("<li class='tagbar-search-choice'></li>");
             var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
             var underZ = 20;
+            var icon = null;
+            if (this.opts.iconUrl) {
+                var url = this.opts.iconUrl(data);
+                if (url) {
+                    var icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
+                }
+            }
             $.each(data.split(pattern), function(i) {
-                var tagbit = $("<span class='tagbar-search-choice-content overlay label'>" + escapeMarkup(this) + "</span>");
+                var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
+                var text = $("<span/>").text(this);
+                if(icon) {
+                    tagbit.append(icon);
+                }
+                tagbit.append(text);
                 if (i % 2 == 0) tagbit.addClass("label-info");
                 if (i % 2 == 1) tagbit.addClass("label-inverse");
                 tagbit.css('z-index', underZ--);

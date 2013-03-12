@@ -233,6 +233,7 @@ module = angular.module('editable', [])
             templateElement.addClass 'tags'
             templateElement.addClass 'editable'
             templateAttrs.icon = templateAttrs.icon or 'tags'
+            iconSize = templateAttrs.itemIconSize or 32
             ($scope, element, attrs, ngModel) ->
                 input = angular.element('<span class="tag-display"/>')
                 element.append input
@@ -243,6 +244,12 @@ module = angular.module('editable', [])
                     query: (query) ->
                         query.callback
                             results: [query.term, 'sample']
+                    iconUrl: (tagValue) ->
+                        console.log tagValue
+                        if attrs.itemIconFrom is 'gravatar'
+                            hash = md5((tagValue or '').toLowerCase())
+                            return "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{iconSize}"
+                        null
                 #just propagate tag values back to the model
                 input.on 'blur change', (event) ->
                     console.log event, input.tagbar('val')
