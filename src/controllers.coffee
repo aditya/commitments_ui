@@ -1,4 +1,4 @@
-module = angular.module('Root', ['RootServices', 'ui', 'editable', 'readonly'])
+module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
     .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences) ->
         $scope.tagNamespaceSeparators = [':', '/']
         $scope.stackRank = StackRank()

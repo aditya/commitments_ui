@@ -1,4 +1,4 @@
-module = angular.module('RootServices', ['ngResource'])
+module = angular.module('RootServices', [])
     #deal with figuring out who is who
     .factory 'Authentication', ->
         user: ->
