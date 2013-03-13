@@ -131,6 +131,7 @@ define ['md5',
                         return
                     #only hook up the editor if there isn't one
                     if not codemirror
+                        element.addClass 'editing'
                         codemirror = CodeMirror attachTo[0]
                         codemirror.setOption 'lineWrapping', true
                         attachTo.width('100%')
@@ -154,7 +155,6 @@ define ['md5',
                                     #supress, not allowing line navigation
                                     null
                         codemirror.on 'blur', ->
-                            return
                             value = codemirror.getValue().trimLeft().trimRight()
                             ngModel.$setViewValue(value)
                             ngModel.$render()
@@ -163,6 +163,7 @@ define ['md5',
                                 display.show 100
                                 attachTo.hide 100, ->
                                     codemirror = null
+                                    element.removeClass 'editing'
                                     $('.CodeMirror', attachTo).remove()
                         codemirror.setValue ngModel.$viewValue or '\n'
                         display.hide 100
