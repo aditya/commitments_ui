@@ -60,10 +60,13 @@ require.config({
             deps: ['jquery']
         },
         'codemirror': {
-            export: 'CodeMirror',
+            exports: 'CodeMirror',
             init: function () {
                 require(['codemirrormarkdown']);
             }
+        },
+        'lunr': {
+            exports: 'lunr'
         },
     },
 });

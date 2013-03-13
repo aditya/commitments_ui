@@ -1,9 +1,10 @@
 define ['angular',
     'lodash',
     'cs!src/inverted/inverted',
+    'lunr'
     'cs!src/services',
     'cs!src/editable',
-    'cs!src/readonly'], (angular, _, inverted) ->
+    'cs!src/readonly'], (angular, _, inverted, lunr) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences) ->
             $scope.tagNamespaceSeparators = [':', '/']
@@ -35,6 +36,28 @@ define ['angular',
                 if foundAt >= 0
                     list.splice(foundAt, 1)
                     $scope.lastDeletedItem = item
+        .controller 'Navbar', ($scope) ->
+            #The navbar is in charge or the full text index
+            fullTextIndex = null
+            addToIndex = (item) ->
+                fullTextIndex.update
+                    id: item.id or ''
+                    what: item.what or ''
+                    who: _.keys(item.delegates).join ' '
+                    tags: (_.keys(item.tags).join ' ') or ''
+                    comments: (_.map(
+                        item?.discussion?.comments,
+                        (x) -> x.what).join ' ') or ''
+            #when the database changes, rebuild a new index
+            $scope.$watch 'database', (database) ->
+                fullTextIndex = lunr ->
+                    @field 'what', 8
+                    @field 'who', 4
+                    @field 'tags', 2
+                    @field 'comments', 1
+                    @ref 'id'
+                for item in database.items
+                    addToIndex item
         .controller 'Toolbox', ($scope, $rootScope) ->
             #always have the todo and done boxes
             $scope.boxes = [
@@ -58,11 +81,9 @@ define ['angular',
             #any time the database changes, we need to build a whole new tag
             #index
             $scope.$watch 'database', (database) ->
-                console.log 'reindexing'
                 do tagIndex.clear
                 for item in database.items
                     tagIndex.add item
-                console.log 'reindexing complete'
             #watch the index for changes, and if you see them rebuild all the tags
             #so that we track the currently available facets
             $scope.$watch 'tagIndex.revision()', ->
