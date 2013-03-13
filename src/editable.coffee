@@ -334,3 +334,21 @@ define ['md5',
                     else
                         element.removeClass 'readonly'
         ])
+        .directive('delayed', ['$timeout', ($timeout) ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                going = null
+                element.on 'keyup', (event)->
+                    if event.which is 27 #escape
+                        element.val ''
+                    if going
+                        $timeout.cancel going
+                    going = $timeout (->
+                        val = element.val()
+                        $scope.$apply ->
+                            $scope.$eval "#{attrs.delayed}='#{val}'"
+                        ), ANIMATION_SPEED
+                element.on 'blur', ->
+                    #do this without signaling back to the scope
+                    element.val ''
+        ])

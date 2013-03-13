@@ -15,12 +15,17 @@ define ['angular',
             $scope.messages =
                 info: 'Alerts & Messages'
                 count: 0
+            $scope.lastBox = null
             $scope.selectBox = (box) ->
-                $scope.selected = box
-                $scope.selected.items = $scope.stackRank.sort(
-                    box.filter(),
-                    $scope.user.email,
-                    box.tag)
+                if box
+                    #save boxes worth remembering
+                    if not $scope?.selected?.forgettable
+                        $scope.lastBox = $scope.selected
+                    $scope.selected = box
+                    $scope.selected.items = $scope.stackRank.sort(
+                        box.filter(),
+                        $scope.user.email,
+                        box.tag)
             $scope.poke = (item) ->
                 console.log 'poking', item
             $scope.newItem = (item) ->
@@ -58,6 +63,31 @@ define ['angular',
                     @ref 'id'
                 for item in database.items
                     addToIndex item
+            #peek at the model to see when it it time to add or remove an item
+            $scope.$watch 'lastUpdatedItem', (item) ->
+                if item
+                    addToIndex item
+            , true
+            $scope.$watch 'lastDeletedItem', (item) ->
+                if item
+                    fullTextIndex.remove
+                        id: item.id
+            , true
+            #and search
+            $scope.$watch 'searchQuery', (searchQuery) ->
+                if searchQuery
+                    keys = {}
+                    for result in fullTextIndex.search(searchQuery)
+                        keys[result.ref] = result
+                    $scope.selectBox
+                        forgettable: true
+                        title: searchQuery
+                        tag: '**search**'
+                        filter: -> _.filter($scope.database.items, (x) -> keys[x.id])
+                        hide: -> false
+                    , true
+                else
+                    $scope.selectBox $scope.lastBox, true
         .controller 'Toolbox', ($scope, $rootScope) ->
             #always have the todo and done boxes
             $scope.boxes = [
