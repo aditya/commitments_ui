@@ -154,6 +154,7 @@ define ['md5',
                                     #supress, not allowing line navigation
                                     null
                         codemirror.on 'blur', ->
+                            return
                             value = codemirror.getValue().trimLeft().trimRight()
                             ngModel.$setViewValue(value)
                             ngModel.$render()

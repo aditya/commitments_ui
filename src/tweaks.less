@@ -3,32 +3,41 @@
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
 
+
+.focus-editor {
+    border: 1px solid @inputBorder;
+    border-color: rgba(82,168,236,.8);
+    outline: 0;
+    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
+}
+
 .editable-shadow {
-  .box-shadow(0 1px 2px rgba(0,0,0,0.2));
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,0.1));
 }
 
 .editable-text-shadow {
-  text-shadow: 0px 1px 3px rgba(0,0,0,0.2);
+    text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
+    //text-shadow: 0px 1px 3px rgba(0,0,0,0.2);
 }
 
 .larger {
-  font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 .tooltip {
-  .larger;
+    .larger;
 }
 
 .shadowed {
-  .box-shadow(0 1px 5px rgba(0,0,0,.2));
+    .box-shadow(0 1px 5px rgba(0,0,0,.2));
 }
 
 .display {
-  .larger;
+    .larger;
 }
 
 .indent {
-  margin-left: @defaultMargin;
+    margin-left: @defaultMargin;
 }
 
 //get the left navigation to stay on screen
@@ -58,12 +67,12 @@ body {
 }
 
 .taskpad {
-  margin-top: 60px;
+    margin-top: 60px;
 }
 
 .no-side-padding {
-  padding-left: 0px;
-  padding-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .no-margin {
@@ -71,117 +80,115 @@ body {
 }
 
 .item {
-  .well;
-  padding: @defaultPad;
-  margin-bottom: @defaultMargin;
-  background-color: @bodyBackground;
-  background-image: url('../images/body-bg-texture-heavy.png');
+    .well;
+    padding: @defaultPad;
+    margin-bottom: @defaultMargin;
+    background-color: @bodyBackground;
+    background-image: url('../images/body-bg-texture-heavy.png');
 }
 
 .item-tools {
-  .icon {
-    padding-top: @defaultPad;
-    padding-bottom: @defaultPad;
-  }
-  .deleter {
-    color: @grayLight;
-  }
+    .icon {
+        padding-top: @defaultPad;
+        padding-bottom: @defaultPad;
+    }
+    .deleter {
+        color: @grayLight;
+    }
 }
 
 .display {
-  padding: @defaultPad;
+    padding: @defaultPad;
 }
 
 .markdown {
-  .border-radius(@baseBorderRadius);
-  border: 1px dotted @transparent;
-  &:hover {
-    border: 1px solid darken(@wellBackground, 7%);
-    .editable-shadow;
-  }
-  cursor: text;
-  .placeholder {
-    color: @linkColor;
-    font-style: italic;
-  }
-  .display, .oneline {
-    p {
-      margin: 1px;
+    .border-radius(@baseBorderRadius);
+    &:hover {
+        .focus-editor;
     }
-  }
+    cursor: text;
+    .placeholder {
+        color: @linkColor;
+        font-style: italic;
+    }
+    .display, .oneline {
+        p {
+            margin: 1px;
+        }
+    }
 }
 
 .markdown.readonly {
-  border: 1px solid @transparent;
-  .box-shadow(0 0px 0px rgba(0,0,0,0.0));
+    border: 1px solid @transparent;
+    .box-shadow(0 0px 0px rgba(0,0,0,0.0));
 }
 
 .date-display {
-  font-size: 1.25em;
+    font-size: 1.25em;
 }
 
 .count-display {
-  font-size: 1.25em;
+    font-size: 1.25em;
 }
 
 .icon {
-  font-size: 1.5em;
-  &.icon-border {
-    border-width: 2px;
-    .border-radius(4px);
-  }
-  &:hover{
-      .editable-text-shadow;
-  }
+    font-size: 1.5em;
+    &.icon-border {
+        border-width: 2px;
+        .border-radius(4px);
+    }
+    &:hover{
+        .editable-text-shadow;
+    }
 }
 
 .discussion {
-  margin: 0px;
-  margin-top: @defaultMargin;
+    margin: 0px;
+    margin-top: @defaultMargin;
 }
 
 .checkoff {
-  .display;
-  .no-side-padding;
+    .display;
+    .no-side-padding;
 }
 
 .gravatar {
-  img {
-    border: 1px solid darken(@wellBackground, 7%);
-    .border-radius(@baseBorderRadius);
-  }
-  text-align: center;
+    img {
+        border: 1px solid darken(@wellBackground, 7%);
+        .border-radius(@baseBorderRadius);
+    }
+    text-align: center;
 }
 
 .comments {
-  .comment {
-    padding: @defaultPad;
-    .postdate {
-      text-align: center;
+    .comment {
+        padding: @defaultPad;
+        .postdate {
+            text-align: center;
+        }
+        .popover {
+            .shadowed;
+            position: relative;
+            display: block;
+            float: left;
+            padding: @defaultPad;
+            min-width: 100%;
+            width: 100%;
+            z-index: 1;
+        }
     }
-    .popover {
-      .shadowed;
-      position: relative;
-      display: block;
-      float: left;
-      padding: @defaultPad;
-      min-width: 100%;
-      width: 100%;
-      z-index: 1;
-    }
-  }
 }
 
 .userinfo {
-  margin-right: @gridGutterWidth + @defaultMargin;
+    margin-right: @gridGutterWidth + @defaultMargin;
 }
 
 .handle {
-  opacity: 0;
-  height: 100%;
-  &:hover{
-    .editable-text-shadow;
-  }
+    opacity: 0;
+    height: 100%;
+    &:hover{
+        .editable-text-shadow;
+    }
 }
 
 .handled {
@@ -190,48 +197,51 @@ body {
 //tweaking base bootstrap
 //Tweak the popover a tiny bit
 .popover {
-  .border-radius(@baseBorderRadius);
-  border-color: darken(@wellBackground, 25%);
-  &.right .arrow {
-    border-right-color: darken(@wellBackground, 25%);
-    &:after {
-      border-right-color: darken(@wellBackground, 25%);
+    .border-radius(@baseBorderRadius);
+    border-color: darken(@wellBackground, 25%);
+    &.right .arrow {
+        border-right-color: darken(@wellBackground, 25%);
+        &:after {
+            border-right-color: darken(@wellBackground, 25%);
+        }
     }
-  }
-  &.top .arrow {
-    border-top-color: darken(@wellBackground, 25%);
-    &:after {
-      border-top-color: darken(@wellBackground, 25%);
+    &.top .arrow {
+        border-top-color: darken(@wellBackground, 25%);
+        &:after {
+            border-top-color: darken(@wellBackground, 25%);
+        }
     }
-  }
-  &.bottom .arrow {
-    border-bottom-color: darken(@wellBackground, 25%);
-    &:after {
-      border-bottom-color: darken(@wellBackground, 25%);
+    &.bottom .arrow {
+        border-bottom-color: darken(@wellBackground, 25%);
+        &:after {
+            border-bottom-color: darken(@wellBackground, 25%);
+        }
     }
-  }
-  &.left .arrow {
-    border-left-color: darken(@wellBackground, 25%);
-    &:after {
-      border-left-color: darken(@wellBackground, 25%);
+    &.left .arrow {
+        border-left-color: darken(@wellBackground, 25%);
+        &:after {
+            border-left-color: darken(@wellBackground, 25%);
+        }
     }
-  }
 }
 
 .well {
-  background-color: fade(@wellBackground, 60%)
+    background-color: fade(@wellBackground, 60%)
 }
 
 //tweaking jQuery UI
 .ui-datepicker-title {
-  font-size: 1.25em;
+    font-size: 1.25em;
 }
 
 .ui-datepicker table {
-  font-size: 1.25em;
+    font-size: 1.25em;
 }
 
 .CodeMirror {
     font-family: @baseFontFamily;
     .larger;
+    .editing {
+        .focus-editor;
+    }
 }
