@@ -9,11 +9,15 @@ require.config({
         moment: 'lib/moment',
         angular: 'lib/angular/angular',
         'coffee-script': 'lib/coffee-script',
-        'cs': 'lib/require-cs',
+        cs: 'lib/require-cs',
         bootstrap: 'lib/bootstrap/js/bootstrap',
         tagbar: 'src/widgets/tagbar',
-        jqueryui: 'lib/jquery-ui',
+        calendar: 'src/widgets/calendar',
+        widget: 'src/widgets/widget',
+        sortable: 'src/widgets/sortable',
+        mouse: 'src/widgets/mouse',
         less: 'lib/less',
+        lunr: 'lib/lunr',
         codemirror: 'lib/codemirror/lib/codemirror',
         codemirrormarkdown: 'lib/codemirror/mode/markdown/markdown',
     },
@@ -34,10 +38,20 @@ require.config({
             deps: ['jquery'],
             exports: 'angular'
         },
-        //bootstrap defines tooltip, and so does jqueryui, so this dependency
-        //makes sure bootstrap runs after and overwrites
         'bootstrap': {
-            deps: ['jquery', 'jqueryui']
+            deps: ['jquery']
+        },
+        'mouse': {
+            deps: ['jquery', 'widget']
+        },
+        'widget': {
+            deps: ['jquery']
+        },
+        'sortable': {
+            deps: ['jquery', 'mouse']
+        },
+        'calendar': {
+            deps: ['jquery']
         },
         'tagbar': {
             deps: ['jquery']

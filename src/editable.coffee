@@ -3,7 +3,8 @@ define ['md5',
     'moment',
     'codemirror',
     'tagbar',
-    'bootstrap'], (md5, markdown, moment) ->
+    'calendar',
+    'sortable',], (md5, markdown, moment) ->
     counter = 0;
 
     ANIMATION_SPEED = 200
