@@ -21,7 +21,9 @@ module = angular.module('RootServices', [])
                 'ABC/123': 1
                 'ABC/Luv': 1
             who: 'kwokoek@glgroup.com'
-            delegates: ['igroff@glgroup.com', 'wballard@glgroup.com']
+            links:
+                'igroff@glgroup.com': 1
+                'wballard@glgroup.com': 1
         ,
             id: 'b'
             what: 'There is always more to do'

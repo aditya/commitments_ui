@@ -48,7 +48,7 @@ define ['angular',
                 fullTextIndex.update
                     id: item.id or ''
                     what: item.what or ''
-                    who: _.keys(item.delegates).join ' '
+                    who: _.keys(item.links).join ' '
                     tags: (_.keys(item.tags).join ' ') or ''
                     comments: (_.map(
                         item?.discussion?.comments,
@@ -163,13 +163,13 @@ define ['angular',
             #
         .controller 'Discussion', ($scope) ->
             null
-        #accepting and rejecting tasks ias simply about stamping it with
-        #your user identity, or removing yourself as a delegate
+        #accepting and rejecting tasks is simply about stamping it with
+        #your user identity, or removing yourself
         .controller 'TaskAccept', ($scope, $timeout) ->
             $scope.accept = (item) ->
                 item.accept[$scope.user.email] = Date.now()
             $scope.reject = (item) ->
-                delete item.delegates[$scope.user.email]
+                delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
         .config ->
             null
