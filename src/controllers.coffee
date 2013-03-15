@@ -187,24 +187,21 @@ define ['angular',
                 if allUsers[$scope.user.email]
                     delete allUsers[$scope.user.email]
                 $scope.selected.allUsers = allUsers
-            $scope.bulkShare = (before, after) ->
-                for user in _.keys(after)
-                    if not before[user]
-                        #adding, wasn't here before
-                        for item in $scope.selected.items
-                            if not item.links
-                                item.links = {}
-                            item.links[user] = Date.now()
-                for user in _.keys(before)
-                    if not after[user]
-                        #removing, wasn't here after
-                        for item in $scope.selected.items
-                            #not every item in the list has every user
-                            #so just check
-                            if item.links and item.links[user]
-                                delete item.links[user]
+            $scope.bulkShare = (all) ->
+                for item in $scope.selected.items
+                    if item?.links?[$scope.user.email]
+                        item.links = {}
+                        item.links[$scope.user.email] = Date.now()
+                    else
+                        #big blank set
+                        item.links = {}
+                    for user in _.keys(all)
+                        item.links[user] = Date.now()
             $scope.$watch 'selected.items', (items) ->
                 rebuildAllUsers(items)
+            $scope.$watch 'lastUpdatedItem', (item) ->
+                rebuildAllUsers($scope.selected.items)
+            , true
         .config ->
             null
         .run ->

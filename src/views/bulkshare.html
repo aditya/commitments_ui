@@ -2,12 +2,12 @@
     ng-controller="BulkShare"
     animated-show="preferences.bulkShare"
     class="alert">
-  <span>Bulk share all the tasks below with</span>
+  <span>Share all the tasks below with</span>
   <span tags
       item-icon-from="gravatar"
       item-icon-size="19"
-      on-change="bulkShare"
       icon="user"
       ng-model="selected.allUsers"
       tooltip="'share via email addresses'"></span>
+    <button class="btn btn-success" ng-click="bulkShare(selected.allUsers)">Share</button>
 </div>
