@@ -56,9 +56,6 @@ require.config({
         'tagbar': {
             deps: ['jquery']
         },
-        'jqueryui': {
-            deps: ['jquery']
-        },
         'codemirror': {
             exports: 'CodeMirror',
             init: function () {
