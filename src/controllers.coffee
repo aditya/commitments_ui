@@ -13,6 +13,7 @@ define ['angular',
             $scope.user = Authentication.user
             $scope.tags = Tags
             $scope.preferences = Preferences
+            $scope.boxes = []
             $scope.messages =
                 info: 'Alerts & Messages'
                 count: 0
@@ -24,7 +25,7 @@ define ['angular',
                         $scope.lastBox = $scope.selected
                     $scope.selected = box
                     $scope.selected.items = $scope.stackRank.sort(
-                        box.filter(),
+                        (box.filter or -> [])(),
                         $scope.user.email,
                         box.tag)
             $scope.poke = (item) ->
@@ -77,21 +78,19 @@ define ['angular',
             #and search
             $scope.$watch 'searchQuery', (searchQuery) ->
                 if searchQuery
-                    keys = {}
-                    for result in fullTextIndex.search(searchQuery)
-                        keys[result.ref] = result
-                    $scope.selectBox
-                        forgettable: true
-                        title: searchQuery
-                        tag: '**search**'
-                        filter: -> _.filter($scope.database.items, (x) -> keys[x.id])
-                        hide: -> false
-                    , true
+                    if $scope.boxes.search
+                        keys = {}
+                        for result in fullTextIndex.search(searchQuery)
+                            keys[result.ref] = result
+                        $scope.boxes.search.filter = -> _.filter($scope.database.items, (x) -> keys[x.id])
+                        $scope.selectBox $scope.boxes.search
                 else
-                    $scope.selectBox $scope.lastBox, true
+                    if $scope.boxes.search
+                        $scope.boxes.search.filter = null
+                        $scope.selectBox $scope.lastBox
         .controller 'Toolbox', ($scope, $rootScope) ->
             #always have the todo and done boxes
-            $scope.boxes = [
+            $scope.boxes.push(
                 title: 'Todo'
                 tag: '*'
                 filter: -> _.reject($scope.database.items, (x) -> x.done)
@@ -101,7 +100,14 @@ define ['angular',
                 tag: '*'
                 filter: -> _.filter($scope.database.items, (x) -> x.done)
                 hide: (x) -> not x.done
-            ]
+            ,
+                title: 'Search Results'
+                forgettable: true
+                tag: '*'
+                filter: null
+                hide: -> false
+            )
+            $scope.boxes.search = $scope.boxes[2]
             #initial view selection
             $scope.selectBox $scope.boxes[0]
             #just pick out tags from a todo, these will be facets
@@ -174,11 +180,12 @@ define ['angular',
                 delete item.accept[$scope.user.email]
         .controller 'BulkShare', ($scope) ->
             rebuildAllUsers = (items) ->
-                console.log 'share'
                 allUsers = {}
                 for item in items
                     for user, __ of (item.links or {})
                         allUsers[user] = 1
+                if allUsers[$scope.user.email]
+                    delete allUsers[$scope.user.email]
                 $scope.selected.allUsers = allUsers
             $scope.bulkShare = (before, after) ->
                 for user in _.keys(after)
