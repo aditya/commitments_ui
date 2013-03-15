@@ -59,3 +59,22 @@ define [
                         element.show()
                     counter++
         ])
+        .directive('animatedShow', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                #counter is in here so an initial hide isn't animated, just hidden
+                #so we'll only animate if it was visible on the first pass
+                counter = 0
+                $scope.$watch attrs.animatedShow, (show) ->
+                    if show
+                        if counter
+                            element.show(HIDE_ANIMATION_DELAY)
+                        else
+                            element.show()
+                    else
+                        if counter
+                            element.hide(HIDE_ANIMATION_DELAY)
+                        else
+                            element.hide()
+                    counter++
+        ])

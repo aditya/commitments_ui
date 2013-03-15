@@ -5,7 +5,7 @@ module = angular.module('RootServices', [])
             email: 'wballard@glgroup.com'
     .factory 'Preferences', ->
         ui:
-            bulkShare: true
+            bulkShare: false
     .factory 'Tags', ->
         []
     #deal with querying 'the database', really the services up in the cloud
