@@ -29,8 +29,16 @@
     font-size: 1.2em;
 }
 
+.a-bit-larger {
+    font-size: 1.1em;
+}
+
 .tooltip {
-    .larger;
+    .a-bit-larger;
+}
+
+.fill {
+    width: auto;
 }
 
 .shadowed {
@@ -83,6 +91,11 @@ body {
     padding-right: 0px;
 }
 
+.side-padding {
+    padding-left: @defaultPad;
+    padding-right: @defaultPad;
+}
+
 .no-margin {
     margin: 0px !important;
 }
@@ -93,6 +106,10 @@ body {
     margin-bottom: @defaultMargin;
     background-color: @bodyBackground;
     background-image: url('../images/body-bg-texture-heavy.png');
+}
+
+.toolitem {
+    .side-padding;
 }
 
 .item-tools {

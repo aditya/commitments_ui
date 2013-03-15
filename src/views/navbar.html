@@ -1,11 +1,22 @@
 <div ng-controller="Navbar" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="form-search pull-right navbar-content">
-            <div class="input-append">
+            <span class="btn-group no-margin">
+                <button class="btn"
+                    ng-click="preferences.bulkShare = !preferences.bulkShare">
+                    <i class="icon icon-user"
+                        tooltip="'bulk share tasks'"
+                        tooltip-placement="bottom"></i>
+                </button>
+            </span>
+            <span class="input-append">
                 <input delayed="searchQuery" type="text" class="search-query input-xlarge larger">
                 <button type="submit" class="btn"><i class="icon-search"></i></button>
-            </div>
-            <span gravatar size="38" ng-model="user.email" tooltip="user.email" tooltip-placement="bottom"></span>
+            </span>
+            <span gravatar size="38"
+                ng-model="user.email"
+                tooltip="user.email"
+                tooltip-placement="left"></span>
         </div>
     </div>
 </div>

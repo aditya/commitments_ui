@@ -172,6 +172,8 @@ define ['angular',
             $scope.reject = (item) ->
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
+        .controller 'BulkShare', ($scope) ->
+            null
         .config ->
             null
         .run ->

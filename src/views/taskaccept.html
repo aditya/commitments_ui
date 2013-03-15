@@ -1,4 +1,7 @@
-<div ng-controller="TaskAccept" animated-hide="item.who == user.email || item.accept[user.email]" class="alert">
+<div
+    ng-controller="TaskAccept"
+    animated-hide="item.who == user.email || item.accept[user.email]"
+    class="alert">
   <span>Task from</span>
   <span gravatar ng-model="item.who" tooltip="item.who"></span>
   <span class="btn-group">
