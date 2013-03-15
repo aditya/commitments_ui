@@ -225,8 +225,12 @@
             }
         },
         updateResults: function () {
-            var text  = this.search.text();
-            if (text.length == 0) return;
+            var text = this.search.text().trim();
+            if (text.length == 0) {
+                //you may have a string of spaces, so clean it up
+                this.search.text('');
+                return;
+            }
             //try to pull out a parseable tag
             var pattern = new RegExp("[" + this.opts.tagSeparators.join("") + "]+", "g");
             if (text.match(pattern)) {
