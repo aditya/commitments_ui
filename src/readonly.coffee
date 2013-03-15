@@ -2,7 +2,7 @@ define [
     'bootstrap',
     ], () ->
     AUTOHIDE_DELAY = 3000
-    HIDE_ANIMATION_DELAY = 400
+    HIDE_ANIMATION_DELAY = 100
     module = angular.module('readonly', [])
         .directive('gravatar', [() ->
             restrict: 'A'
