@@ -7,7 +7,6 @@ define ['angular',
     'cs!src/readonly'], (angular, _, inverted, lunr) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences, Tags) ->
-            $scope.tagNamespaceSeparators = [':', '/']
             $scope.stackRank = StackRank()
             $scope.database = Database()
             $scope.user = Authentication.user

@@ -251,8 +251,6 @@ define ['md5',
                     element.append input
                     input.tagbar
                         icon: templateAttrs.icon
-                        tagSeparators: [',', ';']
-                        tagNamespaceSeparators: $scope.tagNamespaceSeparators
                         query: (query) ->
                             query.callback
                                 results: [query.term, 'sample']

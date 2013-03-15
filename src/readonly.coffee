@@ -43,6 +43,13 @@ define [
                     if ngModel.$viewValue
                         element.text moment(ngModel.$viewValue).fromNow()
         ])
+        .directive('tag', [() ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                ngModel.$render = ->
+                    element.append(makeATag(ngModel.$viewValue), false)
+        ])
         .directive('animatedHide', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

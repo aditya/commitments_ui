@@ -12,8 +12,9 @@
     <ul editable-list-reorder handle=".handle" class="nav nav-list">
         <li ng-repeat="box in tags" active-if="selected == box" editable-record ng-model="box">
         <a href="#" ng-click="selectBox(box)">
-            {{box.title}}
-            <span ng-show="box.todoCount().length" class="indent badge badge-inverse">{{box.todoCount().length}}</span>
+            <span tag ng-model="box.title">
+                <span ng-show="box.todoCount().length" class="indent badge badge-inverse">{{box.todoCount().length}}</span>
+            </span>
             <span tooltip="'drag to reorder'" class="icon-move larger handle muted pull-right" ></span>
         </a>
         </li>

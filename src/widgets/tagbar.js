@@ -4,6 +4,44 @@
         return;
     }
 
+    function makeATag(data, allowClose, opts) {
+        opts = opts || $.fn.tagbar.defaults;
+        var item = null;
+        if (opts.listItem) {
+            var item = $("<li class='tagbar-search-choice'></li>");
+        } else {
+            var item = $("<span class='tagbar-search-choice'></span>");
+        }
+        var pattern = new RegExp("[" + opts.tagNamespaceSeparators.join("") + "]+", "g");
+        var underZ = 20;
+        var icon = null;
+        if (opts.iconUrl) {
+            var url = opts.iconUrl(data);
+            if (url) {
+                var icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
+            }
+        }
+        $.each(data.split(pattern), function(i) {
+            var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
+            var text = $("<span/>").text(this);
+            if(icon) {
+                tagbit.append(icon);
+            }
+            tagbit.append(text);
+            if (i % 2 == 0) tagbit.addClass("label-info");
+            if (i % 2 == 1) tagbit.addClass("label-inverse");
+            tagbit.css('z-index', underZ--);
+            item.append(tagbit);
+        });
+        if (allowClose) {
+            var closer = $("<span class='closer tagbar-search-choice-close underlay label'><span class='icon-remove-sign'></span></span>");
+            item.append(closer);
+        }
+        return item;
+    }
+
+    window.makeATag = makeATag;
+
     var KEY = {
         TAB: 9,
         ENTER: 13,
@@ -343,31 +381,8 @@
             this.focusSearch();
         },
         addSelectedChoice: function (data, value) {
-            var item = $("<li class='tagbar-search-choice'></li>");
-            var pattern = new RegExp("[" + this.opts.tagNamespaceSeparators.join("") + "]+", "g");
-            var underZ = 20;
-            var icon = null;
-            if (this.opts.iconUrl) {
-                var url = this.opts.iconUrl(data);
-                if (url) {
-                    var icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
-                }
-            }
-            $.each(data.split(pattern), function(i) {
-                var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
-                var text = $("<span/>").text(this);
-                if(icon) {
-                    tagbit.append(icon);
-                }
-                tagbit.append(text);
-                if (i % 2 == 0) tagbit.addClass("label-info");
-                if (i % 2 == 1) tagbit.addClass("label-inverse");
-                tagbit.css('z-index', underZ--);
-                item.append(tagbit);
-            });
-            var closer = $("<span class='tagbar-search-choice-close underlay label'><span class='icon-remove-sign'></span></span>");
-            item.append(closer);
-            closer.bind("click dblclick", this.bind(function (e) {
+            var item = makeATag(data, true, this.opts);
+            item.find('.closer').bind("click dblclick", this.bind(function (e) {
                   if (!this.enabled) return;
                   $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
                       $(e.target).parent(".tagbar-search-choice").remove();
@@ -423,6 +438,7 @@
             if (args.length === 0 || typeof(args[0]) === "object") {
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);
                 opts.element = $(this);
+                opts.listItem = true;
                 new TagBar().init(opts);
             } else if (typeof(args[0]) === "string") {
                 if (indexOf(args[0], allowedMethods) < 0) {
@@ -446,7 +462,7 @@
     $.fn.tagbar.defaults = {
         minimumInputLength: 0,
         maximumInputLength: 128,
-        tagSeparators: ['\s'],
-        tagNamespaceSeparators: ['/']
+        tagSeparators: [',', ';'],
+        tagNamespaceSeparators: ['/', ':'],
     };
 }(jQuery));
