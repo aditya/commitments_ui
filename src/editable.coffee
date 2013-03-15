@@ -263,15 +263,18 @@ define ['md5',
                             null
                     #just propagate tag values back to the model
                     input.on 'blur change', (event) ->
-                        ngModel.$setViewValue(input.tagbar('val'))
+                        if attrs.onChange
+                            $scope.$eval(attrs.onChange)(input.tagbar('previous'), input.tagbar('val'))
+                        $scope.$apply ->
+                            ngModel.$setViewValue(input.tagbar('val'))
                     #rendering is really just setting the values
                     ngModel.$render = () ->
                         if not ngModel.$viewValue
                             ngModel.$setViewValue {}
                         input.tagbar 'val', ngModel.$viewValue
-                    $scope.$watch attrs.ngModel, (val) ->
-                        console.log attrs.ngModel, val
+                    $scope.$watch attrs.ngModel,( (val) ->
                         ngModel.$render()
+                    ), true
         ])
         .directive('check', [ ->
             restrict: 'A'

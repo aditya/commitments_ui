@@ -367,6 +367,7 @@
                   if (!this.enabled) return;
                   $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
                       $(e.target).parent(".tagbar-search-choice").remove();
+                      this.previousValues = _.clone(this.values);
                       delete this.values[data];
                       this.clear();
                       this.triggerChange();
@@ -374,6 +375,7 @@
                   killEvent(e);
               }));
             item.insertBefore(this.searchContainer);
+            this.previousValues = _.clone(this.values);
             this.values[data] = value || Date.now();
         },
         ensureSomethingHighlighted: function () {
@@ -404,12 +406,15 @@
                     self.addSelectedChoice(tag, arguments[0][tag]);
                 }
             }
-        }
+        },
+        previous: function () {
+            return this.previousValues || {};
+        },
     };}
     $.fn.tagbar = function () {
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
-            value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "data"];
+            value, allowedMethods = ["focusSearch", "val", "previous", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "data"];
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);

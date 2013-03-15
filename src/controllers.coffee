@@ -173,15 +173,31 @@ define ['angular',
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
         .controller 'BulkShare', ($scope) ->
-            $scope.$watch 'selected.items', (items) ->
+            rebuildAllUsers = (items) ->
                 console.log 'share'
                 allUsers = {}
                 for item in items
-                    for user, ignore of (item.links or {})
+                    for user, __ of (item.links or {})
                         allUsers[user] = 1
-                console.log allUsers
                 $scope.selected.allUsers = allUsers
-            null
+            $scope.bulkShare = (before, after) ->
+                for user in _.keys(after)
+                    if not before[user]
+                        #adding, wasn't here before
+                        for item in $scope.selected.items
+                            if not item.links
+                                item.links = {}
+                            item.links[user] = Date.now()
+                for user in _.keys(before)
+                    if not after[user]
+                        #removing, wasn't here after
+                        for item in $scope.selected.items
+                            #not every item in the list has every user
+                            #so just check
+                            if item.links and item.links[user]
+                                delete item.links[user]
+            $scope.$watch 'selected.items', (items) ->
+                rebuildAllUsers(items)
         .config ->
             null
         .run ->
