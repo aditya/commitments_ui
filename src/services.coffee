@@ -14,6 +14,7 @@ module = angular.module('RootServices', [])
         #here is the 'database' in memory, static for now but this will
         #need to be filled in from user home directories
         todos = [
+        #this one is pretending to be a shared task
             id: 'a'
             what: 'I am but a simple task'
             due: '02/24/2013'
@@ -47,6 +48,9 @@ module = angular.module('RootServices', [])
             id: 'c'
             what: 'Nothing fancy'
             who: 'wballard@glgroup.com'
+            links:
+                'igroff@glgroup.com': 1
+                'kwokoek@glgroup.com': 1
         ]
         ->
             items: todos
