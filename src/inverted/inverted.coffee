@@ -118,7 +118,6 @@ define [], ->
                 if document
                     key = keyFunction document
                     if key
-                        console.log 'indexing', document
                         unpostFromIndex key, document
                         tokenize key, document, postToIndex
             remove: (document) ->

@@ -173,6 +173,14 @@ define ['angular',
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
         .controller 'BulkShare', ($scope) ->
+            $scope.$watch 'selected.items', (items) ->
+                console.log 'share'
+                allUsers = {}
+                for item in items
+                    for user, ignore of (item.links or {})
+                        allUsers[user] = 1
+                console.log allUsers
+                $scope.selected.allUsers = allUsers
             null
         .config ->
             null

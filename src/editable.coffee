@@ -269,11 +269,9 @@ define ['md5',
                         if not ngModel.$viewValue
                             ngModel.$setViewValue {}
                         input.tagbar 'val', ngModel.$viewValue
-                    watchCount = 0
-                    $scope.$watch attrs.ngModel, (->
-                        if watchCount++
-                            ngModel.$render()
-                    ), true
+                    $scope.$watch attrs.ngModel, (val) ->
+                        console.log attrs.ngModel, val
+                        ngModel.$render()
         ])
         .directive('check', [ ->
             restrict: 'A'
