@@ -13,9 +13,10 @@ require.config({
         bootstrap: 'lib/bootstrap/js/bootstrap',
         tagbar: 'src/widgets/tagbar',
         calendar: 'src/widgets/calendar',
-        widget: 'src/widgets/widget',
-        sortable: 'src/widgets/sortable',
-        mouse: 'src/widgets/mouse',
+        widget: 'src/widgets/jquery.ui.widget',
+        sortable: 'src/widgets/jquery.ui.sortable',
+        core: 'src/widgets/jquery.ui.core',
+        mouse: 'src/widgets/jquery.ui.mouse',
         less: 'lib/less',
         lunr: 'lib/lunr',
         codemirror: 'lib/codemirror/lib/codemirror',
@@ -45,7 +46,7 @@ require.config({
             deps: ['jquery', 'widget']
         },
         'widget': {
-            deps: ['jquery']
+            deps: ['jquery', 'core']
         },
         'sortable': {
             deps: ['jquery', 'mouse']

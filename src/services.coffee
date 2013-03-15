@@ -1,11 +1,13 @@
 module = angular.module('RootServices', [])
     #deal with figuring out who is who
     .factory 'Authentication', ->
-        user: ->
+        user:
             email: 'wballard@glgroup.com'
     .factory 'Preferences', ->
-        tags: ->
-            []
+        ui:
+            bulkShareVisible: true
+    .factory 'Tags', ->
+        []
     #deal with querying 'the database', really the services up in the cloud
     #** for the time being this is just rigged to pretend to be a service **
     .factory 'Database', () ->

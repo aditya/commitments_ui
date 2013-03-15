@@ -6,12 +6,13 @@ define ['angular',
     'cs!src/editable',
     'cs!src/readonly'], (angular, _, inverted, lunr) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
-        .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences) ->
+        .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences, Tags) ->
             $scope.tagNamespaceSeparators = [':', '/']
             $scope.stackRank = StackRank()
             $scope.database = Database()
-            $scope.user = Authentication.user()
-            $scope.tags = Preferences.tags()
+            $scope.user = Authentication.user
+            $scope.tags = Tags
+            $scope.preferences = Preferences
             $scope.messages =
                 info: 'Alerts & Messages'
                 count: 0
