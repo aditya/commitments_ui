@@ -2,7 +2,7 @@
     editable-list-blank-record
     editable-list-reorder="selected.tag" handle=".handle"
     on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
-    ng-model="selected.items" class="unstyled items">
+    ng-model="selected.items" class="unstyled items container-fluid">
     <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
     <li
     ng-repeat="item in selected.items"
@@ -13,14 +13,14 @@
         <div ng-include src="'src/views/taskaccept.html'"/>
     </div>
     <div class="row-fluid">
-        <span check ng-model="item.done" tooltip="'click here to mark done'" class="span1 checkoff"></span>
+        <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
         <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span9 larger"></span>
-        <span ng-show="item.what" class="handle span2">
+        <span ng-show="item.what" class="handle span2 pull-right">
             <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
                 <span class="icon icon-comments-alt" ></span>
             </span>
             <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" ng-click="poke(item)"></span>
-            <span tooltip="'drag to stack rank'" class="icon-move icon-2x muted" ></span>
+            <span tooltip="'drag to stack rank'" class="icon icon-move a-lot-larger muted" ></span>
         </span>
     </div>
     <div ng-show="item.what" require-object 'item.discussion' class="row-fluid item-tools">

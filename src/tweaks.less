@@ -45,6 +45,15 @@
     width: auto;
 }
 
+.full-width {
+    width: 100%;
+}
+
+.cut-width {
+    min-width: 16px;
+    width: 2%;
+}
+
 .shadowed {
     .box-shadow(0 1px 5px rgba(0,0,0,.2));
 }
@@ -135,6 +144,7 @@ body {
 }
 
 .markdown {
+    border: 1px solid transparent;
     .border-radius(@baseBorderRadius);
     &:hover {
         .hover-editor;
@@ -183,6 +193,7 @@ body {
 .checkoff {
     .display;
     .no-side-padding;
+    .pull-left;
 }
 
 .gravatar {
@@ -219,9 +230,6 @@ body {
 .handle {
     opacity: 0;
     height: 100%;
-    &:hover{
-        .editable-text-shadow;
-    }
 }
 
 .handled {

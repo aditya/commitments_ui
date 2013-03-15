@@ -2,11 +2,11 @@
     <ul editable-list editable-list-blank-record ng-model="discussion.comments" class="container-fluid unstyled comments">
         <li ng-repeat="comment in discussion.comments" class="row-fluid comment">
         <div editable-record ng-model="comment">
-            <div class="span2">
+            <div class="span1">
                 <div gravatar default="user.email" ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
                 <div postdate ng-model="comment.when"></div>
             </div>
-            <div class="span9">
+            <div class="span10">
                 <div class="popover right">
                     <div class="arrow"></div>
                     <div markdown multiline readonly-if="user.email != comment.who" placeholder="'Your comment here'" ng-model="comment.what" required-for="comment"></div> <div>
