@@ -105,7 +105,7 @@ define ['angular',
                 forgettable: true
                 tag: '*'
                 filter: null
-                hide: -> false
+                hide: (x) -> not x.what
             )
             $scope.boxes.search = $scope.boxes[2]
             #initial view selection
