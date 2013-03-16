@@ -1,22 +1,23 @@
 <div ng-controller="Toolbox" class="well no-side-padding">
-    <ul class="nav nav-list">
-        <li class="nav-header">Tasks</li>
-        <li ng-repeat="box in boxes" animated-show="box.filter" active-if="selected == box">
-        <a href="#" ng-click="selectBox(box)">
-            {{box.title}}
-            <span ng-show="box.todo_count" class="indent badge badge-inverse">{{box.todo_count}}</span>
-        </a>
-        </li>
-        <li class="divider"></li>
-    </ul>
-    <ul editable-list-reorder handle=".handle" class="nav nav-list">
-        <li ng-repeat="box in tags" active-if="selected == box" editable-record ng-model="box">
-        <a href="#" ng-click="selectBox(box)">
-            <span tag ng-model="box.title">
-                <span ng-show="box.todoCount().length" class="indent badge badge-inverse">{{box.todoCount().length}}</span>
-            </span>
-            <span tooltip="'drag to reorder'" class="pad icon icon-move a-lot-larger handle muted pull-right" ></span>
-        </a>
-        </li>
-    </ul>
+  <ul class="nav nav-list">
+    <li class="nav-header">Tasks</li>
+    <li ng-repeat="box in boxes" animated-show="box.filter" active-if="selected == box">
+    <a href="#" ng-click="selectBox(box)">
+      {{box.title}}
+      <span ng-show="box.todo_count" class="indent badge badge-inverse">{{box.todo_count}}</span>
+    </a>
+    </li>
+    <li class="divider"></li>
+  </ul>
+  <ul editable-list-reorder handle=".handle" class="nav nav-list">
+    <li ng-repeat="box in tags" active-if="selected == box" editable-record ng-model="box">
+    <a href="#" ng-click="selectBox(box)">
+      <span animated-visible="box.todoCount().length" class="badge badge-inverse countbadge">{{box.todoCount().length}}</span>
+      <span tag ng-model="box.title" class="tagbox"></span>
+      <span class="pull-right">
+        <span tooltip="'drag to reorder'" class="icon icon-move a-lot-larger handle muted" ></span>
+      </span>
+    </a>
+    </li>
+  </ul>
 </div>

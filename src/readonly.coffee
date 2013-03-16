@@ -2,7 +2,7 @@ define [
     'bootstrap',
     ], () ->
     AUTOHIDE_DELAY = 3000
-    HIDE_ANIMATION_DELAY = 100
+    ANIMATION_SPEED = 100
     module = angular.module('readonly', [])
         .directive('gravatar', [() ->
             restrict: 'A'
@@ -59,7 +59,7 @@ define [
                 $scope.$watch attrs.animatedHide, (hide) ->
                     if hide
                         if counter
-                            element.hide(HIDE_ANIMATION_DELAY)
+                            element.hide(ANIMATION_SPEED)
                         else
                             element.hide()
                     else
@@ -75,7 +75,7 @@ define [
                 $scope.$watch attrs.animatedShow, (show) ->
                     if show
                         if counter
-                            element.show(HIDE_ANIMATION_DELAY)
+                            element.show(ANIMATION_SPEED)
                         else
                             element.show()
                     else
@@ -84,4 +84,17 @@ define [
                         else
                             element.hide()
                     counter++
+        ])
+        .directive('animatedVisible', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                $scope.$watch attrs.animatedVisible, (show) ->
+                    if show
+                        element.animate
+                            opacity: 1
+                        , ANIMATION_SPEED
+                    else
+                        element.animate
+                            opacity: 0
+                        , ANIMATION_SPEED
         ])
