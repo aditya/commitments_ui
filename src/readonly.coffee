@@ -80,7 +80,7 @@ define [
                             element.show()
                     else
                         if counter
-                            element.hide(HIDE_ANIMATION_DELAY)
+                            element.hide(ANIMATION_SPEED)
                         else
                             element.hide()
                     counter++

@@ -82,10 +82,12 @@ define ['angular',
                         for result in fullTextIndex.search(searchQuery)
                             keys[result.ref] = result
                         $scope.boxes.search.filter = -> _.filter($scope.database.items, (x) -> keys[x.id])
+                        $scope.boxes.search.todoCount = -> _.reject($scope.boxes.search.filter(), (x) -> x.done)
                         $scope.selectBox $scope.boxes.search
                 else
                     if $scope.boxes.search
                         $scope.boxes.search.filter = null
+                        $scope.boxes.search.todoCount = null
                         $scope.selectBox $scope.lastBox
         .controller 'Toolbox', ($scope, $rootScope) ->
             #always have the todo and done boxes
@@ -93,17 +95,20 @@ define ['angular',
                 title: 'Todo'
                 tag: '*'
                 filter: -> _.reject($scope.database.items, (x) -> x.done)
+                todoCount: -> _.reject($scope.database.items, (x) -> x.done)
                 hide: (x) -> x.done
             ,
                 title: 'Done'
                 tag: '*'
                 filter: -> _.filter($scope.database.items, (x) -> x.done)
+                todoCount: -> []
                 hide: (x) -> not x.done
             ,
                 title: 'Search Results'
                 forgettable: true
                 tag: '*'
                 filter: null
+                todoCount: -> []
                 hide: (x) -> not x.what
             )
             $scope.boxes.search = $scope.boxes[2]
@@ -166,7 +171,6 @@ define ['angular',
             $scope.$watch 'lastDeletedItem', (item) ->
                 tagIndex.remove item
             , true
-            #
         .controller 'Discussion', ($scope) ->
             null
         #accepting and rejecting tasks is simply about stamping it with
