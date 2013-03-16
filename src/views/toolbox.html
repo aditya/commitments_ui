@@ -10,10 +10,10 @@
   </ul>
   <ul editable-list-reorder handle=".handle" class="nav nav-list">
     <li ng-repeat="box in tags" active-if="selected == box" editable-record ng-model="box">
+    <span tooltip="'drag to reorder'" class="icon icon-move a-lot-larger handle centered muted" ></span>
     <a href="#" ng-click="selectBox(box)">
       <span animated-visible="box.todoCount().length" class="badge badge-important countbadge">{{box.todoCount().length}}</span>
       <span tag ng-model="box.title" animated-show="box.filter" class="tagbox"></span>
-      <span tooltip="'drag to reorder'" class="icon icon-move a-lot-larger handle muted" ></span>
     </a>
     </li>
   </ul>

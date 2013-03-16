@@ -1,34 +1,36 @@
 <ul editable-list
-    editable-list-blank-record
-    editable-list-reorder="selected.tag" handle=".handle"
-    on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
-    ng-model="selected.items" class="unstyled items container-fluid">
-    <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
+  editable-list-blank-record
+  editable-list-reorder="selected.tag" handle=".handle"
+  on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
+  ng-model="selected.items" class="unstyled items container-fluid">
+  <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
     <li
     ng-repeat="item in selected.items"
-    editable-record ng-model="item"
+    editable-record
+    editable-record-tools=".hover-tools"
+    ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">
+    <span tooltip="'drag to stack rank'" tooltip-placement="left" class="handle icon icon-move a-lot-larger muted" ></span>
     <div requires-object="item.accept" class="row-fluid">
-        <div ng-include src="'src/views/taskaccept.html'"/>
+      <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>
+    <span ng-show="item.what" class="hover-tools item-tools">
+      <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'" tooltip-placement="left">
+        <span class="icon icon-comments-alt" ></span>
+      </span>
+      <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="left" ng-click="poke(item)"></span>
+    </span>
     <div class="row-fluid">
-        <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
-        <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span9 larger"></span>
-        <span ng-show="item.what" class="handle span2 pull-right">
-            <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'">
-                <span class="icon icon-comments-alt" ></span>
-            </span>
-            <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" ng-click="poke(item)"></span>
-            <span tooltip="'drag to stack rank'" class="icon icon-move a-lot-larger muted" ></span>
-        </span>
+      <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
+      <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
     </div>
-    <div ng-show="item.what" require-object 'item.discussion' class="row-fluid item-tools">
-        <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-        <span tags item-icon-from="gravatar" item-icon-size="19"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
+    <div ng-show="item.what" requires-object="item.discussion" class="row-fluid item-tools">
+      <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
+      <span tags item-icon-from="gravatar" item-icon-size="19"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
     </div>
     <div ng-show="item.discussion.show" ng-init="discussion=item.discussion" class="row-fluid">
-        <ng-include src="'src/views/discussion.html'"/>
+      <div ng-include src="'src/views/discussion.html'"></div>
     </div>
     </li>
-</ul>
+  </ul>

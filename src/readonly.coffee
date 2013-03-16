@@ -28,6 +28,7 @@ define [
                         element.tooltip
                             title: tooltip
                             placement: placement
+                            container: 'body'
                             delay:
                                 show: 100
                                 hide: 100

@@ -29,6 +29,18 @@ define ['md5',
                     $scope.$emit 'editableRecordUpdate', model
                 ,true
         ])
+        .directive('editableRecordTools', [() ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.on 'mouseenter', (event) ->
+                    $(event.currentTarget).find(attrs.editableRecordTools).animate
+                        opacity: 1
+                    , ANIMATION_SPEED
+                element.on 'mouseleave', (event) ->
+                    $(event.currentTarget).find(attrs.editableRecordTools).animate
+                        opacity: 0
+                    , ANIMATION_SPEED / 2
+        ])
         .directive('requiredFor', [() ->
             restrict: 'A'
             require: 'ngModel'
@@ -49,11 +61,11 @@ define ['md5',
                     element.sortable
                         handle: attrs.handle
                     element.on 'mouseenter', 'li', (event) ->
-                        $(attrs.handle, $(event.currentTarget)).animate
+                        $(event.currentTarget).find(attrs.handle).animate
                             opacity: 1
                         , ANIMATION_SPEED
                     element.on 'mouseleave', 'li', (event) ->
-                        $(attrs.handle, $(event.currentTarget)).animate
+                        $(event.currentTarget).find(attrs.handle).animate
                             opacity: 0
                         , ANIMATION_SPEED / 2
                 else
