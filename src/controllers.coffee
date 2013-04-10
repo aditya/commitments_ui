@@ -178,7 +178,9 @@ define ['angular',
         .controller 'TaskAccept', ($scope, $timeout) ->
             $scope.accept = (item) ->
                 item.accept[$scope.user.email] = Date.now()
+                delete item.reject[$scope.user.email]
             $scope.reject = (item) ->
+                item.reject[$scope.user.email] = Date.now()
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
         .controller 'BulkShare', ($scope) ->
