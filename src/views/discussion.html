@@ -6,6 +6,7 @@
         <div gravatar default="user.email" ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
       </div>
       <div class="span11">
+        <span username ng-model="comment.who"></span>
         <span postdate ng-model="comment.when"></span>
         <div markdown multiline readonly-if="user.email != comment.who" placeholder="'Your comment here'" ng-model="comment.what" required-for="comment"></div>
         </div>

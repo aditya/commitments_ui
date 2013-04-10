@@ -37,14 +37,29 @@ define [
                     element.bind 'shown', ->
                         $timeout (-> element.tooltip 'hide'), AUTOHIDE_DELAY
         ])
+        .directive('username', [() ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'username'
+                element.append "<span class='icon-user'/>"
+                display = angular.element "<span/>"
+                element.append display
+                ngModel.$render = ->
+                    if ngModel.$viewValue
+                        display.text ngModel.$viewValue
+        ])
         .directive('postdate', [() ->
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'postdate'
+                element.append "<span class='icon-time'/>"
+                display = angular.element "<span/>"
+                element.append display
                 ngModel.$render = ->
                     if ngModel.$viewValue
-                        element.text moment(ngModel.$viewValue).fromNow()
+                        display.text moment(ngModel.$viewValue).fromNow()
         ])
         .directive('tag', [() ->
             restrict: 'A'
