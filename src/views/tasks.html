@@ -7,7 +7,7 @@
     <li
     ng-repeat="item in selected.items"
     editable-record
-    editable-record-tools=".hover-tools"
+    editable-record-tools=".item-extended"
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">
@@ -21,17 +21,21 @@
       </span>
       <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="left" ng-click="poke(item)"></span>
     </span>
-    <div class="row-fluid">
+    <div class="row-fluid item-core">
       <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
       <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
     </div>
-    <div ng-show="item.what" requires-object="item.discussion" class="row-fluid item-tools">
-      <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-      <span tags item-icon-from="gravatar" item-icon-size="19"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
-    </div>
-    <hr/>
-    <div ng-show="item.discussion.show" ng-init="discussion=item.discussion" class="row-fluid">
-      <div ng-include src="'src/views/discussion.html'"></div>
+    <div class="row-fluid item-extended">
+      <div ng-show="item.what">
+        <div requires-object="item.discussion" class="row-fluid item-tools">
+          <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
+          <span tags item-icon-from="gravatar" item-icon-size="19"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
+        </div>
+        <hr/>
+        <div ng-init="discussion=item.discussion" class="row-fluid">
+          <div ng-include src="'src/views/discussion.html'"></div>
+        </div>
+      </div>
     </div>
     </li>
   </ul>

@@ -32,14 +32,11 @@ define ['md5',
         .directive('editableRecordTools', [() ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
+                $(element).find(attrs.editableRecordTools).hide()
                 element.on 'mouseenter', (event) ->
-                    $(event.currentTarget).find(attrs.editableRecordTools).animate
-                        opacity: 1
-                    , ANIMATION_SPEED
+                    $(event.currentTarget).find(attrs.editableRecordTools).show()
                 element.on 'mouseleave', (event) ->
-                    $(event.currentTarget).find(attrs.editableRecordTools).animate
-                        opacity: 0
-                    , ANIMATION_SPEED / 2
+                    $(event.currentTarget).find(attrs.editableRecordTools).hide()
         ])
         .directive('requiredFor', [() ->
             restrict: 'A'
