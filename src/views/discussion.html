@@ -1,17 +1,14 @@
-<div ng-controller="Discussion" class="well discussion">
-    <ul editable-list editable-list-blank-record ng-model="discussion.comments" class="container-fluid unstyled comments">
-        <li ng-repeat="comment in discussion.comments" class="row-fluid comment">
-        <div editable-record ng-model="comment">
-            <div class="span2">
-                <div gravatar default="user.email" ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
-                <div postdate ng-model="comment.when"></div>
-            </div>
-            <div class="span9">
-                <div class="popover right">
-                    <div class="arrow"></div>
-                    <div markdown multiline readonly-if="user.email != comment.who" placeholder="'Your comment here'" ng-model="comment.what" required-for="comment"></div> <div>
-            </div>
+<div ng-controller="Discussion" class="discussion">
+  <ul editable-list editable-list-blank-record ng-model="discussion.comments" class="container-fluid unstyled comments">
+    <li ng-repeat="comment in discussion.comments" class="row-fluid comment">
+    <div editable-record ng-model="comment">
+      <div class="span1">
+        <div gravatar default="user.email" ng-model="comment.who" tooltip="comment.who" tooltip-placement="left"></div>
+      </div>
+      <div class="span11">
+        <span postdate ng-model="comment.when"></span>
+        <div markdown multiline readonly-if="user.email != comment.who" placeholder="'Your comment here'" ng-model="comment.what" required-for="comment"></div>
         </div>
         </li>
-    </ul>
-</div>
+      </ul>
+    </div>

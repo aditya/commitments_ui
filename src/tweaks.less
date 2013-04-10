@@ -208,8 +208,10 @@ body {
 }
 
 .gravatar {
+  border: 1px solid darken(@wellBackground, 7%);
+  .border-radius(@baseBorderRadius);
+  padding: 1px;
   img {
-    border: 1px solid darken(@wellBackground, 7%);
     .border-radius(@baseBorderRadius);
   }
   text-align: center;

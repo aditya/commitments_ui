@@ -29,6 +29,7 @@
       <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
       <span tags item-icon-from="gravatar" item-icon-size="19"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
     </div>
+    <hr/>
     <div ng-show="item.discussion.show" ng-init="discussion=item.discussion" class="row-fluid">
       <div ng-include src="'src/views/discussion.html'"></div>
     </div>
