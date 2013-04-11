@@ -29,14 +29,16 @@ define ['md5',
                     $scope.$emit 'editableRecordUpdate', model
                 ,true
         ])
-        .directive('editableRecordTools', [() ->
+        .directive('editableListTools', [() ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
-                $(element).find(attrs.editableRecordTools).hide()
-                element.on 'mouseenter', (event) ->
-                    $(event.currentTarget).find(attrs.editableRecordTools).show()
-                element.on 'mouseleave', (event) ->
-                    $(event.currentTarget).find(attrs.editableRecordTools).hide()
+                $(element).find(attrs.editableListTools).hide()
+                element.on 'click', 'li', (event) ->
+                    $(element).find(attrs.editableListTools).hide()
+                    $(event.currentTarget).find(attrs.editableListTools).show()
+                element.on 'keydown', (event) ->
+                    if event.which is 27 #escape
+                        $(element).find(attrs.editableListTools).hide()
         ])
         .directive('requiredFor', [() ->
             restrict: 'A'
@@ -178,7 +180,6 @@ define ['md5',
                 element.on 'keydown', (event) ->
                     if event.which is 27 #escape
                         event.target.blur()
-                        event.preventDefault()
                 ngModel.$render = () ->
                     #markdown based display
                     if ngModel.$viewValue

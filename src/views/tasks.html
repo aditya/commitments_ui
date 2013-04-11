@@ -1,13 +1,13 @@
 <ul editable-list
   editable-list-blank-record
   editable-list-reorder="selected.tag" handle=".handle"
+  editable-list-tools=".item-extended"
   on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
   ng-model="selected.items" class="unstyled items container-fluid">
   <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
     <li
     ng-repeat="item in selected.items"
     editable-record
-    editable-record-tools=".item-extended"
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">
@@ -16,10 +16,6 @@
       <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>
     <span ng-show="item.what" class="hover-tools item-tools">
-      <span requires-array="item.discussion.comments" ng-click="item.discussion.show = !item.discussion.show" tooltip="'comment and chat'" tooltip-placement="left">
-        <span class="icon icon-comments-alt" ></span>
-      </span>
-      <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="left" ng-click="poke(item)"></span>
     </span>
     <div class="row-fluid item-core">
       <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
@@ -28,8 +24,9 @@
     <div class="row-fluid item-extended">
       <div ng-show="item.what">
         <div requires-object="item.discussion" class="row-fluid item-tools">
+          <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(item)"></span>
           <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-          <span tags item-icon-from="gravatar" item-icon-size="19"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
+          <span tags item-icon-from="gravatar" item-icon-size="18"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
         </div>
         <hr/>
         <div ng-init="discussion=item.discussion" class="row-fluid">

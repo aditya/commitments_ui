@@ -12,7 +12,7 @@ define [
                 size = attrs.size or 50
                 element.width size
                 element.height size
-                icon = angular.element("<img width=#{size} height=#{size}></img>")
+                icon = angular.element("<img></img>")
                 element.append(icon)
                 ngModel.$render = ->
                     if not ngModel.$viewValue
