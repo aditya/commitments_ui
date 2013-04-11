@@ -309,8 +309,10 @@ define ['md5',
         .directive('requiresObject', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
-                if not $scope.$eval(attrs.requiresObject)
-                    $scope.$eval("#{attrs.requiresObject}={}")
+                for objectName in attrs.requiresObject.split(',')
+                    objectName = objectName.trim()
+                    if not $scope.$eval(objectName)
+                        $scope.$eval("#{objectName}={}")
         ])
         .directive('requiresInt', [ ->
             restrict: 'A'

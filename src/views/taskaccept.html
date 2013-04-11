@@ -1,5 +1,6 @@
 <div
     ng-controller="TaskAccept"
+    requires-object="item.accept, item.reject"
     animated-hide="item.who == user.email || item.accept[user.email]"
     class="alert">
   <span>Task from</span>
