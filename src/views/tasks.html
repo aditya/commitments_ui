@@ -11,7 +11,7 @@
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">
-    <span tooltip="'drag to stack rank'" tooltip-placement="left" class="handle icon icon-move a-lot-larger muted" ></span>
+    <span tooltip="'drag to stack rank'" tooltip-placement="right" class="handle icon icon-move a-lot-larger top-left" ></span>
     <div class="row-fluid">
       <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>

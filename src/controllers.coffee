@@ -105,12 +105,6 @@ define ['angular',
                     #what the user has updated
                     _.extend dynamicTag, displayTags[tagTerm] or {}, dynamicTagMethods
                     $scope.boxes.push dynamicTag
-                #at this point we have all the tags currently in the index
-                #but with the 'saved' properties like sort order merged in
-                $scope.boxes = $scope.stackRank.sort(
-                    $scope.boxes,
-                    $scope.user.email)
-                $scope.stackRank.renumber($scope.boxes, $scope.user.email)
             #peek at the model to see when it it time to add or remove an item
             $scope.$watch 'lastUpdatedItem', (item) ->
                 tagIndex.add item

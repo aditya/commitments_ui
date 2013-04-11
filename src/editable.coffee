@@ -57,16 +57,9 @@ define ['md5',
                 if attrs.handle
                     element.sortable
                         handle: attrs.handle
-                    element.on 'mouseenter', 'li', (event) ->
-                        $(event.currentTarget).find(attrs.handle).animate
-                            opacity: 1
-                        , ANIMATION_SPEED
-                    element.on 'mouseleave', 'li', (event) ->
-                        $(event.currentTarget).find(attrs.handle).animate
-                            opacity: 0
-                        , ANIMATION_SPEED / 2
                 else
-                    element.sortable {}
+                    element.sortable
+                        cursor: 'move'
                 element.on 'sortupdate', ->
                     $scope.stackRank.renumber(
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
