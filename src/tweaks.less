@@ -78,22 +78,6 @@
 .editing {
   .focus-editor;
 }
-//get the left navigation to stay on screen
-.sidebar-nav-fixed {
-  position:fixed;
-  top:60px;
-  width:21.97%;
-}
-
-@media (max-width: 767px) {
-  .sidebar-nav-fixed {
-    position:static;
-    width:auto;
-  }
-}
-
-
-//styles for our bits
 
 body {
   background-image: url('../images/gray_jean.png');
@@ -235,6 +219,9 @@ body {
       min-width: 100%;
       width: 100%;
       z-index: 1;
+    }
+    .comment-gravatar {
+      width: 60px;
     }
   }
 }
