@@ -66,7 +66,7 @@ define [
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 ngModel.$render = ->
-                    element.append(makeATag(ngModel.$viewValue), false)
+                    element.empty().append(makeATag(ngModel.$viewValue), false)
         ])
         .directive('animatedHide', [ ->
             restrict: 'A'

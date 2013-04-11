@@ -1,5 +1,5 @@
 
-@defaultPad: 6px;
+@defaultPad: 4px;
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
 
@@ -192,8 +192,6 @@ body {
 }
 
 .gravatar {
-  border: 1px solid darken(@wellBackground, 7%);
-  .border-radius(@baseBorderRadius);
   padding: 1px;
   img {
     .border-radius(@baseBorderRadius);
@@ -258,6 +256,7 @@ body {
   }
 }
 
+//TODO: remove
 .tagboxes {
   @media (max-width: 720px) {
     .label {

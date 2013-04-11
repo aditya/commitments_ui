@@ -43,30 +43,6 @@ define ['angular',
                     list.splice(foundAt, 1)
                     $scope.lastDeletedItem = item
             #here are the various boxes and filters
-            #always have the todo and done boxes
-            $scope.boxes.push(
-                title: 'Todo'
-                tag: '*'
-                filter: -> _.reject($scope.database.items, (x) -> x.done)
-                todoCount: -> _.reject($scope.database.items, (x) -> x.done)
-                hide: (x) -> x.done
-            ,
-                title: 'Done'
-                tag: '*'
-                filter: -> _.filter($scope.database.items, (x) -> x.done)
-                todoCount: -> []
-                hide: (x) -> not x.done
-            ,
-                title: 'Search Results'
-                forgettable: true
-                tag: '*'
-                filter: null
-                todoCount: -> []
-                hide: (x) -> not x.what
-            )
-            $scope.boxes.search = $scope.boxes[2]
-            #initial view selection is the TODO box
-            $scope.selectBox $scope.boxes[0]
             #just pick out tags from a todo, these will be facets
             parseTags = (document, callback) ->
                 for tag, v of (document?.tags or {})
@@ -81,7 +57,25 @@ define ['angular',
             #watch the index for changes, and if you see them rebuild all the tags
             #so that we track the currently available facets
             $scope.$watch 'tagIndex.revision()', ->
-                #tags currently on display, which may have been updated / ordered
+                $scope.boxes = []
+                #always have the todo and done boxes
+                $scope.boxes.push(
+                    title: 'Todo'
+                    tag: '*'
+                    filter: -> _.reject($scope.database.items, (x) -> x.done)
+                    todoCount: -> _.reject($scope.database.items, (x) -> x.done)
+                    hide: (x) -> x.done
+                ,
+                    title: 'Done'
+                    tag: '*'
+                    filter: -> _.filter($scope.database.items, (x) -> x.done)
+                    todoCount: -> []
+                    hide: (x) -> not x.done
+                )
+                #initial view selection is the TODO box
+                if not $scope.selected
+                    $scope.selectBox $scope.boxes[0]
+                #tags currently used in all tasks
                 displayTags = {}
                 for tag in $scope.tags
                     displayTags[tag.tag] = tag
@@ -110,13 +104,13 @@ define ['angular',
                     #but only using the tag term as the base default, prefering
                     #what the user has updated
                     _.extend dynamicTag, displayTags[tagTerm] or {}, dynamicTagMethods
-                    tags[tagTerm] = dynamicTag
+                    $scope.boxes.push dynamicTag
                 #at this point we have all the tags currently in the index
                 #but with the 'saved' properties like sort order merged in
-                $scope.tags = $scope.stackRank.sort(
-                    _.values(tags),
+                $scope.boxes = $scope.stackRank.sort(
+                    $scope.boxes,
                     $scope.user.email)
-                $scope.stackRank.renumber($scope.tags, $scope.user.email)
+                $scope.stackRank.renumber($scope.boxes, $scope.user.email)
             #peek at the model to see when it it time to add or remove an item
             $scope.$watch 'lastUpdatedItem', (item) ->
                 tagIndex.add item
