@@ -196,8 +196,8 @@ body {
 }
 
 .gravatar {
-  padding: 1px;
   img {
+    border: 1px solid darken(@wellBackground, 7%);
     .border-radius(@baseBorderRadius);
   }
   text-align: center;
@@ -258,45 +258,6 @@ body {
   @media (max-width: 720px) {
     .badge {
       font-size: 0.8em;
-    }
-  }
-}
-
-//TODO: remove
-.tagboxes {
-  @media (max-width: 720px) {
-    .label {
-      font-size: 0.8em;
-    }
-    .badge {
-      font-size: 0.8em;
-    }
-    .handle {
-      display: none !important;
-    }
-    .nav-list {
-      .li {
-      }
-      a {
-        padding: @defaultPad;
-        padding-right: 0px;
-        margin-left: -3px;
-        margin-right: -3px;
-      }
-      .overlay {
-        margin-right: -2px;
-      }
-      padding-right: @defaultPad / 2;
-      padding-left: @defaultPad / 2;
-    }
-    .tagbar-search-choice {
-      padding: 1px;
-      margin: 1px;
-      margin-left: @defaultMargin / 2;
-    }
-    .tagbar-search-choice-content {
-      display: inline;
-      padding: 1px;
     }
   }
 }
