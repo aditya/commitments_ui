@@ -147,18 +147,18 @@ define ['angular',
             #and search
             $scope.$watch 'searchQuery', (searchQuery) ->
                 if searchQuery
-                    if $scope.boxes.search
-                        keys = {}
-                        for result in fullTextIndex.search(searchQuery)
-                            keys[result.ref] = result
-                        $scope.boxes.search.filter = -> _.filter($scope.database.items, (x) -> keys[x.id])
-                        $scope.boxes.search.todoCount = -> _.reject($scope.boxes.search.filter(), (x) -> x.done)
-                        $scope.selectBox $scope.boxes.search
+                    keys = {}
+                    for result in fullTextIndex.search(searchQuery)
+                        keys[result.ref] = result
+                    searchBox =
+                        forgettable: true
+                        title: 'Search Results'
+                        tag: '*'
+                        filter: -> _.filter($scope.database.items, (x) -> keys[x.id])
+                        todoCount: -> _.reject($scope.boxes.search.filter(), (x) -> x.done)
+                    $scope.selectBox searchBox
                 else
-                    if $scope.boxes.search
-                        $scope.boxes.search.filter = null
-                        $scope.boxes.search.todoCount = null
-                        $scope.selectBox $scope.lastBox
+                    $scope.selectBox $scope.lastBox
         .controller 'Toolbox', ($scope, $rootScope) ->
             null
         .controller 'Discussion', ($scope) ->
