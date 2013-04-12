@@ -30,18 +30,16 @@ define ['angular',
             $scope.poke = (item) ->
                 console.log 'poking', item
             $scope.newItem = (item) ->
-                $scope.database.items.push item
+                $scope.database.add item
                 $scope.lastUpdatedItem = item
             $scope.updateItem = (item) ->
+                $scope.database.update item
                 $scope.lastUpdatedItem = item
             $scope.placeholderItem = (item) ->
                 ($scope.selected.stamp or ->)(item)
             $scope.deleteItem  = (item) ->
-                list = $scope.database.items
-                foundAt = list.indexOf(item)
-                if foundAt >= 0
-                    list.splice(foundAt, 1)
-                    $scope.lastDeletedItem = item
+                $scope.database.delete item
+                $scope.lastDeletedItem = item
             #here are the various boxes and filters
             #just pick out tags from a todo, these will be facets
             parseTags = (document, callback) ->

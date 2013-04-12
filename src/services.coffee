@@ -54,6 +54,19 @@ module = angular.module('RootServices', [])
         ]
         ->
             items: todos
+            add: (item) ->
+                todos.push item
+                console.log 'new', item
+                item
+            update: (item) ->
+                console.log 'update', item
+                item
+            delete: (item) ->
+                console.log 'delete', item
+                foundAt = todos.indexOf(item)
+                if foundAt >= 0
+                    todos.splice(foundAt, 1)
+                item
     .factory 'StackRank', () ->
         ->
             #standardized sorting function, works to provide per user / per
