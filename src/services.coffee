@@ -59,11 +59,16 @@ define ['angular',
             ids = {}
             for todo in todos
                 ids[todo.id] = todo
-            #inverted indexing for tags
             parseTags = (document, callback) ->
                 for tag, v of (document?.tags or {})
                     callback tag
+            parseLinks = (document, callback) ->
+                for link, v of (document?.links or {})
+                    callback link
+            #inverted indexing for tags
             tagIndex = inverted.index [parseTags], (x) -> x.id
+            #inverted indexing for links
+            linkIndex = inverted.index [parseLinks], (x) -> x.id
             #full text index for search
             fullTextIndex = lunr ->
                 @field 'what', 8
@@ -92,6 +97,7 @@ define ['angular',
                         ids[item.id] = item
                     console.log 'update', item
                     tagIndex.add item
+                    linkIndex.add item
                     fullTextIndex.addToIndex item
                     item
                 delete: (item) ->
@@ -101,6 +107,7 @@ define ['angular',
                         todos.splice(foundAt, 1)
                     ids[item.id] = null
                     tagIndex.remove item
+                    linkIndex.remove item
                     fullTextIndex.remove
                         id: item.id
                     item
