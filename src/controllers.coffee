@@ -1,9 +1,8 @@
 define ['angular',
     'lodash',
-    'lunr'
     'cs!src/services',
     'cs!src/editable',
-    'cs!src/readonly'], (angular, _, lunr) ->
+    'cs!src/readonly'], (angular, _) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences, Tags) ->
             $scope.stackRank = StackRank()
@@ -38,7 +37,6 @@ define ['angular',
                 ($scope.selected.stamp or ->)(item)
             $scope.deleteItem  = (item) ->
                 $scope.database.delete item
-                $scope.lastDeletedItem = item
             #here are the various boxes and filters
             #watch the index to see if we shoudl rebuild the facet filters
             $scope.$watch 'database.tagIndex.revision()', ->
@@ -91,49 +89,20 @@ define ['angular',
                     _.extend dynamicTag, displayTags[tagTerm] or {}, dynamicTagMethods
                     $scope.boxes.push dynamicTag
         .controller 'Navbar', ($scope) ->
-            #The navbar is in charge or the full text index
-            fullTextIndex = null
-            addToIndex = (item) ->
-                fullTextIndex.update
-                    id: item.id or ''
-                    what: item.what or ''
-                    who: _.keys(item.links).join ' '
-                    tags: (_.keys(item.tags).join ' ') or ''
-                    comments: (_.map(
-                        item?.discussion?.comments,
-                        (x) -> x.what).join ' ') or ''
-            #when the database changes, rebuild a new index
-            $scope.$watch 'database', (database) ->
-                fullTextIndex = lunr ->
-                    @field 'what', 8
-                    @field 'who', 4
-                    @field 'tags', 2
-                    @field 'comments', 1
-                    @ref 'id'
-                for item in database.items
-                    addToIndex item
-            #peek at the model to see when it it time to add or remove an item
-            $scope.$watch 'lastUpdatedItem', (item) ->
-                if item
-                    addToIndex item
-            , true
-            $scope.$watch 'lastDeletedItem', (item) ->
-                if item
-                    fullTextIndex.remove
-                        id: item.id
-            , true
-            #and search
+            #search is driven from the navbar, queries then make up a 'fake'
+            #box much like the selected tags, but it is instead a list of
+            #matching ids
             $scope.$watch 'searchQuery', (searchQuery) ->
                 if searchQuery
                     keys = {}
-                    for result in fullTextIndex.search(searchQuery)
+                    for result in $scope.database.fullTextIndex.search(searchQuery)
                         keys[result.ref] = result
                     searchBox =
                         forgettable: true
                         title: 'Search Results'
                         tag: '*'
                         filter: -> _.filter($scope.database.items, (x) -> keys[x.id])
-                        todoCount: -> _.reject($scope.boxes.search.filter(), (x) -> x.done)
+                        todoCount: -> _.reject(searchBox.filter(), (x) -> x.done)
                     $scope.selectBox searchBox
                 else
                     $scope.selectBox $scope.lastBox

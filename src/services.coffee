@@ -61,17 +61,36 @@ define ['angular',
                 for tag, v of (document?.tags or {})
                     callback tag
             tagIndex = inverted.index [parseTags], (x) -> x.id
+            #full text index for search
+            fullTextIndex = lunr ->
+                @field 'what', 8
+                @field 'who', 4
+                @field 'tags', 2
+                @field 'comments', 1
+                @ref 'id'
+            fullTextIndex.addToIndex = (item) ->
+                fullTextIndex.update
+                    id: item.id or ''
+                    what: item.what or ''
+                    who: _.keys(item.links).join ' '
+                    tags: (_.keys(item.tags).join ' ') or ''
+                    comments: (_.map(
+                        item?.discussion?.comments,
+                        (x) -> x.what).join ' ') or ''
             ->
                 items: todos
                 tagIndex: tagIndex
+                fullTextIndex: fullTextIndex
                 add: (item) ->
                     todos.push item
                     console.log 'new', item
                     tagIndex.add item
+                    fullTextIndex.addToIndex item
                     item
                 update: (item) ->
                     console.log 'update', item
                     tagIndex.add item
+                    fullTextIndex.addToIndex item
                     item
                 delete: (item) ->
                     console.log 'delete', item
@@ -79,6 +98,8 @@ define ['angular',
                     if foundAt >= 0
                         todos.splice(foundAt, 1)
                     tagIndex.remove item
+                    fullTextIndex.remove
+                        id: item.id
                     item
         .factory 'StackRank', () ->
             ->
