@@ -28,7 +28,7 @@ define ['angular',
             $scope.poke = (item) ->
                 console.log 'poking', item
             $scope.newItem = (item) ->
-                $scope.database.add item
+                $scope.database.update item
                 $scope.lastUpdatedItem = item
             $scope.updateItem = (item) ->
                 $scope.database.update item

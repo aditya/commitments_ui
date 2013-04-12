@@ -77,17 +77,18 @@ define ['angular',
                     comments: (_.map(
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
+            #track all the ids, this lets todos streaming in the from the server
+            #know when they should go in the todos list
+            ids = {}
             ->
                 items: todos
+                ids: ids
                 tagIndex: tagIndex
                 fullTextIndex: fullTextIndex
-                add: (item) ->
-                    todos.push item
-                    console.log 'new', item
-                    tagIndex.add item
-                    fullTextIndex.addToIndex item
-                    item
                 update: (item) ->
+                    if not ids[item.id]
+                        todos.push item
+                        ids[item.id] = item
                     console.log 'update', item
                     tagIndex.add item
                     fullTextIndex.addToIndex item
@@ -97,6 +98,7 @@ define ['angular',
                     foundAt = todos.indexOf(item)
                     if foundAt >= 0
                         todos.splice(foundAt, 1)
+                    ids[item.id] = null
                     tagIndex.remove item
                     fullTextIndex.remove
                         id: item.id
