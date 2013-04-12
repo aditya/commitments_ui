@@ -4,11 +4,10 @@ define ['angular',
     'cs!src/editable',
     'cs!src/readonly'], (angular, _) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
-        .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences, Tags) ->
+        .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences) ->
             $scope.stackRank = StackRank()
             $scope.database = Database()
             $scope.user = Authentication.user
-            $scope.tags = Tags
             $scope.preferences = Preferences
             $scope.boxes = []
             $scope.messages =
@@ -58,10 +57,6 @@ define ['angular',
                 #initial view selection is the TODO box
                 if not $scope.selected
                     $scope.selectBox $scope.boxes[0]
-                #tags currently used in all tasks
-                displayTags = {}
-                for tag in $scope.tags
-                    displayTags[tag.tag] = tag
                 #dynamic tags from the index, these are current
                 tags = {}
                 for tagTerm in $scope.database.tagIndex.terms()
@@ -86,7 +81,7 @@ define ['angular',
                     #make an object sandwich, overlaying the dynamic functions
                     #but only using the tag term as the base default, prefering
                     #what the user has updated
-                    _.extend dynamicTag, displayTags[tagTerm] or {}, dynamicTagMethods
+                    _.extend dynamicTag, dynamicTagMethods
                     $scope.boxes.push dynamicTag
         .controller 'Navbar', ($scope) ->
             #search is driven from the navbar, queries then make up a 'fake'

@@ -10,8 +10,6 @@ define ['angular',
         .factory 'Preferences', ->
             ui:
                 bulkShare: false
-        .factory 'Tags', ->
-            []
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
         .factory 'Database', () ->
@@ -56,6 +54,11 @@ define ['angular',
                     'igroff@glgroup.com': 1
                     'kwokoek@glgroup.com': 1
             ]
+            #track all the ids, this lets todos streaming in the from the server
+            #know when they should go in the todos list
+            ids = {}
+            for todo in todos
+                ids[todo.id] = todo
             #inverted indexing for tags
             parseTags = (document, callback) ->
                 for tag, v of (document?.tags or {})
@@ -77,9 +80,6 @@ define ['angular',
                     comments: (_.map(
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
-            #track all the ids, this lets todos streaming in the from the server
-            #know when they should go in the todos list
-            ids = {}
             ->
                 items: todos
                 ids: ids
@@ -87,6 +87,7 @@ define ['angular',
                 fullTextIndex: fullTextIndex
                 update: (item) ->
                     if not ids[item.id]
+                        console.log 'adding'
                         todos.push item
                         ids[item.id] = item
                     console.log 'update', item
