@@ -1,6 +1,6 @@
 <ul editable-list
   editable-list-blank-record
-  editable-list-reorder="selected.tag" handle=".handle"
+  editable-list-reorder="selected.tag"
   editable-list-tools=".item-extended"
   on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
   ng-model="selected.items" class="unstyled items container-fluid">
@@ -11,7 +11,6 @@
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">
-    <span tooltip="'drag to stack rank'" tooltip-placement="right" class="handle icon icon-move a-lot-larger top-left" ></span>
     <div class="row-fluid">
       <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>
@@ -24,7 +23,7 @@
     <div class="row-fluid item-extended">
       <div ng-show="item.what">
         <div requires-object="item.discussion" class="row-fluid item-tools">
-          <span class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(item)"></span>
+          <span action class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(item)"></span>
           <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
           <span tags item-icon-from="gravatar" item-icon-size="18"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
         </div>

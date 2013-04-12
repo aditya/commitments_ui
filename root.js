@@ -4,6 +4,7 @@ require.config({
     paths: {
         md5: 'lib/md5',
         jquery: 'lib/jquery',
+        jqueryui: 'lib/jqueryui',
         lodash: 'lib/lodash',
         markdown: 'lib/markdown',
         moment: 'lib/moment',
@@ -13,10 +14,6 @@ require.config({
         bootstrap: 'lib/bootstrap/js/bootstrap',
         tagbar: 'src/widgets/tagbar',
         calendar: 'src/widgets/calendar',
-        widget: 'src/widgets/jquery.ui.widget',
-        sortable: 'src/widgets/jquery.ui.sortable',
-        core: 'src/widgets/jquery.ui.core',
-        mouse: 'src/widgets/jquery.ui.mouse',
         less: 'lib/less',
         lunr: 'lib/lunr',
         codemirror: 'lib/codemirror/lib/codemirror',
@@ -42,14 +39,8 @@ require.config({
         'bootstrap': {
             deps: ['jquery']
         },
-        'mouse': {
-            deps: ['jquery', 'widget']
-        },
-        'widget': {
-            deps: ['jquery', 'core']
-        },
-        'sortable': {
-            deps: ['jquery', 'mouse']
+        'jqueryui': {
+            deps: ['jquery']
         },
         'calendar': {
             deps: ['jquery']

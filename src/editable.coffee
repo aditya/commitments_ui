@@ -4,7 +4,7 @@ define ['md5',
     'codemirror',
     'tagbar',
     'calendar',
-    'sortable',], (md5, markdown, moment) ->
+    'jqueryui',], (md5, markdown, moment) ->
     counter = 0;
 
     ANIMATION_SPEED = 200
@@ -57,11 +57,13 @@ define ['md5',
             link: ($scope, element, attrs) ->
                 #using jQuery, so this is not all that impressive
                 if attrs.handle
+                    console.log element.sortable
                     element.sortable
-                        handle: attrs.handle
+                        cursor: 'move'
                 else
                     element.sortable
                         cursor: 'move'
+                element.css 'cursor', 'move'
                 element.on 'sortupdate', ->
                     $scope.stackRank.renumber(
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
@@ -251,6 +253,7 @@ define ['md5',
                 iconSize = templateAttrs.itemIconSize or 32
                 ($scope, element, attrs, ngModel) ->
                     input = angular.element('<span class="tag-display"/>')
+                    element.css 'cursor', 'default'
                     element.append input
                     input.tagbar
                         icon: templateAttrs.icon
@@ -277,6 +280,11 @@ define ['md5',
                         ngModel.$render()
                     ), true
         ])
+        .directive('action', ['$timeout', ($timeout) ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.css 'cursor', 'pointer'
+        ])
         .directive('check', [ ->
             restrict: 'A'
             require: 'ngModel'
@@ -293,6 +301,7 @@ define ['md5',
                             else
                                 ngModel.$setViewValue Date.now()
                             ngModel.$render()
+                    element.css 'cursor', 'pointer'
                     ngModel.$render = ->
                         icon.removeClass 'icon-check'
                         icon.addClass 'icon-check-empty'
