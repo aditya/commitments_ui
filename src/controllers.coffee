@@ -1,10 +1,9 @@
 define ['angular',
     'lodash',
-    'cs!src/inverted/inverted',
     'lunr'
     'cs!src/services',
     'cs!src/editable',
-    'cs!src/readonly'], (angular, _, inverted, lunr) ->
+    'cs!src/readonly'], (angular, _, lunr) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .controller 'Desktop', ($scope, Database, StackRank, Authentication, Preferences, Tags) ->
             $scope.stackRank = StackRank()
@@ -41,20 +40,8 @@ define ['angular',
                 $scope.database.delete item
                 $scope.lastDeletedItem = item
             #here are the various boxes and filters
-            #just pick out tags from a todo, these will be facets
-            parseTags = (document, callback) ->
-                for tag, v of (document?.tags or {})
-                    callback tag
-            tagIndex = $scope.tagIndex = inverted.index [parseTags], (x) -> x.id
-            #any time the database changes, we need to build a whole new tag
-            #index
-            $scope.$watch 'database', (database) ->
-                do tagIndex.clear
-                for item in database.items
-                    tagIndex.add item
-            #watch the index for changes, and if you see them rebuild all the tags
-            #so that we track the currently available facets
-            $scope.$watch 'tagIndex.revision()', ->
+            #watch the index to see if we shoudl rebuild the facet filters
+            $scope.$watch 'database.tagIndex.revision()', ->
                 $scope.boxes = []
                 #always have the todo and done boxes
                 $scope.boxes.push(
@@ -79,12 +66,12 @@ define ['angular',
                     displayTags[tag.tag] = tag
                 #dynamic tags from the index, these are current
                 tags = {}
-                for tagTerm in tagIndex.terms()
+                for tagTerm in $scope.database.tagIndex.terms()
                     byTag = (tagTerm, filter) ->
                         () ->
                             by_tag = {tags: {}}
                             by_tag.tags[tagTerm] = 1
-                            tagIndex.search(by_tag, filter)
+                            $scope.database.tagIndex.search(by_tag, filter)
                     stampWithTag = (tagTerm) ->
                         (item) ->
                             item.tags = item.tags or {}
@@ -103,13 +90,6 @@ define ['angular',
                     #what the user has updated
                     _.extend dynamicTag, displayTags[tagTerm] or {}, dynamicTagMethods
                     $scope.boxes.push dynamicTag
-            #peek at the model to see when it it time to add or remove an item
-            $scope.$watch 'lastUpdatedItem', (item) ->
-                tagIndex.add item
-            , true
-            $scope.$watch 'lastDeletedItem', (item) ->
-                tagIndex.remove item
-            , true
         .controller 'Navbar', ($scope) ->
             #The navbar is in charge or the full text index
             fullTextIndex = null
