@@ -42,6 +42,14 @@
   font-size: 1.1em;
 }
 
+.a-bit-smaller {
+  font-size: 0.9em;
+}
+
+.smaller {
+  font-size: 0.8em;
+}
+
 .tooltip {
   .a-bit-larger;
 }
@@ -81,10 +89,10 @@
 
 body {
   background-image: url('../images/gray_jean.png');
+  padding-top: 60px;
 }
 
 .taskpad {
-  margin-top: 60px;
 }
 
 .no-side-padding {
@@ -195,12 +203,21 @@ body {
   .pull-left;
 }
 
+.gravatar-size {
+  width: 38px;
+  height: 38px;
+}
+
 .gravatar {
+  border: 1px solid darken(@wellBackground, 7%);
+  .border-radius(@baseBorderRadius);
+  padding: 1px;
   img {
-    border: 1px solid darken(@wellBackground, 7%);
     .border-radius(@baseBorderRadius);
+    .gravatar-size;
   }
   text-align: center;
+  .gravatar-size;
 }
 
 .comments {
@@ -262,14 +279,23 @@ body {
   }
 }
 
-.tagbox {
-  position: relative;
-  left: -24px;
+.search-query {
+  @media (min-width: 720px) {
+    width: 340px;
+  }
+  @media (max-width: 720px) {
+    width: 150px;
+  }
 }
 
-.fixedbox {
-  position: relative;
-  left: -20px;
+.tagbar-search-choice-content {
+  @media (min-width: 720px) {
+    font-weight: bold;
+  }
+  @media (max-width: 720px) {
+    font-weight: normal;
+    .smaller;
+  }
 }
 
 //tweaking base bootstrap
@@ -331,3 +357,4 @@ body {
 .navbar-content {
   margin-top: 3px;
 }
+

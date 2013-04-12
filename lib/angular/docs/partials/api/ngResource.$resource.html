@@ -2,12 +2,25 @@
 <span class="hint">(service in module <code ng:non-bindable="">ngResource</code>
 )</span>
 </h1>
-<div><h2 id="Description">Description</h2>
+<div><a href="http://github.com/angular/angular.js/edit/master/src/ngResource/resource.js" class="improve-docs btn btn-primary">Improve this doc</a><h2 id="Description">Description</h2>
 <div class="description"><p>A factory which creates a resource object that lets you interact with
 <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a> server-side data sources.</p>
 
 <p>The returned resource object has action methods which provide high-level behaviors without
-the need to interact with the low level <a href="api/ng.$http"><code>$http</code></a> service.</p></div>
+the need to interact with the low level <a href="api/ng.$http"><code>$http</code></a> service.</p>
+
+<h3>Installation</h3>
+
+<p>To use $resource make sure you have included the <code>angular-resource.js</code> that comes in Angular 
+package. You can also find this file on Google CDN, bower as well as at
+<a href="http://code.angularjs.org/">code.angularjs.org</a>.</p>
+
+<p>Finally load the module in your application:</p>
+
+<pre><code>   angular.module('app', ['ngResource']);
+</code></pre>
+
+<p>and you are ready to get started!</p></div>
 <h2 id="Dependencies">Dependencies</h2>
 <ul class="dependencies"><li><code ng:non-bindable=""><a href="api/ng.$http">$http</a></code>
 </li>
@@ -67,9 +80,9 @@ optionally extended with custom <code>actions</code>. The default set contains t
 
 <p>Calling these methods invoke an <a href="api/ng.$http"><code>ng.$http</code></a> with the specified http method,
 destination and parameters. When the data is returned from the server then the object is an
-instance of the resource class <code>save</code>, <code>remove</code> and <code>delete</code> actions are available on it as
-methods with the <code>$</code> prefix. This allows you to easily perform CRUD operations (create, read,
-update, delete) on server-side data like this:
+instance of the resource class. The actions <code>save</code>, <code>remove</code> and <code>delete</code> are available on it
+as  methods with the <code>$</code> prefix. This allows you to easily perform CRUD operations (create,
+read, update, delete) on server-side data like this:
 <pre class="prettyprint linenums">
       var User = $resource('/user/:userId', {userId:'@id'});
       var user = User.get({userId:123}, function() {
@@ -149,10 +162,9 @@ operations (create, read, update, delete) on server-side data.</p>
      });
    </pre>
 
-<pre><code>It's worth noting that the success callback for `get`, `query` and other method gets passed
+<p>It's worth noting that the success callback for <code>get</code>, <code>query</code> and other method gets passed
 in the response that came from the server as well as $http header getter function, so one
-could rewrite the above example and get access to http headers as:
-</code></pre>
+could rewrite the above example and get access to http headers as:</p>
 
 <pre class="prettyprint linenums">
      var User = $resource('/user/:userId', {userId:'@id'});
@@ -169,10 +181,10 @@ could rewrite the above example and get access to http headers as:
 
 <p>Let's look at what a buzz client created with the <code>$resource</code> service looks like:
     <h4>Source</h4>
-<div source-edit="" source-edit-deps="angular.js script.js" source-edit-html="index.html-219" source-edit-css="" source-edit-js="script.js-218" source-edit-unit="" source-edit-scenario="scenario.js-220"></div>
+<div source-edit="" source-edit-deps="angular.js script.js" source-edit-html="index.html-221" source-edit-css="" source-edit-js="script.js-220" source-edit-unit="" source-edit-scenario="scenario.js-222"></div>
 <div class="tabbable"><div class="tab-pane" title="index.html">
-<pre class="prettyprint linenums" ng-set-text="index.html-219" ng-html-wrap=" angular.js script.js"></pre>
-<script type="text/ng-template" id="index.html-219">
+<pre class="prettyprint linenums" ng-set-text="index.html-221" ng-html-wrap=" angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-221">
        
 
        <div ng-controller="BuzzController">
@@ -195,8 +207,8 @@ could rewrite the above example and get access to http headers as:
       </script>
 </div>
 <div class="tab-pane" title="script.js">
-<pre class="prettyprint linenums" ng-set-text="script.js-218"></pre>
-<script type="text/ng-template" id="script.js-218">
+<pre class="prettyprint linenums" ng-set-text="script.js-220"></pre>
+<script type="text/ng-template" id="script.js-220">
          function BuzzController($resource) {
            this.userId = 'googlebuzz';
            this.Activity = $resource(
@@ -218,10 +230,10 @@ could rewrite the above example and get access to http headers as:
        </script>
 </div>
 <div class="tab-pane" title="End to end test">
-<pre class="prettyprint linenums" ng-set-text="scenario.js-220"></pre>
-<script type="text/ng-template" id="scenario.js-220">
+<pre class="prettyprint linenums" ng-set-text="scenario.js-222"></pre>
+<script type="text/ng-template" id="scenario.js-222">
       </script>
 </div>
 </div><h4>Demo</h4>
-<div class="well doc-example-live" ng-embed-app="" ng-set-html="index.html-219" ng-eval-javascript="script.js-218"></div></div>
+<div class="well doc-example-live" ng-embed-app="" ng-set-html="index.html-221" ng-eval-javascript="script.js-220"></div></div>
 </div>

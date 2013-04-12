@@ -2,15 +2,16 @@
 <span class="hint">(directive in module <code ng:non-bindable="">ng</code>
 )</span>
 </h1>
-<div><h2 id="Description">Description</h2>
+<div><a href="http://github.com/angular/angular.js/edit/master/src/ng/directive/ngSwitch.js" class="improve-docs btn btn-primary">Improve this doc</a><h2 id="Description">Description</h2>
 <div class="description"><p>Conditionally change the DOM structure.</p></div>
 <h2 id="Usage">Usage</h2>
-<div class="usage">as element (see <a href="guide/ie">IE restrictions</a>)<pre class="prettyprint linenums">&lt;ng-switch
-       on="{*}"&gt;
-&lt;/ng-switch&gt;</pre>
-as attribute<pre class="prettyprint linenums">&lt;ANY ng-switch="{*}"&gt;
-   ...
-&lt;/ANY&gt;</pre>
+<div class="usage">This directive can be used as custom element, but we aware of <a href="guide/ie">IE restrictions</a>.<pre><code ng:non-bindable="">&lt;ANY ng-switch="expression"&gt;
+&lt;ANY ng-switch-when="matchValue1"&gt;...&lt;/ANY&gt;
+&lt;ANY ng-switch-when="matchValue2"&gt;...&lt;/ANY&gt;
+...
+&lt;ANY ng-switch-default&gt;...&lt;/ANY&gt;
+&lt;/ANY&gt;</code>
+</pre>
 <h3 id="Directive.info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
 </ul>

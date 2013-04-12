@@ -2,7 +2,7 @@
 <span class="hint">(filter in module <code ng:non-bindable="">ng</code>
 )</span>
 </h1>
-<div><h2 id="Description">Description</h2>
+<div><a href="http://github.com/angular/angular.js/edit/master/src/ng/filter/filter.js" class="improve-docs btn btn-primary">Improve this doc</a><h2 id="Description">Description</h2>
 <div class="description"><p>Selects a subset of items from <code>array</code> and returns it as a new array.</p>
 
 <p>Note: This function is used to augment the <code>Array</code> type in Angular expressions. See
@@ -53,22 +53,22 @@ the predicate returned true for.</p></li>
 
   Search: <input ng-model="searchText">
   <table id="searchTextResults">
-    <tr><th>Name</th><th>Phone</th><tr>
+    <tr><th>Name</th><th>Phone</th></tr>
     <tr ng-repeat="friend in friends | filter:searchText">
       <td>{{friend.name}}</td>
       <td>{{friend.phone}}</td>
-    <tr>
+    </tr>
   </table>
   <hr>
   Any: <input ng-model="search.$"> <br>
   Name only <input ng-model="search.name"><br>
   Phone only <input ng-model="search.phone"å><br>
   <table id="searchObjResults">
-    <tr><th>Name</th><th>Phone</th><tr>
+    <tr><th>Name</th><th>Phone</th></tr>
     <tr ng-repeat="friend in friends | filter:search">
       <td>{{friend.name}}</td>
       <td>{{friend.phone}}</td>
-    <tr>
+    </tr>
   </table>
 </script>
 </div>
