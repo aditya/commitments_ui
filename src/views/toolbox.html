@@ -4,8 +4,8 @@
     </a>
     <ul class="dropdown-menu" role="menu">
         <li ng-repeat="box in boxes" active-if="selected == box" ng-model="box">
-        <a href="#" ng-click="selectBox(box)">
-            <span class="badge badge-important">{{todoCount(box)}}</span>
+        <a href="#" ng-click="selectBox(box)" ng-init="count=todoCount(box);">
+            <span animated-visible="count" class="badge badge-important">{{count}}</span>
             <span tag ng-model="box.title" animated-show="box.filter"></span>
         </a>
         </li>
