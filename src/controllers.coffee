@@ -27,7 +27,8 @@ define ['angular',
                         $scope.user.email,
                         box.tag)
             $scope.todoCount = (box) ->
-                '*'
+                console.log box
+                (_.reject (box.filter or -> [])(), (x) -> x.done).length
             $scope.poke = (item) ->
                 console.log 'poking', item
             $scope.newItem = (item) ->
