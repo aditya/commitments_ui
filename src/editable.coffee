@@ -16,7 +16,6 @@ define ['md5',
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'editableRecord'
                 $scope.$watch attrs.ngModel, (model) ->
-                    element.data 'record', model
                     #fields that are always required
                     if not model.id
                         model.id = md5("#{Date.now()}#{counter++}")
@@ -25,7 +24,10 @@ define ['md5',
                     if model.$$required
                         if not model.when
                             model.when = Date.now()
-                    $scope.$emit 'editableRecordUpdate', model
+                    #if there was data, then this is an update
+                    if element.data 'record'
+                        $scope.$emit 'editableRecordUpdate', model
+                    element.data 'record', model
                 ,true
         ])
         .directive('editableListTools', [() ->

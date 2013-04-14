@@ -47,14 +47,20 @@ define ['angular',
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
             updateItem = (item, fromServer) ->
-                console.log 'update', item
+                if not fromServer
+                    console.log 'update', item
+                else
+                    console.log 'serverupdate', item
                 items[item.id] = item
                 tagIndex.add item
                 linkIndex.add item
                 fullTextIndex.addToIndex item
                 item
             deleteItem = (item, fromServer) ->
-                console.log 'delete', item
+                if not fromServer
+                    console.log 'delete', item
+                else
+                    console.log 'serverdelete', item
                 delete items[item.id]
                 tagIndex.remove item
                 linkIndex.remove item
