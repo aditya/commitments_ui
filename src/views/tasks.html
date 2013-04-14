@@ -17,7 +17,7 @@
     <span ng-show="item.what" class="hover-tools item-tools">
     </span>
     <div class="row-fluid item-core">
-      <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
+      <span check animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
       <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
     </div>
     <div class="row-fluid item-extended">

@@ -93,12 +93,12 @@ define [
                         if counter
                             element.show(ANIMATION_SPEED)
                         else
-                            element.show()
+                            element.show(0)
                     else
                         if counter
                             element.hide(ANIMATION_SPEED)
                         else
-                            element.hide()
+                            element.hide(0)
                     counter++
         ])
         .directive('animatedVisible', [ ->
