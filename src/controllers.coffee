@@ -93,6 +93,21 @@ define ['angular',
                     _.extend dynamicTag, dynamicTagMethods
                     $scope.boxes.push dynamicTag
         .controller 'Navbar', ($scope) ->
+            #bulk sharing is driven from the navbar
+            rebuildAllUsers = (items) ->
+                allUsers = {}
+                for item in items
+                    for user, __ of (item.links or {})
+                        allUsers[user] = 1
+                if allUsers[$scope.user.email]
+                    delete allUsers[$scope.user.email]
+                $scope.selected.allUsers = allUsers
+            #ui toggle has a bit of data rebuild along with it
+            $scope.toggleBulkShare = ->
+                $scope.database.preferences.bulkShare = not $scope.database.preferences.bulkShare
+                console.log $scope.database.preferences.bulkShare
+                if $scope.database.preferences.bulkShare
+                    rebuildAllUsers $scope.selected.items
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
@@ -124,14 +139,7 @@ define ['angular',
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
         .controller 'BulkShare', ($scope) ->
-            rebuildAllUsers = (items) ->
-                allUsers = {}
-                for item in items
-                    for user, __ of (item.links or {})
-                        allUsers[user] = 1
-                if allUsers[$scope.user.email]
-                    delete allUsers[$scope.user.email]
-                $scope.selected.allUsers = allUsers
+            #bulk sharing function, puts all the users on all the items
             $scope.bulkShare = (all) ->
                 for item in $scope.selected.items
                     if item?.links?[$scope.user.email]
@@ -142,8 +150,3 @@ define ['angular',
                         item.links = {}
                     for user in _.keys(all)
                         item.links[user] = Date.now()
-            $scope.$watch 'selected.items', (items) ->
-                rebuildAllUsers(items)
-            $scope.$watch 'lastUpdatedItem', (item) ->
-                rebuildAllUsers($scope.selected.items)
-            , true

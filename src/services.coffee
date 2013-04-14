@@ -12,6 +12,7 @@ define ['angular',
                 email: 'wballard@glgroup.com'
         .factory 'Preferences', ->
             ->
+                bulkShare: false
                 server: 'http://localhost:8080/'
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
@@ -74,6 +75,7 @@ define ['angular',
             #call this in controllers, or really - just the root most controller
             #to get one database
             ->
+                preferences: preferences
                 items: (filter) ->
                     _.filter _.values(items), filter
                 tagIndex: tagIndex
