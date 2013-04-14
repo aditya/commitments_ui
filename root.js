@@ -14,7 +14,6 @@ require.config({
         cs: 'lib/require-cs',
         bootstrap: 'lib/bootstrap/js/bootstrap',
         tagbar: 'src/widgets/tagbar',
-        calendar: 'src/widgets/calendar',
         less: 'lib/less',
         lunr: 'lib/lunr',
         codemirror: 'lib/codemirror/lib/codemirror',
@@ -41,9 +40,6 @@ require.config({
             deps: ['jquery']
         },
         'jqueryui': {
-            deps: ['jquery']
-        },
-        'calendar': {
             deps: ['jquery']
         },
         'tagbar': {

@@ -3,7 +3,6 @@ define ['md5',
     'moment',
     'codemirror',
     'tagbar',
-    'calendar',
     'jqueryui',], (md5, markdown, moment) ->
     counter = 0;
 
@@ -190,58 +189,6 @@ define ['md5',
                     else if attrs.placeholder
                         display.addClass('placeholder')
                         display.html($scope.$eval(attrs.placeholder))
-        ])
-        .directive('date', [() ->
-            restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs, ngModel) ->
-                element.addClass 'date'
-                element.addClass 'editable'
-                icon = angular.element('<span class="icon-calendar icon"/>')
-                display = angular.element('<span class="date-display"/>')
-                deleter = angular.element('<span class="icon icon-remove-sign deleter"/>')
-                element.append(icon, display, deleter)
-                #make sure to unhook the dialog like keyboard capture
-                clearCapture = ->
-                    icon.popover 'destroy'
-                    $(document).off 'keydown.editableDate'
-                    $(document).off 'mousedown.editableDate'
-                #entire field is editable, just click it
-                startEdit = (event) ->
-                    picker = angular.element('<div/>')
-                    picker.datepicker
-                        prevText: ''
-                        nextText: ''
-                        onSelect: (date, picker) ->
-                            clearCapture()
-                            $scope.$apply () ->
-                                ngModel.$setViewValue date
-                                ngModel.$render()
-                    $(document).on 'keydown.editableDate', (event) ->
-                        if event.which is 27 #escape
-                            clearCapture()
-                        event.stopPropagation()
-                    $(document).on 'mousedown.editableDate', (event) ->
-                        parent = event.originalEvent.target
-                        while parent
-                            parent = parent.parentElement
-                            if parent is picker[0]
-                                return
-                        clearCapture()
-                    icon.popover {content: picker, html: true, placement: 'bottom'}
-                    icon.popover 'show'
-                icon.on 'click', startEdit
-                display.on 'click', startEdit
-                deleter.on 'click', ->
-                    $scope.$apply ->
-                        ngModel.$setViewValue('')
-                        ngModel.$render()
-                ngModel.$render = () ->
-                    if ngModel.$viewValue
-                        deleter.show()
-                    else
-                        deleter.hide()
-                    display.text ngModel.$viewValue
         ])
         .directive('tags', ['$timeout', ($timeout) ->
             restrict: 'A'
