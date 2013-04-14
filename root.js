@@ -6,6 +6,7 @@ require.config({
         jquery: 'lib/jquery',
         jqueryui: 'lib/jqueryui',
         lodash: 'lib/lodash',
+        socketio: 'lib/socket.io',
         markdown: 'lib/markdown',
         moment: 'lib/moment',
         angular: 'lib/angular/angular',

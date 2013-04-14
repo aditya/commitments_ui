@@ -1,64 +1,24 @@
 define ['angular',
     'lodash',
+    'socketio',
     'cs!src/inverted/inverted',
-    'lunr'], (angular, _, inverted, lunr) ->
+    'lunr',
+    'cs!src/sampledata',
+    ], (angular, _, socketio, inverted, lunr, sampledata) ->
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'Authentication', ->
             user:
                 email: 'wballard@glgroup.com'
         .factory 'Preferences', ->
-            ui:
-                bulkShare: false
+            ->
+                server: 'http://localhost:8080/'
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
-        .factory 'Database', () ->
-            #here is the 'database' in memory, static for now but this will
-            #need to be filled in from user home directories
-            todos = [
-            #this one is pretending to be a shared task
-                id: 'a'
-                what: 'I am but a simple task'
-                due: '02/24/2013'
-                tags:
-                    Tagged: 1
-                    Important: 1
-                    'ABC/123': 1
-                    'ABC/Luv': 1
-                who: 'kwokoek@glgroup.com'
-                links:
-                    'igroff@glgroup.com': 1
-                    'wballard@glgroup.com': 1
-            ,
-                id: 'b'
-                what: 'There is always more to do'
-                who: 'wballard@glgroup.com'
-                tags:
-                    Tagged: 1
-                discussion:
-                    show: true
-                    comments: [
-                        who: 'wballard@glgroup.com'
-                        when: '02/21/2013'
-                        what: 'Yeah! Comments!'
-                    ,
-                        who: 'igroff@glgroup.com'
-                        when: '02/24/2013'
-                        what: 'Told\n\nYou\n\nSo.'
-                    ]
-            ,
-                id: 'c'
-                what: 'Nothing fancy'
-                who: 'wballard@glgroup.com'
-                links:
-                    'igroff@glgroup.com': 1
-                    'kwokoek@glgroup.com': 1
-            ]
-            #track all the ids, this lets todos streaming in the from the server
-            #know when they should go in the todos list
-            ids = {}
-            for todo in todos
-                ids[todo.id] = todo
+        .factory 'Database', ($rootScope, Preferences) ->
+            #here is the 'database' in memory, items tracked by ID
+            items = {}
+            #parsing functions to keep track of all links and tags
             parseTags = (document, callback) ->
                 for tag, v of (document?.tags or {})
                     callback tag
@@ -69,7 +29,7 @@ define ['angular',
             tagIndex = inverted.index [parseTags], (x) -> x.id
             #inverted indexing for links
             linkIndex = inverted.index [parseLinks], (x) -> x.id
-            #full text index for search
+            #full text index for searchacross items
             fullTextIndex = lunr ->
                 @field 'what', 8
                 @field 'who', 4
@@ -85,32 +45,42 @@ define ['angular',
                     comments: (_.map(
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
+            updateItem = (item, fromServer) ->
+                console.log 'update', item
+                items[item.id] = item
+                tagIndex.add item
+                linkIndex.add item
+                fullTextIndex.addToIndex item
+                item
+            deleteItem = (item, fromServer) ->
+                console.log 'delete', item
+                delete items[item.id]
+                tagIndex.remove item
+                linkIndex.remove item
+                fullTextIndex.remove
+                    id: item.id
+                item
+            #try to connect to the server, this is the primary source for tasks
+            preferences = Preferences()
+            socket = socketio.connect preferences.server
+            socket.on 'error', ->
+                console.log 'socketerror', arguments
+                for item in sampledata
+                    updateItem item, true
+                $rootScope.$broadcast 'initialload'
+            socket.on 'connect', ->
+                console.log 'connected'
+            #here is the database service construction function itself
+            #call this in controllers, or really - just the root most controller
+            #to get one database
             ->
-                items: todos
-                ids: ids
+                items: (filter) ->
+                    _.filter _.values(items), filter
                 tagIndex: tagIndex
                 fullTextIndex: fullTextIndex
-                update: (item) ->
-                    if not ids[item.id]
-                        console.log 'adding'
-                        todos.push item
-                        ids[item.id] = item
-                    console.log 'update', item
-                    tagIndex.add item
-                    linkIndex.add item
-                    fullTextIndex.addToIndex item
-                    item
-                delete: (item) ->
-                    console.log 'delete', item
-                    foundAt = todos.indexOf(item)
-                    if foundAt >= 0
-                        todos.splice(foundAt, 1)
-                    ids[item.id] = null
-                    tagIndex.remove item
-                    linkIndex.remove item
-                    fullTextIndex.remove
-                        id: item.id
-                    item
+                update: updateItem
+                delete: deleteItem
+        #
         .factory 'StackRank', () ->
             ->
                 #standardized sorting function, works to provide per user / per
@@ -133,5 +103,3 @@ define ['angular',
                         item.sort = item.sort or {}
                         item.sort[user] = item.sort[user] or {}
                         item.sort[user][tag] = index++
-        .run ->
-            console.log 'starting root services'

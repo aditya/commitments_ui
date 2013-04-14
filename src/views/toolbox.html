@@ -5,7 +5,7 @@
     <ul class="dropdown-menu" role="menu">
         <li ng-repeat="box in boxes" active-if="selected == box" ng-model="box">
         <a href="#" ng-click="selectBox(box)">
-            <span animated-visible="box.todoCount().length" class="badge badge-important">{{box.todoCount().length}}</span>
+            <span class="badge badge-important">{{todoCount(box)}}</span>
             <span tag ng-model="box.title" animated-show="box.filter"></span>
         </a>
         </li>
