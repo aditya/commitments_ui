@@ -26,8 +26,6 @@ define ['angular',
                         (box.filter or -> [])(),
                         $scope.user.email,
                         box.tag)
-            $scope.todoCount = (box) ->
-                (_.reject (box.filter or -> [])(), (x) -> x.done).length
             $scope.poke = (item) ->
                 console.log 'poking', item
             #placeholders call back to the currently selected box to stamp them
@@ -39,6 +37,40 @@ define ['angular',
             $scope.$on 'initialload', ->
                 console.log 'initial load of screen from server'
                 $scope.selectBox $scope.todoBox
+        .controller 'Navbar', ($scope) ->
+            #bulk sharing is driven from the navbar
+            rebuildAllUsers = (items) ->
+                allUsers = {}
+                for item in items
+                    for user, __ of (item.links or {})
+                        allUsers[user] = 1
+                if allUsers[$scope.user.email]
+                    delete allUsers[$scope.user.email]
+                $scope.selected.allUsers = allUsers
+            #ui toggle has a bit of data rebuild along with it
+            $scope.toggleBulkShare = ->
+                $scope.database.preferences.bulkShare = not $scope.database.preferences.bulkShare
+                if $scope.database.preferences.bulkShare
+                    rebuildAllUsers $scope.selected.items
+            #search is driven from the navbar, queries then make up a 'fake'
+            #box much like the selected tags, but it is instead a list of
+            #matching ids
+            $scope.$watch 'searchQuery', (searchQuery) ->
+                if searchQuery
+                    keys = {}
+                    for result in $scope.database.fullTextIndex.search(searchQuery)
+                        keys[result.ref] = result
+                    searchBox =
+                        forgettable: true
+                        title: 'Search Results'
+                        tag: '*'
+                        filter: -> $scope.database.items (x) -> keys[x.id]
+                    $scope.selectBox searchBox
+                else
+                    $scope.selectBox $scope.lastBox
+        .controller 'Toolbox', ($scope, $rootScope) ->
+            $scope.todoCount = (box) ->
+                (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
             #watch the index to see if we shoudl rebuild the facet filters
             $scope.$watch 'database.tagIndex.revision()', ->
@@ -85,39 +117,6 @@ define ['angular',
                     #what the user has updated
                     _.extend dynamicTag, dynamicTagMethods
                     $scope.boxes.push dynamicTag
-        .controller 'Navbar', ($scope) ->
-            #bulk sharing is driven from the navbar
-            rebuildAllUsers = (items) ->
-                allUsers = {}
-                for item in items
-                    for user, __ of (item.links or {})
-                        allUsers[user] = 1
-                if allUsers[$scope.user.email]
-                    delete allUsers[$scope.user.email]
-                $scope.selected.allUsers = allUsers
-            #ui toggle has a bit of data rebuild along with it
-            $scope.toggleBulkShare = ->
-                $scope.database.preferences.bulkShare = not $scope.database.preferences.bulkShare
-                if $scope.database.preferences.bulkShare
-                    rebuildAllUsers $scope.selected.items
-            #search is driven from the navbar, queries then make up a 'fake'
-            #box much like the selected tags, but it is instead a list of
-            #matching ids
-            $scope.$watch 'searchQuery', (searchQuery) ->
-                if searchQuery
-                    keys = {}
-                    for result in $scope.database.fullTextIndex.search(searchQuery)
-                        keys[result.ref] = result
-                    searchBox =
-                        forgettable: true
-                        title: 'Search Results'
-                        tag: '*'
-                        filter: -> $scope.database.items (x) -> keys[x.id]
-                    $scope.selectBox searchBox
-                else
-                    $scope.selectBox $scope.lastBox
-        .controller 'Toolbox', ($scope, $rootScope) ->
-            null
         .controller 'Discussion', ($scope) ->
             null
         #accepting and rejecting tasks is simply about stamping it with
