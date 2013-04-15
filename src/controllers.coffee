@@ -25,10 +25,6 @@ define ['angular',
                         (box.filter or -> [])(),
                         $scope.user.email,
                         box.tag)
-            #placeholders call back to the currently selected box to stamp them
-            #as needed to appear in that box
-            $scope.placeholderItem = (item) ->
-                ($scope.selected.stamp or ->)(item)
             #looking for the initial load of data in order to start off the
             #gui with a screen full of todos
             $scope.$on 'initialload', ->
@@ -146,3 +142,7 @@ define ['angular',
         .controller 'Tasks', ($scope) ->
             $scope.poke = (item) ->
                 console.log 'poking', item
+            #placeholders call back to the currently selected box to stamp them
+            #as needed to appear in that box
+            $scope.placeholderItem = (item) ->
+                ($scope.selected.stamp or ->)(item)
