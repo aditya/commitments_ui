@@ -27,20 +27,13 @@ define ['angular',
                         $scope.user.email,
                         box.tag)
             $scope.todoCount = (box) ->
-                console.log box
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
             $scope.poke = (item) ->
                 console.log 'poking', item
-            $scope.newItem = (item) ->
-                $scope.database.update item
-                $scope.lastUpdatedItem = item
-            $scope.updateItem = (item) ->
-                $scope.database.update item
-                $scope.lastUpdatedItem = item
+            #placeholders call back to the currently selected box to stamp them
+            #as needed to appear in that box
             $scope.placeholderItem = (item) ->
                 ($scope.selected.stamp or ->)(item)
-            $scope.deleteItem  = (item) ->
-                $scope.database.delete item
             #looking for the initial load of data in order to start off the
             #gui with a screen full of todos
             $scope.$on 'initialload', ->
@@ -105,7 +98,6 @@ define ['angular',
             #ui toggle has a bit of data rebuild along with it
             $scope.toggleBulkShare = ->
                 $scope.database.preferences.bulkShare = not $scope.database.preferences.bulkShare
-                console.log $scope.database.preferences.bulkShare
                 if $scope.database.preferences.bulkShare
                     rebuildAllUsers $scope.selected.items
             #search is driven from the navbar, queries then make up a 'fake'
@@ -134,10 +126,12 @@ define ['angular',
             $scope.accept = (item) ->
                 item.accept[$scope.user.email] = Date.now()
                 delete item.reject[$scope.user.email]
+                $scope.database.update item
             $scope.reject = (item) ->
                 item.reject[$scope.user.email] = Date.now()
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
+                $scope.database.update item
         .controller 'BulkShare', ($scope) ->
             #bulk sharing function, puts all the users on all the items
             $scope.bulkShare = (all) ->

@@ -2,7 +2,7 @@
   editable-list-blank-record
   editable-list-reorder="selected.tag"
   editable-list-tools=".item-extended"
-  on-update="updateItem" on-create="newItem" on-delete="deleteItem" on-placeholder="placeholderItem"
+  on-update="database.update" on-create="database.update" on-delete="database.delete" on-placeholder="placeholderItem"
   ng-model="selected.items" class="unstyled items container-fluid">
   <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
     <li
@@ -14,8 +14,6 @@
     <div class="row-fluid">
       <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>
-    <span ng-show="item.what" class="hover-tools item-tools">
-    </span>
     <div class="row-fluid item-core">
       <span check animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
       <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>

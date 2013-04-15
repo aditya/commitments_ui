@@ -24,11 +24,10 @@ define ['md5',
                     if model.$$required
                         if not model.when
                             model.when = Date.now()
-                    #if there was data, then this is an update
-                    if element.data 'record'
-                        $scope.$emit 'editableRecordUpdate', model
-                    element.data 'record', model
-                ,true
+                #look for field level edits, in which case this record was
+                #updated
+                $scope.$on 'edit', ->
+                    $scope.$emit 'editableRecordUpdate', $scope.$eval(attrs.ngModel)
         ])
         .directive('editableListTools', [() ->
             restrict: 'A'

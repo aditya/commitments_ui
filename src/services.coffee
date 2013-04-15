@@ -48,9 +48,9 @@ define ['angular',
                         (x) -> x.what).join ' ') or ''
             updateItem = (item, fromServer) ->
                 if not fromServer
-                    console.log 'update', item
+                    console.log 'update', JSON.stringify(item)
                 else
-                    console.log 'serverupdate', item
+                    console.log 'serverupdate', JSON.stringify(item)
                 items[item.id] = item
                 tagIndex.add item
                 linkIndex.add item
