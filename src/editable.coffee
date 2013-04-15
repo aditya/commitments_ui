@@ -236,9 +236,6 @@ define ['md5',
                         if not ngModel.$viewValue
                             ngModel.$setViewValue {}
                         input.tagbar 'val', ngModel.$viewValue
-                    $scope.$watch attrs.ngModel,( (val) ->
-                        ngModel.$render()
-                    ), true
         ])
         .directive('action', ['$timeout', ($timeout) ->
             restrict: 'A'

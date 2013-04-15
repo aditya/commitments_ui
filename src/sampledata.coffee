@@ -5,7 +5,6 @@ define ->
     #this one is pretending to be a shared task
         id: 'a'
         what: 'I am but a simple task'
-        due: '02/24/2013'
         tags:
             Tagged: 1
             Important: 1
@@ -22,7 +21,6 @@ define ->
         tags:
             Tagged: 1
         discussion:
-            show: true
             comments: [
                 who: 'wballard@glgroup.com'
                 when: '02/21/2013'
@@ -36,7 +34,10 @@ define ->
         id: 'c'
         what: 'Nothing fancy'
         who: 'wballard@glgroup.com'
+        tags: {}
         links:
             'igroff@glgroup.com': 1
             'kwokoek@glgroup.com': 1
+        discussion:
+            comments: []
     ]

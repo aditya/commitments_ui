@@ -50,7 +50,13 @@ define ['angular',
                     console.log 'update', JSON.stringify(item)
                 else
                     console.log 'serverupdate', JSON.stringify(item)
-                items[item.id] = item
+                #merge into the existing object, allowing the data binding
+                #to be pointed at the same reference
+                if items[item.id]
+                    _.extend items[item.id], item
+                else
+                    items[item.id] = item
+                #indexing to drive the tags, autocomplete, and screens
                 tagIndex.add item
                 linkIndex.add item
                 fullTextIndex.addToIndex item
@@ -84,13 +90,27 @@ define ['angular',
                         updateItem item, true
                         id = item.id
                     $rootScope.$broadcast 'initialload'
+                    fakeCount = 0
+                    fakeDeleteCount = 0
                     fakeUpdate = ->
                         $timeout ->
                             fakeServerUpdate = _.cloneDeep items[id]
                             fakeServerUpdate.what = "Simulated event update #{Date.now()}"
+                            if fakeCount++ < 5
+                                fakeServerUpdate.discussion.comments.push
+                                    who: 'igroff@glgroup.com'
+                                    when: new Date().toDateString()
+                                    what: "Simulated comment #{Date.now()}"
+                                fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
+                            else
+                                if fakeDeleteCount++ < 5
+                                    delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
+                                else
+                                    fakeDeleteCount = 0
+                                    fakeCount = 0
                             taskFromServer fakeServerUpdate
                             fakeUpdate()
-                        , 5000
+                        , 1000
                     fakeUpdate()
                 socket.on 'connect', ->
                     console.log 'connected'
