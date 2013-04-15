@@ -15,7 +15,7 @@ define ['angular',
                     server: 'http://localhost:8080/'
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
-        .factory 'Database', ($rootScope) ->
+        .factory 'Database', ($rootScope, $timeout) ->
             #here is the 'database' in memory, items tracked by ID
             items = {}
             #parsing functions to keep track of all links and tags
@@ -73,11 +73,25 @@ define ['angular',
                 if socket
                     socket.disconnect
                 socket = socketio.connect user.preferences.server
+                #send in a server event into angular
+                taskFromServer = (item) ->
+                    $rootScope.$apply ->
+                        updateItem item, true
+                    $rootScope.$digest()
                 socket.on 'error', ->
                     console.log 'socketerror', arguments
                     for item in sampledata
                         updateItem item, true
+                        id = item.id
                     $rootScope.$broadcast 'initialload'
+                    fakeUpdate = ->
+                        $timeout ->
+                            fakeServerUpdate = _.cloneDeep items[id]
+                            fakeServerUpdate.what = "Simulated event update #{Date.now()}"
+                            taskFromServer fakeServerUpdate
+                            fakeUpdate()
+                        , 5000
+                    fakeUpdate()
                 socket.on 'connect', ->
                     console.log 'connected'
             , true
