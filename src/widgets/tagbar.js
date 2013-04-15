@@ -17,18 +17,12 @@
     if (opts.iconUrl) {
       var url = opts.iconUrl(data);
       if (url) {
-        var icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
+        item.append($("<image class='tagbar-item-icon' src='" + url + "'/>"));
       }
     }
     $.each(data.split(pattern), function(i) {
       var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
-      if(icon) {
-        var text = $("<span/>").text(this);
-        tagbit.append(icon);
-        tagbit.append(text);
-      } else {
-        tagbit.text(this)
-      }
+      tagbit.text(this)
       if (i % 2 == 0) tagbit.addClass("label-info");
       if (i % 2 == 1) tagbit.addClass("label-inverse");
       tagbit.css('z-index', underZ--);
