@@ -4,12 +4,11 @@ define ['angular',
     'cs!src/editable',
     'cs!src/readonly'], (angular, _) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
-        .controller 'Desktop', ($scope, Database, StackRank, Authentication) ->
+        .controller 'Desktop', ($rootScope, $scope, Database, StackRank, User) ->
             #always available stack rank service, this really is a library
-            $scope.stackRank = StackRank()
-            $scope.database = Database()
-            #convenience shortcut
-            $scope.user = $scope.database.authentication.user
+            $rootScope.stackRank = StackRank()
+            $rootScope.database = Database()
+            $rootScope.user = User()
             #root level section of the current 'box' or set of matching tasks
             #this is used from multiple sub controllers, so here it is at root
             $scope.selectBox = (box) ->
@@ -42,8 +41,8 @@ define ['angular',
                 $scope.selected.allUsers = allUsers
             #ui toggle has a bit of data rebuild along with it
             $scope.toggleBulkShare = ->
-                $scope.database.preferences.bulkShare = not $scope.database.preferences.bulkShare
-                if $scope.database.preferences.bulkShare
+                $scope.user.preferences.bulkShare = not $scope.user.preferences.bulkShare
+                if $scope.user.preferences.bulkShare
                     rebuildAllUsers $scope.selected.items
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
@@ -112,6 +111,9 @@ define ['angular',
                     #what the user has updated
                     _.extend dynamicTag, dynamicTagMethods
                     $scope.boxes.push dynamicTag
+        #control the current user/login/logout state
+        .controller 'User', ($rootScope, $scope) ->
+            null
         .controller 'Discussion', ($scope) ->
             null
         #accepting and rejecting tasks is simply about stamping it with
