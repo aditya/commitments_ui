@@ -2,12 +2,13 @@
   editable-list-blank-record
   editable-list-reorder="selected.tag"
   editable-list-tools=".item-extended"
-  on-update="database.update" on-create="database.update" on-delete="database.delete" on-placeholder="placeholderItem"
+  on-delete="database.delete" on-placeholder="placeholderItem"
   ng-model="selected.items" class="unstyled items container-fluid">
   <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
     <li
     ng-repeat="item in selected.items"
     editable-record
+    on-update="database.update"
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">

@@ -15,19 +15,23 @@ define ['md5',
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'editableRecord'
+                #fields that are always required
                 $scope.$watch attrs.ngModel, (model) ->
-                    #fields that are always required
                     if not model.id
                         model.id = md5("#{Date.now()}#{counter++}")
                     if not model.who
                         model.who = $scope.user.email
-                    if model.$$required
-                        if not model.when
-                            model.when = Date.now()
+                    if not model.when
+                        model.when = Date.now()
                 #look for field level edits, in which case this record was
                 #updated
-                $scope.$on 'edit', ->
+                $scope.$on 'edit', (event) ->
                     $scope.$emit 'editableRecordUpdate', $scope.$eval(attrs.ngModel)
+                    event.stopPropagation()
+                #and handle events coming up from nested editable records
+                $scope.$on 'editableRecordUpdate', (event, record) ->
+                    if attrs.onUpdate
+                        $scope.$eval("#{attrs.onUpdate}")($scope.$eval(attrs.ngModel))
         ])
         .directive('editableListTools', [() ->
             restrict: 'A'
@@ -36,9 +40,6 @@ define ['md5',
                 element.on 'click', 'li', (event) ->
                     $(element).find(attrs.editableListTools).hide()
                     $(event.currentTarget).find(attrs.editableListTools).show()
-                element.on 'keydown', (event) ->
-                    if event.which is 27 #escape
-                        $(element).find(attrs.editableListTools).hide()
         ])
         .directive('requiredFor', [() ->
             restrict: 'A'
@@ -48,9 +49,9 @@ define ['md5',
                 $scope.$watch attrs.ngModel, (value) ->
                     target = $scope.$eval(attrs.requiredFor)
                     if value
-                        target.$$required = true
+                        $scope.$emit 'editableRecordHasRequired', $scope.$eval(attrs.requiredFor)
                     else
-                        target.$$required = false
+                        $scope.$emit 'editableRecordMissingRequired', $scope.$eval(attrs.requiredFor)
         ])
         .directive('editableListReorder', [() ->
             restrict: 'A'
@@ -79,7 +80,6 @@ define ['md5',
                 count = 0
                 $scope.$watch attrs.ngModel, (value) ->
                     if count++
-                        console.log value
                         $scope.$emit 'edit'
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
@@ -104,29 +104,28 @@ define ['md5',
                     #and the initial placeholder
                     if attrs.editableListBlankRecord?
                         newPlaceholder()
-                #and record updates, deal with the delete logic that fires when
-                #the required field is empty
-                $scope.$on 'editableRecordUpdate', (event, record) ->
-                    #this is a signal to delete the thing
-                    if not record.$$required and record isnt ngModel.$modelValue.$$placeholder
+                #if all the required fields are in place, then make sure
+                #we have a proper placeholder record if so configured
+                $scope.$on 'editableRecordHasRequired', (event, record) ->
+                    if record is ngModel.$modelValue.$$placeholder
+                        if attrs.editableListBlankRecord?
+                            ngModel.$modelValue.$$placeholder = null
+                            newPlaceholder()
+                    event.stopPropagation()
+                #if we are missing required fields, delete the record
+                #unless it is a placeholder
+                $scope.$on 'editableRecordMissingRequired', (event, record) ->
+                    if record is ngModel.$modelValue.$$placeholder
+                        #this record cannot be deleted
+                    else
+                        if attrs.onDelete
+                            $scope.$eval("#{attrs.onDelete}")(record)
+                        #update the bound list without going back to the data source
                         list = ngModel.$modelValue
                         foundAt = list.indexOf(record)
                         if foundAt >= 0
                             list.splice(foundAt, 1)
-                        if attrs.onDelete
-                            $scope.$eval("#{attrs.onDelete}")(record)
-                    #once you have the required field, you are no longer placeholder
-                    #and are an actual new record
-                    if record.$$required and record is ngModel.$modelValue.$$placeholder
-                        if attrs.editableListBlankRecord?
-                            ngModel.$modelValue.$$placeholder = null
-                            newPlaceholder()
-                        if attrs.onCreate
-                            $scope.$eval("#{attrs.onCreate}")(record)
-                    #and updates
-                    if record.$$required and record isnt ngModel.$modelValue.$$placeholder
-                        if attrs.onUpdate
-                            $scope.$eval("#{attrs.onUpdate}")(record)
+                        $scope.$emit 'editableRecordUpdate', record
                     event.stopPropagation()
         ])
         .directive('markdown', ['$timeout', ($timeout) ->
@@ -194,6 +193,7 @@ define ['md5',
                 element.on 'keydown', (event) ->
                     if event.which is 27 #escape
                         event.target.blur()
+                        event.stopPropagation()
                 ngModel.$render = () ->
                     #markdown based display
                     if ngModel.$viewValue
