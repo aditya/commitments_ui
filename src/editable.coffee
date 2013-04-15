@@ -70,6 +70,18 @@ define ['md5',
                         $scope.user.email,
                         $scope.$eval(attrs.editableListReorder))
         ])
+        .directive('editable', [() ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                #make sure there is always a list if we change models
+                #with a counter so this does not fire on the initial update
+                count = 0
+                $scope.$watch attrs.ngModel, (value) ->
+                    if count++
+                        console.log value
+                        $scope.$emit 'edit'
+        ])
         .directive('editableList', ['$timeout', ($timeout) ->
             restrict: 'A'
             require: 'ngModel'

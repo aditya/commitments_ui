@@ -15,8 +15,8 @@
       <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>
     <div class="row-fluid item-core">
-      <span check animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
-      <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
+      <span check editable animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
+      <span markdown editable required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
     </div>
     <div class="row-fluid item-extended">
       <div ng-show="item.what">
