@@ -22,8 +22,8 @@
       <div ng-show="item.what">
         <div requires-object="item.discussion" class="row-fluid item-tools">
           <span action class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(item)"></span>
-          <span tags icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
-          <span tags item-icon-from="gravatar" item-icon-size="18"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
+          <span tags editable icon="tags" ng-model="item.tags" tooltip="'tags to help organize'"></span>
+          <span tags editable item-icon-from="gravatar" item-icon-size="18"  icon="user" ng-model="item.links" tooltip="'share via email addresses'"></span>
         </div>
         <hr/>
         <div ng-init="discussion=item.discussion" class="row-fluid">
