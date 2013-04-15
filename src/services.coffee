@@ -8,15 +8,16 @@ define ['angular',
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'Authentication', ->
-            user:
-                email: 'wballard@glgroup.com'
+            ->
+                user:
+                    email: 'wballard@glgroup.com'
         .factory 'Preferences', ->
             ->
                 bulkShare: false
                 server: 'http://localhost:8080/'
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
-        .factory 'Database', ($rootScope, Preferences) ->
+        .factory 'Database', ($rootScope, Preferences, Authentication) ->
             #here is the 'database' in memory, items tracked by ID
             items = {}
             #parsing functions to keep track of all links and tags
@@ -67,6 +68,8 @@ define ['angular',
                 fullTextIndex.remove
                     id: item.id
                 item
+            #need to know who we are
+            authentication = Authentication()
             #try to connect to the server, this is the primary source for tasks
             preferences = Preferences()
             socket = socketio.connect preferences.server
@@ -82,6 +85,7 @@ define ['angular',
             #to get one database
             ->
                 preferences: preferences
+                authentication: authentication
                 items: (filter) ->
                     _.filter _.values(items), filter
                 tagIndex: tagIndex

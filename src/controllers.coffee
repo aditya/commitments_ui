@@ -5,14 +5,13 @@ define ['angular',
     'cs!src/readonly'], (angular, _) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .controller 'Desktop', ($scope, Database, StackRank, Authentication) ->
+            #always available stack rank service, this really is a library
             $scope.stackRank = StackRank()
             $scope.database = Database()
-            $scope.user = Authentication.user
-            $scope.boxes = []
-            $scope.messages =
-                info: 'Alerts & Messages'
-                count: 0
-            $scope.lastBox = null
+            #convenience shortcut
+            $scope.user = $scope.database.authentication.user
+            #root level section of the current 'box' or set of matching tasks
+            #this is used from multiple sub controllers, so here it is at root
             $scope.selectBox = (box) ->
                 if box
                     #save boxes worth remembering, this lets us revert from
@@ -26,8 +25,6 @@ define ['angular',
                         (box.filter or -> [])(),
                         $scope.user.email,
                         box.tag)
-            $scope.poke = (item) ->
-                console.log 'poking', item
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in that box
             $scope.placeholderItem = (item) ->
@@ -69,6 +66,8 @@ define ['angular',
                 else
                     $scope.selectBox $scope.lastBox
         .controller 'Toolbox', ($scope, $rootScope) ->
+            $scope.boxes = []
+            $scope.lastBox = null
             $scope.todoCount = (box) ->
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
@@ -143,3 +142,7 @@ define ['angular',
                         item.links = {}
                     for user in _.keys(all)
                         item.links[user] = Date.now()
+        #task list level controller
+        .controller 'Tasks', ($scope) ->
+            $scope.poke = (item) ->
+                console.log 'poking', item

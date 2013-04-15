@@ -1,10 +1,14 @@
-<ul editable-list
+<ul
+  ng-controller="Tasks"
+  editable-list
   editable-list-blank-record
   editable-list-reorder="selected.tag"
   editable-list-tools=".item-extended"
   on-delete="database.delete" on-placeholder="placeholderItem"
   ng-model="selected.items" class="unstyled items container-fluid">
-  <li class="row-fluid toolitem"><div ng-include src="'src/views/bulkshare.html'"/></li>
+  <li class="row-fluid toolitem">
+    <div ng-include src="'src/views/bulkshare.html'"/>
+  </li>
     <li
     ng-repeat="item in selected.items"
     editable-record
