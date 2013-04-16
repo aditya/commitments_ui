@@ -205,7 +205,8 @@
     clear: function () {
       this.close();
       this.populateResults([]);
-      this.clearSearch();
+      this.search.text("");
+      this.resizeSearch();
     },
     ensureHighlightVisible: function () {
       var results = $(".tagbar-results", this.container),
@@ -266,8 +267,7 @@
       var pattern = new RegExp("[" + this.opts.tagSeparators.join("") + "]+", "g");
       if (text.match(pattern)) {
         this.addSelectedChoice(text.split(pattern)[0]);
-        this.clearSearch();
-        this.close();
+        this.clear();
         return;
       }
       //now in a query
@@ -353,12 +353,7 @@
       this.search.bind("blur", this.bind(this.blur));
       this.search.bind("input paste focus", this.bind(this.resizeSearch));
       this.container.bind("click", this.bind(this.focusSearch));
-      // set the placeholder if necessary
-      this.clearSearch();
-    },
-    clearSearch: function () {
-      this.search.text("");
-      this.resizeSearch();
+      this.clear()
     },
     focus: function () {
       this.focusSearch()
@@ -370,16 +365,15 @@
       this.focusSearch();
     },
     cancel: function () {
-      this.close();
+      this.clear();
       this.focusSearch();
     },
-    addSelectedChoice: function (data, value) {
+    addSelectedChoice: function (data, value, supressChange) {
       var item = makeATag(data, true, this.opts);
       item.find('.closer').bind("click dblclick", this.bind(function (e) {
         if (!this.enabled) return;
         $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
           $(e.target).parent(".tagbar-search-choice").remove();
-          this.previousValues = _.clone(this.values);
           delete this.values[data];
           this.clear();
           this.triggerChange();
@@ -387,8 +381,10 @@
         killEvent(e);
       }));
       item.insertBefore(this.searchContainer);
-      this.previousValues = _.clone(this.values);
       this.values[data] = value || Date.now();
+      if (!supressChange) {
+        this.triggerChange();
+      }
     },
     ensureSomethingHighlighted: function () {
       if (this.highlight() == -1){
@@ -406,16 +402,14 @@
       //by adding selected choices
       this.values = {};
       $(".tagbar-search-choice", this.container).remove();
-      this.clearSearch();
       //now add in all the items, forgiving the input as an array
       if (Array.isArray(arguments[0])) {
         $(arguments[0]).each(function () {
-          self.addSelectedChoice(this);
+          self.addSelectedChoice(this, Date.now(), true);
         });
-        this.triggerChange();
       } else {
         for (var tag in arguments[0]){
-          self.addSelectedChoice(tag, arguments[0][tag]);
+          self.addSelectedChoice(tag, arguments[0][tag], true);
         }
       }
     },
