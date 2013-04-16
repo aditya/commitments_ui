@@ -2,12 +2,9 @@ define ['md5',
     'markdown',
     'moment',
     'codemirror',
-    'tagbar',
     'jqueryui',], (md5, markdown, moment) ->
     counter = 0;
-
     ANIMATION_SPEED = 200
-
     module = angular.module('editable', [])
         .directive('editableRecord', [() ->
             scope: true
@@ -197,39 +194,6 @@ define ['md5',
                     else if attrs.placeholder
                         display.addClass('placeholder')
                         display.html($scope.$eval(attrs.placeholder))
-        ])
-        .directive('tags', ['$timeout', ($timeout) ->
-            restrict: 'A'
-            require: 'ngModel'
-            compile: (templateElement, templateAttrs) ->
-                templateElement.addClass 'tags'
-                templateAttrs.icon = templateAttrs.icon or 'tags'
-                iconSize = templateAttrs.itemIconSize or 32
-                ($scope, element, attrs, ngModel) ->
-                    input = angular.element('<span class="tag-display"/>')
-                    element.css 'cursor', 'default'
-                    element.append input
-                    input.tagbar
-                        icon: templateAttrs.icon
-                        query: (query) ->
-                            query.callback
-                                results: [query.term, 'sample']
-                        iconUrl: (tagValue) ->
-                            if attrs.itemIconFrom is 'gravatar'
-                                hash = md5((tagValue or '').toLowerCase())
-                                return "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{iconSize}"
-                            null
-                    #just propagate tag values back to the model
-                    input.on 'blur change', (event) ->
-                        if attrs.onChange
-                            $scope.$eval(attrs.onChange)(input.tagbar('previous'), input.tagbar('val'))
-                        $scope.$apply ->
-                            ngModel.$setViewValue(input.tagbar('val'))
-                    #rendering is really just setting the values
-                    ngModel.$render = () ->
-                        if not ngModel.$viewValue
-                            ngModel.$setViewValue {}
-                        input.tagbar 'val', ngModel.$viewValue
         ])
         .directive('action', ['$timeout', ($timeout) ->
             restrict: 'A'

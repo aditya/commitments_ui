@@ -112,7 +112,7 @@ define ['angular',
                                     fakeCount = 0
                             taskFromServer fakeServerUpdate
                             fakeUpdate()
-                        , 1000
+                        , 100000
                     fakeUpdate()
                 socket.on 'connect', ->
                     console.log 'connected'

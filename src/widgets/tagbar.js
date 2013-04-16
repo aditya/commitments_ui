@@ -35,8 +35,6 @@
     return item;
   }
 
-  window.makeATag = makeATag;
-
   var KEY = {
     TAB: 9,
     ENTER: 13,
@@ -459,5 +457,9 @@
     maximumInputLength: 128,
     tagSeparators: [',', ';'],
     tagNamespaceSeparators: ['/', ':'],
+  };
+  // plugin to make just one tag
+  $.fn.onetag = function(data) {
+      this.empty().append(makeATag(data));
   };
 }(jQuery));
