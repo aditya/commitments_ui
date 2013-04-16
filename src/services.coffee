@@ -92,15 +92,17 @@ define ['angular',
                     $rootScope.$broadcast 'initialload'
                     fakeCount = 0
                     fakeDeleteCount = 0
+                    fakeCommentCount = 0
                     fakeUpdate = ->
                         $timeout ->
                             fakeServerUpdate = _.cloneDeep items[id]
                             fakeServerUpdate.what = "Simulated event update #{Date.now()}"
-                            if fakeCount++ < 5
+                            if fakeCommentCount++ < 5
                                 fakeServerUpdate.discussion.comments.push
                                     who: 'igroff@glgroup.com'
                                     when: new Date().toDateString()
                                     what: "Simulated comment #{Date.now()}"
+                            if fakeCount++ < 5
                                 fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
                             else
                                 if fakeDeleteCount++ < 5

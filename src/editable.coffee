@@ -57,13 +57,8 @@ define ['md5',
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 #using jQuery, so this is not all that impressive
-                if attrs.handle
-                    console.log element.sortable
-                    element.sortable
-                        cursor: 'move'
-                else
-                    element.sortable
-                        cursor: 'move'
+                element.sortable
+                    cursor: 'move'
                 element.css 'cursor', 'move'
                 element.on 'sortupdate', ->
                     $scope.stackRank.renumber(
@@ -75,6 +70,7 @@ define ['md5',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'editable'
                 #make sure there is always a list if we change models
                 #with a counter so this does not fire on the initial update
                 count = 0
@@ -133,7 +129,6 @@ define ['md5',
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'markdown'
-                element.addClass 'editable'
                 attachTo = angular.element("<div></div>")
                 attachTo.hide()
                 display = angular.element("<div class='display'></div>")
@@ -208,7 +203,6 @@ define ['md5',
             require: 'ngModel'
             compile: (templateElement, templateAttrs) ->
                 templateElement.addClass 'tags'
-                templateElement.addClass 'editable'
                 templateAttrs.icon = templateAttrs.icon or 'tags'
                 iconSize = templateAttrs.itemIconSize or 32
                 ($scope, element, attrs, ngModel) ->
@@ -247,7 +241,6 @@ define ['md5',
             require: 'ngModel'
             compile: (templateElement, templateAttrs) ->
                 templateElement.addClass 'check'
-                templateElement.addClass 'editable'
                 ($scope, element, attrs, ngModel) ->
                     icon = angular.element("<span class='icon'/>")
                     element.append(icon)
