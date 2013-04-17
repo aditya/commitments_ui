@@ -107,3 +107,44 @@ define [
                             opacity: 0
                         , ANIMATION_SPEED
         ])
+        .directive('activeIf', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                $scope.$watch attrs.activeIf, (val) ->
+                    if val
+                        element.addClass 'active'
+                    else
+                        element.removeClass 'active'
+        ])
+        .directive('readonlyIf', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                $scope.$watch attrs.readonlyIf, (val) ->
+                    if val
+                        element.addClass 'readonly'
+                    else
+                        element.removeClass 'readonly'
+        ])
+        .directive('delayed', ['$timeout', ($timeout) ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                going = null
+                element.on 'keyup', (event)->
+                    if event.which is 27 #escape
+                        element.val ''
+                    if going
+                        $timeout.cancel going
+                    going = $timeout (->
+                        val = element.val()
+                        $scope.$apply ->
+                            $scope.$eval "#{attrs.delayed}='#{val}'"
+                        ), ANIMATION_SPEED
+                element.on 'blur', ->
+                    #do this without signaling back to the scope
+                    element.val ''
+        ])
+        .directive('action', ['$timeout', ($timeout) ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.css 'cursor', 'pointer'
+        ])

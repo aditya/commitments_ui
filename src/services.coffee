@@ -5,6 +5,9 @@ define ['angular',
     'lunr',
     'cs!src/sampledata',
     ], (angular, _, socketio, inverted, lunr, sampledata) ->
+    #fake server, this will fire off a lot of events and generally stress
+    #you out while debugging
+    FAKE_SERVER = false
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ->
@@ -95,6 +98,8 @@ define ['angular',
                     fakeCommentCount = 0
                     fakeUpdate = ->
                         $timeout ->
+                            if not FAKE_SERVER
+                                return
                             fakeServerUpdate = _.cloneDeep items[id]
                             fakeServerUpdate.what = "Simulated event update #{Date.now()}"
                             if fakeCommentCount++ < 5

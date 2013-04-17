@@ -1,7 +1,6 @@
 define ['md5',
     'markdown',
     'moment',
-    'codemirror',
     'jqueryui',], (md5, markdown, moment) ->
     counter = 0;
     ANIMATION_SPEED = 200
@@ -43,11 +42,13 @@ define ['md5',
                         $scope.$eval("#{attrs.onUpdate}")($scope.$eval(attrs.ngModel))
                         event.stopPropagation()
         ])
+        #a required field will trigger an event when the value is set or unset
+        #this is used for implicit deletes as well as turning placeholder
+        #records into real records
         .directive('requiredFor', [() ->
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
-                #ensure the property is present and has a value
                 $scope.$watch attrs.ngModel, (value) ->
                     target = $scope.$eval(attrs.requiredFor)
                     if value
@@ -55,6 +56,21 @@ define ['md5',
                     else
                         $scope.$emit 'editableRecordMissingRequired', $scope.$eval(attrs.requiredFor)
         ])
+        #mark a field as editable, this will fire an event when the model value
+        #changes allowing parent records to look into individual properies
+        .directive('editable', [() ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'editable'
+                #make sure there is always a list if we change models
+                #with a counter so this does not fire on the initial update
+                count = 0
+                $scope.$watch attrs.ngModel, (value) ->
+                    if count++
+                        $scope.$emit 'edit', attrs.ngModel, value
+        ])
+        #equip a list with drag and drop reordering, used ot stack rank tasks
         .directive('editableListReorder', [() ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
@@ -67,18 +83,6 @@ define ['md5',
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
                         $scope.user.email,
                         $scope.$eval(attrs.editableListReorder))
-        ])
-        .directive('editable', [() ->
-            restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs, ngModel) ->
-                element.addClass 'editable'
-                #make sure there is always a list if we change models
-                #with a counter so this does not fire on the initial update
-                count = 0
-                $scope.$watch attrs.ngModel, (value) ->
-                    if count++
-                        $scope.$emit 'edit', attrs.ngModel, value
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true
@@ -131,85 +135,6 @@ define ['md5',
                         $scope.$emit 'editableRecordUpdate', record
                     event.stopPropagation()
         ])
-        .directive('markdown', ['$timeout', ($timeout) ->
-            restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs, ngModel) ->
-                element.addClass 'markdown'
-                attachTo = angular.element("<div></div>")
-                attachTo.hide()
-                display = angular.element("<div class='display'></div>")
-                if attrs.multiline?
-                    display.addClass 'multiline'
-                else
-                    display.addClass 'oneline'
-                element.append display, attachTo
-                codemirror = null
-                #hook on to any way in the field
-                element.on 'click dblclick focus', () ->
-                    if element.hasClass 'readonly'
-                        return
-                    #only hook up the editor if there isn't one
-                    if not codemirror
-                        element.addClass 'editing'
-                        codemirror = CodeMirror attachTo[0]
-                        codemirror.setOption 'lineWrapping', true
-                        attachTo.width('100%')
-                        attachTo.height('auto')
-                        if attrs.multiline?
-                            #automatic expanding of size
-                            $('.CodeMirror-scroll', attachTo)
-                                .css('overflow-x', 'auto')
-                                .css('overflow-y', 'hidden')
-                            $('.CodeMirror', attachTo).css('height', 'auto')
-                        else
-                            $('.CodeMirror', attachTo).css('height', '100%')
-                            #trap enter, preventing multiple lines being added
-                            #yet still allow 'wrapped' single line to be
-                            #visually multiple lines in the DOM
-                            codemirror.setOption 'extraKeys',
-                                Enter: (cm) ->
-                                    #hard core trigger a blur
-                                    $('.CodeMirror', attachTo).remove()
-                                Down: (cm) ->
-                                    #supress, not allowing line navigation
-                                    null
-                        codemirror.on 'blur', ->
-                            value = codemirror.getValue().trimLeft().trimRight()
-                            ngModel.$setViewValue(value)
-                            ngModel.$render()
-                            $scope.$digest()
-                            $timeout ->
-                                display.show 100
-                                attachTo.hide 100, ->
-                                    codemirror = null
-                                    element.removeClass 'editing'
-                                    $('.CodeMirror', attachTo).remove()
-                        codemirror.setValue ngModel.$viewValue or '\n'
-                        display.hide 100
-                        attachTo.show 100, ->
-                            codemirror.focus()
-                            codemirror.setOption('mode', 'markdown')
-                            codemirror.setOption('theme', 'neat')
-                            codemirror.refresh()
-                element.on 'keydown', (event) ->
-                    if event.which is 27 #escape
-                        event.target.blur()
-                        event.stopPropagation()
-                ngModel.$render = () ->
-                    #markdown based display
-                    if ngModel.$viewValue
-                        display.removeClass('placeholder')
-                        display.html(markdown.toHTML(ngModel.$viewValue))
-                    else if attrs.placeholder
-                        display.addClass('placeholder')
-                        display.html($scope.$eval(attrs.placeholder))
-        ])
-        .directive('action', ['$timeout', ($timeout) ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                element.css 'cursor', 'pointer'
-        ])
         .directive('check', [ ->
             restrict: 'A'
             require: 'ngModel'
@@ -252,40 +177,4 @@ define ['md5',
             link: ($scope, element, attrs) ->
                 if not $scope.$eval(attrs.requiresArray)
                     $scope.$eval("#{attrs.requiresArray}=[]")
-        ])
-        .directive('activeIf', [ ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                $scope.$watch attrs.activeIf, (val) ->
-                    if val
-                        element.addClass 'active'
-                    else
-                        element.removeClass 'active'
-        ])
-        .directive('readonlyIf', [ ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                $scope.$watch attrs.readonlyIf, (val) ->
-                    if val
-                        element.addClass 'readonly'
-                    else
-                        element.removeClass 'readonly'
-        ])
-        .directive('delayed', ['$timeout', ($timeout) ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                going = null
-                element.on 'keyup', (event)->
-                    if event.which is 27 #escape
-                        element.val ''
-                    if going
-                        $timeout.cancel going
-                    going = $timeout (->
-                        val = element.val()
-                        $scope.$apply ->
-                            $scope.$eval "#{attrs.delayed}='#{val}'"
-                        ), ANIMATION_SPEED
-                element.on 'blur', ->
-                    #do this without signaling back to the scope
-                    element.val ''
         ])
