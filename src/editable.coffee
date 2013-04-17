@@ -135,29 +135,6 @@ define ['md5',
                         $scope.$emit 'editableRecordUpdate', record
                     event.stopPropagation()
         ])
-        .directive('check', [ ->
-            restrict: 'A'
-            require: 'ngModel'
-            compile: (templateElement, templateAttrs) ->
-                templateElement.addClass 'check'
-                ($scope, element, attrs, ngModel) ->
-                    icon = angular.element("<span class='icon'/>")
-                    element.append(icon)
-                    element.on 'click', ->
-                        $scope.$apply () ->
-                            if ngModel.$viewValue
-                                ngModel.$setViewValue ''
-                            else
-                                ngModel.$setViewValue Date.now()
-                            ngModel.$render()
-                    element.css 'cursor', 'pointer'
-                    ngModel.$render = ->
-                        icon.removeClass 'icon-check'
-                        icon.addClass 'icon-check-empty'
-                        if ngModel.$viewValue
-                            icon.addClass 'icon-check'
-                            icon.removeClass 'icon-check-empty'
-        ])
         .directive('requiresObject', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

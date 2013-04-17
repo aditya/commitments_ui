@@ -3,6 +3,7 @@ define ['angular',
     'jquery',
     'cs!/src/controllers',
     'cs!/src/directives/tagbar',
+    'cs!/src/directives/check',
     'cs!/src/directives/markdown',
     ], (angular, jquery) ->
     jquery ->
