@@ -2,7 +2,7 @@
 define ['angular',
     'lodash',
     'tagbar',
-    'cs!/src/editable'], (angular, _) ->
+    'cs!src/editable'], (angular, _) ->
     module = angular.module('editable')
         #used to display an editable tag selection box
         .directive('tags', ['$timeout', ($timeout) ->

@@ -20,23 +20,28 @@ define ['md5',
                         model.who = $scope.user.email
                     if not model.when
                         model.when = Date.now()
-                #look for field level edits, in which case this record was
-                #updated
-                $scope.$on 'edit', (event) ->
+                element.on 'click', (event) ->
+                    #tell the parent list all about it
+                    $scope.$emit 'selectedrecord', ngModel.$modelValue
+                $scope.$on 'focus', (event, data) ->
+                    #Set a value in scope to then trigger a bind of extended
+                    #if this is used in any view, it will now bind
+                    if data is ngModel.$modelValue
+                        $scope.extended = ngModel.$modelValue
+                    else
+                        $scope.extended = null
+                $scope.$on 'edit', (event, name, value) ->
+                    console.log name, value
+                    #look for field level edits, in which case this record was
+                    #update so send along an event
                     $scope.$emit 'editableRecordUpdate', $scope.$eval(attrs.ngModel)
                     event.stopPropagation()
                 #and handle events coming up from nested editable records
+                #and fire the controller callback if specified
                 $scope.$on 'editableRecordUpdate', (event, record) ->
                     if attrs.onUpdate
                         $scope.$eval("#{attrs.onUpdate}")($scope.$eval(attrs.ngModel))
-        ])
-        .directive('editableListTools', [() ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                $(element).find(attrs.editableListTools).hide()
-                element.on 'click', 'li', (event) ->
-                    $(element).find(attrs.editableListTools).hide()
-                    $(event.currentTarget).find(attrs.editableListTools).show()
+                        event.stopPropagation()
         ])
         .directive('requiredFor', [() ->
             restrict: 'A'
@@ -73,9 +78,10 @@ define ['md5',
                 count = 0
                 $scope.$watch attrs.ngModel, (value) ->
                     if count++
-                        $scope.$emit 'edit'
+                        $scope.$emit 'edit', attrs.ngModel, value
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
+            scope: true
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
@@ -97,6 +103,10 @@ define ['md5',
                     #and the initial placeholder
                     if attrs.editableListBlankRecord?
                         newPlaceholder()
+                $scope.$on 'selectedrecord', (event, data) ->
+                    event.stopPropagation()
+                    $scope.$broadcast 'focus', data
+                    $scope.$digest()
                 #if all the required fields are in place, then make sure
                 #we have a proper placeholder record if so configured
                 $scope.$on 'editableRecordHasRequired', (event, record) ->

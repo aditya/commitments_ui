@@ -1,8 +1,8 @@
 <div ng-controller="Discussion" class="discussion">
   <ul editable-list
     editable-list-blank-record
-    ng-model="discussion.comments" class="container-fluid unstyled comments">
-    <li ng-repeat="comment in discussion.comments" class="row-fluid comment">
+    ng-model="extended.discussion.comments" class="container-fluid unstyled comments">
+    <li ng-repeat="comment in extended.discussion.comments" class="row-fluid comment">
     <div editable-record ng-model="comment" class="span12">
       <table class="full-width">
         <tr>
