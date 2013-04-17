@@ -28,9 +28,9 @@ define ['angular',
                             null
                     #just propagate tag values back to the model
                     input.on 'change', (event) ->
-                        console.log event
                         $scope.$apply ->
                             ngModel.$setViewValue(input.tagbar('val'))
+                        $scope.$emit 'edit', attrs.ngModel, input.tagbar('val')
                     #rendering is really just setting the values
                     ngModel.$render = () ->
                         if not ngModel.$viewValue

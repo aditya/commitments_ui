@@ -22,14 +22,14 @@
     </div>
     <!--core attributes of a task item, these always show and bind-->
     <div class="row-fluid task-core">
-        <span check editable animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
-        <span markdown editable required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
+        <span check animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
+        <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
     </div>
     <div ng-show="extended && extended.what" class="row-fluid task-extended">
         <div requires-object="extended.discussion" class="row-fluid item-tools">
             <span action class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"></span>
-            <span tags editable icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></span>
-            <span tags editable item-icon-from="gravatar" item-icon-size="18"  icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></span>
+            <span tags icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></span>
+            <span tags item-icon-from="gravatar" item-icon-size="18"  icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></span>
         </div>
         <hr/>
         <div class="row-fluid">

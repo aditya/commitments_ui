@@ -56,20 +56,6 @@ define ['md5',
                     else
                         $scope.$emit 'editableRecordMissingRequired', $scope.$eval(attrs.requiredFor)
         ])
-        #mark a field as editable, this will fire an event when the model value
-        #changes allowing parent records to look into individual properies
-        .directive('editable', [() ->
-            restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs, ngModel) ->
-                element.addClass 'editable'
-                #make sure there is always a list if we change models
-                #with a counter so this does not fire on the initial update
-                count = 0
-                $scope.$watch attrs.ngModel, (value) ->
-                    if count++
-                        $scope.$emit 'edit', attrs.ngModel, value
-        ])
         #equip a list with drag and drop reordering, used ot stack rank tasks
         .directive('editableListReorder', [() ->
             restrict: 'A'

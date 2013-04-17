@@ -49,9 +49,10 @@ define ['angular',
                                     null
                         codemirror.on 'blur', ->
                             value = codemirror.getValue().trimLeft().trimRight()
-                            ngModel.$setViewValue(value)
-                            ngModel.$render()
-                            $scope.$digest()
+                            $scope.$apply ->
+                                ngModel.$setViewValue(value)
+                                ngModel.$render()
+                            $scope.$emit 'edit', attrs.ngModel, value
                             $timeout ->
                                 display.show 100
                                 attachTo.hide 100, ->

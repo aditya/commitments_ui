@@ -395,7 +395,7 @@
       var width = this.measureTextWidth(this.search, force);
       this.search.width(width).show()
     },
-    val: function () {
+    val: function (data) {
       if (arguments.length === 0) return this.values || {};
       var self = this;
       //the actual data needs to be cleared out, will be filled in
@@ -403,12 +403,12 @@
       this.values = {};
       $(".tagbar-search-choice", this.container).remove();
       //now add in all the items, forgiving the input as an array
-      if (Array.isArray(arguments[0])) {
+      if (Array.isArray(data)) {
         $(arguments[0]).each(function () {
           self.addSelectedChoice(this, Date.now(), true);
         });
       } else {
-        for (var tag in arguments[0]){
+        for (var tag in data){
           self.addSelectedChoice(tag, arguments[0][tag], true);
         }
       }

@@ -1,8 +1,9 @@
 <div ng-controller="Discussion" class="discussion">
     <ul editable-list
+        editable-list-blank-record
         ng-model="extended.discussion.comments" class="container-fluid unstyled comments">
         <li
-        ng-repeat="comment in extended.discussion.comments | blankrecord"
+        ng-repeat="comment in extended.discussion.comments"
         class="row-fluid comment">
         <div editable-record ng-model="comment" class="span12">
             <table class="full-width">
@@ -20,7 +21,7 @@
                         <span postdate ng-model="comment.when"></span>
                         <div
                             markdown multiline
-                            editable readonly-if="user.email != comment.who"
+                            readonly-if="user.email != comment.who"
                             placeholder="'Your comment here'"
                             ng-model="comment.what"
                             required-for="comment"></div>

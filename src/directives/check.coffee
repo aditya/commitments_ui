@@ -13,12 +13,14 @@ define ['angular',
                     icon = angular.element("<span class='icon'/>")
                     element.append(icon)
                     element.on 'click', ->
+                        if ngModel.$viewValue
+                            value = ''
+                        else
+                            value = Date.now()
                         $scope.$apply () ->
-                            if ngModel.$viewValue
-                                ngModel.$setViewValue ''
-                            else
-                                ngModel.$setViewValue Date.now()
+                            ngModel.$setViewValue value
                             ngModel.$render()
+                        $scope.$emit 'edit', attrs.ngModel, value
                     element.css 'cursor', 'pointer'
                     ngModel.$render = ->
                         icon.removeClass 'icon-check'
