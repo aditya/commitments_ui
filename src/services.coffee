@@ -49,10 +49,6 @@ define ['angular',
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
             updateItem = (item, fromServer) ->
-                if not fromServer
-                    console.log 'update', item
-                else
-                    console.log 'serverupdate', item
                 #merge into the existing object, allowing the data binding
                 #to be pointed at the same reference
                 if items[item.id]
@@ -63,17 +59,21 @@ define ['angular',
                 tagIndex.add item
                 linkIndex.add item
                 fullTextIndex.addToIndex item
+                if not fromServer
+                    console.log 'update', item
+                else
+                    $rootScope.$broadcast 'serverupdate', 'update', item
                 item
             deleteItem = (item, fromServer) ->
-                if not fromServer
-                    console.log 'delete', item
-                else
-                    console.log 'serverdelete', item
                 delete items[item.id]
                 tagIndex.remove item
                 linkIndex.remove item
                 fullTextIndex.remove
                     id: item.id
+                if not fromServer
+                    console.log 'delete', item
+                else
+                    $rootScope.$broadcast 'serverupdate', 'delete', item
                 item
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
@@ -101,6 +101,8 @@ define ['angular',
                             if not FAKE_SERVER
                                 #no action
                             else
+                                #this is making a lot of noise realy to see how
+                                #the user interface responds to simulated messages
                                 fakeServerUpdate = _.cloneDeep items[id]
                                 fakeServerUpdate.what = "Simulated event update #{Date.now()}"
                                 if fakeCommentCount++ < 10
@@ -116,7 +118,13 @@ define ['angular',
                                     else
                                         fakeDeleteCount = 0
                                         fakeCount = 0
+                                #an update
                                 taskFromServer fakeServerUpdate
+                                #a new task
+                                taskFromServer
+                                    id: Date.now()
+                                    what: "Inserted #{Date.now()}"
+                                    who: user.email
                             fakeUpdate()
                         , 5000
                     fakeUpdate()

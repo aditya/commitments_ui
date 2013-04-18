@@ -16,14 +16,27 @@ define ['angular',
                     #save boxes worth remembering, this lets us revert from
                     #search to the last view
                     if not $scope?.selected?.forgettable
-                        $scope.lastBox = $scope.selected
+                        if $scope.lastBox isnt $scope.selected
+                            $scope.lastBox = $scope.selected
                     #selecting fires off the filter for a box, then snapshots
                     #those items in stack rank order
                     $scope.selected = box
-                    $scope.selected.items = $scope.stackRank.sort(
+                    items = $scope.stackRank.sort(
                         (box.filter or -> [])(),
                         $scope.user.email,
                         box.tag)
+                    #this one is a bit tricky, extend if we are simply
+                    #refreshing the same collection, so that the rebinding
+                    #is partial rather than redrawing every record
+                    if $scope.selected.tag is box.tag
+                        _.extend $scope.selected.items, items
+                    else
+                        $scope.selected.items = items
+            #looking for server updates, in which case we re-select the
+            #same box triggering a rebinding
+            $scope.$on 'serverupdate', (event, action, item) ->
+                console.log 'serverupdate', action, item
+                $scope.selectBox $scope.selected
             #looking for the initial load of data in order to start off the
             #gui with a screen full of todos
             $scope.$on 'initialload', ->
@@ -73,12 +86,12 @@ define ['angular',
                 #always have the todo and done boxes
                 $scope.boxes.push(
                     title: 'Todo'
-                    tag: '*'
+                    tag: '*todo*'
                     filter: -> $scope.database.items (x) -> not x.done
                     hide: (x) -> x.done
                 ,
                     title: 'Done'
-                    tag: '*'
+                    tag: '*done*'
                     filter: -> $scope.database.items (x) -> x.done
                     hide: (x) -> not x.done
                 )
