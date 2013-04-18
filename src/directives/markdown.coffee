@@ -49,16 +49,18 @@ define ['angular',
                                     null
                         codemirror.on 'blur', ->
                             value = codemirror.getValue().trimLeft().trimRight()
-                            $scope.$apply ->
-                                ngModel.$setViewValue(value)
-                                ngModel.$render()
-                            $scope.$emit 'edit', attrs.ngModel, value
-                            $timeout ->
-                                display.show 100
-                                attachTo.hide 100, ->
-                                    codemirror = null
-                                    element.removeClass 'editing'
-                                    $('.CodeMirror', attachTo).remove()
+                            if value is ngModel.$viewValue
+                                #no need to fire an edit if there is no change
+                            else
+                                $scope.$apply ->
+                                    ngModel.$setViewValue(value)
+                                    ngModel.$render()
+                                $scope.$emit 'edit', attrs.ngModel, value
+                            display.show 100
+                            attachTo.hide 100, ->
+                                codemirror = null
+                                element.removeClass 'editing'
+                                $('.CodeMirror', attachTo).remove()
                         codemirror.setValue ngModel.$viewValue or '\n'
                         display.hide 100
                         attachTo.show 100, ->
