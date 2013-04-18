@@ -7,7 +7,7 @@ define ['angular',
     ], (angular, _, socketio, inverted, lunr, sampledata) ->
     #fake server, this will fire off a lot of events and generally stress
     #you out while debugging
-    FAKE_SERVER = false
+    window.FAKE_SERVER = false
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ->
@@ -50,9 +50,9 @@ define ['angular',
                         (x) -> x.what).join ' ') or ''
             updateItem = (item, fromServer) ->
                 if not fromServer
-                    console.log 'update', JSON.stringify(item)
+                    console.log 'update', item
                 else
-                    console.log 'serverupdate', JSON.stringify(item)
+                    console.log 'serverupdate', item
                 #merge into the existing object, allowing the data binding
                 #to be pointed at the same reference
                 if items[item.id]
@@ -99,25 +99,26 @@ define ['angular',
                     fakeUpdate = ->
                         $timeout ->
                             if not FAKE_SERVER
-                                return
-                            fakeServerUpdate = _.cloneDeep items[id]
-                            fakeServerUpdate.what = "Simulated event update #{Date.now()}"
-                            if fakeCommentCount++ < 5
-                                fakeServerUpdate.discussion.comments.push
-                                    who: 'igroff@glgroup.com'
-                                    when: new Date().toDateString()
-                                    what: "Simulated comment #{Date.now()}"
-                            if fakeCount++ < 5
-                                fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
+                                #no action
                             else
-                                if fakeDeleteCount++ < 5
-                                    delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
+                                fakeServerUpdate = _.cloneDeep items[id]
+                                fakeServerUpdate.what = "Simulated event update #{Date.now()}"
+                                if fakeCommentCount++ < 10
+                                    fakeServerUpdate.discussion.comments.push
+                                        who: 'igroff@glgroup.com'
+                                        when: new Date().toDateString()
+                                        what: "Simulated comment #{Date.now()}"
+                                if fakeCount++ < 5
+                                    fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
                                 else
-                                    fakeDeleteCount = 0
-                                    fakeCount = 0
-                            taskFromServer fakeServerUpdate
+                                    if fakeDeleteCount++ < 5
+                                        delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
+                                    else
+                                        fakeDeleteCount = 0
+                                        fakeCount = 0
+                                taskFromServer fakeServerUpdate
                             fakeUpdate()
-                        , 1000
+                        , 5000
                     fakeUpdate()
                 socket.on 'connect', ->
                     console.log 'connected'

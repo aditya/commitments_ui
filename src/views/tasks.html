@@ -1,19 +1,18 @@
 <ul
     ng-controller="Tasks"
     editable-list
-    editable-list-blank-record
     editable-list-reorder="selected.tag"
     on-delete="database.delete"
+    on-update="database.update"
     on-placeholder="placeholderItem"
     ng-model="selected.items"
     class="unstyled items container-fluid">
     <li class="row-fluid toolitem">
-    <div ng-include src="'src/views/bulkshare.html'"></div>
+        <div ng-include src="'src/views/bulkshare.html'"></div>
     </li>
     <li
     ng-repeat="item in selected.items"
     editable-record
-    on-update="database.update"
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
     class="row-fluid item">
@@ -22,8 +21,8 @@
     </div>
     <!--core attributes of a task item, these always show and bind-->
     <div class="row-fluid task-core">
-        <span check animated-show="item.what.length" ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
-        <span markdown required-for="item" ng-model="item.what" placeholder="'New task here'" tooltip="'click to edit'" class="span10 larger"></span>
+        <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
+        <span markdown required ng-model="item.what" tooltip="'click to edit'" class="span10 larger"></span>
     </div>
     <div ng-show="extended && extended.what" class="row-fluid task-extended">
         <div requires-object="extended.discussion" class="row-fluid item-tools">
@@ -35,6 +34,12 @@
         <div class="row-fluid">
             <div ng-include src="'src/views/discussion.html'"></div>
         </div>
+    </div>
+    </li>
+    <!--the new record placeholder-->
+    <li editable-record editable-record-placeholder ng-model="$$placeholder" class="row-fluid item">
+    <div class="row-fluid task-core">
+        <span markdown required ng-model="$$placeholder.what" placeholder="'New task here'" tooltip="'click to edit'" class="span11 larger"></span>
     </div>
     </li>
 </ul>

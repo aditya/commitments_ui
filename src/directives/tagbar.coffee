@@ -30,6 +30,8 @@ define ['angular',
                     input.on 'change', (event) ->
                         $scope.$apply ->
                             ngModel.$setViewValue(input.tagbar('val'))
+                            #no need for a render here, this control is doing
+                            #a more thorough job of updating its ui
                         $scope.$emit 'edit', attrs.ngModel, input.tagbar('val')
                     #rendering is really just setting the values
                     ngModel.$render = () ->
