@@ -140,6 +140,7 @@ define ['angular',
                         item.links = {}
                     for user in _.keys(all)
                         item.links[user] = Date.now()
+                    $scope.database.update item
         #task list level controller
         .controller 'Tasks', ($scope) ->
             $scope.poke = (item) ->
