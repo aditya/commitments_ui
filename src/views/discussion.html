@@ -5,30 +5,51 @@
         <li
         ng-repeat="comment in extended.discussion.comments"
         class="row-fluid comment">
-        <div editable-record ng-model="comment" class="span12">
-            <table class="full-width">
-                <tr>
-                    <td class="comment-gravatar">
-                        <div
-                            gravatar
-                            default="user.email"
-                            ng-model="comment.who"
-                            tooltip="comment.who"
-                            tooltip-placement="left"></div>
-                    </td>
-                    <td class="fill">
-                        <span username ng-model="comment.who"></span>
-                        <span postdate ng-model="comment.when"></span>
-                        <div
-                            markdown multiline
-                            readonly-if="user.email != comment.who"
-                            placeholder="'Your comment here'"
-                            ng-model="comment.what"
-                            required-for="comment"></div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <table editable-record ng-model="comment" class="full-width">
+            <tr>
+                <td class="comment-gravatar">
+                    <div
+                        gravatar
+                        default="user.email"
+                        ng-model="comment.who"
+                        tooltip="comment.who"
+                        tooltip-placement="left"></div>
+                </td>
+                <td class="fill">
+                    <span username ng-model="comment.who"></span>
+                    <span postdate ng-model="comment.when"></span>
+                    <div
+                        markdown multiline
+                        readonly-if="user.email != comment.who"
+                        ng-model="comment.what"
+                        required></div>
+                </td>
+            </tr>
+        </table>
+        </li>
+        <li class="row-fluid comment">
+        <table
+            editable-record
+            editable-record-placeholder
+            ng-model="$$placeholder" class="full-width">
+            <tr>
+                <td class="comment-gravatar">
+                    <div
+                        gravatar
+                        default="user.email"
+                        ng-model="comment.who"
+                        tooltip="comment.who"
+                        tooltip-placement="left"></div>
+                </td>
+                <td class="fill">
+                    <div
+                        markdown multiline
+                        placeholder="'Your comment here'"
+                        ng-model="$$placeholder.what"
+                        required></div>
+                </td>
+            </tr>
+        </table>
         </li>
     </ul>
 </div>
