@@ -30,7 +30,6 @@ define ['md5',
                 #a chance to bind up
                 $timeout ->
                     if $scope.focused is ngModel.$modelValue
-                        console.log 'self focus'
                         $scope.extended = ngModel.$modelValue
                 #listening for the focus event, in order to bind or unbind
                 #entended/hidden properties
@@ -41,9 +40,7 @@ define ['md5',
                         $scope.extended = ngModel.$modelValue
                     else
                         $scope.extended = null
-                    console.log $scope.extended
                 $scope.$on 'edit', (event, name, value) ->
-                    console.log name, value
                     #look for field level edits, in which case this record was
                     #update so send along an event
                     $scope.$emit 'updaterecord', ngModel.$modelValue
@@ -59,7 +56,12 @@ define ['md5',
         .directive('required', [() ->
             restrict: 'A'
             require: 'ngModel'
+            priority: 100
             link: ($scope, element, attrs, ngModel) ->
+                #supress any edit if there is no value
+                $scope.$on 'edit', (event, name, value) ->
+                    if not value
+                        event.stopPropagation()
                 $scope.$watch attrs.ngModel, (value) ->
                     if value
                         $scope.$emit 'editableRecordHasRequired', attrs.ngModel
@@ -70,9 +72,13 @@ define ['md5',
         .directive('editableRecordPlaceholder', [() ->
             restrict: 'A'
             require: 'ngModel'
+            priority: 100
             link: ($scope, element, attrs, ngModel) ->
                 if not $scope.$$placeholder
                     $scope.$$placeholder = {}
+                #eat this event, there is no deleting placeholders
+                $scope.$on 'editableRecordMissingRequired', (event) ->
+                    event.stopPropagation()
                 #if all the required fields are in place, then make sure
                 #we treat this as a real record
                 $scope.$on 'editableRecordHasRequired', (event) ->
