@@ -49,6 +49,8 @@ define ['angular',
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
             updateItem = (item, fromServer) ->
+                if not fromServer
+                    item.lastUpdatedBy = $rootScope.user.email
                 #merge into the existing object, allowing the data binding
                 #to be pointed at the same reference
                 if items[item.id]
