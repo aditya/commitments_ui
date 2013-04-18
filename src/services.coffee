@@ -126,7 +126,7 @@ define ['angular',
                                     what: "Inserted #{Date.now()}"
                                     who: user.email
                             fakeUpdate()
-                        , 5000
+                        , 1000
                     fakeUpdate()
                 socket.on 'connect', ->
                     console.log 'connected'
