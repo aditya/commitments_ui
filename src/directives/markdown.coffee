@@ -46,11 +46,11 @@ define ['angular',
                             codemirror = null
                 whenCancel = ->
                     if codemirror
+                        codemirror = null
                         display.show 100
                         buttons.hide 100
                         attachTo.hide 100, ->
                             $('.CodeMirror', attachTo).remove()
-                            codemirror = null
                 #handle the buttons
                 element.on 'click', '.ok', ->
                     console.log 'ok'
