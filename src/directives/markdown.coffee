@@ -28,25 +28,27 @@ define ['angular',
                 element.append display, attachTo, buttons
                 #these are the handlers that apply the edits
                 whenOK = ->
-                    value = codemirror.getValue().trimLeft().trimRight()
-                    if value is ngModel.$viewValue
-                        #no need to fire an edit if there is no change
-                    else
-                        $scope.$apply ->
-                            ngModel.$setViewValue(value)
-                            ngModel.$render()
-                            $scope.$emit 'edit', attrs.ngModel, value
-                    display.show 100
-                    buttons.hide 100
-                    attachTo.hide 100, ->
-                        codemirror = null
-                        $('.CodeMirror', attachTo).remove()
+                    if codemirror
+                        value = codemirror.getValue().trimLeft().trimRight()
+                        if value is ngModel.$viewValue
+                            #no need to fire an edit if there is no change
+                        else
+                            $scope.$apply ->
+                                ngModel.$setViewValue(value)
+                                ngModel.$render()
+                                $scope.$emit 'edit', attrs.ngModel, value
+                        display.show 100
+                        buttons.hide 100
+                        attachTo.hide 100, ->
+                            $('.CodeMirror', attachTo).remove()
+                            codemirror = null
                 whenCancel = ->
-                    display.show 100
-                    buttons.hide 100
-                    attachTo.hide 100, ->
-                        codemirror = null
-                        $('.CodeMirror', attachTo).remove()
+                    if codemirror
+                        display.show 100
+                        buttons.hide 100
+                        attachTo.hide 100, ->
+                            $('.CodeMirror', attachTo).remove()
+                            codemirror = null
                 #handle the buttons
                 element.on 'click', '.ok', ->
                     console.log 'ok'
@@ -100,6 +102,8 @@ define ['angular',
                                 Esc: (cm) ->
                                     whenCancel()
                                     null
+                        codemirror.on 'blur', ->
+                            whenCancel()
                         codemirror.setValue ngModel.$viewValue or ''
                         display.hide 100
                         attachTo.show 100, ->
