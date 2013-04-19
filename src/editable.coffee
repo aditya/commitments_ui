@@ -40,9 +40,10 @@ define ['md5',
                         $scope.extended = ngModel.$modelValue
                     else
                         $scope.extended = null
-                $scope.$on 'edit', (event, name, value) ->
+                $scope.$on 'edit', (event) ->
                     #look for field level edits, in which case this record was
                     #update so send along an event
+                    console.log arguments
                     $scope.$emit 'updaterecord', ngModel.$modelValue
                     event.stopPropagation()
                 #a nested record perhaps?

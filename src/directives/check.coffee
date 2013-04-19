@@ -7,21 +7,21 @@ define ['angular',
         .directive('check', [ ->
             restrict: 'A'
             require: 'ngModel'
-            compile: (templateElement, templateAttrs) ->
-                templateElement.addClass 'check'
-                ($scope, element, attrs, ngModel) ->
+            link: ($scope, element, attrs, ngModel) ->
                     icon = angular.element("<span class='icon'/>")
+                    element.addClass 'check'
                     element.append(icon)
+                    element.css 'cursor', 'pointer'
                     element.on 'click', ->
                         if ngModel.$viewValue
-                            value = ''
+                            value = 0
                         else
                             value = Date.now()
                         $scope.$apply () ->
+                            console.log value, 'die fucker'
                             ngModel.$setViewValue value
                             ngModel.$render()
-                        $scope.$emit 'edit', attrs.ngModel, value
-                    element.css 'cursor', 'pointer'
+                            $scope.$emit 'edit', attrs.ngModel, ngModel
                     ngModel.$render = ->
                         icon.removeClass 'icon-check'
                         icon.addClass 'icon-check-empty'
