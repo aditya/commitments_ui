@@ -32,6 +32,7 @@ define ['angular',
                 whenOK = ->
                     if codemirror
                         value = codemirror.getValue().trimLeft().trimRight()
+                        codemirror = null
                         if value is ngModel.$viewValue
                             #no need to fire an edit if there is no change
                         else
@@ -43,7 +44,6 @@ define ['angular',
                         buttons.hide 100
                         attachTo.hide 100, ->
                             $('.CodeMirror', attachTo).remove()
-                            codemirror = null
                 whenCancel = ->
                     if codemirror
                         codemirror = null
