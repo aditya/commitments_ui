@@ -10,6 +10,7 @@
 }
 
 .focus-editor {
+  .border-radius(@baseBorderRadius);
   border: 1px solid @inputBorder;
   border-color: rgba(82,168,236,.8);
   outline: 0;
@@ -19,6 +20,7 @@
 .hover-editor  {
   border: 1px solid @inputBorder;
   border-color: rgba(82,168,236,.8);
+  .border-radius(@baseBorderRadius);
 }
 
 .editable-shadow {
@@ -138,12 +140,15 @@ body {
 
 .markdown {
   border: 1px solid transparent;
-  .border-radius(@baseBorderRadius);
-  &:hover {
-    .hover-editor;
+  .display {
+    .border-radius(@baseBorderRadius);
+    cursor: text;
+    &:hover {
+      .hover-editor;
+    }
   }
-  cursor: text;
   .placeholder {
+    cursor: text;
     color: @linkColor;
     font-style: italic;
   }

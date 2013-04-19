@@ -10,25 +10,61 @@ define ['angular',
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'markdown'
-                attachTo = angular.element("<div></div>")
+                codemirror = null
+                attachTo = $ "<div></div>"
                 attachTo.hide()
-                display = angular.element("<div class='display'></div>")
+                display = $ "<div class='display'></div>"
                 if attrs.multiline?
                     display.addClass 'multiline'
                 else
                     display.addClass 'oneline'
-                element.append display, attachTo
-                codemirror = null
+                buttons = $ """
+                <div class="btn-group">
+                    <button class="ok btn"><i class="icon-ok"></i></button>
+                    <button class="cancel btn"><i class="icon-ban-circle"></i></button>
+                </div>
+                """
+                buttons.hide()
+                element.append display, attachTo, buttons
+                #these are the handlers that apply the edits
+                whenOK = ->
+                    value = codemirror.getValue().trimLeft().trimRight()
+                    if value is ngModel.$viewValue
+                        #no need to fire an edit if there is no change
+                    else
+                        $scope.$apply ->
+                            ngModel.$setViewValue(value)
+                            ngModel.$render()
+                            $scope.$emit 'edit', attrs.ngModel, value
+                    display.show 100
+                    buttons.hide 100
+                    attachTo.hide 100, ->
+                        codemirror = null
+                        $('.CodeMirror', attachTo).remove()
+                whenCancel = ->
+                    display.show 100
+                    buttons.hide 100
+                    attachTo.hide 100, ->
+                        codemirror = null
+                        $('.CodeMirror', attachTo).remove()
+                #handle the buttons
+                element.on 'click', '.ok', ->
+                    console.log 'ok'
+                    whenOK()
+                element.on 'click', '.cancel', ->
+                    console.log 'cancel'
+                    whenCancel()
                 #hook on to any way in the field
                 element.on 'click dblclick focus', () ->
                     if element.hasClass 'readonly'
                         return
                     #only hook up the editor if there isn't one
                     if not codemirror
-                        element.addClass 'editing'
+                        attachTo.width('100%')
                         codemirror = CodeMirror attachTo[0]
                         codemirror.setOption 'lineWrapping', true
-                        attachTo.width('100%')
+                        $('.CodeMirror', attachTo).addClass 'editing'
+                        buttons.show()
                         if attrs.multiline?
                             attachTo.height('auto')
                             #automatic expanding of size
@@ -36,6 +72,13 @@ define ['angular',
                                 .css('overflow-x', 'auto')
                                 .css('overflow-y', 'hidden')
                             $('.CodeMirror', attachTo).css('height', 'auto')
+                            codemirror.setOption 'extraKeys',
+                                'Ctrl-Enter': (cm) ->
+                                    whenOK()
+                                    null
+                                Esc: (cm) ->
+                                    whenCancel()
+                                    null
                         else
                             #deferred sizing to give code mirror a chance to figure font
                             $('.CodeMirror', attachTo).css('height', codemirror.defaultTextHeight())
@@ -46,26 +89,15 @@ define ['angular',
                             #visually multiple lines in the DOM
                             codemirror.setOption 'extraKeys',
                                 Enter: (cm) ->
-                                    #hard core trigger a blur
-                                    $('.CodeMirror', attachTo).remove()
+                                    whenOK()
+                                    null
                                 Down: (cm) ->
                                     #supress, not allowing line navigation
                                     null
-                        codemirror.on 'blur', ->
-                            value = codemirror.getValue().trimLeft().trimRight()
-                            if value is ngModel.$viewValue
-                                #no need to fire an edit if there is no change
-                            else
-                                $scope.$apply ->
-                                    ngModel.$setViewValue(value)
-                                    ngModel.$render()
-                                    $scope.$emit 'edit', attrs.ngModel, value
-                            display.show 100
-                            attachTo.hide 100, ->
-                                codemirror = null
-                                element.removeClass 'editing'
-                                $('.CodeMirror', attachTo).remove()
-                        codemirror.setValue ngModel.$viewValue or '\n'
+                                Esc: (cm) ->
+                                    whenCancel()
+                                    null
+                        codemirror.setValue ngModel.$viewValue or ''
                         display.hide 100
                         attachTo.show 100, ->
                             codemirror.focus()
