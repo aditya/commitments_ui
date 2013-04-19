@@ -12,6 +12,8 @@ define ['angular',
                 element.addClass 'markdown'
                 codemirror = null
                 attachTo = $ "<div></div>"
+                attachTo.width('100%')
+                attachTo.height('auto')
                 attachTo.hide()
                 display = $ "<div class='display'></div>"
                 if attrs.multiline?
@@ -62,18 +64,16 @@ define ['angular',
                         return
                     #only hook up the editor if there isn't one
                     if not codemirror
-                        attachTo.width('100%')
                         codemirror = CodeMirror attachTo[0]
                         codemirror.setOption 'lineWrapping', true
                         $('.CodeMirror', attachTo).addClass 'editing'
+                        #automatic expanding of size, no scrollbars
+                        $('.CodeMirror-scroll', attachTo)
+                            .css('overflow-x', 'auto')
+                            .css('overflow-y', 'hidden')
+                        $('.CodeMirror', attachTo).css('height', 'auto')
                         buttons.show()
                         if attrs.multiline?
-                            attachTo.height('auto')
-                            #automatic expanding of size
-                            $('.CodeMirror-scroll', attachTo)
-                                .css('overflow-x', 'auto')
-                                .css('overflow-y', 'hidden')
-                            $('.CodeMirror', attachTo).css('height', 'auto')
                             codemirror.setOption 'extraKeys',
                                 'Ctrl-Enter': (cm) ->
                                     whenOK()
@@ -82,10 +82,6 @@ define ['angular',
                                     whenCancel()
                                     null
                         else
-                            #deferred sizing to give code mirror a chance to figure font
-                            $('.CodeMirror', attachTo).css('height', codemirror.defaultTextHeight())
-                            $timeout ->
-                                $('.CodeMirror', attachTo).css('height', codemirror.defaultTextHeight() + PAD)
                             #trap enter, preventing multiple lines being added
                             #yet still allow 'wrapped' single line to be
                             #visually multiple lines in the DOM
