@@ -20,18 +20,20 @@
         item.append($("<image class='tagbar-item-icon' src='" + url + "'/>"));
       }
     }
+    var tagbits = $("<span class='tagbar-search-choice-group'/>");
     $.each(data.split(pattern), function(i) {
       var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
       tagbit.text(this)
       if (i % 2 == 0) tagbit.addClass("label-info");
       if (i % 2 == 1) tagbit.addClass("label-inverse");
       tagbit.css('z-index', underZ--);
-      item.append(tagbit);
+      tagbits.append(tagbit);
     });
     if (allowClose) {
       var closer = $("<span class='closer tagbar-search-choice-close underlay label'><span class='icon-remove-sign'></span></span>");
-      item.append(closer);
+      tagbits.append(closer);
     }
+    item.append(tagbits);
     return item;
   }
 
@@ -304,7 +306,7 @@
         "class": "tagbar-container tagbar-container-multi"
       }).html([
         "<ul class='tagbar-choices'>",
-        "  <li class='icon icon-" + this.opts.icon + "'></li>",
+        "  <li class='tagbar-icon icon icon-" + this.opts.icon + "'></li>",
         "  <li class='tagbar-search-field' contentEditable></li>" ,
         "</ul>"].join(""));
         $(".icon", container).bind("click", this.bind(this.focusSearch));

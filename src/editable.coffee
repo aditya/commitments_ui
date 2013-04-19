@@ -45,6 +45,11 @@ define ['md5',
                     #update so send along an event
                     $scope.$emit 'updaterecord', ngModel.$modelValue
                     event.stopPropagation()
+                #a nested record perhaps?
+                $scope.$on 'updaterecord', (event, record) ->
+                    if record isnt ngModel.$modelValue
+                        event.stopPropagation()
+                        $scope.$emit 'updaterecord', ngModel.$modelValue
                 #if we are missing required fields, delete the record
                 $scope.$on 'editableRecordMissingRequired', (event) ->
                     $scope.$emit 'deleterecord', ngModel.$modelValue
