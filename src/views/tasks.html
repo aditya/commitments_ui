@@ -5,16 +5,16 @@
     on-delete="database.delete"
     on-update="database.update"
     ng-model="selected.items"
-    class="unstyled items container-fluid">
+    class="unstyled items tasks container-fluid">
     <li class="row-fluid toolitem">
-        <div ng-include src="'src/views/bulkshare.html'"></div>
+    <div ng-include src="'src/views/bulkshare.html'"></div>
     </li>
     <li
     ng-repeat="item in selected.items"
     editable-record
     ng-model="item"
     animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
-    class="row-fluid item">
+    class="row-fluid item task">
     <div class="row-fluid">
         <div ng-include src="'src/views/taskaccept.html'"></div>
     </div>
@@ -33,13 +33,17 @@
         <div class="row-fluid">
             <div ng-include src="'src/views/discussion.html'"></div>
         </div>
+        <div class="username">Last Updated:
+            <span username ng-model="extended.lastUpdatedBy"></span>
+            <span postdate ng-model="extended.lastUpdatedAt"></span>
+        </div>
     </div>
     </li>
     <!--the new record placeholder-->
     <li
-        editable-record
-        editable-record-placeholder="placeholderItem"
-        ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid item">
+    editable-record
+    editable-record-placeholder="placeholderItem"
+    ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid item">
     <div class="row-fluid task-core">
         <span markdown required ng-model="$$placeholder.what" placeholder="'New task here'" tooltip="'click to edit'" class="span11 larger"></span>
     </div>
