@@ -99,7 +99,7 @@ define ['angular',
                                     whenCancel()
                                     null
                         codemirror.on 'blur', ->
-                            whenCancel()
+                            whenOK()
                         codemirror.setValue ngModel.$viewValue or ''
                         display.hide 100
                         attachTo.show 100, ->
