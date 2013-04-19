@@ -20,48 +20,30 @@ define ['angular',
                     display.addClass 'multiline'
                 else
                     display.addClass 'oneline'
-                buttons = $ """
-                <div class="btn-group">
-                    <button class="ok btn"><i class="icon-ok"></i></button>
-                    <button class="delete btn"><i class="icon-remove"></i></button>
-                </div>
-                """
-                buttons.hide()
-                element.append display, attachTo, buttons
+                $scope.$watch attrs.readonlyIf, (val) ->
+                    if val
+                        display.addClass 'readonly'
+                    else
+                        display.removeClass 'readonly'
+                element.append display, attachTo
                 #these are the handlers that apply the edits
                 whenOK = ->
                     if codemirror
-                        value = codemirror.getValue().trimLeft().trimRight()
-                        if value is ngModel.$viewValue
-                            #no need to fire an edit if there is no change
-                        else
-                            $scope.$apply ->
-                                ngModel.$setViewValue(value)
-                                ngModel.$render()
-                                $scope.$emit 'edit', attrs.ngModel, value
-                        buttons.hide 100
+                        if not codemirror.cancelEdit
+                            value = codemirror.getValue().trimLeft().trimRight()
+                            if value is ngModel.$viewValue
+                                #no need to fire an edit if there is no change
+                            else
+                                $scope.$apply ->
+                                    ngModel.$setViewValue(value)
+                                    ngModel.$render()
+                                    $scope.$emit 'edit', attrs.ngModel, value
                         attachTo.hide 100, ->
                             display.show 100
                             $('.CodeMirror', attachTo).remove()
                             codemirror = null
-                whenCancel = ->
-                    if codemirror
-                        buttons.hide 100
-                        attachTo.hide 100, ->
-                            display.show 100
-                            $('.CodeMirror', attachTo).remove()
-                            codemirror = null
-                whenDelete = ->
-                    if codemirror
-                        codemirror.setValue ''
-                        whenOK()
-                #handle the buttons
-                element.on 'click', '.ok', ->
-                    console.log 'ok'
-                    whenOK()
-                element.on 'click', '.delete', ->
-                    console.log 'delete'
-                    whenDelete()
+                forceBlur = ->
+                    $('.CodeMirror', attachTo).remove()
                 #hook on to any way in the field
                 element.on 'click dblclick', () ->
                     if element.hasClass 'readonly'
@@ -76,37 +58,30 @@ define ['angular',
                             .css('overflow-x', 'auto')
                             .css('overflow-y', 'hidden')
                         $('.CodeMirror', attachTo).css('height', 'auto')
-                        buttons.show()
                         if attrs.multiline?
                             codemirror.setOption 'extraKeys',
                                 'Ctrl-Enter': (cm) ->
-                                    whenOK()
-                                    null
+                                    forceBlur()
                                 Esc: (cm) ->
-                                    whenCancel()
-                                    null
+                                    codemirror.cancelEdit = true
+                                    forceBlur()
                         else
                             #trap enter, preventing multiple lines being added
                             #yet still allow 'wrapped' single line to be
                             #visually multiple lines in the DOM
                             codemirror.setOption 'extraKeys',
                                 'Ctrl-Enter': (cm) ->
-                                    whenOK()
-                                    null
+                                    forceBlur()
                                 Enter: (cm) ->
-                                    whenOK()
-                                    null
+                                    forceBlur()
                                 Down: (cm) ->
                                     #supress, not allowing line navigation
                                     null
                                 Esc: (cm) ->
-                                    whenCancel()
-                                    null
+                                    codemirror.cancelEdit = true
+                                    forceBlur()
                         codemirror.on 'blur', ->
-                            console.log 'blur'
-                            $timeout ->
-                                whenOK()
-                            , 200
+                            whenOK()
                         codemirror.setValue ngModel.$viewValue or ''
                         display.hide 100
                         attachTo.show 100, ->
