@@ -55,7 +55,7 @@ define ['angular',
                                 $scope.$apply ->
                                     ngModel.$setViewValue(value)
                                     ngModel.$render()
-                                $scope.$emit 'edit', attrs.ngModel, value
+                                    $scope.$emit 'edit', attrs.ngModel, value
                             display.show 100
                             attachTo.hide 100, ->
                                 codemirror = null

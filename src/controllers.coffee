@@ -21,17 +21,10 @@ define ['angular',
                     #selecting fires off the filter for a box, then snapshots
                     #those items in stack rank order
                     $scope.selected = box
-                    items = $scope.stackRank.sort(
+                    $scope.selected.items = $scope.stackRank.sort(
                         (box.filter or -> [])(),
                         $scope.user.email,
                         box.tag)
-                    #this one is a bit tricky, extend if we are simply
-                    #refreshing the same collection, so that the rebinding
-                    #is partial rather than redrawing every record
-                    if $scope.selected.tag is box.tag
-                        _.extend $scope.selected.items, items
-                    else
-                        $scope.selected.items = items
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'serverupdate', (event, action, item) ->
@@ -80,7 +73,7 @@ define ['angular',
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
             #watch the index to see if we shoudl rebuild the facet filters
-            $scope.$watch 'database.tagIndex.revision()', ->
+            $scope.$watch 'database.opCount()', ->
                 console.log 'rebuild boxes'
                 $scope.boxes = []
                 #always have the todo and done boxes

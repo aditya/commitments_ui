@@ -48,6 +48,7 @@ define ['angular',
                     comments: (_.map(
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
+            opCount = 0
             updateItem = (item, fromServer) ->
                 if not fromServer
                     item.lastUpdatedBy = $rootScope.user.email
@@ -62,9 +63,10 @@ define ['angular',
                 linkIndex.add item
                 fullTextIndex.addToIndex item
                 if not fromServer
-                    console.log 'update', item
+                    console.log 'update', item, items, 'a'
                 else
                     $rootScope.$broadcast 'serverupdate', 'update', item
+                opCount++
                 item
             deleteItem = (item, fromServer) ->
                 delete items[item.id]
@@ -76,6 +78,7 @@ define ['angular',
                     console.log 'delete', item
                 else
                     $rootScope.$broadcast 'serverupdate', 'delete', item
+                opCount++
                 item
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
@@ -89,6 +92,10 @@ define ['angular',
                     $rootScope.$apply ->
                         updateItem item, true
                     $rootScope.$digest()
+                deleteTaskFromServer = (item) ->
+                    $rootScope.$apply ->
+                        deleteItem item, true
+                    $rootScope.$digest()
                 socket.on 'error', ->
                     console.log 'socketerror', arguments
                     for item in sampledata
@@ -98,6 +105,7 @@ define ['angular',
                     fakeCount = 0
                     fakeDeleteCount = 0
                     fakeCommentCount = 0
+                    lastAddedId = null
                     fakeUpdate = ->
                         $timeout ->
                             if not FAKE_SERVER
@@ -122,9 +130,13 @@ define ['angular',
                                         fakeCount = 0
                                 #an update
                                 taskFromServer fakeServerUpdate
+                                #delete the last add
+                                deleteTaskFromServer
+                                    id: lastAddedId
                                 #a new task
+                                lastAddedId = Date.now()
                                 taskFromServer
-                                    id: Date.now()
+                                    id: lastAddedId
                                     what: "Inserted #{Date.now()}"
                                     who: user.email
                             fakeUpdate()
@@ -143,6 +155,7 @@ define ['angular',
                 fullTextIndex: fullTextIndex
                 update: updateItem
                 delete: deleteItem
+                opCount: -> opCount
         #
         .factory 'StackRank', () ->
             ->
