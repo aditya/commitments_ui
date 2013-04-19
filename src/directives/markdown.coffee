@@ -23,7 +23,7 @@ define ['angular',
                 buttons = $ """
                 <div class="btn-group">
                     <button class="ok btn"><i class="icon-ok"></i></button>
-                    <button class="cancel btn"><i class="icon-ban-circle"></i></button>
+                    <button class="delete btn"><i class="icon-remove"></i></button>
                 </div>
                 """
                 buttons.hide()
@@ -32,7 +32,6 @@ define ['angular',
                 whenOK = ->
                     if codemirror
                         value = codemirror.getValue().trimLeft().trimRight()
-                        codemirror = null
                         if value is ngModel.$viewValue
                             #no need to fire an edit if there is no change
                         else
@@ -40,26 +39,31 @@ define ['angular',
                                 ngModel.$setViewValue(value)
                                 ngModel.$render()
                                 $scope.$emit 'edit', attrs.ngModel, value
-                        display.show 100
                         buttons.hide 100
                         attachTo.hide 100, ->
+                            display.show 100
                             $('.CodeMirror', attachTo).remove()
+                            codemirror = null
                 whenCancel = ->
                     if codemirror
-                        codemirror = null
-                        display.show 100
                         buttons.hide 100
                         attachTo.hide 100, ->
+                            display.show 100
                             $('.CodeMirror', attachTo).remove()
+                            codemirror = null
+                whenDelete = ->
+                    if codemirror
+                        codemirror.setValue ''
+                        whenOK()
                 #handle the buttons
                 element.on 'click', '.ok', ->
                     console.log 'ok'
                     whenOK()
-                element.on 'click', '.cancel', ->
-                    console.log 'cancel'
-                    whenCancel()
+                element.on 'click', '.delete', ->
+                    console.log 'delete'
+                    whenDelete()
                 #hook on to any way in the field
-                element.on 'click dblclick focus', () ->
+                element.on 'click dblclick', () ->
                     if element.hasClass 'readonly'
                         return
                     #only hook up the editor if there isn't one
@@ -99,7 +103,10 @@ define ['angular',
                                     whenCancel()
                                     null
                         codemirror.on 'blur', ->
-                            whenOK()
+                            console.log 'blur'
+                            $timeout ->
+                                whenOK()
+                            , 200
                         codemirror.setValue ngModel.$viewValue or ''
                         display.hide 100
                         attachTo.show 100, ->
