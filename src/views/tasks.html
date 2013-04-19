@@ -37,7 +37,7 @@
     </div>
     </li>
     <!--the new record placeholder-->
-    <li editable-record editable-record-placeholder ng-model="$$placeholder" class="row-fluid item">
+    <li editable-record editable-record-placeholder ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid item">
     <div class="row-fluid task-core">
         <span markdown required ng-model="$$placeholder.what" placeholder="'New task here'" tooltip="'click to edit'" class="span11 larger"></span>
     </div>

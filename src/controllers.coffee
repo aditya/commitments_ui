@@ -82,6 +82,7 @@ define ['angular',
                     tag: '*todo*'
                     filter: -> $scope.database.items (x) -> not x.done
                     hide: (x) -> x.done
+                    allowNew: true
                 ,
                     title: 'Done'
                     tag: '*done*'
@@ -108,6 +109,7 @@ define ['angular',
                         title: tagTerm
                         tag: tagTerm
                         when: Date.now()
+                        allowNew: true
                     dynamicTagMethods =
                         hide: -> false
                         filter: byTag(tagTerm)
