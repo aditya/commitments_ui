@@ -21,7 +21,7 @@
     <!--core attributes of a task item, these always show and bind-->
     <div class="row-fluid task-core">
         <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
-        <span markdown required ng-model="item.what" tooltip="'click to edit'" class="span10 larger"></span>
+        <span markdown required ng-model="item.what" class="span10 larger"></span>
     </div>
     <div ng-show="extended && extended.what" class="row-fluid task-extended">
         <div requires-object="extended.discussion" class="row-fluid item-tools">
@@ -45,7 +45,7 @@
     editable-record-placeholder="placeholderItem"
     ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid item">
     <div class="row-fluid task-core">
-        <span markdown required ng-model="$$placeholder.what" placeholder="'New task here'" tooltip="'click to edit'" class="span11 larger"></span>
+        <span markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="span11 larger"></span>
     </div>
     </li>
 </ul>
