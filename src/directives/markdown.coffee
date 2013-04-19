@@ -3,6 +3,7 @@ define ['angular',
     'lodash',
     'codemirror',
     'cs!src/editable'], (angular, _) ->
+    PAD = 6
     module = angular.module('editable')
         .directive('markdown', ['$timeout', ($timeout) ->
             restrict: 'A'
@@ -28,15 +29,18 @@ define ['angular',
                         codemirror = CodeMirror attachTo[0]
                         codemirror.setOption 'lineWrapping', true
                         attachTo.width('100%')
-                        attachTo.height('auto')
                         if attrs.multiline?
+                            attachTo.height('auto')
                             #automatic expanding of size
                             $('.CodeMirror-scroll', attachTo)
                                 .css('overflow-x', 'auto')
                                 .css('overflow-y', 'hidden')
                             $('.CodeMirror', attachTo).css('height', 'auto')
                         else
-                            $('.CodeMirror', attachTo).css('height', '100%')
+                            #deferred sizing to give code mirror a chance to figure font
+                            $('.CodeMirror', attachTo).css('height', codemirror.defaultTextHeight())
+                            $timeout ->
+                                $('.CodeMirror', attachTo).css('height', codemirror.defaultTextHeight() + PAD)
                             #trap enter, preventing multiple lines being added
                             #yet still allow 'wrapped' single line to be
                             #visually multiple lines in the DOM
