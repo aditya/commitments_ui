@@ -190,8 +190,13 @@ body {
 }
 
 .gravatar-size {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
+}
+
+.gravatar-size-large {
+  width: 44px;
+  height: 44px;
 }
 
 .gravatar {
@@ -225,8 +230,11 @@ body {
       width: 100%;
       z-index: 1;
     }
-    .comment-gravatar {
-      width: 60px;
+    .gravatar {
+      .gravatar-size-large;
+      img {
+        .gravatar-size-large;
+      }
     }
   }
 }
