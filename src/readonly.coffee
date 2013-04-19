@@ -16,7 +16,7 @@ define [
                     if not ngModel.$viewValue
                         ngModel.$setViewValue($scope.$eval(attrs.default))
                     hash = md5((ngModel.$viewValue or '').toLowerCase())
-                    icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}"
+                    icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{size}"
         ])
         .directive('tooltip', ['$timeout', ($timeout)  ->
             restrict: 'A'

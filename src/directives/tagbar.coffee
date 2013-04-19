@@ -24,7 +24,7 @@ define ['angular',
                         iconUrl: (tagValue) ->
                             if attrs.itemIconFrom is 'gravatar'
                                 hash = md5((tagValue or '').toLowerCase())
-                                return "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{iconSize}"
+                                return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
                             null
                     #just propagate tag values back to the model
                     input.on 'change', (event) ->
