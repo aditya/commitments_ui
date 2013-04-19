@@ -88,6 +88,9 @@ define ['angular',
                             #yet still allow 'wrapped' single line to be
                             #visually multiple lines in the DOM
                             codemirror.setOption 'extraKeys',
+                                'Ctrl-Enter': (cm) ->
+                                    whenOK()
+                                    null
                                 Enter: (cm) ->
                                     whenOK()
                                     null
