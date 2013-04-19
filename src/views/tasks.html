@@ -4,7 +4,6 @@
     editable-list-reorder="selected.tag"
     on-delete="database.delete"
     on-update="database.update"
-    on-placeholder="placeholderItem"
     ng-model="selected.items"
     class="unstyled items container-fluid">
     <li class="row-fluid toolitem">
@@ -37,7 +36,10 @@
     </div>
     </li>
     <!--the new record placeholder-->
-    <li editable-record editable-record-placeholder ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid item">
+    <li
+        editable-record
+        editable-record-placeholder="placeholderItem"
+        ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid item">
     <div class="row-fluid task-core">
         <span markdown required ng-model="$$placeholder.what" placeholder="'New task here'" tooltip="'click to edit'" class="span11 larger"></span>
     </div>

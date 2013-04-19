@@ -82,6 +82,10 @@ define ['md5',
                 #if all the required fields are in place, then make sure
                 #we treat this as a real record
                 $scope.$on 'editableRecordHasRequired', (event) ->
+                    #if we have a callback defined to work on any new item, call
+                    #it now to set the record with what is needed
+                    if attrs.editableRecordPlaceholder
+                        $scope.$eval("#{attrs.editableRecordPlaceholder}") $scope.$$placeholder
                     $scope.$emit 'newrecord', $scope.$$placeholder
                     #and a fresh placeholder
                     $scope.$$placeholder = {}
