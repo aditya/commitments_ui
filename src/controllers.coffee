@@ -6,9 +6,9 @@ define ['angular',
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .controller 'Desktop', ($rootScope, $scope, Database, StackRank, User) ->
             #always available stack rank service, this really is a library
-            $rootScope.stackRank = StackRank()
-            $rootScope.database = Database()
-            $rootScope.user = User()
+            $rootScope.stackRank = StackRank
+            $rootScope.database = Database
+            $rootScope.user = User
             #root level section of the current 'box' or set of matching tasks
             #this is used from multiple sub controllers, so here it is at root
             $scope.selectBox = (box) ->
@@ -157,3 +157,6 @@ define ['angular',
             #as needed to appear in that box
             $scope.placeholderItem = (item) ->
                 ($scope.selected.stamp or ->)(item)
+        #notifications, button and dropdown
+        .controller 'Notifications', ($scope) ->
+            $scope.show = ->

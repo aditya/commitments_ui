@@ -4,18 +4,18 @@ define ['angular',
     'cs!src/inverted/inverted',
     'lunr',
     'cs!src/sampledata',
-    ], (angular, _, socketio, inverted, lunr, sampledata) ->
+    'cs!src/samplenotifications',
+    ], (angular, _, socketio, inverted, lunr, sampledata, samplenotifications) ->
     #fake server, this will fire off a lot of events and generally stress
     #you out while debugging
     window.FAKE_SERVER = false
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ->
-            ->
-                email: 'wballard@glgroup.com'
-                preferences:
-                    bulkShare: false
-                    server: 'http://localhost:8080/'
+            email: 'wballard@glgroup.com'
+            preferences:
+                bulkShare: false
+                server: 'http://localhost:8080/'
         .factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags
             parseTags = (document, callback) ->
@@ -62,7 +62,15 @@ define ['angular',
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)
         .factory 'Notifications', ($rootScope, $timeout) ->
-            console.log 'a---'
+            #items are kept in an LRU buffer
+            items = []
+            received_items = []
+            do ->
+                unreadCount: ->
+                    len = _.keys(received_items).length
+                    len unless not len
+                receiveMessage: (message) ->
+                    received_items.push message
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
         .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes) ->
@@ -113,14 +121,17 @@ define ['angular',
                     $rootScope.$digest()
                 socket.on 'error', ->
                     console.log 'socketerror', arguments
+                    #here is some nice fake sample data
                     for item in sampledata
                         updateItem item, true
-                        id = item.id
+                    for item in samplenotifications
+                        Notifications.receiveMessage item
                     $rootScope.$broadcast 'initialload'
                     fakeCount = 0
                     fakeDeleteCount = 0
                     fakeCommentCount = 0
                     lastAddedId = null
+                    id = sampledata[sampledata.length-1].id
                     fakeUpdate = ->
                         $timeout ->
                             if not FAKE_SERVER
@@ -163,7 +174,7 @@ define ['angular',
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
             #to get one database
-            ->
+            do ->
                 items: (filter) ->
                     _.filter _.values(items), filter
                 update: updateItem
@@ -172,9 +183,10 @@ define ['angular',
                 tags: LocalIndexes.tags
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
+                notifications: Notifications
         #
         .factory 'StackRank', () ->
-            ->
+            do ->
                 #standardized sorting function, works to provide per user / per
                 #tag stack ranking, with the when creation timestamp providing
                 #the tiebreaker, meaning time sorted items go to the end as their
