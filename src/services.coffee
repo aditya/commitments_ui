@@ -16,11 +16,7 @@ define ['angular',
                 preferences:
                     bulkShare: false
                     server: 'http://localhost:8080/'
-        #deal with querying 'the database', really the services up in the cloud
-        #** for the time being this is just rigged to pretend to be a service **
-        .factory 'Database', ($rootScope, $timeout) ->
-            #here is the 'database' in memory, items tracked by ID
-            items = {}
+        .factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags
             parseTags = (document, callback) ->
                 for tag, v of (document?.tags or {})
@@ -48,6 +44,30 @@ define ['angular',
                     comments: (_.map(
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
+            do ->
+                update: (item) ->
+                    #indexing to drive the tags, autocomplete, and screens
+                    tagIndex.add item
+                    linkIndex.add item
+                    fullTextIndex.addToIndex item
+                delete: (item) ->
+                    tagIndex.remove item
+                    linkIndex.remove item
+                    fullTextIndex.remove
+                        id: item.id
+                tags: ->
+                    tagIndex.terms()
+                itemsByTag: (tags, filter) ->
+                    tagIndex.search(tags, filter)
+                fullTextSearch: (query) ->
+                    fullTextIndex.search(query)
+        .factory 'Notifications', ($rootScope, $timeout) ->
+            console.log 'a---'
+        #deal with querying 'the database', really the services up in the cloud
+        #** for the time being this is just rigged to pretend to be a service **
+        .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes) ->
+            #here is the 'database' in memory, items tracked by ID
+            items = {}
             opCount = 0
             updateItem = (item, fromServer) ->
                 if not fromServer
@@ -59,27 +79,21 @@ define ['angular',
                     _.extend items[item.id], item
                 else
                     items[item.id] = item
-                #indexing to drive the tags, autocomplete, and screens
-                tagIndex.add item
-                linkIndex.add item
-                fullTextIndex.addToIndex item
                 if not fromServer
                     console.log 'update', item, items, 'a'
                 else
                     $rootScope.$broadcast 'serverupdate', 'update', item
                 opCount++
+                LocalIndexes.update item
                 item
             deleteItem = (item, fromServer) ->
                 delete items[item.id]
-                tagIndex.remove item
-                linkIndex.remove item
-                fullTextIndex.remove
-                    id: item.id
                 if not fromServer
                     console.log 'delete', item
                 else
                     $rootScope.$broadcast 'serverupdate', 'delete', item
                 opCount++
+                LocalIndexes.delete item
                 item
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
@@ -152,11 +166,12 @@ define ['angular',
             ->
                 items: (filter) ->
                     _.filter _.values(items), filter
-                tagIndex: tagIndex
-                fullTextIndex: fullTextIndex
                 update: updateItem
                 delete: deleteItem
                 opCount: -> opCount
+                tags: LocalIndexes.tags
+                itemsByTag: LocalIndexes.itemsByTag
+                fullTextSearch: LocalIndexes.fullTextSearch
         #
         .factory 'StackRank', () ->
             ->

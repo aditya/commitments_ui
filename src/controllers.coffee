@@ -56,7 +56,7 @@ define ['angular',
             $scope.$watch 'searchQuery', (searchQuery) ->
                 if searchQuery
                     keys = {}
-                    for result in $scope.database.fullTextIndex.search(searchQuery)
+                    for result in $scope.database.fullTextSearch(searchQuery)
                         keys[result.ref] = result
                     searchBox =
                         forgettable: true
@@ -95,12 +95,12 @@ define ['angular',
                     $scope.selectBox $scope.boxes[0]
                 #dynamic tags from the index, these are current
                 tags = {}
-                for tagTerm in $scope.database.tagIndex.terms()
+                for tagTerm in $scope.database.tags()
                     byTag = (tagTerm, filter) ->
                         () ->
                             by_tag = {tags: {}}
                             by_tag.tags[tagTerm] = 1
-                            $scope.database.tagIndex.search(by_tag, filter)
+                            $scope.database.itemsByTag(by_tag, filter)
                     stampWithTag = (tagTerm) ->
                         (item) ->
                             item.tags = item.tags or {}
