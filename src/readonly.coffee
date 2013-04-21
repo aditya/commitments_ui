@@ -148,3 +148,24 @@ define [
             link: ($scope, element, attrs) ->
                 element.css 'cursor', 'pointer'
         ])
+        .directive('dropdown', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.addClass 'dropdown'
+                #toggler, appease the dropdown javascript to have the toggle
+                #have a common parent of the toggled menu itself
+                toggler = $("<span></span>")
+                element.append toggler
+                toggler.dropdown()
+                element.on 'click', (event) ->
+                    #close all other dropdowns
+                    $('.dropdown').removeClass 'open'
+                    toggler.dropdown 'toggle'
+                    event.stopPropagation()
+                menu = element.find '[role=menu]'
+                menu.on 'click', (event) ->
+                    console.log 'menu click'
+                    #force close the menu
+                    element.removeClass 'open'
+                    event.stopPropagation()
+        ])
