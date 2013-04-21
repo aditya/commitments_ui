@@ -71,6 +71,10 @@ define ['angular',
                     len unless not len
                 receiveMessage: (message) ->
                     received_items.push message
+                deliverMessages: ->
+                    #move items away from being freshly received
+                    items = items + received_items
+                    received_items = []
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
         .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes) ->

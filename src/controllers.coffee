@@ -160,4 +160,5 @@ define ['angular',
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
             $scope.showNotifications = ->
+                $scope.database.notifications.deliverMessages()
                 console.log 'yep'
