@@ -16,6 +16,9 @@
     padding: 2px;
 }
 
+.tagbar-search-choice-group {
+}
+
 .tagbar-search-choice-content {
     border: 1px solid transparent;
     height: 100%;
@@ -85,11 +88,12 @@
 }
 
 .tagbar-item-icon {
-    margin-top: -4px;
-    margin-bottom: -3px;
-    margin-right: 2px;
-    padding: 0px;
     .border-radius(@baseBorderRadius);
+    height: @baseLineHeight + 2 * 2px;
+    position: relative;
+    margin-right: -3px;
+    z-index: 40;
+    .pull-left;
 }
 
 .dropdown-menu {
