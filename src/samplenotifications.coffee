@@ -1,10 +1,14 @@
 #Some nice sample notifications
 define ->
     [
-        tags: [ 'info' ]
-        message: 'Hello'
+        when: 1366569723607
+        data:
+            tags: [ 'info' ]
+            message: 'Hello'
     ,
-        tags: [ 'info' ]
-        message: 'Hello Again'
+        when: 1366569734241
+        data:
+            tags: [ 'info' ]
+            message: 'Hello Again'
 
     ]
