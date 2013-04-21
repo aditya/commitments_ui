@@ -160,6 +160,8 @@ define [
                 element.on 'click', (event) ->
                     #close all other dropdowns
                     $('.dropdown').removeClass 'open'
+                    if attrs.onDropdown
+                        $scope.$eval("#{attrs.onDropdown}")
                     toggler.dropdown 'toggle'
                     event.stopPropagation()
                 menu = element.find '[role=menu]'

@@ -159,4 +159,5 @@ define ['angular',
                 ($scope.selected.stamp or ->)(item)
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
-            $scope.show = ->
+            $scope.showNotifications = ->
+                console.log 'yep'
