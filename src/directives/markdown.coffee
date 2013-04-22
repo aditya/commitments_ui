@@ -48,7 +48,7 @@ define ['angular',
                 forceBlur = ->
                     $('.CodeMirror', attachTo).remove()
                 #hook on to any way in the field
-                element.on 'click dblclick', () ->
+                focus = ->
                     if element.hasClass 'readonly'
                         return
                     #only hook up the editor if there isn't one
@@ -92,6 +92,11 @@ define ['angular',
                             codemirror.setOption('mode', 'markdown')
                             codemirror.setOption('theme', 'neat')
                             codemirror.refresh()
+                if attrs.focusOn?
+                    element.scope().$on attrs.focusOn, ->
+                        focus()
+                element.on 'click dblclick', (event) ->
+                    focus()
                 element.on 'keydown', (event) ->
                     if event.which is 27 #escape
                         event.target.blur()

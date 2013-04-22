@@ -35,7 +35,7 @@ define ['angular',
             $scope.$on 'initialload', ->
                 console.log 'initial load of screen from server'
                 $scope.selectBox $scope.todoBox
-        .controller 'Navbar', ($scope) ->
+        .controller 'Navbar', ($rootScope, $scope) ->
             #bulk sharing is driven from the navbar
             rebuildAllUsers = (items) ->
                 allUsers = {}
@@ -59,6 +59,8 @@ define ['angular',
                     $scope.user.preferences.notifications = not $scope.user.preferences.notifications
                 if $scope.user.preferences.notifications
                     $scope.database.notifications.deliverMessages()
+            $scope.addTask = ->
+                $rootScope.$broadcast 'newtask'
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
