@@ -16,6 +16,8 @@ define ['angular',
             preferences:
                 bulkShare: false
                 server: 'http://localhost:8080/'
+                notifications: false
+                notificationsLRU: 20
         .factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags
             parseTags = (document, callback) ->
@@ -61,20 +63,30 @@ define ['angular',
                     tagIndex.search(tags, filter)
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)
-        .factory 'Notifications', ($rootScope, $timeout) ->
+        .factory 'Notifications', ($rootScope, $timeout, User) ->
             #items are kept in an LRU buffer
             items = []
             received_items = []
+            receive = (message) ->
+                received_items.push message
+            deliver = (message) ->
+                items.push message
+                if items.length > User.preferences.notificationsLRU
+                    items.shift()
             do ->
                 unreadCount: ->
                     len = _.keys(received_items).length
+                    #This will ba a blank, not a zero
                     len unless not len
                 receiveMessage: (message) ->
-                    received_items.push message
+                    if User.preferences.notifications
+                        deliver message
+                    else
+                        receive message
                 deliverMessages: ->
                     #move items away from being freshly received
                     for item in received_items
-                        items.push item
+                        deliver item
                     received_items = []
                     items
                 items: items
@@ -172,6 +184,11 @@ define ['angular',
                                     id: lastAddedId
                                     what: "Inserted #{Date.now()}"
                                     who: user.email
+                                Notifications.receiveMessage
+                                    when: Date.now()
+                                    data:
+                                        message: "Hello there, I am a fresh notification #{Date.now()}"
+
                             fakeUpdate()
                         , 1000
                     fakeUpdate()
