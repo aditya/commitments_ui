@@ -18,7 +18,6 @@ define ['angular',
                         else
                             value = Date.now()
                         $scope.$apply () ->
-                            console.log value, 'die fucker'
                             ngModel.$setViewValue value
                             ngModel.$render()
                             $scope.$emit 'edit', attrs.ngModel, ngModel

@@ -79,6 +79,7 @@ define ['angular',
                     #This will ba a blank, not a zero
                     len unless not len
                 receiveMessage: (message) ->
+                    $rootScope.$broadcast 'notification', message
                     if User.preferences.notifications
                         deliver message
                     else

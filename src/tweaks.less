@@ -266,9 +266,10 @@ body {
   }
 }
 
-.notifications {
+ul.notifications {
+  //reset to avoid conflict with the bootstrap-notifications plugin
+  position: relative;
   .notification {
-    .alert;
     padding: @defaultPad;
     margin-bottom: @defaultMargin;
   }

@@ -13,6 +13,7 @@ require.config({
         'coffee-script': 'lib/coffee-script',
         cs: 'lib/require-cs',
         bootstrap: 'lib/bootstrap/js/bootstrap',
+        'bootstrap-notify': 'lib/bootstrap-notify/bootstrap-notify',
         tagbar: 'src/widgets/tagbar',
         less: 'lib/less',
         lunr: 'lib/lunr',
@@ -35,6 +36,9 @@ require.config({
         'angular': {
             deps: ['jquery'],
             exports: 'angular'
+        },
+        'bootstrap-notify': {
+            deps: ['jquery']
         },
         'bootstrap': {
             deps: ['jquery']
