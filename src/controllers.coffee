@@ -59,7 +59,6 @@ define ['angular',
                     $scope.user.preferences.notifications = not $scope.user.preferences.notifications
                 if $scope.user.preferences.notifications
                     $scope.database.notifications.deliverMessages()
-            $scope.toggleNotifications()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids

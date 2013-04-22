@@ -69,6 +69,8 @@ define ['angular',
             received_items = []
             receive = (message) ->
                 received_items.push message
+                if received_items.length > User.preferences.notificationsLRU
+                    received_items.shift()
             deliver = (message) ->
                 items.push message
                 if items.length > User.preferences.notificationsLRU
