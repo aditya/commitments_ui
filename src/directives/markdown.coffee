@@ -20,11 +20,14 @@ define ['angular',
                     display.addClass 'multiline'
                 else
                     display.addClass 'oneline'
-                $scope.$watch attrs.readonlyIf, (val) ->
-                    if val
-                        display.addClass 'readonly'
-                    else
-                        display.removeClass 'readonly'
+                if attrs.readonlyIf?
+                    $scope.$watch attrs.readonlyIf, (val) ->
+                        if val
+                            display.addClass 'readonly'
+                        else
+                            display.removeClass 'readonly'
+                if attrs.readonly?
+                    display.addClass 'readonly'
                 element.append display, attachTo
                 #these are the handlers that apply the edits
                 whenOK = ->

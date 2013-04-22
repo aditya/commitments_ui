@@ -10,6 +10,11 @@
   border: 1px solid @borderColor;
 }
 
+.transparent-border {
+  .border-radius(@baseBorderRadius);
+  border: 1px solid transparent;
+}
+
 .focus-editor {
   .border-radius(@baseBorderRadius);
   border: 1px solid @inputBorder;
@@ -121,11 +126,6 @@ body {
 }
 
 .item {
-  .well;
-  padding: @defaultPad;
-  margin-bottom: @defaultMargin;
-  background-color: @bodyBackground;
-  background-image: url('../images/body-bg-texture-medium.png');
 }
 
 .toolitem {
@@ -141,9 +141,8 @@ body {
 }
 
 .markdown {
-  border: 1px solid transparent;
   .display {
-    .border-radius(@baseBorderRadius);
+    .transparent-border;
     cursor: text;
     &:hover {
       .hover-editor;
@@ -151,6 +150,7 @@ body {
   }
   .readonly {
     border-color: @transparent !important;
+    cursor: default;
   }
   .placeholder {
     cursor: text;
@@ -255,7 +255,23 @@ body {
 
 .tasks {
   .task {
+    .well;
+    padding: @defaultPad;
+    margin-bottom: @defaultMargin;
+    background-color: @bodyBackground;
+    background-image: url('../images/body-bg-texture-medium.png');
     .username {
+      color: @grayLight;
+    }
+  }
+}
+
+.notifications {
+  .notification {
+    .alert;
+    padding: @defaultPad;
+    margin-bottom: @defaultMargin;
+    .postdate {
       color: @grayLight;
     }
   }

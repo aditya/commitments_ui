@@ -50,6 +50,11 @@ define ['angular',
                 $scope.user.preferences.bulkShare = not $scope.user.preferences.bulkShare
                 if $scope.user.preferences.bulkShare
                     rebuildAllUsers $scope.selected.items
+            $scope.toggleNotifications = ->
+                $scope.user.preferences.notifications = not $scope.user.preferences.notifications
+                if $scope.user.preferences.notifications
+                    $scope.database.notifications.deliverMessages()
+            $scope.toggleNotifications()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
@@ -160,5 +165,6 @@ define ['angular',
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
             $scope.showNotifications = ->
-                $scope.database.notifications.deliverMessages()
-                console.log 'yep'
+                #receive message and reset the bound scope
+                $scope.notifications =
+                    $scope.database.notifications.deliverMessages()
