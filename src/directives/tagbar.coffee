@@ -19,8 +19,14 @@ define ['angular',
                     input.tagbar
                         icon: templateAttrs.icon
                         query: (query) ->
+                            if attrs.tagsQuery
+                                matches = $scope.$eval(attrs.tagsQuery) (term) ->
+                                    term.toLowerCase().indexOf(query.term.toLowerCase()) >= 0
+                            else
+                                matches = []
+                            matches.unshift query.term
                             query.callback
-                                results: [query.term, 'sample']
+                                results: matches
                         iconUrl: (tagValue) ->
                             if attrs.itemIconFrom is 'gravatar'
                                 hash = md5((tagValue or '').toLowerCase())

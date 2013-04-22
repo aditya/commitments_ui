@@ -125,8 +125,12 @@ define [], ->
                     key = keyFunction document
                     if key
                         unpostFromIndex key, document
-            terms: ->
-                _.keys(termPostingLists).sort()
+            terms: (filter) ->
+                if filter
+                    buffer = _.filter(_.keys(termPostingLists), filter)
+                else
+                    buffer = _.keys(termPostingLists)
+                buffer.sort()
             revision: ->
                 md5(Object.keys(termPostingLists).join(''))
             search: (query, filter) ->

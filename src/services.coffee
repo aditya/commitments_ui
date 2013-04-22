@@ -57,8 +57,10 @@ define ['angular',
                     linkIndex.remove item
                     fullTextIndex.remove
                         id: item.id
-                tags: ->
-                    tagIndex.terms()
+                tags: (filter) ->
+                    tagIndex.terms(filter)
+                links: (filter) ->
+                    linkIndex.terms(filter)
                 itemsByTag: (tags, filter) ->
                     tagIndex.search(tags, filter)
                 fullTextSearch: (query) ->
@@ -208,6 +210,7 @@ define ['angular',
                 delete: deleteItem
                 opCount: -> opCount
                 tags: LocalIndexes.tags
+                links: LocalIndexes.links
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
                 notifications: Notifications

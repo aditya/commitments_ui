@@ -26,8 +26,8 @@
     <div ng-show="extended && extended.what" class="row-fluid task-extended">
         <div requires-object="extended.discussion" class="row-fluid item-tools">
             <span action class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"></span>
-            <span tags icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></span>
-            <span tags item-icon-from="gravatar" icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></span>
+            <span tags tags-query="database.tags" icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></span>
+            <span tags tags-query="database.links" item-icon-from="gravatar" icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></span>
         </div>
         <hr/>
         <div class="row-fluid">
