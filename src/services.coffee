@@ -97,9 +97,63 @@ define ['angular',
                     received_items = []
                     items
                 items: items
+        #deal with sample data for local testing
+        .factory 'SampleData', ($timeout) ->
+            (taskFromServer, deleteTaskFromServer, notification) ->
+                #here is some nice fake sample data
+                for item in sampledata
+                    taskFromServer item
+                for item in samplenotifications
+                    notification item
+                fakeCount = 0
+                fakeDeleteCount = 0
+                fakeCommentCount = 0
+                lastAddedId = null
+                id = sampledata[sampledata.length-1].id
+                fakeUpdate = ->
+                    $timeout ->
+                        if not FAKE_SERVER
+                            #no action
+                        else
+                            #this is making a lot of noise realy to see how
+                            #the user interface responds to simulated messages
+                            fakeServerUpdate = _.cloneDeep items[id]
+                            fakeServerUpdate.what = "Simulated event update #{Date.now()}"
+                            if fakeCommentCount++ < 10
+                                fakeServerUpdate.discussion.comments.push
+                                    who: 'igroff@glgroup.com'
+                                    when: new Date().toDateString()
+                                    what: "Simulated comment #{Date.now()}"
+                            if fakeCount++ < 5
+                                fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
+                            else
+                                if fakeDeleteCount++ < 5
+                                    delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
+                                else
+                                    fakeDeleteCount = 0
+                                    fakeCount = 0
+                            #an update
+                            taskFromServer fakeServerUpdate
+                            #delete the last add
+                            deleteTaskFromServer
+                                id: lastAddedId
+                            #a new task
+                            lastAddedId = Date.now()
+                            taskFromServer
+                                id: lastAddedId
+                                what: "Inserted #{Date.now()}"
+                                who: user.email
+                            Notifications.receiveMessage
+                                when: Date.now()
+                                data:
+                                    message: "Hello there, I am a fresh notification #{Date.now()}"
+
+                        fakeUpdate()
+                    , 1000
+                fakeUpdate()
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
-        .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes) ->
+        .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes, SampleData) ->
             #here is the 'database' in memory, items tracked by ID
             items = {}
             opCount = 0
@@ -147,58 +201,7 @@ define ['angular',
                         deleteItem item, true
                     $rootScope.$digest()
                 socket.on 'error', ->
-                    console.log 'socketerror', arguments
-                    #here is some nice fake sample data
-                    for item in sampledata
-                        updateItem item, true
-                    for item in samplenotifications
-                        Notifications.receiveMessage item
-                    fakeCount = 0
-                    fakeDeleteCount = 0
-                    fakeCommentCount = 0
-                    lastAddedId = null
-                    id = sampledata[sampledata.length-1].id
-                    fakeUpdate = ->
-                        $timeout ->
-                            if not FAKE_SERVER
-                                #no action
-                            else
-                                #this is making a lot of noise realy to see how
-                                #the user interface responds to simulated messages
-                                fakeServerUpdate = _.cloneDeep items[id]
-                                fakeServerUpdate.what = "Simulated event update #{Date.now()}"
-                                if fakeCommentCount++ < 10
-                                    fakeServerUpdate.discussion.comments.push
-                                        who: 'igroff@glgroup.com'
-                                        when: new Date().toDateString()
-                                        what: "Simulated comment #{Date.now()}"
-                                if fakeCount++ < 5
-                                    fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
-                                else
-                                    if fakeDeleteCount++ < 5
-                                        delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
-                                    else
-                                        fakeDeleteCount = 0
-                                        fakeCount = 0
-                                #an update
-                                taskFromServer fakeServerUpdate
-                                #delete the last add
-                                deleteTaskFromServer
-                                    id: lastAddedId
-                                #a new task
-                                lastAddedId = Date.now()
-                                taskFromServer
-                                    id: lastAddedId
-                                    what: "Inserted #{Date.now()}"
-                                    who: user.email
-                                Notifications.receiveMessage
-                                    when: Date.now()
-                                    data:
-                                        message: "Hello there, I am a fresh notification #{Date.now()}"
-
-                            fakeUpdate()
-                        , 1000
-                    fakeUpdate()
+                    SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage
                 socket.on 'connect', ->
                     console.log 'connected'
             #here is the database service construction function itself
