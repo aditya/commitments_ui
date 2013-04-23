@@ -13,7 +13,7 @@
     ng-repeat="item in selected.items"
     editable-record
     ng-model="item"
-    animated-hide="(item.who != user.email && !item.links[user.email]) || selected.hide(item)"
+    animated-hide="item.reject[user.email] || selected.hide(item)"
     class="row-fluid task">
     <div class="row-fluid">
         <div ng-include src="'src/views/taskaccept.html'"></div>

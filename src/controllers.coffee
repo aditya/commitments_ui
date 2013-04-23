@@ -147,6 +147,7 @@ define ['angular',
         #your user identity, or removing yourself
         .controller 'TaskAccept', ($scope, $timeout) ->
             $scope.accept = (item) ->
+                item.links[$scope.user.email] = item.links[$scope.user.email] or Date.now()
                 item.accept[$scope.user.email] = Date.now()
                 delete item.reject[$scope.user.email]
                 $scope.database.update item

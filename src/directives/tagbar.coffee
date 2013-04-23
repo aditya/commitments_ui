@@ -39,6 +39,9 @@ define ['angular',
                             #no need for a render here, this control is doing
                             #a more thorough job of updating its ui
                         $scope.$emit 'edit', attrs.ngModel, input.tagbar('val')
+                    $scope.$watch attrs.ngModel, (model) ->
+                        ngModel.$render()
+                    , true
                     #rendering is really just setting the values
                     ngModel.$render = () ->
                         if not ngModel.$viewValue
