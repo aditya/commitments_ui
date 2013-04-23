@@ -1,0 +1,15 @@
+<div class="hero-unit">
+    <h1>Commitments</h1>
+    <p>Keeping track of what <i>we</i> said we'd do.</p>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <span ng-repeat="email in sampleUsers">
+                <a gravatar
+                    ng-model="email"
+                    tooltip="email"
+                    tooltip-placement="bottom"
+                    ng-href="#/users/{{email}}"></a>
+            </span>
+        </div>
+    </div>
+</div>

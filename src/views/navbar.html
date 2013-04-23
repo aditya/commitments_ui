@@ -5,7 +5,7 @@
     <div class="navbar-inner">
         <div class="form-search pull-right navbar-content">
             <span class="btn-group no-margin">
-                <button dropdown ng-controller="Toolbox" class="btn">
+                <span dropdown ng-controller="Toolbox" class="btn">
                     <span tag ng-model="selected.title"></span>
                     <ul class="dropdown-menu" role="menu">
                         <li ng-repeat="box in boxes" active-if="selected == box" ng-model="box">
@@ -15,8 +15,8 @@
                         </a>
                         </li>
                     </ul>
-                </button>
-                <button
+                </span>
+                <span
                     tooltip="'show notifications'"
                     tooltip-placement="bottom"
                     ng-click="toggleNotifications()"
@@ -25,31 +25,36 @@
                     <span
                         animated-visible="notifications.unreadCount()"
                         class="badge badge-important">{{notifications.unreadCount()}}</span>
-                </button>
-                <button
+                </span>
+                <span
                     tooltip="'bulk share tasks'"
                     tooltip-placement="bottom"
                     ng-click="toggleBulkShare()"
                     class="btn">
                     <i class="icon icon-user"></i>
-                </button>
-                <button
+                </span>
+                <span
                     tooltip="'add a new task'"
                     tooltip-placement="bottom"
                     ng-click="addTask()"
                     class="btn">
                     <i class="icon icon-plus"></i>
-                </button>
+                </span>
             </span>
             <span class="input-append">
                 <input delayed="searchQuery" type="text" class="search-query">
                 <button type="submit" class="btn"><i class="icon-search"></i></button>
             </span>
-            <span ng-controller="User"
+            <span
+                dropdown
+                ng-controller="User">
                 <span gravatar
                     ng-model="user.email"
                     tooltip="user.email"
                     tooltip-placement="left"></span>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="#/logout">Logout</a></li>
+                </ul>
             </span>
         </div>
     </div>

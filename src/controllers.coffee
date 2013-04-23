@@ -6,9 +6,18 @@ define ['angular',
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .config(['$routeProvider', ($routeProvider) ->
             $routeProvider.
-                when '/users/:email',
+                when('/users/:email',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Desktop'
+                ).
+                when('/logout',
+                    templateUrl: 'src/views/splash.html'
+                    controller: 'Splash'
+                ).
+                when('/',
+                    templateUrl: 'src/views/splash.html'
+                    controller: 'Splash'
+                )
         ])
         .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #bootstrap the application with the core services, put in the scope
@@ -17,12 +26,15 @@ define ['angular',
             $rootScope.database = Database
             $rootScope.notifications = Notifications
             $rootScope.user = User
-            $rootScope.hotwire = ->
-                if not $rootScope.shownAtAll
-                    $location.path '/users/wballard@glgroup.com'
-                    $rootScope.shownAtAll = true
+        .controller 'Splash', ($scope, $location, User) ->
+            User.email = ''
+            $scope.sampleUsers = [
+                'wballard@glgroup.com',
+                'igroff@glgroup.com',
+                'kwokoek@glgroup.com',
+            ]
+            $location.path '/'
         .controller 'Desktop', ($routeParams, $rootScope, $scope, Database, StackRank, User) ->
-            $rootScope.shownAtAll = true
             User.email = $routeParams.email
             #root level section of the current 'box' or set of matching tasks
             #this is used from multiple sub controllers, so here it is at root
