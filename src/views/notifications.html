@@ -4,7 +4,7 @@
     animated-show="user.preferences.notifications"
     class="unstyled notifications container-fluid">
     <li
-        ng-repeat="notification in database.notifications.items"
+        ng-repeat="notification in notifications.items"
         class="alert alert-info row-fluid notification">
         <div postdate ng-model="notification.when"></div>
         <div markdown readonly ng-model="notification.data.message"></div>

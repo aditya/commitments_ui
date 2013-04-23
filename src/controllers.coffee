@@ -10,11 +10,12 @@ define ['angular',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Desktop'
         ])
-        .controller 'Application', ($rootScope, $location, Database, StackRank, User) ->
+        .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
             $rootScope.stackRank = StackRank
             $rootScope.database = Database
+            $rootScope.notifications = Notifications
             $rootScope.user = User
             $rootScope.hotwire = ->
                 if not $rootScope.shownAtAll
@@ -43,7 +44,7 @@ define ['angular',
             #same box triggering a rebinding
             $scope.$on 'serverupdate', (event, action, item) ->
                 $scope.selectBox $scope.selected
-        .controller 'Navbar', ($rootScope, $scope) ->
+        .controller 'Navbar', ($rootScope, $scope, Notifications) ->
             #bulk sharing is driven from the navbar
             rebuildAllUsers = (items) ->
                 allUsers = {}
@@ -59,14 +60,14 @@ define ['angular',
                 if $scope.user.preferences.bulkShare
                     rebuildAllUsers $scope.selected.items
             $scope.toggleNotifications = ->
-                if $scope.database.notifications.unreadCount()
+                if Notifications.unreadCount()
                     #if there are messages, always show
                     $scope.user.preferences.notifications = true
                 else
                     #otherwise this is a normal toggle
                     $scope.user.preferences.notifications = not $scope.user.preferences.notifications
                 if $scope.user.preferences.notifications
-                    $scope.database.notifications.deliverMessages()
+                    Notifications.deliverMessages()
             $scope.addTask = ->
                 $rootScope.$broadcast 'newtask'
             #search is driven from the navbar, queries then make up a 'fake'

@@ -98,10 +98,12 @@ define ['angular',
                     items
                 items: items
         #deal with sample data for local testing
-        .factory 'SampleData', ($timeout) ->
+        .factory 'SampleData', ($timeout, User) ->
             (taskFromServer, deleteTaskFromServer, notification) ->
                 #here is some nice fake sample data
+                cloneFromItem
                 for item in sampledata
+                    cloneFromItem = item
                     taskFromServer item
                 for item in samplenotifications
                     notification item
@@ -117,7 +119,7 @@ define ['angular',
                         else
                             #this is making a lot of noise realy to see how
                             #the user interface responds to simulated messages
-                            fakeServerUpdate = _.cloneDeep items[id]
+                            fakeServerUpdate = _.cloneDeep cloneFromItem
                             fakeServerUpdate.what = "Simulated event update #{Date.now()}"
                             if fakeCommentCount++ < 10
                                 fakeServerUpdate.discussion.comments.push
@@ -142,12 +144,11 @@ define ['angular',
                             taskFromServer
                                 id: lastAddedId
                                 what: "Inserted #{Date.now()}"
-                                who: user.email
-                            Notifications.receiveMessage
+                                who: User.email
+                            notification
                                 when: Date.now()
                                 data:
                                     message: "Hello there, I am a fresh notification #{Date.now()}"
-
                         fakeUpdate()
                     , 1000
                 fakeUpdate()
@@ -217,7 +218,6 @@ define ['angular',
                 links: LocalIndexes.links
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
-                notifications: Notifications
         #
         .factory 'StackRank', () ->
             do ->
