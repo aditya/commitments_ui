@@ -22,8 +22,7 @@ define ['angular',
                     $rootScope.shownAtAll = true
         .controller 'Desktop', ($routeParams, $rootScope, $scope, Database, StackRank, User) ->
             $rootScope.shownAtAll = true
-            User.switchUser $routeParams.email
-            console.log User
+            User.email = $routeParams.email
             #root level section of the current 'box' or set of matching tasks
             #this is used from multiple sub controllers, so here it is at root
             $scope.selectBox = (box) ->
@@ -43,13 +42,7 @@ define ['angular',
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'serverupdate', (event, action, item) ->
-                console.log 'serverupdate', action, item
                 $scope.selectBox $scope.selected
-            #looking for the initial load of data in order to start off the
-            #gui with a screen full of todos
-            $scope.$on 'initialload', ->
-                console.log 'initial load of screen from server'
-                $scope.selectBox $scope.todoBox
         .controller 'Navbar', ($rootScope, $scope) ->
             #bulk sharing is driven from the navbar
             rebuildAllUsers = (items) ->

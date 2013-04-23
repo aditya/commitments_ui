@@ -19,8 +19,6 @@ define ['angular',
                     server: 'http://localhost:8080/'
                     notifications: false
                     notificationsLRU: 20
-                switchUser: (switchToUserEmail) ->
-                    user.email = switchToUserEmail
             user
         .factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags
@@ -134,10 +132,11 @@ define ['angular',
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
             socket = null
-            $rootScope.$watch 'user', (user) ->
+            $rootScope.$watch 'user.email', (email) ->
+                #only one connection is needed
                 if socket
                     socket.disconnect
-                socket = socketio.connect user.preferences.server
+                socket = socketio.connect $rootScope.user.preferences.server
                 #send in a server event into angular
                 taskFromServer = (item) ->
                     $rootScope.$apply ->
@@ -154,7 +153,6 @@ define ['angular',
                         updateItem item, true
                     for item in samplenotifications
                         Notifications.receiveMessage item
-                    $rootScope.$broadcast 'initialload'
                     fakeCount = 0
                     fakeDeleteCount = 0
                     fakeCommentCount = 0
@@ -203,7 +201,6 @@ define ['angular',
                     fakeUpdate()
                 socket.on 'connect', ->
                     console.log 'connected'
-            , true
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
             #to get one database

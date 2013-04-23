@@ -171,3 +171,9 @@ define [
                     element.removeClass 'open'
                     event.stopPropagation()
         ])
+        .directive('eatClick', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.on 'click', (event) ->
+                    event.preventDefault()
+        ])
