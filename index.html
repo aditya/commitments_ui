@@ -6,13 +6,7 @@
 <link rel="stylesheet/less" type="text/css" href="root.less">
 <script data-main="root.js" src="lib/require.js"></script>
 </head>
-<body ng-controller="Desktop">
-<div>
-    <ng-include src="'src/views/navbar.html'"/>
-</div>
-<div>
-    <ng-include src="'src/views/taskpad.html'"/>
-</div>
+<body ng-controller="Application">
+<div ng-view></div>
 </body>
-
 </html>

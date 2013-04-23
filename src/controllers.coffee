@@ -4,11 +4,22 @@ define ['angular',
     'cs!src/editable',
     'cs!src/readonly'], (angular, _) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
-        .controller 'Desktop', ($rootScope, $scope, Database, StackRank, User) ->
-            #always available stack rank service, this really is a library
+        .config(['$routeProvider', ($routeProvider) ->
+            $routeProvider.
+                when '/users/:email',
+                    templateUrl: 'src/views/desktop.html'
+                    controller: 'Desktop'
+        ])
+        .run ($location) ->
+            #hotwire for now
+            $location.path '/users/wballard@glgroup.com'
+        .controller 'Application', ($rootScope, Database, StackRank, User) ->
+            #bootstrap the application with the core services, put in the scope
+            #to allow easy data binding
             $rootScope.stackRank = StackRank
             $rootScope.database = Database
             $rootScope.user = User
+        .controller 'Desktop', ($rootScope, $scope, Database, StackRank, User) ->
             #root level section of the current 'box' or set of matching tasks
             #this is used from multiple sub controllers, so here it is at root
             $scope.selectBox = (box) ->
