@@ -10,16 +10,20 @@ define ['angular',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Desktop'
         ])
-        .run ($location) ->
-            #hotwire for now
-            $location.path '/users/wballard@glgroup.com'
-        .controller 'Application', ($rootScope, Database, StackRank, User) ->
+        .controller 'Application', ($rootScope, $location, Database, StackRank, User) ->
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
             $rootScope.stackRank = StackRank
             $rootScope.database = Database
             $rootScope.user = User
-        .controller 'Desktop', ($rootScope, $scope, Database, StackRank, User) ->
+            $rootScope.hotwire = ->
+                if not $rootScope.shownAtAll
+                    $location.path '/users/wballard@glgroup.com'
+                    $rootScope.shownAtAll = true
+        .controller 'Desktop', ($routeParams, $rootScope, $scope, Database, StackRank, User) ->
+            $rootScope.shownAtAll = true
+            User.switchUser $routeParams.email
+            console.log User
             #root level section of the current 'box' or set of matching tasks
             #this is used from multiple sub controllers, so here it is at root
             $scope.selectBox = (box) ->

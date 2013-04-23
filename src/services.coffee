@@ -12,12 +12,16 @@ define ['angular',
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ->
-            email: 'wballard@glgroup.com'
-            preferences:
-                bulkShare: false
-                server: 'http://localhost:8080/'
-                notifications: false
-                notificationsLRU: 20
+            user =
+                email: ''
+                preferences:
+                    bulkShare: false
+                    server: 'http://localhost:8080/'
+                    notifications: false
+                    notificationsLRU: 20
+                switchUser: (switchToUserEmail) ->
+                    user.email = switchToUserEmail
+            user
         .factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags
             parseTags = (document, callback) ->
