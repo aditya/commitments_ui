@@ -8,19 +8,27 @@ define ['angular',
         .config ($routeProvider) ->
             console.log arguments
             $routeProvider.
-                when('/desktop',
+                when(
+                    '/desktop',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Desktop'
                 )
-                .when('/logout',
+                .when(
+                    '/logout',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-                .when('/login/:authtoken',
+                .when(
+                    '/login/:authtoken',
                     templateUrl: 'src/views/login.html'
                     controller: 'Login'
                 )
-                .when('/',
+                .when(
+                    '/',
+                    templateUrl: 'src/views/splash.html'
+                    controller: 'Splash'
+                )
+                .otherwise(
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
