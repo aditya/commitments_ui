@@ -99,15 +99,17 @@ define ['angular',
                     items
                 items: items
         #deal with sample data for local testing
-        .factory 'SampleData', ($rootScope, $timeout, User) ->
+        .factory 'SampleData', ($rootScope, $timeout) ->
             (taskFromServer, deleteTaskFromServer, notification, authtoken) ->
                 console.log "no server, going for sample data"
                 #this is a very fake login token system
                 fakeAuth =
                     xxx: 'wballard@glgroup.com'
                 #yes, I really do mean to assign here
-                if User.email = fakeAuth[authtoken]
-                    $rootScope.$broadcast 'login'
+                if email = fakeAuth[authtoken]
+                    $rootScope.$broadcast 'login',
+                        authtoken: authtoken
+                        email: email
                     #here is some nice fake sample data, but only if we got
                     #a fake user, this is much like connecting to the server
                     #in that if we failed to authenticate, there would be
@@ -154,7 +156,7 @@ define ['angular',
                                 taskFromServer
                                     id: lastAddedId
                                     what: "Inserted #{Date.now()}"
-                                    who: User.email
+                                    who: email
                                 notification
                                     when: Date.now()
                                     data:
@@ -224,9 +226,16 @@ define ['angular',
                         console.log 'socketerror', arguments
                         SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage, authtoken
                     socket.on 'connect', ->
-                        $rootScope.$broadcast 'login'
+                        #ask for the username, callback to login
+                        ###
+                        $rootScope.$broadcast 'login',
+                            authtoken: authtoken
+                            email: email
+                        ###
                     socket.on 'disconnect', ->
-                        $rootScope.$broadcase 'loginfailure'
+                        $rootScope.$broadcast 'loginfailure'
+                else
+                    $rootScope.$broadcast 'logout'
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
             #to get one database

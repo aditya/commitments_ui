@@ -37,21 +37,37 @@ define ['angular',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-        .run ($rootScope, $location) ->
-            #flash message.
-            $rootScope.flash = (message) ->
+        .run ($rootScope, $location, User) ->
+            #Theory Question: Should this be a service?
+            #in this root most controller, listen for login and login failure
+            $rootScope.$on 'login', (event, identity) ->
+                console.log 'login'
+                store.set 'identity', identity
+                User.email = identity.email
+                User.authtoken = identity.authtoken
+                $location.path '/desktop'
+            $rootScope.$on 'loginfailure', ->
+                console.log 'loginfailure'
+                store.remove 'identity'
+                User.email = null
+                User.authtoken = null
+                $rootScope.flash "Whoops, that's not a valid login link"
+            $rootScope.$on 'logout', ->
+                console.log 'logout'
+                store.remove 'identity'
+                User.email = null
+                User.authtoken = null
+        .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
+            #flash message, just a page with a message when all else fails
+            $rootScope.flash = (message, doNotChangePath) ->
                 $rootScope.flashMessage = message
+                if doNotChangePath
+                    return
                 if $rootScope.$$phase
-                    $location '/flash'
+                    $location.path '/flash'
                 else
                     $rootScope.$apply ->
                         $location.path '/flash'
-            #in this root most controller, listen for login and login failure
-            $rootScope.$on 'login', ->
-                $location.path '/desktop'
-            $rootScope.$on 'loginfailure', ->
-                $rootScope.flash "Whoops, that's not a valid login link"
-        .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
             $rootScope.stackRank = StackRank
@@ -59,15 +75,14 @@ define ['angular',
             $rootScope.notifications = Notifications
             $rootScope.user = User
         .controller 'Login', ($scope, $routeParams, User, Database) ->
-            $scope.flashMessage = "Logging you in..."
             Database.login $routeParams.authtoken
+            $scope.flash "Logging you in...", true
         .controller 'Logout', ($scope, $timeout, $location, User, Database) ->
             Database.logout()
-            $scope.flashMessage = "Logging you out..."
-            $timeout ->
-                $location.path '/'
-            , 2000
+            $scope.flash "Logging you out..."
         .controller 'Flash', ($scope, $timeout, $location) ->
+            #Flash shows a message, and then takes you home to basically
+            #simulate restarting/refreshing the app
             $timeout ->
                 $location.path '/'
             , 2000
