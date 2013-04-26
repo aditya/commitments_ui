@@ -98,6 +98,9 @@ define ['angular',
                     received_items = []
                     items
                 items: items
+                clear: ->
+                    items.splice()
+                    received_items.splice()
         #deal with sample data for local testing
         .factory 'SampleData', ($rootScope, $timeout) ->
             (taskFromServer, deleteTaskFromServer, notification, authtoken) ->
@@ -201,9 +204,12 @@ define ['angular',
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
             socket = null
+            clear = ->
+                items = {}
             login = (authtoken) ->
                 #a new user, clean out the state
-                items = {}
+                clear()
+                Notifications.clear()
                 #only one connection is needed, or even a good idea :)
                 if socket
                     socket.disconnect()

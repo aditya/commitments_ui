@@ -6,7 +6,6 @@ define ['angular',
     'cs!src/readonly'], (angular, _, store) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .config ($routeProvider) ->
-            console.log arguments
             $routeProvider.
                 when(
                     '/desktop',
@@ -86,13 +85,22 @@ define ['angular',
             $timeout ->
                 $location.path '/'
             , 2000
-        .controller 'Splash', ($scope, $location, User) ->
-            User.email = ''
+        .controller 'Splash', ($scope, $location, User, Database) ->
             $scope.sampleUsers =
                 'wballard@glgroup.com': 'xxx'
                 'igroff@glgroup.com': 'yyy'
                 'kwokoek@glgroup.com': 'zzz'
-            $location.path '/'
+            identity = store.get 'identity'
+            if User.email and User.authtoken
+                #I think we are already logged in
+                $location.path '/desktop'
+            else if identity and identity.authtoken
+                #Try the login, this will error back out to not logged in
+                #if the token is wrong, hacked, or expired
+                Database.login identity.authtoken
+            else
+                #Just show the splash page to anonymous cowards
+                $location.path '/'
         .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
             if not User.email
                 #nobody logged in, welcome back to the home page
