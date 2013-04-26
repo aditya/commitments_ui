@@ -4,6 +4,7 @@
   }
 
   function makeATag(data, allowClose, opts) {
+    data = data || '';
     opts = opts || $.fn.tagbar.defaults;
     var item = null;
     if (opts.listItem) {

@@ -28,12 +28,9 @@ define [
                         element.tooltip
                             title: tooltip
                             placement: placement
-                            container: 'body'
                             delay:
                                 show: 100
                                 hide: 100
-                    element.bind 'shown', ->
-                        $timeout (-> element.tooltip 'hide'), AUTOHIDE_DELAY
         ])
         .directive('username', [() ->
             restrict: 'A'

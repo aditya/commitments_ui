@@ -14,6 +14,7 @@ define ['angular',
         .factory 'User', ->
             user =
                 email: ''
+                authtoken: ''
                 preferences:
                     bulkShare: false
                     server: 'http://localhost:8080/'
@@ -98,60 +99,71 @@ define ['angular',
                     items
                 items: items
         #deal with sample data for local testing
-        .factory 'SampleData', ($timeout, User) ->
-            (taskFromServer, deleteTaskFromServer, notification) ->
-                #here is some nice fake sample data
-                cloneFromItem
-                for item in sampledata
-                    cloneFromItem = item
-                    taskFromServer item
-                for item in samplenotifications
-                    notification item
-                fakeCount = 0
-                fakeDeleteCount = 0
-                fakeCommentCount = 0
-                lastAddedId = null
-                id = sampledata[sampledata.length-1].id
-                fakeUpdate = ->
-                    $timeout ->
-                        if not FAKE_SERVER
-                            #no action
-                        else
-                            #this is making a lot of noise realy to see how
-                            #the user interface responds to simulated messages
-                            fakeServerUpdate = _.cloneDeep cloneFromItem
-                            fakeServerUpdate.what = "Simulated event update #{Date.now()}"
-                            if fakeCommentCount++ < 10
-                                fakeServerUpdate.discussion.comments.push
-                                    who: 'igroff@glgroup.com'
-                                    when: new Date().toDateString()
-                                    what: "Simulated comment #{Date.now()}"
-                            if fakeCount++ < 5
-                                fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
+        .factory 'SampleData', ($rootScope, $timeout, User) ->
+            (taskFromServer, deleteTaskFromServer, notification, authtoken) ->
+                console.log "no server, going for sample data"
+                #this is a very fake login token system
+                fakeAuth =
+                    xxx: 'wballard@glgroup.com'
+                #yes, I really do mean to assign here
+                if User.email = fakeAuth[authtoken]
+                    $rootScope.login()
+                    #here is some nice fake sample data, but only if we got
+                    #a fake user, this is much like connecting to the server
+                    #in that if we failed to authenticate, there would be
+                    #no messages
+                    for item in sampledata
+                        cloneFromItem = item
+                        taskFromServer item
+                    for item in samplenotifications
+                        notification item
+                    fakeCount = 0
+                    fakeDeleteCount = 0
+                    fakeCommentCount = 0
+                    lastAddedId = null
+                    id = sampledata[sampledata.length-1].id
+                    fakeUpdate = ->
+                        $timeout ->
+                            if not FAKE_SERVER
+                                #no action
                             else
-                                if fakeDeleteCount++ < 5
-                                    delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
+                                #this is making a lot of noise realy to see how
+                                #the user interface responds to simulated messages
+                                fakeServerUpdate = _.cloneDeep cloneFromItem
+                                fakeServerUpdate.what = "Simulated event update #{Date.now()}"
+                                if fakeCommentCount++ < 10
+                                    fakeServerUpdate.discussion.comments.push
+                                        who: 'igroff@glgroup.com'
+                                        when: new Date().toDateString()
+                                        what: "Simulated comment #{Date.now()}"
+                                if fakeCount++ < 5
+                                    fakeServerUpdate.tags["Tag #{fakeCount}"] = Date.now()
                                 else
-                                    fakeDeleteCount = 0
-                                    fakeCount = 0
-                            #an update
-                            taskFromServer fakeServerUpdate
-                            #delete the last add
-                            deleteTaskFromServer
-                                id: lastAddedId
-                            #a new task
-                            lastAddedId = Date.now()
-                            taskFromServer
-                                id: lastAddedId
-                                what: "Inserted #{Date.now()}"
-                                who: User.email
-                            notification
-                                when: Date.now()
-                                data:
-                                    message: "Hello there, I am a fresh notification #{Date.now()}"
-                        fakeUpdate()
-                    , 1000
-                fakeUpdate()
+                                    if fakeDeleteCount++ < 5
+                                        delete fakeServerUpdate.tags["Tag #{fakeDeleteCount}"]
+                                    else
+                                        fakeDeleteCount = 0
+                                        fakeCount = 0
+                                #an update
+                                taskFromServer fakeServerUpdate
+                                #delete the last add
+                                deleteTaskFromServer
+                                    id: lastAddedId
+                                #a new task
+                                lastAddedId = Date.now()
+                                taskFromServer
+                                    id: lastAddedId
+                                    what: "Inserted #{Date.now()}"
+                                    who: User.email
+                                notification
+                                    when: Date.now()
+                                    data:
+                                        message: "Hello there, I am a fresh notification #{Date.now()}"
+                            fakeUpdate()
+                        , 1000
+                    fakeUpdate()
+                else
+                    $rootScope.loginFailure()
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
         .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes, SampleData) ->
@@ -187,24 +199,32 @@ define ['angular',
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
             socket = null
-            $rootScope.$watch 'user.email', (email) ->
-                #only one connection is needed
+            login = (authtoken) ->
+                #a new user, clean out the state
+                items = {}
+                #only one connection is needed, or even a good idea :)
                 if socket
-                    socket.disconnect
-                socket = socketio.connect $rootScope.user.preferences.server
-                #send in a server event into angular
-                taskFromServer = (item) ->
-                    $rootScope.$apply ->
-                        updateItem item, true
-                    $rootScope.$digest()
-                deleteTaskFromServer = (item) ->
-                    $rootScope.$apply ->
-                        deleteItem item, true
-                    $rootScope.$digest()
-                socket.on 'error', ->
-                    SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage
-                socket.on 'connect', ->
-                    console.log 'connected'
+                    socket.disconnect()
+                if authtoken
+                    console.log "Will try to connect as #{authtoken}", socket
+                    socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}",
+                        'force new connection': true
+                    #send in a server event into angular, these are the main
+                    #methods for getting data from the socket
+                    taskFromServer = (item) ->
+                        $rootScope.$apply ->
+                            updateItem item, true
+                        $rootScope.$digest()
+                    deleteTaskFromServer = (item) ->
+                        $rootScope.$apply ->
+                            deleteItem item, true
+                        $rootScope.$digest()
+                    #event errors, go for the sample data
+                    socket.on 'error', ->
+                        console.log 'socketerror', arguments
+                        SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage, authtoken
+                    socket.on 'connect', ->
+                        console.log 'connected'
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
             #to get one database
@@ -218,6 +238,7 @@ define ['angular',
                 links: LocalIndexes.links
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
+                login: login
         #
         .factory 'StackRank', () ->
             do ->

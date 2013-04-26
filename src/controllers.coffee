@@ -1,24 +1,37 @@
 define ['angular',
     'lodash',
+    'store',
     'cs!src/services',
     'cs!src/editable',
-    'cs!src/readonly'], (angular, _) ->
+    'cs!src/readonly'], (angular, _, store) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
-        .config(['$routeProvider', ($routeProvider) ->
+        .config ($routeProvider) ->
+            console.log arguments
             $routeProvider.
-                when('/users/:email',
+                when('/desktop',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Desktop'
-                ).
-                when('/logout',
-                    templateUrl: 'src/views/splash.html'
-                    controller: 'Splash'
-                ).
-                when('/',
+                )
+                .when('/logout',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-        ])
+                .when('/login/:authtoken',
+                    templateUrl: 'src/views/login.html'
+                    controller: 'Login'
+                )
+                .when('/',
+                    templateUrl: 'src/views/splash.html'
+                    controller: 'Splash'
+                )
+        .run ($rootScope, $location) ->
+            #in this root most controller, listen for login and login failure
+            $rootScope.login = ->
+                $location.path '/desktop'
+            $rootScope.loginFailure = ->
+                console.log 'login failure'
+                $rootScope.$apply ->
+                    $location.path '/'
         .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
@@ -26,36 +39,42 @@ define ['angular',
             $rootScope.database = Database
             $rootScope.notifications = Notifications
             $rootScope.user = User
+        .controller 'Login', ($scope, $routeParams, User, Database) ->
+            console.log 'login'
+            Database.login $routeParams.authtoken
         .controller 'Splash', ($scope, $location, User) ->
             User.email = ''
-            $scope.sampleUsers = [
-                'wballard@glgroup.com',
-                'igroff@glgroup.com',
-                'kwokoek@glgroup.com',
-            ]
+            $scope.sampleUsers =
+                'wballard@glgroup.com': 'xxx'
+                'igroff@glgroup.com': 'yyy'
+                'kwokoek@glgroup.com': 'zzz'
             $location.path '/'
-        .controller 'Desktop', ($routeParams, $rootScope, $scope, Database, StackRank, User) ->
-            User.email = $routeParams.email
-            #root level section of the current 'box' or set of matching tasks
-            #this is used from multiple sub controllers, so here it is at root
-            $scope.selectBox = (box) ->
-                if box
-                    #save boxes worth remembering, this lets us revert from
-                    #search to the last view
-                    if not $scope?.selected?.forgettable
-                        if $scope.lastBox isnt $scope.selected
-                            $scope.lastBox = $scope.selected
-                    #selecting fires off the filter for a box, then snapshots
-                    #those items in stack rank order
-                    $scope.selected = box
-                    $scope.selected.items = $scope.stackRank.sort(
-                        (box.filter or -> [])(),
-                        $scope.user.email,
-                        box.tag)
-            #looking for server updates, in which case we re-select the
-            #same box triggering a rebinding
-            $scope.$on 'serverupdate', (event, action, item) ->
-                $scope.selectBox $scope.selected
+        .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
+            if not User.email
+                #nobody logged in, welcome back to the home page
+                $scope.selectBox = ->
+                $location.path '/'
+            else
+                #root level section of the current 'box' or set of matching tasks
+                #this is used from multiple sub controllers, so here it is at root
+                $scope.selectBox = (box) ->
+                    if box
+                        #save boxes worth remembering, this lets us revert from
+                        #search to the last view
+                        if not $scope?.selected?.forgettable
+                            if $scope.lastBox isnt $scope.selected
+                                $scope.lastBox = $scope.selected
+                        #selecting fires off the filter for a box, then snapshots
+                        #those items in stack rank order
+                        $scope.selected = box
+                        $scope.selected.items = $scope.stackRank.sort(
+                            (box.filter or -> [])(),
+                            $scope.user.email,
+                            box.tag)
+                #looking for server updates, in which case we re-select the
+                #same box triggering a rebinding
+                $scope.$on 'serverupdate', (event, action, item) ->
+                    $scope.selectBox $scope.selected
         .controller 'Navbar', ($rootScope, $scope, Notifications) ->
             #bulk sharing is driven from the navbar
             rebuildAllUsers = (items) ->

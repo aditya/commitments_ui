@@ -3,6 +3,7 @@
 require.config({
     paths: {
         md5: 'lib/md5',
+        store: 'lib/store',
         jquery: 'lib/jquery',
         jqueryui: 'lib/jqueryui',
         lodash: 'lib/lodash',
