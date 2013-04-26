@@ -11,5 +11,14 @@
                     ng-href="#/login/{{authtoken}}"></a>
             </span>
         </div>
+        <div class="row-fluid">
+            &nbsp
+        </div>
     </div>
+    <form class="form-inline">
+        <div class="input-append">
+            <input ng-model="joinEmail" type="text" placeholder="email address here" class="larger">
+            <button ng-click="join(joinEmail)" class="btn btn-success">Join</button>
+        </div>
+    </form>
 </div>

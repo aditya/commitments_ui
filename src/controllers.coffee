@@ -79,7 +79,7 @@ define ['angular',
             #simulate restarting/refreshing the app
             $timeout ->
                 $location.path '/'
-            , 2000
+            , 3000
         .controller 'Splash', ($scope, $location, User, Database) ->
             if User.loggedIn()
                 $location.path '/desktop'
@@ -90,6 +90,8 @@ define ['angular',
             else
                 #Just show the splash page to anonymous cowards
                 $location.path '/'
+            $scope.join = (email) ->
+                $scope.flash "Your join email is on its way to #{email}"
         .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
             if not User.email
                 #nobody logged in, welcome back to the home page
