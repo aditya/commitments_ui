@@ -107,7 +107,7 @@ define ['angular',
                     xxx: 'wballard@glgroup.com'
                 #yes, I really do mean to assign here
                 if User.email = fakeAuth[authtoken]
-                    $rootScope.login()
+                    $rootScope.$broadcast 'login'
                     #here is some nice fake sample data, but only if we got
                     #a fake user, this is much like connecting to the server
                     #in that if we failed to authenticate, there would be
@@ -163,7 +163,7 @@ define ['angular',
                         , 1000
                     fakeUpdate()
                 else
-                    $rootScope.loginFailure()
+                    $rootScope.$broadcast 'loginfailure'
         #deal with querying 'the database', really the services up in the cloud
         #** for the time being this is just rigged to pretend to be a service **
         .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes, SampleData) ->
@@ -224,7 +224,9 @@ define ['angular',
                         console.log 'socketerror', arguments
                         SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage, authtoken
                     socket.on 'connect', ->
-                        console.log 'connected'
+                        $rootScope.$broadcast 'login'
+                    socket.on 'disconnect', ->
+                        $rootScope.$broadcase 'loginfailure'
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
             #to get one database
@@ -239,6 +241,7 @@ define ['angular',
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
                 login: login
+                logout: -> login null
         #
         .factory 'StackRank', () ->
             do ->

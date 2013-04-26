@@ -14,13 +14,18 @@ define ['angular',
                     controller: 'Desktop'
                 )
                 .when(
+                    '/flash',
+                    templateUrl: 'src/views/flash.html'
+                    controller: 'Flash'
+                )
+                .when(
                     '/logout',
-                    templateUrl: 'src/views/splash.html'
-                    controller: 'Splash'
+                    templateUrl: 'src/views/flash.html'
+                    controller: 'Logout'
                 )
                 .when(
                     '/login/:authtoken',
-                    templateUrl: 'src/views/login.html'
+                    templateUrl: 'src/views/flash.html'
                     controller: 'Login'
                 )
                 .when(
@@ -33,13 +38,19 @@ define ['angular',
                     controller: 'Splash'
                 )
         .run ($rootScope, $location) ->
+            #flash message.
+            $rootScope.flash = (message) ->
+                $rootScope.flashMessage = message
+                if $rootScope.$$phase
+                    $location '/flash'
+                else
+                    $rootScope.$apply ->
+                        $location.path '/flash'
             #in this root most controller, listen for login and login failure
-            $rootScope.login = ->
+            $rootScope.$on 'login', ->
                 $location.path '/desktop'
-            $rootScope.loginFailure = ->
-                console.log 'login failure'
-                $rootScope.$apply ->
-                    $location.path '/'
+            $rootScope.$on 'loginfailure', ->
+                $rootScope.flash "Whoops, that's not a valid login link"
         .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
@@ -48,8 +59,18 @@ define ['angular',
             $rootScope.notifications = Notifications
             $rootScope.user = User
         .controller 'Login', ($scope, $routeParams, User, Database) ->
-            console.log 'login'
+            $scope.flashMessage = "Logging you in..."
             Database.login $routeParams.authtoken
+        .controller 'Logout', ($scope, $timeout, $location, User, Database) ->
+            Database.logout()
+            $scope.flashMessage = "Logging you out..."
+            $timeout ->
+                $location.path '/'
+            , 2000
+        .controller 'Flash', ($scope, $timeout, $location) ->
+            $timeout ->
+                $location.path '/'
+            , 2000
         .controller 'Splash', ($scope, $location, User) ->
             User.email = ''
             $scope.sampleUsers =
