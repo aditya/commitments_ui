@@ -1,17 +1,22 @@
 define ['angular',
     'lodash',
     'socketio',
+    'store',
     'cs!src/inverted/inverted',
     'lunr',
     'cs!src/sampledata',
     'cs!src/samplenotifications',
-    ], (angular, _, socketio, inverted, lunr, sampledata, samplenotifications) ->
+    ], (angular, _, socketio, store, inverted, lunr, sampledata, samplenotifications) ->
     #fake server, this will fire off a lot of events and generally stress
     #you out while debugging
     window.FAKE_SERVER = false
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
-        .factory 'User', ->
+        .factory 'User', ($rootScope) ->
+            $rootScope.sampleUsers =
+                'wballard@glgroup.com': 'xxx'
+                'igroff@glgroup.com': 'yyy'
+                'kwokoek@glgroup.com': 'zzz'
             user =
                 email: ''
                 authtoken: ''
@@ -20,6 +25,21 @@ define ['angular',
                     server: 'http://localhost:8080/'
                     notifications: false
                     notificationsLRU: 20
+                loggedIn: ->
+                    user.email and user.authtoken
+                persistentLogin: ->
+                    identity = store.get 'identity'
+                    identity and identity.authtoken
+                persistentIdentity: (identity) ->
+                    if identity
+                        store.set 'identity', identity
+                        user.email = identity.email
+                        user.authtoken = identity.authtoken
+                    store.get 'identity'
+                clear: ->
+                    store.remove 'identity'
+                    user.email = null
+                    user.authtoken = null
             user
         .factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags

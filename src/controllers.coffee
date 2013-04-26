@@ -37,25 +37,20 @@ define ['angular',
                     controller: 'Splash'
                 )
         .run ($rootScope, $location, User) ->
-            #Theory Question: Should this be a service?
+            #Theory Question: Should this be a service? There is the routing
+            #bit which makes a lot more sense to keep in the controller
             #in this root most controller, listen for login and login failure
             $rootScope.$on 'login', (event, identity) ->
                 console.log 'login'
-                store.set 'identity', identity
-                User.email = identity.email
-                User.authtoken = identity.authtoken
+                User.persistentIdentity identity
                 $location.path '/desktop'
             $rootScope.$on 'loginfailure', ->
                 console.log 'loginfailure'
-                store.remove 'identity'
-                User.email = null
-                User.authtoken = null
+                User.clear()
                 $rootScope.flash "Whoops, that's not a valid login link"
             $rootScope.$on 'logout', ->
                 console.log 'logout'
-                store.remove 'identity'
-                User.email = null
-                User.authtoken = null
+                User.clear()
         .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, doNotChangePath) ->
@@ -86,18 +81,12 @@ define ['angular',
                 $location.path '/'
             , 2000
         .controller 'Splash', ($scope, $location, User, Database) ->
-            $scope.sampleUsers =
-                'wballard@glgroup.com': 'xxx'
-                'igroff@glgroup.com': 'yyy'
-                'kwokoek@glgroup.com': 'zzz'
-            identity = store.get 'identity'
-            if User.email and User.authtoken
-                #I think we are already logged in
+            if User.loggedIn()
                 $location.path '/desktop'
-            else if identity and identity.authtoken
+            else if User.persistentLogin()
                 #Try the login, this will error back out to not logged in
                 #if the token is wrong, hacked, or expired
-                Database.login identity.authtoken
+                Database.login User.persistentIdentity().authtoken
             else
                 #Just show the splash page to anonymous cowards
                 $location.path '/'
