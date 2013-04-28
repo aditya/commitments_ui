@@ -1,6 +1,6 @@
 Welcome to Commitments
 
-[Log In](http://xxx/{{token}})
+[Log In](http://{{serverUrl}}/#/login/{{token}})
 
 Commitments uses email based login, we've figure out:
 
@@ -19,3 +19,4 @@ And, we deeply reject the notion of **no-reply@**. Reply to this.
 Contact us any time.
 
 
+[Log In](http://{{serverUrl}}/#/login/{{token}})
