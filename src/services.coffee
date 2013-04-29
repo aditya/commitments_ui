@@ -10,6 +10,7 @@ define ['angular',
     #fake server, this will fire off a lot of events and generally stress
     #you out while debugging
     window.FAKE_SERVER = false
+    window.LIVE = false
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ($rootScope) ->
@@ -231,7 +232,7 @@ define ['angular',
                 clear()
                 Notifications.clear()
                 #only one connection is needed, or even a good idea :)
-                if socket
+                if socket and LIVE
                     socket.disconnect()
                 if authtoken
                     console.log "Will try to connect as #{authtoken}", socket
