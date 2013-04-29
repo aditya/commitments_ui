@@ -232,35 +232,43 @@ define ['angular',
                 clear()
                 Notifications.clear()
                 #only one connection is needed, or even a good idea :)
-                if socket and LIVE
+                if socket
                     socket.disconnect()
                 if authtoken
-                    console.log "Will try to connect as #{authtoken}", socket
-                    socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}",
-                        'force new connection': true
                     #send in a server event into angular, these are the main
                     #methods for getting data from the socket
                     taskFromServer = (item) ->
-                        $rootScope.$apply ->
+                        if $rootScope.$$phase
                             updateItem item, true
-                        $rootScope.$digest()
+                        else
+                            $rootScope.$apply ->
+                                updateItem item, true
+                            $rootScope.$digest()
                     deleteTaskFromServer = (item) ->
-                        $rootScope.$apply ->
+                        if $rootScope.$$phase
                             deleteItem item, true
-                        $rootScope.$digest()
-                    #event errors, go for the sample data
-                    socket.on 'error', ->
-                        console.log 'socketerror', arguments
+                        else
+                            $rootScope.$apply ->
+                                deleteItem item, true
+                            $rootScope.$digest()
+                    if LIVE
+                        console.log "Will try to connect as #{authtoken}", socket
+                        socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}",
+                            'force new connection': true
+                        #event errors, go for the sample data
+                        socket.on 'error', ->
+                            console.log 'socketerror', arguments
+                        socket.on 'connect', ->
+                            #ask for the username, callback to login
+                            ###
+                            $rootScope.$broadcast 'login',
+                                authtoken: authtoken
+                                email: email
+                            ###
+                        socket.on 'disconnect', ->
+                            $rootScope.$broadcast 'loginfailure'
+                    else
                         SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage, authtoken
-                    socket.on 'connect', ->
-                        #ask for the username, callback to login
-                        ###
-                        $rootScope.$broadcast 'login',
-                            authtoken: authtoken
-                            email: email
-                        ###
-                    socket.on 'disconnect', ->
-                        $rootScope.$broadcast 'loginfailure'
                 else
                     $rootScope.$broadcast 'logout'
             #here is the database service construction function itself
