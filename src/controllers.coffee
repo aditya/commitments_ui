@@ -41,7 +41,7 @@ define ['angular',
             #bit which makes a lot more sense to keep in the controller
             #in this root most controller, listen for login and login failure
             $rootScope.$on 'login', (event, identity) ->
-                console.log 'login'
+                console.log 'login', identity
                 User.persistentIdentity identity
                 $location.path '/desktop'
             $rootScope.$on 'loginfailure', ->

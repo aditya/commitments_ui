@@ -260,6 +260,10 @@ define ['angular',
                         socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}",
                             'force new connection': true
                         #event errors, go for the sample data
+                        socket.on 'hello', (email) ->
+                            $rootScope.$broadcast 'login',
+                                authtoken: authtoken
+                                email: email
                         socket.on 'error', ->
                             console.log 'socketerror', arguments
                             #this appears to be the message coming back from
@@ -267,7 +271,7 @@ define ['angular',
                             if "#{arguments[0]}".indexOf('unauthorized') >= 0
                                 $rootScope.$broadcast 'loginfailure'
                         socket.on 'connect', ->
-                            console.log 'connected', arguments
+                            console.log 'connected', arguments, socket
                             #ask for the username, callback to login
                             ###
                             $rootScope.$broadcast 'login',
