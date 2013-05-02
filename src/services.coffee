@@ -10,7 +10,7 @@ define ['angular',
     #fake server, this will fire off a lot of events and generally stress
     #you out while debugging
     window.FAKE_SERVER = false
-    window.LIVE = false
+    window.LIVE = true
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ($rootScope) ->
@@ -233,7 +233,11 @@ define ['angular',
                 Notifications.clear()
                 #only one connection is needed, or even a good idea :)
                 if socket
-                    socket.disconnect()
+                    try
+                        socket.disconnect()
+                    catch ex
+                        do ->
+                #start up the sequence to check an auth token for being a user
                 if authtoken
                     #send in a server event into angular, these are the main
                     #methods for getting data from the socket
@@ -258,7 +262,12 @@ define ['angular',
                         #event errors, go for the sample data
                         socket.on 'error', ->
                             console.log 'socketerror', arguments
+                            #this appears to be the message coming back from
+                            #socket.io on an auth failure
+                            if "#{arguments[0]}".indexOf('unauthorized') >= 0
+                                $rootScope.$broadcast 'loginfailure'
                         socket.on 'connect', ->
+                            console.log 'connected', arguments
                             #ask for the username, callback to login
                             ###
                             $rootScope.$broadcast 'login',
