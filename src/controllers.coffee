@@ -13,18 +13,13 @@ define ['angular',
                     controller: 'Desktop'
                 )
                 .when(
-                    '/flash',
-                    templateUrl: 'src/views/flash.html'
-                    controller: 'Flash'
-                )
-                .when(
                     '/logout',
-                    templateUrl: 'src/views/flash.html'
+                    templateUrl: 'src/views/desktop.html'
                     controller: 'Logout'
                 )
                 .when(
                     '/login/:authtoken',
-                    templateUrl: 'src/views/flash.html'
+                    templateUrl: 'src/views/desktop.html'
                     controller: 'Login'
                 )
                 .when(
@@ -47,21 +42,23 @@ define ['angular',
             $rootScope.$on 'loginfailure', ->
                 console.log 'loginfailure'
                 User.clear()
-                $rootScope.flash "Whoops, that's not a valid login link"
+                $rootScope.flash "Whoops, that's not a valid login link", true
             $rootScope.$on 'logout', ->
                 console.log 'logout'
                 User.clear()
         .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #flash message, just a page with a message when all else fails
-            $rootScope.flash = (message, doNotChangePath) ->
+            $rootScope.flash = (message, isError) ->
                 $rootScope.flashMessage = message
-                if doNotChangePath
-                    return
+                $rootScope.flashType = if isError
+                        "alert alert-error"
+                    else
+                        "alert alert-info"
                 if $rootScope.$$phase
-                    $location.path '/flash'
+                    $location.path '/'
                 else
                     $rootScope.$apply ->
-                        $location.path '/flash'
+                        $location.path '/'
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
             $rootScope.stackRank = StackRank
@@ -70,7 +67,7 @@ define ['angular',
             $rootScope.user = User
         .controller 'Login', ($scope, $routeParams, User, Database) ->
             Database.login $routeParams.authtoken
-            $scope.flash "Logging you in...", true
+            $scope.flash "Logging you in..."
         .controller 'Logout', ($scope, $timeout, $location, User, Database) ->
             Database.logout()
             $scope.flash "Logging you out..."
