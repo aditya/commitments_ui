@@ -4,6 +4,19 @@ define [
     AUTOHIDE_DELAY = 3000
     ANIMATION_SPEED = 100
     module = angular.module('readonly', [])
+        .directive('flashMessage', [() ->
+            restrict: 'A'
+            link: ($scope, element, attrs, ngModel) ->
+                $scope.$watch attrs.flashMessage, (message) ->
+                    messageLayout = $("<span>#{message}</span>")
+                    element.children().remove()
+                    element.append messageLayout
+                    if message
+                        element.show ANIMATION_SPEED, ->
+                            messageLayout.addClass 'animated flash'
+                    else
+                        element.hide ANIMATION_SPEED
+        ])
         .directive('gravatar', [() ->
             restrict: 'A'
             require: 'ngModel'
@@ -29,8 +42,8 @@ define [
                             title: tooltip
                             placement: placement
                             delay:
-                                show: 100
-                                hide: 100
+                                show: ANIMATION_SPEED
+                                hide: ANIMATION_SPEED
         ])
         .directive('username', [() ->
             restrict: 'A'
