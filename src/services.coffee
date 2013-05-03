@@ -261,15 +261,17 @@ define ['angular',
                             'force new connection': true
                         #event errors, go for the sample data
                         socket.on 'hello', (email) ->
-                            $rootScope.$broadcast 'login',
-                                authtoken: authtoken
-                                email: email
+                            $rootScope.$apply ->
+                                $rootScope.$broadcast 'login',
+                                    authtoken: authtoken
+                                    email: email
                         socket.on 'error', ->
                             console.log 'socketerror', arguments
                             #this appears to be the message coming back from
                             #socket.io on an auth failure
                             if "#{arguments[0]}".indexOf('unauthorized') >= 0
-                                $rootScope.$broadcast 'loginfailure'
+                                $rootScope.$apply ->
+                                    $rootScope.$broadcast 'loginfailure'
                         socket.on 'connect', ->
                             console.log 'connected', arguments, socket
                             #ask for the username, callback to login
