@@ -21,13 +21,14 @@ commitments init
 
 echo Setting up superforker runtime executables
 
-if [ ! -d "${ROOT}/server_runtime" ]; then
-  mkdir -p "${ROOT}/server_runtime"
+if [ -d "${ROOT}/server_runtime" ]; then
+  rm -rf "${ROOT}/server_runtime"
 fi
+mkdir -p "${ROOT}/server_runtime"
 ls "${ROOT}/node_modules/.bin" \
   | xargs -I % ln -s "${ROOT}/node_modules/.bin/%" "${ROOT}/server_runtime/%"
 ls "${ROOT}/server" \
-  | xargs -I % ln -s "${ROOT}/server//%" "${ROOT}/server_runtime/%"
+  | xargs -I % ln -s "${ROOT}/server/%" "${ROOT}/server_runtime/%"
 
 echo Links complete
 

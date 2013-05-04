@@ -12,6 +12,9 @@
     "superwatcher": "git://github.com/wballard/superwatcher.git",
     "superforker": "git://github.com/wballard/superforker.git"
   },
+  "config": {
+    "domain": "commitments.us"
+  },
   "engine": {
     "node": ">=0.8.11"
   },
