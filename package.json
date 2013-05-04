@@ -1,0 +1,24 @@
+{
+  "name": "commitments_server",
+  "version": "0.0.1",
+  "description": "All the bits to make commitements work",
+  "dependencies": {
+    "render": "git://github.com/wballard/render.git",
+    "send": "git://github.com/wballard/send.git",
+    "notify": "git://github.com/wballard/notify.git",
+    "commitments": "git://github.com/wballard/commitments.git",
+    "token": "git://github.com/wballard/token.git",
+    "shellscript": "git://github.com/wballard/shellscript.git",
+    "superwatcher": "git://github.com/wballard/superwatcher.git",
+    "superforker": "git://github.com/wballard/superforker.git"
+  },
+  "engine": {
+    "node": ">=0.8.11"
+  },
+  "scripts": {
+    "install": "./scripts/install.sh",
+    "start": "./scripts/start.sh",
+    "stop": "./scripts/stop.sh",
+    "logs": "./scripts/logs.sh"
+  }
+}

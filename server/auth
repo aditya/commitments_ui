@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+
+if [[ $1 =~ "join:" ]]; then
+    EMAIL=`echo $1 | sed s/join://`
+    echo asking to join $PWD
+    #create token data and a token
+    echo ${EMAIL} | token data ${EMAIL}
+    TOKEN=`token create ${EMAIL}`
+    echo -e "email: ${EMAIL}\ntoken: ${TOKEN}" \
+      | render "${ROOT}/messages/welcome.handlebars" \
+      | send ses
+    #error out, this isn't a login
+    exit 1
+else
+    token decode $1
+fi
+

@@ -1,0 +1,10 @@
+# vim: set filetype=sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo Environment sourced from ${DIR}
+export PATH="${DIR}/../server_runtime":"${DIR}/../node_modules/.bin":${PATH}
+echo Path is now ${PATH}
+export COMMITMENTS_ROOT=~/var/commitments/todos
+export NOTIFY_ROOT=~/var/commitments/notify
+export TOKEN_ROOT=~/var/commitments/tokens
+export DOMAIN=commitments.us
+
