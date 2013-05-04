@@ -227,6 +227,14 @@ define ['angular',
             socket = null
             clear = ->
                 items = {}
+            join = (email) ->
+                #n new user asking to join, this will fail to auth, but is of
+                #no consequence, as they just plain can't possible be a use yet!
+                socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=join:#{email}",
+                    'force new connection': true
+                socket.on 'error', ->
+                    socket.disconnect()
+                    socket = null
             login = (authtoken) ->
                 #a new user, clean out the state
                 clear()
@@ -300,6 +308,7 @@ define ['angular',
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
                 login: login
+                join: join
                 logout: -> login null
         #
         .factory 'StackRank', () ->

@@ -87,8 +87,11 @@ define ['angular',
             else
                 #Just show the splash page to anonymous cowards
                 $location.path '/'
-            $scope.join = (email) ->
-                $scope.flash "Your join email is on its way to #{email}"
+            #the actual method to join
+            $scope.join = () ->
+                Database.join $scope.joinEmail
+                $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
+                $scope.joinEmail = ''
         .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
             if not User.email
                 #nobody logged in, welcome back to the home page
