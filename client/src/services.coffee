@@ -257,9 +257,9 @@ define ['angular',
                             $rootScope.$digest()
                     if LIVE
                         if join
-                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{authtoken}"
+                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{encodeURIComponent(authtoken)}"
                         else
-                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}"
+                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{encodeURIComponent(authtoken)}"
                         console.log connection_string
                         socket = socketio.connect connection_string,
                             'force new connection': true
