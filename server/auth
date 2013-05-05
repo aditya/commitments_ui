@@ -9,7 +9,7 @@ if [[ $1 =~ "join:" ]]; then
     TOKEN=`token create ${EMAIL}`
     echo -e "email: ${EMAIL}\ntoken: ${TOKEN}" \
       | render "${ROOT}/messages/welcome.handlebars" \
-      | send --markdown --wrapper ses
+      | send --markdown ses
     #error out, this isn't a login
     exit 1
 else
