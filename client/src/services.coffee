@@ -23,7 +23,7 @@ define ['angular',
                 authtoken: ''
                 preferences:
                     bulkShare: false
-                    server: 'http://localhost:8080/'
+                    server: "http://#{window.location.host}/"
                     notifications: false
                     notificationsLRU: 20
                 loggedIn: ->
@@ -228,6 +228,7 @@ define ['angular',
             clear = ->
                 items = {}
             join = (email) ->
+                console.log "Will try to join as #{email} to #{$rootScope.user.preferences.server}"
                 #n new user asking to join, this will fail to auth, but is of
                 #no consequence, as they just plain can't possible be a use yet!
                 socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=join:#{email}",
@@ -264,7 +265,7 @@ define ['angular',
                                 deleteItem item, true
                             $rootScope.$digest()
                     if LIVE
-                        console.log "Will try to connect as #{authtoken}", socket
+                        console.log "Will try to connect as #{authtoken} to #{$rootScope.user.preferences.server}"
                         socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}",
                             'force new connection': true
                         #event errors, go for the sample data
