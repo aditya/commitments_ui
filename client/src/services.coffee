@@ -227,14 +227,7 @@ define ['angular',
             socket = null
             clear = ->
                 items = {}
-            join = (email) ->
-                connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{email}"
-                console.log connection_string
-                join_socket = socketio.connect connection_string,
-                    'force new connection': true
-                join_socket.on 'error', ->
-                    join_socket.disconnect()
-            login = (authtoken) ->
+            login = (authtoken, join) ->
                 #a new user, clean out the state
                 clear()
                 Notifications.clear()
@@ -263,7 +256,10 @@ define ['angular',
                                 deleteItem item, true
                             $rootScope.$digest()
                     if LIVE
-                        connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}"
+                        if join
+                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{authtoken}"
+                        else
+                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}"
                         console.log connection_string
                         socket = socketio.connect connection_string,
                             'force new connection': true
@@ -275,9 +271,11 @@ define ['angular',
                                     email: email
                         socket.on 'error', ->
                             console.log 'socketerror', arguments
-                            #this appears to be the message coming back from
-                            #socket.io on an auth failure
-                            if "#{arguments[0]}".indexOf('unauthorized') >= 0
+                            if join
+                                #nothing to do
+                            else if "#{arguments[0]}".indexOf('unauthorized') >= 0
+                                #this appears to be the message coming back from
+                                #socket.io on an auth failure
                                 $rootScope.$apply ->
                                     $rootScope.$broadcast 'loginfailure'
                         socket.on 'connect', ->
@@ -308,7 +306,6 @@ define ['angular',
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
                 login: login
-                join: join
                 logout: -> login null
         #
         .factory 'StackRank', () ->

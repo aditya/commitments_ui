@@ -89,7 +89,7 @@ define ['angular',
                 $location.path '/'
             #the actual method to join
             $scope.join = () ->
-                Database.join $scope.joinEmail
+                Database.login $scope.joinEmail, true
                 $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
                 $scope.joinEmail = ''
         .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
