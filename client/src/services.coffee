@@ -228,10 +228,9 @@ define ['angular',
             clear = ->
                 items = {}
             join = (email) ->
-                console.log "Will try to join as #{email} to #{$rootScope.user.preferences.server}"
-                #n new user asking to join, this will fail to auth, but is of
-                #no consequence, as they just plain can't possible be a use yet!
-                socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=join:#{email}",
+                connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{email}"
+                console.log connection_string
+                socket = socketio.connect connection_string,
                     'force new connection': true
                 socket.on 'error', ->
                     socket.disconnect()
@@ -265,8 +264,9 @@ define ['angular',
                                 deleteItem item, true
                             $rootScope.$digest()
                     if LIVE
-                        console.log "Will try to connect as #{authtoken} to #{$rootScope.user.preferences.server}"
-                        socket = socketio.connect "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}",
+                        connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{authtoken}"
+                        console.log connection_string
+                        socket = socketio.connect connection_string,
                             'force new connection': true
                         #event errors, go for the sample data
                         socket.on 'hello', (email) ->
