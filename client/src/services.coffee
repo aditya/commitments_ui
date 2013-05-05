@@ -230,11 +230,10 @@ define ['angular',
             join = (email) ->
                 connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{email}"
                 console.log connection_string
-                socket = socketio.connect connection_string,
+                join_socket = socketio.connect connection_string,
                     'force new connection': true
-                socket.on 'error', ->
-                    socket.disconnect()
-                    socket = null
+                join_socket.on 'error', ->
+                    join_socket.disconnect()
             login = (authtoken) ->
                 #a new user, clean out the state
                 clear()
