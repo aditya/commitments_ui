@@ -13,7 +13,7 @@
     "superforker": "git://github.com/wballard/superforker.git"
   },
   "config": {
-    "domain": "commitments.us"
+    "domain": "www.commitments.us"
   },
   "engine": {
     "node": ">=0.8.11"
