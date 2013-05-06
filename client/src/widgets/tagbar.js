@@ -12,27 +12,30 @@
     } else {
       var item = $("<span class='tagbar-search-choice'></span>");
     }
+    var tagbits = $("<span class='tagbar-search-choice-group'/>");
     var pattern = new RegExp("[" + opts.tagNamespaceSeparators.join("") + "]+", "g");
     var underZ = 20;
     var icon = null;
     if (opts.iconUrl) {
       var url = opts.iconUrl(data);
       if (url) {
-        item.append($("<image class='tagbar-item-icon' src='" + url + "'/>"));
+        icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
+        tagbits.append(icon);
       }
     }
-    var tagbits = $("<span class='tagbar-search-choice-group'/>");
+    var lastBit = null;
     $.each(data.split(pattern), function(i) {
       var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
-      tagbit.text(this)
+      tagbit.append("<span>" + this + "</span>");
       if (i % 2 == 0) tagbit.addClass("label-info");
       if (i % 2 == 1) tagbit.addClass("label-inverse");
       tagbit.css('z-index', underZ--);
       tagbits.append(tagbit);
+      lastBit = tagbit;
     });
     if (allowClose) {
-      var closer = $("<span class='closer tagbar-search-choice-close underlay label'><span class='icon-remove-sign'></span></span>");
-      tagbits.append(closer);
+      var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
+      lastBit.append(closer);
     }
     item.append(tagbits);
     return item;

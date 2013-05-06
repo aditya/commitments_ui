@@ -13,29 +13,44 @@
 }
 
 .tagbar-search-choice {
-    padding: 2px;
+    border: 1px solid transparent;
+    margin-right: @defaultMargin;
+    &:hover {
+      .focus-editor;
+    }
 }
 
 .tagbar-search-choice-group {
+    height: 100%;
+}
+
+.tagbar-item-icon {
+    vertical-align: middle;
+    .border-radius(@baseBorderRadius);
+    height: 100%;
+    min-height: 16px;
+    position: relative;
+    margin-right: -3px;
+    z-index: 40;
+    height: 26px;
+    .pull-left;
 }
 
 .tagbar-search-choice-content {
     border: 1px solid transparent;
     height: 100%;
+    min-height: 16px;
     padding: @defaultPad;
     position: relative;
+    vertical-align: middle;
 }
 
 .tagbar-search-choice-close {
-    border: 1px solid transparent;
-    color: @white;
     cursor: pointer;
     height: 100%;
-    padding: @defaultPad;
-    position: relative;
-    &:hover {
-      .focus-editor;
-    }
+    margin-left: @defaultMargin;
+    font-size: 1.1em;
+    vertical-align: middle;
 }
 
 .underlay {
@@ -87,14 +102,6 @@
     }
 }
 
-.tagbar-item-icon {
-    .border-radius(@baseBorderRadius);
-    height: @baseLineHeight + 2 * 2px;
-    position: relative;
-    margin-right: -3px;
-    z-index: 40;
-    .pull-left;
-}
 
 .dropdown-menu {
     li {
