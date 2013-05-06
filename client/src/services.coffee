@@ -10,7 +10,7 @@ define ['angular',
     #fake server, this will fire off a lot of events and generally stress
     #you out while debugging
     window.FAKE_SERVER = false
-    window.LIVE = true
+    window.SAMPLE_DATA = false
     module = angular.module('RootServices', [])
         #deal with figuring out who is who
         .factory 'User', ($rootScope) ->
@@ -198,9 +198,9 @@ define ['angular',
             opCount = 0
             socket = null
             updateItem = (item, fromServer) ->
-                #updates can come in 'from the server' or locally from the
-                #client
                 if not fromServer
+                    #this came from a local update, not back from the server
+                    #so send it along
                     console.log 'update', item
                     item.lastUpdatedBy = $rootScope.user.email
                     item.lastUpdatedAt = Date.now()
@@ -210,18 +210,22 @@ define ['angular',
                             args: ['update', 'task']
                             stdin: item
                 else
-                    $rootScope.$broadcast 'serverupdate', 'update', item
-                #merge into the existing object, allowing the data binding
-                #to be pointed at the same reference
-                if items[item.id]
-                    _.extend items[item.id], item
-                else
-                    items[item.id] = item
+                    #this came from a remote update, so new data needs to be
+                    #merge into the existing object, allowing the data binding
+                    #to be pointed at the same reference
+                    if items[item.id]
+                        _.extend items[item.id], item
+                    else
+                        items[item.id] = item
                 opCount++
                 LocalIndexes.update item
+                #all the data is updated, event to the the UI resume
+                if fromServer
+                    $rootScope.$broadcast 'serverupdate', 'update', item
                 item
             deleteItem = (item, fromServer) ->
                 if not fromServer
+                    #local delete, let the server know
                     console.log 'delete', item
                     if socket
                         socket.emit 'exec',
@@ -229,11 +233,13 @@ define ['angular',
                             args: ['delete', 'task']
                             stdin: item
                 else
-                    $rootScope.$broadcast 'serverupdate', 'delete', item
                 #removal of the item from the local database
                 delete items[item.id]
                 opCount++
                 LocalIndexes.delete item
+                #all the data is updated, event to let the UI resume
+                if fromServer
+                    $rootScope.$broadcast 'serverupdate', 'delete', item
                 item
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
@@ -248,12 +254,13 @@ define ['angular',
                     try
                         socket.disconnect()
                     catch ex
-                        do ->
+                        console.log ex
                 #start up the sequence to check an auth token for being a user
                 if authtoken
                     #send in a server event into angular, these are the main
                     #methods for getting data from the socket
                     taskFromServer = (item) ->
+                        delete item['$$hashKey']
                         if $rootScope.$$phase
                             updateItem item, true
                         else
@@ -267,40 +274,48 @@ define ['angular',
                             $rootScope.$apply ->
                                 deleteItem item, true
                             $rootScope.$digest()
-                    if LIVE
-                        if join
-                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{encodeURIComponent(authtoken)}"
-                        else
-                            connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{encodeURIComponent(authtoken)}"
-                        console.log connection_string
-                        socket = socketio.connect connection_string,
-                            'force new connection': true
-                        #event errors, go for the sample data
-                        socket.on 'hello', (email) ->
-                            $rootScope.$apply ->
-                                $rootScope.$broadcast 'login',
-                                    authtoken: authtoken
-                                    email: email
-                        socket.on 'error', ->
-                            console.log 'socketerror', arguments
-                            if join
-                                #nothing to do
-                            else if "#{arguments[0]}".indexOf('unauthorized') >= 0
-                                #this appears to be the message coming back from
-                                #socket.io on an auth failure
-                                $rootScope.$apply ->
-                                    $rootScope.$broadcast 'loginfailure'
-                        socket.on 'connect', ->
-                            console.log 'connected', arguments, socket
-                            #ask for the username, callback to login
-                            ###
+                    if join
+                        connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{encodeURIComponent(authtoken)}"
+                    else
+                        connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{encodeURIComponent(authtoken)}"
+                    console.log connection_string
+                    socket = socketio.connect connection_string,
+                        'force new connection': true
+                    socket.on 'hello', (email) ->
+                        $rootScope.$apply ->
                             $rootScope.$broadcast 'login',
                                 authtoken: authtoken
                                 email: email
-                            ###
-                        socket.on 'disconnect', ->
+                        #now that we know who we are, hook up file events
+                        socket.emit 'exec',
+                            command: 'commitments'
+                            args: ['about', 'user', email]
+                            , (about) ->
+                                socket.emit 'watch', about
+                    socket.on 'addFile', (item) ->
+                        if item.data and item.object
+                            taskFromServer item.data
+                    socket.on 'changeFile', (item) ->
+                        if item.data and item.object
+                            taskFromServer item.data
+                    socket.on 'error', ->
+                        console.log 'socketerror', arguments
+                        if join
+                            #nothing to do, login just fails on a join request
+                            #as you aren't really a user yet
+                        else if "#{arguments[0]}".indexOf('unauthorized') >= 0
+                            #this appears to be the message coming back from
+                            #socket.io on an auth failure
+                            $rootScope.$apply ->
+                                $rootScope.$broadcast 'loginfailure'
+                    socket.on 'connect', ->
+                        $rootScope.$apply ->
+                            $rootScope.$broadcast 'connected'
+                    socket.on 'disconnect', ->
+                        $rootScope.$apply ->
                             $rootScope.$broadcast 'loginfailure'
-                    else
+                    #used for local testing
+                    if SAMPLE_DATA
                         SampleData taskFromServer, deleteTaskFromServer, Notifications.receiveMessage, authtoken
                 else
                     $rootScope.$broadcast 'logout'
