@@ -195,9 +195,14 @@ define ['angular',
         .factory 'Database', ($rootScope, $timeout, Notifications, LocalIndexes, SampleData) ->
             #here is the 'database' in memory, items tracked by ID
             items = {}
+            #files come in from the server, keep track of the paths to power
+            #deletes
+            file_name_to_id = {}
             opCount = 0
             socket = null
             updateItem = (item, fromServer) ->
+                if not item
+                    return
                 if not fromServer
                     #this came from a local update, not back from the server
                     #so send it along
@@ -224,6 +229,8 @@ define ['angular',
                     $rootScope.$broadcast 'serverupdate', 'update', item
                 item
             deleteItem = (item, fromServer) ->
+                if not item
+                    return
                 if not fromServer
                     #local delete, let the server know
                     console.log 'delete', item
@@ -232,7 +239,6 @@ define ['angular',
                             command: 'commitments'
                             args: ['delete', 'task']
                             stdin: item
-                else
                 #removal of the item from the local database
                 delete items[item.id]
                 opCount++
@@ -294,10 +300,15 @@ define ['angular',
                                 socket.emit 'watch', about
                     socket.on 'addFile', (item) ->
                         if item.data and item.object
+                            file_name_to_id[item.filename] = item.data.id
                             taskFromServer item.data
                     socket.on 'changeFile', (item) ->
                         if item.data and item.object
+                            file_name_to_id[item.filename] = item.data.id
                             taskFromServer item.data
+                    socket.on 'unlinkFile', (item) ->
+                        id = file_name_to_id[item.filename]
+                        deleteTaskFromServer items[id]
                     socket.on 'error', ->
                         console.log 'socketerror', arguments
                         if join
