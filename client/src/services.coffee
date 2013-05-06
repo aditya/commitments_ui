@@ -196,10 +196,18 @@ define ['angular',
             #here is the 'database' in memory, items tracked by ID
             items = {}
             opCount = 0
+            socket = null
             updateItem = (item, fromServer) ->
+                #updates can come in 'from the server' or locally from the
+                #client
                 if not fromServer
                     item.lastUpdatedBy = $rootScope.user.email
                     item.lastUpdatedAt = Date.now()
+                    if socket
+                        socket.emit 'exec',
+                            command: 'commitments'
+                            args: ['update', 'task']
+                            stdin: item
                 #merge into the existing object, allowing the data binding
                 #to be pointed at the same reference
                 if items[item.id]
@@ -224,7 +232,6 @@ define ['angular',
                 item
             #start talking to the server when we know who you are, this is
             #how data makes it into the system
-            socket = null
             clear = ->
                 items = {}
             login = (authtoken, join) ->
