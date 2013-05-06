@@ -201,6 +201,7 @@ define ['angular',
                 #updates can come in 'from the server' or locally from the
                 #client
                 if not fromServer
+                    console.log 'update', item
                     item.lastUpdatedBy = $rootScope.user.email
                     item.lastUpdatedAt = Date.now()
                     if socket
@@ -208,25 +209,29 @@ define ['angular',
                             command: 'commitments'
                             args: ['update', 'task']
                             stdin: item
+                else
+                    $rootScope.$broadcast 'serverupdate', 'update', item
                 #merge into the existing object, allowing the data binding
                 #to be pointed at the same reference
                 if items[item.id]
                     _.extend items[item.id], item
                 else
                     items[item.id] = item
-                if not fromServer
-                    console.log 'update', item, items, 'a'
-                else
-                    $rootScope.$broadcast 'serverupdate', 'update', item
                 opCount++
                 LocalIndexes.update item
                 item
             deleteItem = (item, fromServer) ->
-                delete items[item.id]
                 if not fromServer
                     console.log 'delete', item
+                    if socket
+                        socket.emit 'exec',
+                            command: 'commitments'
+                            args: ['delete', 'task']
+                            stdin: item
                 else
                     $rootScope.$broadcast 'serverupdate', 'delete', item
+                #removal of the item from the local database
+                delete items[item.id]
                 opCount++
                 LocalIndexes.delete item
                 item
