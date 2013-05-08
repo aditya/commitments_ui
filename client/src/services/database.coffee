@@ -21,6 +21,7 @@ define ['angular',
                     #so send it along
                     item.lastUpdatedBy = $rootScope.user.email
                     item.lastUpdatedAt = Date.now()
+                    items[item.id] = item
                 else
                     #just in case these snuck in, no need to taunt angular
                     #with its hidden variables since these came from out of the
@@ -35,6 +36,7 @@ define ['angular',
                         _.extend items[item.id], item
                     else
                         items[item.id] = item
+                        $rootScope.$broadcast 'newitemfromserver', item
                 LocalIndexes.update item
                 item
             deleteItem = (item, fromServer) ->
