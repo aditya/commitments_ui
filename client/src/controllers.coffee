@@ -250,7 +250,7 @@ define ['angular',
                 console.log 'update', JSON.stringify(item)
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
-                $rootScope.$broadcast 'deletefromlocal', item
+                $rootScope.$broadcast 'deleteitemfromlocal', item
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
             $scope.showNotifications = ->

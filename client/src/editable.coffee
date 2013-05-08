@@ -45,7 +45,7 @@ define ['md5',
                     #update so send along an event
                     $scope.$emit 'updaterecord', ngModel.$modelValue
                     event.stopPropagation()
-                #a nested record perhaps?
+                #a nested record perhaps? re-emit for this record
                 $scope.$on 'updaterecord', (event, record) ->
                     if record isnt ngModel.$modelValue
                         event.stopPropagation()
