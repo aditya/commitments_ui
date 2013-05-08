@@ -109,8 +109,9 @@ define ['angular',
                             box.tag)
                 #looking for server updates, in which case we re-select the
                 #same box triggering a rebinding
-                $scope.$on 'serverupdate', (event, action, item) ->
-                    console.log 'serverupdate', item
+                $scope.$on 'itemfromserver', ->
+                    $scope.selectBox $scope.selected
+                $scope.$on 'deleteitemfromserver', ->
                     $scope.selectBox $scope.selected
         .controller 'Navbar', ($rootScope, $scope, Notifications) ->
             #bulk sharing is driven from the navbar

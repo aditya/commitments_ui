@@ -38,9 +38,6 @@ define ['angular',
                         items[item.id] = item
                 opCount++
                 LocalIndexes.update item
-                #all the data is updated, event to the the UI resume
-                if fromServer
-                    $rootScope.$broadcast 'serverupdate', 'update', item
                 item
             deleteItem = (item, fromServer) ->
                 if not item
@@ -49,9 +46,6 @@ define ['angular',
                 delete items[item.id]
                 opCount++
                 LocalIndexes.delete item
-                #all the data is updated, event to let the UI resume
-                if fromServer
-                    $rootScope.$broadcast 'serverupdate', 'delete', item
                 item
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
