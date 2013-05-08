@@ -90,6 +90,8 @@ define ['angular',
             $rootScope.$on 'login', (event, authtoken) ->
                 connect authtoken
             $rootScope.$on 'logout', ->
+            $rootScope.$on 'join', (event, email) ->
+                connect email, true
                 disconnect()
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 if socket
