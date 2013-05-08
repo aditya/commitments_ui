@@ -391,5 +391,11 @@ input {
 }
 
 .btn-nav {
+  @media (min-width: 460px) {
     min-height: 36px;
+  }
+  @media (max-width: 460px) {
+    min-height: 36px;
+    padding: @defaultPad @defaultPad;
+  }
 }
