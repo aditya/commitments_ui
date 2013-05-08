@@ -43,7 +43,6 @@ define ['md5',
                 $scope.$on 'edit', (event) ->
                     #look for field level edits, in which case this record was
                     #update so send along an event
-                    console.log arguments
                     $scope.$emit 'updaterecord', ngModel.$modelValue
                     event.stopPropagation()
                 #a nested record perhaps?
@@ -139,6 +138,7 @@ define ['md5',
                 #When there is a deleted record, remove it from the local view
                 #and fire the callback
                 $scope.$on 'deleterecord', (event, record) ->
+                    event.stopPropagation()
                     #update the bound list without going back to the data source
                     #so we avoid a re-draw of the entire list
                     list = ngModel.$modelValue
@@ -147,16 +147,15 @@ define ['md5',
                         list.splice(foundAt, 1)
                     if attrs.onDelete
                         $scope.$eval("#{attrs.onDelete}")(record)
-                    event.stopPropagation()
                 #and handle events coming up from nested editable records
                 #and fire the controller callback if specified
                 $scope.$on 'updaterecord', (event, record) ->
+                    #on purpose, only trapping the event if we have a callback
+                    #this will let parent records update if nested lists
+                    #are modified
                     if attrs.onUpdate
-                        $scope.$eval("#{attrs.onUpdate}")(record)
-                        #on purpose, only trapping the event if we have a callback
-                        #this will let parent records update if nested lists
-                        #are modified
                         event.stopPropagation()
+                        $scope.$eval("#{attrs.onUpdate}")(record)
         ])
         .directive('requiresObject', [ ->
             restrict: 'A'

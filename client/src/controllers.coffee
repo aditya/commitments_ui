@@ -1,9 +1,10 @@
 define ['angular',
     'lodash',
     'store',
-    'cs!src/services',
-    'cs!src/editable',
-    'cs!src/readonly'], (angular, _, store) ->
+    'cs!./services',
+    'cs!./services/database',
+    'cs!./editable',
+    'cs!./readonly'], (angular, _, store, services) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .config ($routeProvider) ->
             $routeProvider.
@@ -31,21 +32,16 @@ define ['angular',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-        .run ($rootScope, $location, User) ->
+        .run ($rootScope, $location, Server) ->
             #Theory Question: Should this be a service? There is the routing
             #bit which makes a lot more sense to keep in the controller
             #in this root most controller, listen for login and login failure
-            $rootScope.$on 'login', (event, identity) ->
-                console.log 'login', identity
-                User.persistentIdentity identity
+            $rootScope.$on 'loginsuccess', (event, identity) ->
                 $location.path '/desktop'
             $rootScope.$on 'loginfailure', ->
-                console.log 'loginfailure'
-                User.clear()
                 $rootScope.flash "Whoops, that's not a valid login link", true
             $rootScope.$on 'logout', ->
-                console.log 'logout'
-                User.clear()
+                $rootScope.flash "Logging you out"
         .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, isError) ->
@@ -65,12 +61,11 @@ define ['angular',
             $rootScope.database = Database
             $rootScope.notifications = Notifications
             $rootScope.user = User
-        .controller 'Login', ($scope, $routeParams, User, Database) ->
-            Database.login $routeParams.authtoken
+        .controller 'Login', ($scope, $routeParams, User) ->
+            User.login $routeParams.authtoken
             $scope.flash "Logging you in..."
-        .controller 'Logout', ($scope, $timeout, $location, User, Database) ->
-            Database.logout()
-            $scope.flash "Logging you out..."
+        .controller 'Logout', ($scope, $timeout, $location, User) ->
+            User.logout()
         .controller 'Flash', ($scope, $timeout, $location) ->
             #Flash shows a message, and then takes you home to basically
             #simulate restarting/refreshing the app
@@ -78,24 +73,22 @@ define ['angular',
                 $location.path '/'
             , 3000
         .controller 'Splash', ($scope, $location, User, Database) ->
-            if User.loggedIn()
-                $location.path '/desktop'
-            else if User.persistentLogin()
-                #Try the login, this will error back out to not logged in
-                #if the token is wrong, hacked, or expired
-                Database.login User.persistentIdentity().authtoken
+            if User.persistentIdentity()
+                #If there is a saved login, let's try it
+                User.login User.persistentIdentity().authtoken
             else
                 #Just show the splash page to anonymous cowards
                 $location.path '/'
             #the actual method to join
             $scope.join = () ->
-                Database.login $scope.joinEmail, true
+                User.join $scope.joinEmail, true
                 $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
+                #clear the UI field for user re-use, now that is a phrase...
                 $scope.joinEmail = ''
         .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
             if not User.email
-                #nobody logged in, welcome back to the home page
                 $scope.selectBox = ->
+                #nobody logged in, welcome back to the home page
                 $location.path '/'
             else
                 #root level section of the current 'box' or set of matching tasks
@@ -246,13 +239,18 @@ define ['angular',
                         item.links[user] = Date.now()
                     $scope.database.update item
         #task list level controller
-        .controller 'Tasks', ($scope) ->
+        .controller 'Tasks', ($scope, $rootScope) ->
             $scope.poke = (item) ->
                 console.log 'poking', item
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in that box
             $scope.placeholderItem = (item) ->
                 ($scope.selected.stamp or ->)(item)
+            $scope.update = (item) ->
+                console.log 'update', JSON.stringify(item)
+                $rootScope.$broadcast 'itemfromlocal', item
+            $scope.delete = (item) ->
+                $rootScope.$broadcast 'deletefromlocal', item
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
             $scope.showNotifications = ->
