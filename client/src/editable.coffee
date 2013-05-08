@@ -24,23 +24,37 @@ define ['md5',
                             model.when = Date.now()
                     element.data 'record', model
                 element.on 'click', (event) ->
+                    event.stopPropagation()
                     #tell the parent list all about it
-                    $scope.$emit 'selectedrecord', ngModel.$modelValue
+                    $scope.$emit 'selectrecord', ngModel.$modelValue
                 #a record may be focused when it is first created, specifically
                 #when it is new, and this needs to be deferred to give ngmodel
                 #a chance to bind up
                 $timeout ->
-                    if $scope.focused is ngModel.$modelValue
+                    if $scope.selectedrecord is ngModel.$modelValue
                         $scope.extended = ngModel.$modelValue
-                #listening for the focus event, in order to bind or unbind
-                #entended/hidden properties
-                $scope.$on 'focus', (event, data) ->
+                        $scope.focused = true
+                    else
+                        $scope.focused = false
+                #listening for the focus event, in order to bind
+                #entended/hidden properties, this is coming 'down' from the
+                #parent list
+                $scope.$on 'selectedrecord', (event, data) ->
                     #Set a value in scope to then trigger a bind of extended
-                    #if this is used in any view, it will now bind
+                    #if this is used in any view, it will now bind, so we have
+                    #afforded delayed binding if you hook on to extended as
+                    #a property
+                    focusBefore = $scope.focused
                     if data is ngModel.$modelValue
                         $scope.extended = ngModel.$modelValue
+                        $scope.focused = true
+                        #may need to digest, and only on the focus, the unfocsed
+                        #things will get covered in the same digest loop implicitly
+                        if not $scope.$$phase
+                            $scope.$digest()
                     else
-                        $scope.extended = null
+                        if $scope.focused
+                            $scope.focused = false
                 #look for field level edits, in which case this record was
                 #update so send along an event
                 $scope.$on 'edit', (event) ->
@@ -125,19 +139,20 @@ define ['md5',
                 #this is a relay event from contained records up to this list
                 #tell all the child records that there has been a selection
                 #so they can hide themselves, unbind, etc.
-                $scope.$on 'selectedrecord', (event, record) ->
+                $scope.$on 'selectrecord', (event, record) ->
                     event.stopPropagation()
-                    $scope.focused = record
-                    $scope.$broadcast 'focus', record
-                    $scope.$digest()
+                    $scope.selectedrecord = record
+                    $scope.$broadcast 'selectedrecord', record
                 #when there is a new record, add it into the current view model
                 #this is in addition to any update that fires to send things
                 #back to the underlying database
                 $scope.$on 'newrecord', (event, record) ->
                     event.stopPropagation()
-                    $scope.focused = record
+                    $scope.selectedrecord = record
                     ngModel.$modelValue.push record
-                    $scope.$broadcast 'focus', record
+                    #new records should be selected right away, you are working
+                    #on it right now after all...
+                    $scope.$broadcast 'selectedrecord', record
                     #buble up an update, a new is an update too and this is
                     #needed to allow parent records to know of a child update
                     $scope.$emit 'updaterecord', record

@@ -250,7 +250,6 @@ define ['angular',
             $scope.placeholderItem = (item) ->
                 ($scope.selected.stamp or ->)(item)
             $scope.update = (item) ->
-                console.log 'update', JSON.stringify(item)
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
                 $rootScope.$broadcast 'deleteitemfromlocal', item
