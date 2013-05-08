@@ -78,7 +78,7 @@
 }
 
 .no-margin {
-    margin: 0px;
+  margin: 0px;
 }
 
 .cut-width {
@@ -250,9 +250,9 @@ body {
       z-index: 1;
     }
     .gravatar {
-      .gravatar-size-large;
+      .gravatar-size;
       img {
-        .gravatar-size-large;
+        .gravatar-size;
       }
     }
   }
@@ -367,6 +367,10 @@ ul.notifications {
   min-width: 2em;
 }
 
+.footer {
+    margin: @defaultMargin;
+}
+
 .CodeMirror {
   font-family: @baseFontFamily;
   .larger;
@@ -377,7 +381,7 @@ ul.notifications {
 }
 
 .comment-gravatar {
-  width: 60px;
+  width: 40px;
 }
 
 .toaster {
@@ -388,6 +392,10 @@ ul.notifications {
 
 input {
     .placeholder(@linkColor);
+}
+
+hr {
+    margin: @defaultMargin;
 }
 
 .btn-nav {
