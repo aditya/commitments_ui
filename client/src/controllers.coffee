@@ -155,7 +155,7 @@ define ['angular',
                     $scope.selectBox searchBox
                 else
                     $scope.selectBox $scope.lastBox
-        .controller 'Toolbox', ($scope, $rootScope) ->
+        .controller 'Toolbox', ($scope, $rootScope, LocalIndexes) ->
             $scope.boxes = []
             $scope.lastBox = null
             $scope.todoCount = (box) ->
