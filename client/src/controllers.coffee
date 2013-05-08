@@ -57,7 +57,6 @@ define ['angular',
                         $location.path '/'
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
-            $rootScope.stackRank = StackRank
             $rootScope.database = Database
             $rootScope.notifications = Notifications
             $rootScope.user = User
@@ -103,9 +102,9 @@ define ['angular',
                         #selecting fires off the filter for a box, then snapshots
                         #those items in stack rank order
                         $scope.selected = box
-                        $scope.selected.items = $scope.stackRank.sort(
+                        $scope.selected.items = StackRank.sort(
                             (box.filter or -> [])(),
-                            $scope.user.email,
+                            (x) -> x.id,
                             box.tag)
                 #looking for server updates, in which case we re-select the
                 #same box triggering a rebinding

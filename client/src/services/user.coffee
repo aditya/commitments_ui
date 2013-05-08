@@ -36,7 +36,8 @@ define ['angular',
                 login: (authtoken) ->
                     #logging in is a request, so send a message which will be
                     #processed by the server
-                    $rootScope.$broadcast 'login', authtoken
+                    if authtoken
+                        $rootScope.$broadcast 'login', authtoken
                 logout: ->
                     user.persistentIdentity {}
                     $rootScope.$broadcast 'logout'

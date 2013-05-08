@@ -6,7 +6,7 @@ define ['md5',
     ], (md5, markdown, moment, _) ->
     counter = 0;
     ANIMATION_SPEED = 200
-    module = angular.module('editable', [])
+    module = angular.module('editable', ['Root'])
         .directive('editableRecord', ['$timeout', ($timeout) ->
             scope: true
             restrict: 'A'
@@ -22,6 +22,7 @@ define ['md5',
                             model.who = $scope.user.email
                         if not model.when
                             model.when = Date.now()
+                    element.data 'record', model
                 element.on 'click', (event) ->
                     #tell the parent list all about it
                     $scope.$emit 'selectedrecord', ngModel.$modelValue
@@ -99,7 +100,7 @@ define ['md5',
                     $scope.$$placeholder = {}
         ])
         #equip a list with drag and drop reordering, used ot stack rank tasks
-        .directive('editableListReorder', [() ->
+        .directive('editableListReorder', ['StackRank', (StackRank) ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 #using jQuery, so this is not all that impressive
@@ -107,9 +108,9 @@ define ['md5',
                     cursor: 'move'
                 element.css 'cursor', 'move'
                 element.on 'sortupdate', ->
-                    $scope.stackRank.renumber(
+                    StackRank.renumber(
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
-                        $scope.user.email,
+                        (x) -> x.id,
                         $scope.$eval(attrs.editableListReorder))
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
