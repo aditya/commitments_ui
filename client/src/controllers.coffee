@@ -185,7 +185,7 @@ define ['angular',
                     $scope.selectBox $scope.boxes[0]
                 #dynamic tags from the index, these are current
                 tags = {}
-                for tagTerm in $scope.database.tags()
+                for tagTerm in LocalIndexes.tags()
                     byTag = (tagTerm, filter) ->
                         () ->
                             by_tag = {tags: {}}

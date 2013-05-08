@@ -52,7 +52,6 @@ define ['angular',
             database =
                 items: (filter) ->
                     _.filter _.values(items), filter
-                tags: LocalIndexes.tags
                 links: LocalIndexes.links
                 itemsByTag: LocalIndexes.itemsByTag
                 fullTextSearch: LocalIndexes.fullTextSearch
