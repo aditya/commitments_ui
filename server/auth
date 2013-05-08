@@ -14,11 +14,16 @@ if [[ $1 =~ "join:" ]]; then
     exit 1
 else
     USER=$(token decode $1)
-    USER_HOME="${USER_ROOT}/${USER}"
-    if [ ! -d "${USER_HOME}" ]; then
-        mkdir -p "${USER_HOME}"
+    SUCCESS=$?
+    if [ $SUCCESS -eq 0 ]; then
+        USER_HOME="${USER_ROOT}/${USER}"
+        if [ ! -d "${USER_HOME}" ]; then
+            mkdir -p "${USER_HOME}"
+        fi
+        touch "${USER_HOME}/last_login"
+        echo $USER
+    else
+        exit $SUCCESS
     fi
-    touch "${USER_HOME}/last_login"
-    echo $USER
 fi
 

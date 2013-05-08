@@ -13,7 +13,6 @@ define ['angular',
             #things in from the server are tracked, this is storing ids to
             #avoid thinking about if objects are updated or cloned
             items_from_server = {}
-            opCount = 0
             updateItem = (item, fromServer) ->
                 if not item
                     return
@@ -36,7 +35,6 @@ define ['angular',
                         _.extend items[item.id], item
                     else
                         items[item.id] = item
-                opCount++
                 LocalIndexes.update item
                 item
             deleteItem = (item, fromServer) ->
@@ -44,7 +42,6 @@ define ['angular',
                     return
                 #removal of the item from the local database
                 delete items[item.id]
-                opCount++
                 LocalIndexes.delete item
                 item
             #here is the database service construction function itself
@@ -53,7 +50,6 @@ define ['angular',
             database =
                 items: (filter) ->
                     _.filter _.values(items), filter
-                opCount: -> opCount
                 tags: LocalIndexes.tags
                 links: LocalIndexes.links
                 itemsByTag: LocalIndexes.itemsByTag

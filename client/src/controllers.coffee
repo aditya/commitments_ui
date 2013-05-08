@@ -157,11 +157,12 @@ define ['angular',
         .controller 'Toolbox', ($scope, $rootScope, LocalIndexes) ->
             $scope.boxes = []
             $scope.lastBox = null
+            $scope.localIndexes = LocalIndexes
             $scope.todoCount = (box) ->
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
             #watch the index to see if we shoudl rebuild the facet filters
-            $scope.$watch 'database.opCount()', ->
+            $scope.$watch 'localIndexes.tags()', ->
                 console.log 'rebuild boxes'
                 $scope.boxes = []
                 #always have the todo and done boxes
@@ -207,6 +208,7 @@ define ['angular',
                     #what the user has updated
                     _.extend dynamicTag, dynamicTagMethods
                     $scope.boxes.push dynamicTag
+            , true
         #control the current user/login/logout state
         .controller 'User', ($rootScope, $scope) ->
             null
