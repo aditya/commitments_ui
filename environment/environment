@@ -6,5 +6,6 @@ echo Path is now ${PATH}
 export COMMITMENTS_ROOT=~/var/commitments/todos
 export NOTIFY_ROOT=~/var/commitments/notify
 export TOKEN_ROOT=~/var/commitments/tokens
+export USER_ROOT=~/var/commitments/users
 export DOMAIN=${npm_config_domain-${npm_package_config_domain}}
 echo Running on host/domain ${DOMAIN}

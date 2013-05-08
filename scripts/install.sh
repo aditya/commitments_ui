@@ -15,6 +15,9 @@ fi
 if [ ! -d "${TOKEN_ROOT}" ]; then
   mkdir -p "${TOKEN_ROOT}"
 fi
+if [ ! -d "${USER_ROOT}" ]; then
+  mkdir -p "${USER_ROOT}"
+fi
 token init
 notify init
 commitments init

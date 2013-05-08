@@ -13,6 +13,12 @@ if [[ $1 =~ "join:" ]]; then
     #error out, this isn't a login
     exit 1
 else
-    token decode $1
+    USER=$(token decode $1)
+    USER_HOME="${USER_ROOT}/${USER}"
+    if [ ! -d "${USER_HOME}" ]; then
+        mkdir -p "${USER_HOME}"
+    fi
+    touch "${USER_HOME}/last_login"
+    echo $USER
 fi
 
