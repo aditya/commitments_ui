@@ -242,7 +242,9 @@ define ['angular',
                         item.links[user] = Date.now()
                     $scope.database.update item
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope) ->
+        .controller 'Tasks', ($scope, $rootScope, LocalIndexes) ->
+            $scope.tags = LocalIndexes.tags
+            $scope.links = LocalIndexes.links
             $scope.poke = (item) ->
                 console.log 'poking', item
             #placeholders call back to the currently selected box to stamp them

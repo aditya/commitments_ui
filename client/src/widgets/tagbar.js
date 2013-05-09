@@ -399,7 +399,7 @@
     },
     resizeSearch: function (force) {
       var width = this.measureTextWidth(this.search, force);
-      this.search.width(width).show()
+      this.search.width(width).show();
     },
     val: function (data) {
       if (arguments.length === 0) return this.values || {};
