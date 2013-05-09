@@ -110,8 +110,8 @@ define ['angular',
                         box.tag)
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
-            $scope.$on 'newitemfromserver', ->
-                console.log 'new item'
+            $scope.$on 'newitemfromserver', (event, item) ->
+                console.log 'new item', item.id
                 selectBox $scope.selected
             $scope.$on 'deleteitemfromserver', ->
                 console.log 'delete item'
