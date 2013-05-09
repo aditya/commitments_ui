@@ -5,38 +5,45 @@
     on-delete="delete"
     on-update="update"
     ng-model="selected.items"
-    class="unstyled tasks container-fluid">
-    <li class="row-fluid toolitem">
+    class="tasks">
+    <li class="toolitem">
     <div ng-include src="'src/views/bulkshare.html'"></div>
     </li>
+    <!--repeat items-->
     <li
     ng-repeat="item in selected.items"
     editable-record
     ng-model="item"
     animated-hide="item.reject[user.email] || selected.hide(item)"
-    class="row-fluid task">
-    <div class="row-fluid">
-        <div ng-include src="'src/views/taskaccept.html'"></div>
-    </div>
-    <!--core attributes of a task item, these always show and bind-->
-    <div class="row-fluid task-core">
-        <span check ng-model="item.done" tooltip="'click here to mark done'" class="cut-width checkoff"></span>
-        <span markdown required ng-model="item.what" class="span10 larger"></span>
-    </div>
-    <div ng-show="focused && item.what && extended" class="row-fluid task-extended">
-        <div requires-object="extended.discussion" class="row-fluid item-tools">
-            <span action class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"></span>
-            <span tags tags-query="database.tags" icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></span>
-            <span tags tags-query="database.links" item-icon-from="gravatar" icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></span>
+    class="task">
+    <div>
+        <div class="task-accept">
+            <div ng-include src="'src/views/taskaccept.html'"></div>
         </div>
-        <hr/>
-        <div class="row-fluid">
-            <div ng-include src="'src/views/discussion.html'"></div>
-        </div>
-        <hr/>
-        <div class="footer username">Last Updated:
-            <span username ng-model="extended.lastUpdatedBy"></span>
-            <span postdate ng-model="extended.lastUpdatedAt"></span>
+        <!--core attributes of a task item, these always show and bind-->
+        <table class="task-core">
+            <tr>
+                <td  class="task-check"><span check ng-model="item.done" tooltip="'click here to mark done'"></span></td>
+                <td markdown required ng-model="item.what" class="larger"></td>
+                <td class="task-delete"><button ng-show="focused" ng-click="delete(item)" class="close"><i class="icon icon-remove"></i></button></td>
+            </tr>
+        </table>
+        <!--this div is to control visibility-->
+        <div ng-show="focused && item.what && extended" class="task-extended">
+            <div requires-object="extended.discussion" class="task-tools">
+                <span action class="icon icon-hand-right" tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"></span>
+                <span tags tags-query="database.tags" icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></span>
+                <span tags tags-query="database.links" item-icon-from="gravatar" icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></span>
+            </div>
+            <hr/>
+            <div class="task-discussion">
+                <div ng-include src="'src/views/discussion.html'"></div>
+            </div>
+            <hr/>
+            <div class="task-footer">Last Updated:
+                <span username ng-model="extended.lastUpdatedBy"></span>
+                <span postdate ng-model="extended.lastUpdatedAt"></span>
+            </div>
         </div>
     </div>
     </li>
@@ -44,9 +51,9 @@
     <li
     editable-record
     editable-record-placeholder="placeholderItem"
-    ng-model="$$placeholder" ng-show="selected.allowNew" class="row-fluid task">
-    <div class="row-fluid task-core">
-        <span focus-on="newtask" markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="span11 larger"></span>
+    ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
+    <div class="task-core">
+        <span focus-on="newtask" markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger"></span>
     </div>
     </li>
 </ul>

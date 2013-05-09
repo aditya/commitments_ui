@@ -6,388 +6,431 @@
 @borderColor: darken(@wellBackground, 7%);
 
 .well-border {
-  .border-radius(@baseBorderRadius);
-  border: 1px solid @borderColor;
+    .border-radius(@baseBorderRadius);
+    border: 1px solid @borderColor;
 }
 
 .transparent-border {
-  .border-radius(@baseBorderRadius);
-  border: 1px solid transparent;
+    .border-radius(@baseBorderRadius);
+    border: 1px solid transparent;
 }
 
 .focus-editor {
-  .border-radius(@baseBorderRadius);
-  border: 1px solid @inputBorder;
-  border-color: rgba(82,168,236,.8);
-  outline: 0;
-  .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
+    .border-radius(@baseBorderRadius);
+    border: 1px solid @inputBorder;
+    border-color: rgba(82,168,236,.8);
+    outline: 0;
+    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
 }
 
 .hover-editor  {
-  border: 1px solid @inputBorder;
-  border-color: rgba(82,168,236,.8);
-  .border-radius(@baseBorderRadius);
+    border: 1px solid @inputBorder;
+    border-color: rgba(82,168,236,.8);
+    .border-radius(@baseBorderRadius);
 }
 
 .editable-shadow {
-  .box-shadow(inset 0 1px 1px rgba(0,0,0,0.1));
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,0.1));
 }
 
 .editable-text-shadow {
-  text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
+    text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
 }
 
 .a-lot-larger {
-  font-size: 1.4em;
+    font-size: 1.4em;
 }
 
 .larger {
-  font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 .a-bit-larger {
-  font-size: 1.1em;
+    font-size: 1.1em;
 }
 
 .a-bit-smaller {
-  font-size: 0.9em;
+    font-size: 0.9em;
 }
 
 .offset-top {
-  margin-top: @defaultMargin / 2;
+    margin-top: @defaultMargin / 2;
 }
 
 .smaller {
-  font-size: 0.8em;
+    font-size: 0.8em;
 }
 
 .tooltip {
-  .a-bit-larger;
+    .a-bit-larger;
 }
 
 .fill {
-  width: auto;
+    width: auto;
 }
 
 .rest {
-  width: '*';
+    width: '*';
 }
 
 .full-width {
-  width: 100%;
+    width: 100%;
 }
 
 .no-margin {
-  margin: 0px;
+    margin: 0px;
+}
+
+.no-padding {
+    padding: 0px;
 }
 
 .cut-width {
-  min-width: 24px;
-  max-width: 28px;
+    min-width: 24px;
+    max-width: 28px;
 }
 
 .shadowed {
-  .box-shadow(0 1px 5px rgba(0,0,0,.2));
+    .box-shadow(0 1px 5px rgba(0,0,0,.2));
 }
 
 .display {
-  .larger;
+    .larger;
 }
 
 .indent {
-  margin-left: @defaultMargin;
+    margin-left: @defaultMargin;
 }
 
 .pad {
-  padding: @defaultPad;
+    padding: @defaultPad;
 }
 
 .editing {
-  .focus-editor;
+    .focus-editor;
 }
 
 body {
-  background-image: url('../images/gray_jean.png');
-  background-color: @grayLighter;
+    background-image: url('../images/gray_jean.png');
+    background-color: @grayLighter;
 }
 
-
 .taskpad {
-  padding-top: 50px;
+    padding-top: 50px;
+}
+
+.default-padding {
+    padding: @defaultPad;
 }
 
 .no-side-padding {
-  padding-left: 0px;
-  padding-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .side-padding {
-  padding-left: @defaultPad;
-  padding-right: @defaultPad;
+    padding-left: @defaultPad;
+    padding-right: @defaultPad;
 }
 
-.no-margin {
-  margin: 0px !important;
+.nudge-down {
+    margin-top: 2px;
 }
 
 .item {
 }
 
 .toolitem {
-  .side-padding;
+    .side-padding;
 }
 
 .transparent {
-  opacity: 0;
+    opacity: 0;
 }
 
 .display {
-  padding: @defaultPad;
+    padding: @defaultPad;
 }
 
 .markdown {
-  .display {
-    .transparent-border;
-    cursor: text;
-    &:hover {
-      .hover-editor;
+    .display {
+        .transparent-border;
+        cursor: text;
+        &:hover {
+            .hover-editor;
+        }
     }
-  }
-  .readonly {
-    border-color: @transparent !important;
-    cursor: default;
-  }
-  .placeholder {
-    cursor: text;
-    color: @linkColor;
-    font-style: italic;
-  }
-  .display, .oneline {
-    p {
-      margin: 1px;
+    .readonly {
+        border-color: @transparent !important;
+        cursor: default;
     }
-  }
+    .placeholder {
+        cursor: text;
+        color: @linkColor;
+        font-style: italic;
+    }
+    .display, .oneline {
+        p {
+            margin: 1px;
+        }
+    }
 }
 
 .markdown.readonly {
-  border: 1px solid @transparent;
-  .box-shadow(0 0px 0px rgba(0,0,0,0.0));
+    border: 1px solid @transparent;
+    .box-shadow(0 0px 0px rgba(0,0,0,0.0));
 }
 
 .check.readonly {
-  opacity: 0;
+    opacity: 0;
 }
 
 .date-display {
-  font-size: 1.25em;
+    font-size: 1.25em;
 }
 
 .count-display {
-  font-size: 1.25em;
+    font-size: 1.25em;
 }
 
 .icon {
-  font-size: 1.5em;
-  &.icon-border {
-    border-width: 2px;
-    .border-radius(4px);
-  }
-  &:hover{
-    .editable-text-shadow;
-  }
+    font-size: 1.5em;
+    &.icon-border {
+        border-width: 2px;
+        .border-radius(4px);
+    }
+    &:hover{
+        .editable-text-shadow;
+    }
 }
 
 .discussion {
-  margin: 0px;
-  margin-top: @defaultMargin;
-}
-
-.checkoff {
-  .display;
-  .no-side-padding;
-  .pull-left;
+    margin: 0px;
+    margin-top: @defaultMargin;
 }
 
 .gravatar-size {
-  width: 34px;
-  height: 34px;
+    width: 34px;
+    height: 34px;
 }
 
 .gravatar-size-large {
-  width: 44px;
-  height: 44px;
+    width: 44px;
+    height: 44px;
 }
 
 .gravatar {
-  border: 1px solid @borderColor;
-  .border-radius(@baseBorderRadius);
-  padding: 1px;
-  img {
+    border: 1px solid @borderColor;
     .border-radius(@baseBorderRadius);
+    padding: 1px;
+    img {
+        .border-radius(@baseBorderRadius);
+        .gravatar-size;
+    }
+    text-align: center;
     .gravatar-size;
-  }
-  text-align: center;
-  .gravatar-size;
 }
 
 .comments {
-  .comment {
-    padding: @defaultPad;
-    .postdate {
-      color: @grayLight;
+    .comment {
+        padding: @defaultPad;
+        .postdate {
+            color: @grayLight;
+        }
+        .username {
+            color: @grayLight;
+        }
+        .popover {
+            .shadowed;
+            position: relative;
+            display: block;
+            float: left;
+            padding: @defaultPad;
+            min-width: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+        .gravatar {
+            .gravatar-size;
+            img {
+                .gravatar-size;
+            }
+        }
     }
-    .username {
-      color: @grayLight;
-    }
-    .popover {
-      .shadowed;
-      position: relative;
-      display: block;
-      float: left;
-      padding: @defaultPad;
-      min-width: 100%;
-      width: 100%;
-      z-index: 1;
-    }
-    .gravatar {
-      .gravatar-size;
-      img {
-        .gravatar-size;
-      }
-    }
-  }
 }
 
 .tasks {
-  .task {
-    .well;
-    padding: @defaultPad;
-    margin-bottom: @defaultMargin;
-    background-color: @bodyBackground;
-    background-image: url('../images/body-bg-texture-medium.png');
-    .username {
-      color: @grayLight;
+    list-style: none;
+    .no-margin;
+    .no-padding;
+    .task {
+        .well;
+        padding: @defaultPad;
+        margin-bottom: @defaultMargin;
+        background-color: @bodyBackground;
+        background-image: url('../images/body-bg-texture-medium.png');
+        .task-footer {
+            color: @grayLight;
+            margin: @defaultMargin;
+            .full-width;
+        }
+        .task-core {
+            .full-width;
+        }
+        .task-accept {
+            .full-width;
+        }
+        .task-extended {
+            .full-width;
+            margin-top: @defaultMargin;
+        }
+        .task-tools {
+            .full-width;
+        }
+        .task-discussion {
+            .full-width;
+        }
+        .task-placeholder {
+            .full-width;
+        }
+        .markdown {
+            .fill;
+        }
+        .task-check {
+            width: 40px;
+            i {
+                .nudge-down;
+            }
+        }
+        .task-delete {
+            width: 40px;
+        }
     }
-  }
+    .container-fluid {
+        .no-margin;
+        .side-padding;
+    }
 }
 
-ul.notifications {
-  //reset to avoid conflict with the bootstrap-notifications plugin
-  position: relative;
-  .notification {
-    padding: @defaultPad;
-  }
+.notifications {
+    list-style: none;
+    .no-margin;
+    .no-padding;
+    .notification {
+        padding: @defaultPad;
+        .no-margin;
+        .alert;
+        .alert-info;
+        margin-bottom: @defaultMargin;
+    }
 }
 
 .navbar-content {
-  margin-right: @defaultMargin;
+    margin-right: @defaultMargin;
 }
 
 .top-left {
-  position: absolute;
-  z-index: 200;
-  left: 0px;
-  margin-top: -0.75em;
-  margin-left: 0.25em;
+    position: absolute;
+    z-index: 200;
+    left: 0px;
+    margin-top: -0.75em;
+    margin-left: 0.25em;
 }
 
 .handled {
 }
 
 .countbadge {
-  position: relative;
-  top: -1.5 * @defaultMargin;
-  left: -2.5 * @defaultMargin;
-  z-index: 100;
-  @media (max-width: 720px) {
-    .badge {
-      font-size: 0.8em;
+    position: relative;
+    top: -1.5 * @defaultMargin;
+    left: -2.5 * @defaultMargin;
+    z-index: 100;
+    @media (max-width: 720px) {
+        .badge {
+            font-size: 0.8em;
+        }
     }
-  }
 }
 
 .search-query {
-  @media (min-width: 720px) {
-    width: 340px;
-  }
-  @media (max-width: 720px) {
-    width: 150px;
-  }
+    @media (min-width: 720px) {
+        width: 340px;
+    }
+    @media (max-width: 720px) {
+        width: 150px;
+    }
 }
 
 .tagbar-search-choice-content {
-  @media (min-width: 720px) {
-    font-weight: bold;
-  }
-  @media (max-width: 720px) {
-    font-weight: normal;
-    .smaller;
-  }
+    @media (min-width: 720px) {
+        font-weight: bold;
+    }
+    @media (max-width: 720px) {
+        font-weight: normal;
+        .smaller;
+    }
 }
 
 //tweaking base bootstrap
 //Tweak the popover a tiny bit
 .popover {
-  .border-radius(@baseBorderRadius);
-  border-color: @borderColor;
-  &.right .arrow {
-    border-right-color: @borderColor;
-    &:after {
-      border-right-color: @borderColor;
+    .border-radius(@baseBorderRadius);
+    border-color: @borderColor;
+    &.right .arrow {
+        border-right-color: @borderColor;
+        &:after {
+            border-right-color: @borderColor;
+        }
     }
-  }
-  &.top .arrow {
-    border-top-color: @borderColor;
-    &:after {
-      border-top-color: @borderColor;
+    &.top .arrow {
+        border-top-color: @borderColor;
+        &:after {
+            border-top-color: @borderColor;
+        }
     }
-  }
-  &.bottom .arrow {
-    border-bottom-color: @borderColor;
-    &:after {
-      border-bottom-color: @borderColor;
+    &.bottom .arrow {
+        border-bottom-color: @borderColor;
+        &:after {
+            border-bottom-color: @borderColor;
+        }
     }
-  }
-  &.left .arrow {
-    border-left-color: @borderColor;
-    &:after {
-      border-left-color: @borderColor;
+    &.left .arrow {
+        border-left-color: @borderColor;
+        &:after {
+            border-left-color: @borderColor;
+        }
     }
-  }
 }
 
 .well {
-  background-color: fade(@wellBackground, 60%);
+    background-color: fade(@wellBackground, 60%);
 }
 
 .tiny-well {
-  .well-border;
-  background-color: fade(@bodyBackground, 90%);
-  background-image: url('../images/body-bg-texture-medium.png');
-  min-width: 2em;
-}
-
-.footer {
-    margin: @defaultMargin;
+    .well-border;
+    background-color: fade(@bodyBackground, 90%);
+    background-image: url('../images/body-bg-texture-medium.png');
+    min-width: 2em;
 }
 
 .CodeMirror {
-  font-family: @baseFontFamily;
-  .larger;
+    font-family: @baseFontFamily;
+    .larger;
 }
 
 .navbar-content {
-  margin-top: 3px;
+    margin-top: 3px;
 }
 
 .comment-gravatar {
-  width: 40px;
+    width: 40px;
 }
 
+
 .toaster {
-  .alert {
-    margin-bottom: 0px;
-  }
+    .alert {
+        margin-bottom: 0px;
+    }
 }
 
 input {
@@ -399,11 +442,11 @@ hr {
 }
 
 .btn-nav {
-  @media (min-width: 460px) {
-    min-height: 36px;
-  }
-  @media (max-width: 460px) {
-    min-height: 36px;
-    padding: @defaultPad @defaultPad;
-  }
+    @media (min-width: 460px) {
+        min-height: 36px;
+    }
+    @media (max-width: 460px) {
+        min-height: 36px;
+        padding: @defaultPad @defaultPad;
+    }
 }

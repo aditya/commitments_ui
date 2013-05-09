@@ -1,26 +1,22 @@
 <ul
     toaster
     animated-show="message"
-    class="unstyled notifications container-fluid">
-    <li class="row-fluid notification">
-    <div class="alert alert-info no-margin">
-        <button type="button" class="close" data-dismiss="alert"><i class="icon icon-remove"></i></button>
-        <div postdate ng-model="message.when"></div>
-        <div markdown readonly ng-model="message.data.message"></div>
-    </div>
+    class="notifications">
+    <li class="notification">
+    <button type="button" class="close" data-dismiss="alert"><i class="icon icon-remove"></i></button>
+    <div postdate ng-model="message.when"></div>
+    <div markdown readonly ng-model="message.data.message"></div>
     </li>
 </ul>
 <ul
     ng-controller="Notifications"
     ng-model="notifications"
     animated-show="user.preferences.notifications"
-    class="unstyled notifications container-fluid">
+    class="notifications">
     <li
     ng-repeat="notification in notifications.items"
-    class="row-fluid notification">
-    <div class="alert alert-info no-margin">
-        <div postdate ng-model="notification.when"></div>
-        <div markdown readonly ng-model="notification.data.message"></div>
-    </div>
+    class="notification">
+    <div postdate ng-model="notification.when"></div>
+    <div markdown readonly ng-model="notification.data.message"></div>
     </li>
 </ul>
