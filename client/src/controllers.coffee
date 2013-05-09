@@ -9,7 +9,17 @@ define ['angular',
         .config ($routeProvider) ->
             $routeProvider.
                 when(
-                    '/desktop',
+                    '/todo',
+                    templateUrl: 'src/views/desktop.html'
+                    controller: 'Desktop'
+                )
+                .when(
+                    '/done',
+                    templateUrl: 'src/views/desktop.html'
+                    controller: 'Desktop'
+                )
+                .when(
+                    '/tag',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Desktop'
                 )
@@ -28,16 +38,18 @@ define ['angular',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
+                ###
                 .otherwise(
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
+                ###
         .run ($rootScope, $location, Server) ->
             #Theory Question: Should this be a service? There is the routing
             #bit which makes a lot more sense to keep in the controller
             #in this root most controller, listen for login and login failure
             $rootScope.$on 'loginsuccess', (event, identity) ->
-                $location.path '/desktop'
+                $location.path '/todo'
             $rootScope.$on 'loginfailure', ->
                 $rootScope.flash "Whoops, that's not a valid login link", true
             $rootScope.$on 'logout', ->
@@ -84,35 +96,41 @@ define ['angular',
                 $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
                 #clear the UI field for user re-use, now that is a phrase...
                 $scope.joinEmail = ''
-        .controller 'Desktop', ($location, $rootScope, $scope, Database, StackRank, User) ->
+        .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, Database, StackRank, User) ->
+            #this gets it done, selecting items in a box and hooking them to
+            #the scope to bind to the view
+            selectBox = (box) ->
+                if box
+                    #selecting fires off the filter for a box, then snapshots
+                    #those items in stack rank order
+                    $scope.selected = box
+                    $scope.selected.items = StackRank.sort(
+                        (box.filter or -> [])(),
+                        (x) -> x.id,
+                        box.tag)
+            #looking for server updates, in which case we re-select the
+            #same box triggering a rebinding
+            $scope.$on 'newitemfromserver', ->
+                console.log 'new item'
+                selectBox $scope.selected
+            $scope.$on 'deleteitemfromserver', ->
+                console.log 'delete item'
+                selectBox $scope.selected
+            #process where we are looking, this is a bit of a sub-router, it is
+            #not clear how to do this with the angular base router
             if not User.email
-                $scope.selectBox = ->
                 #nobody logged in, welcome back to the home page
                 $location.path '/'
             else
-                #root level section of the current 'box' or set of matching tasks
-                #this is used from multiple sub controllers, so here it is at root
-                $scope.selectBox = (box) ->
-                    if box
-                        #save boxes worth remembering, this lets us revert from
-                        #search to the last view
-                        if not $scope?.selected?.forgettable
-                            if $scope.lastBox isnt $scope.selected
-                                $scope.lastBox = $scope.selected
-                        #selecting fires off the filter for a box, then snapshots
-                        #those items in stack rank order
-                        $scope.selected = box
-                        $scope.selected.items = StackRank.sort(
-                            (box.filter or -> [])(),
-                            (x) -> x.id,
-                            box.tag)
-                #looking for server updates, in which case we re-select the
-                #same box triggering a rebinding
-                $scope.$on 'newitemfromserver', ->
-                    console.log 'new item'
-                    $scope.selectBox $scope.selected
-                $scope.$on 'deleteitemfromserver', ->
-                    $scope.selectBox $scope.selected
+                if $location.path().slice(-5) is '/todo'
+                    selectBox $scope.todoBox
+                else if $location.path().slice(-5) is '/done'
+                    selectBox $scope.doneBox
+                else if $location.path().slice(-4) is '/tag'
+                    console.log $scope.boxes
+                    selectBox $scope.boxes.tags[_.keys($location.search())[0]]
+        #navbar provides all the tools and toggles to control the main user
+        #interface, and contains the toolbox and searchbox
         .controller 'Navbar', ($rootScope, $scope, Notifications) ->
             #bulk sharing is driven from the navbar
             rebuildAllUsers = (items) ->
@@ -152,9 +170,8 @@ define ['angular',
                         title: 'Search Results'
                         tag: '*'
                         filter: -> $scope.database.items (x) -> keys[x.id]
-                    $scope.selectBox searchBox
-                else
-                    $scope.selectBox $scope.lastBox
+        #toolbox has all the boxes, not sure of a better name we can use, what
+        #do you call a box of boxes? boxula?
         .controller 'Toolbox', ($scope, $rootScope, LocalIndexes) ->
             $scope.boxes = []
             $scope.lastBox = null
@@ -165,54 +182,62 @@ define ['angular',
             #watch the index to see if we shoudl rebuild the facet filters
             $scope.$watch 'localIndexes.tags()', ->
                 console.log 'rebuild boxes'
-                $scope.boxes = []
+                $rootScope.boxes = []
                 #always have the todo and done boxes
-                $scope.boxes.push(
+                $rootScope.boxes.push(
                     title: 'Todo'
                     tag: '*todo*'
                     filter: -> $scope.database.items (x) -> not x.done
                     hide: (x) -> x.done
                     allowNew: true
+                    url: '/#/todo'
                 ,
                     title: 'Done'
                     tag: '*done*'
                     filter: -> $scope.database.items (x) -> x.done
                     hide: (x) -> not x.done
+                    allowNew: false
+                    url: '/#/done'
                 )
-                #initial view selection is the TODO box
-                $scope.todoBox = $scope.boxes[0]
-                if not $scope.selected
-                    $scope.selectBox $scope.boxes[0]
+                $rootScope.boxes.tags = {}
+                #stash these, they may be re-ordered
+                $rootScope.todoBox = $rootScope.boxes[0]
+                $rootScope.doneBox = $rootScope.boxes[1]
                 #dynamic tags from the index, these are current
                 tags = {}
+                #the filtering methods used to select items under a tag
+                byTag = (tagTerm, filter) ->
+                    () ->
+                        by_tag = {tags: {}}
+                        by_tag.tags[tagTerm] = 1
+                        $scope.database.itemsByTag(by_tag, filter)
+                stampWithTag = (tagTerm) ->
+                    (item) ->
+                        item.tags = item.tags or {}
+                        item.tags[tagTerm] = Date.now()
+                #now build up a 'box' for each tag, not sure why I want to call
+                #it a box, just that the tags are drawn on screen in a... box?
+                #or maybe that it reminds me of a mailbox
                 for tagTerm in LocalIndexes.tags()
-                    byTag = (tagTerm, filter) ->
-                        () ->
-                            by_tag = {tags: {}}
-                            by_tag.tags[tagTerm] = 1
-                            $scope.database.itemsByTag(by_tag, filter)
-                    stampWithTag = (tagTerm) ->
-                        (item) ->
-                            item.tags = item.tags or {}
-                            item.tags[tagTerm] = Date.now()
                     dynamicTag =
                         title: tagTerm
                         tag: tagTerm
                         when: Date.now()
                         allowNew: true
-                    dynamicTagMethods =
                         hide: -> false
                         filter: byTag(tagTerm)
                         stamp: stampWithTag(tagTerm)
-                    #make an object sandwich, overlaying the dynamic functions
-                    #but only using the tag term as the base default, prefering
-                    #what the user has updated
-                    _.extend dynamicTag, dynamicTagMethods
-                    $scope.boxes.push dynamicTag
+                        url: "/#/tag?#{encodeURIComponent(tagTerm)}"
+                    $rootScope.boxes.push dynamicTag
+                    $rootScope.boxes.tags[tagTerm] = dynamicTag
+                #ok, so, I really don't understand why this is required, but
+                #without it my boxes list in the navbar is just plain empty
+                $scope.boxes = $rootScope.boxes
             , true
-        #control the current user/login/logout state
+        #nothing nuch going on here
         .controller 'User', ($rootScope, $scope) ->
             null
+        #nothing much going on here
         .controller 'Discussion', ($scope) ->
             null
         #accepting and rejecting tasks is simply about stamping it with
@@ -228,8 +253,8 @@ define ['angular',
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
                 $scope.database.update item
+        #bulk sharing function, puts all the users on all the items
         .controller 'BulkShare', ($scope) ->
-            #bulk sharing function, puts all the users on all the items
             $scope.bulkShare = (all) ->
                 for item in $scope.selected.items
                     if item?.links?[$scope.user.email]
@@ -251,6 +276,8 @@ define ['angular',
             #as needed to appear in that box
             $scope.placeholderItem = (item) ->
                 ($scope.selected.stamp or ->)(item)
+            #relay controller binding along to events, it's not convenient to
+            #type all this in an ng-click...
             $scope.update = (item) ->
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
