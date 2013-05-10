@@ -8,35 +8,27 @@ define ['angular',
         root.factory 'Notifications', ($rootScope, $timeout, User) ->
             #items are kept in an LRU buffer
             items = []
-            received_items = []
+            newCount = 0
             receive = (message) ->
-                received_items.push message
-                if received_items.length > User.preferences.notificationsLRU
-                    received_items.shift()
-            deliver = (message) ->
-                items.push message
+                #unshift to make the most recent message the first
+                items.unshift message
                 if items.length > User.preferences.notificationsLRU
-                    items.shift()
+                    items.pop()
+                newCount = items.length
             notification =
                 unreadCount: ->
-                    len = _.keys(received_items).length
                     #This will ba a blank, not a zero
-                    len unless not len
+                    newCount unless not newCount
                 receiveMessage: (message) ->
                     if User.preferences.notifications
                         deliver message
                     else
                         receive message
                 deliverMessages: ->
-                    #move items away from being freshly received
-                    for item in received_items
-                        deliver item
-                    received_items = []
-                    items
+                    newCount = 0
                 items: items
                 clear: ->
                     items.splice()
-                    received_items.splice()
             #event handling
             $rootScope.$on 'notification', (event, message) ->
                 notification.receiveMessage message
