@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title></title>
 <link rel="stylesheet/less" type="text/css" href="root.less">
-<script data-main="root.js" src="lib/require.js"></script>
 </head>
 <body ng-controller="Application">
 <div ng-view>
@@ -151,4 +150,13 @@
     </div>
 </div>
 </body>
+<script data-main="root.js" src="lib/require.js"></script>
+<script>
+requirejs.onError = function (err) {
+    //on any error, just go into a spin to reload
+    console.log("Darn, failed to load");
+    console.log(err);
+    window.location.reload();
+};
+</script>
 </html>

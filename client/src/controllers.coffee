@@ -38,12 +38,10 @@ define ['angular',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-                ###
                 .otherwise(
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-                ###
         .run ($rootScope, $location, Server) ->
             #Theory Question: Should this be a service? There is the routing
             #bit which makes a lot more sense to keep in the controller
@@ -96,7 +94,7 @@ define ['angular',
                 $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
                 #clear the UI field for user re-use, now that is a phrase...
                 $scope.joinEmail = ''
-        .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, Database, StackRank, LocalIndexes, User) ->
+        .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, $timeout, Database, StackRank, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             selectBox = (box, bonusFilter) ->
@@ -110,6 +108,9 @@ define ['angular',
                         _.filter((box.filter or -> [])(), bonusFilter),
                         (x) -> x.id,
                         box.tag)
+                else
+                    $timeout ->
+                        selectBox $scope.todoBox
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'newitemfromserver', (event, item) ->
