@@ -3,6 +3,7 @@ define [
     ], () ->
     AUTOHIDE_DELAY = 3000
     ANIMATION_SPEED = 100
+    KEY_DELAY = 300
     module = angular.module('readonly', [])
         .directive('flashMessage', [() ->
             restrict: 'A'
@@ -139,19 +140,17 @@ define [
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 going = null
+                fire = ->
+                    val = element.val()
+                    $scope.$apply ->
+                        $scope.$emit attrs.delayed, val
                 element.on 'keyup', (event)->
                     if event.which is 27 #escape
                         element.val ''
-                    if going
-                        $timeout.cancel going
-                    going = $timeout (->
-                        val = element.val()
-                        $scope.$apply ->
-                            $scope.$eval "#{attrs.delayed}='#{val}'"
-                        ), ANIMATION_SPEED
+                element.on 'keyup', _.debounce(fire, KEY_DELAY)
                 element.on 'blur', ->
-                    #do this without signaling back to the scope
                     element.val ''
+                    fire()
         ])
         .directive('action', ['$timeout', ($timeout) ->
             restrict: 'A'

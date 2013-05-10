@@ -96,16 +96,18 @@ define ['angular',
                 $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
                 #clear the UI field for user re-use, now that is a phrase...
                 $scope.joinEmail = ''
-        .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, Database, StackRank, User) ->
+        .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, Database, StackRank, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
-            selectBox = (box) ->
+            selectBox = (box, bonusFilter) ->
                 if box
+                    console.log 'box', box.tag
+                    bonusFilter = bonusFilter or -> true
                     #selecting fires off the filter for a box, then snapshots
                     #those items in stack rank order
                     $scope.selected = box
                     $scope.selected.items = StackRank.sort(
-                        (box.filter or -> [])(),
+                        _.filter((box.filter or -> [])(), bonusFilter),
                         (x) -> x.id,
                         box.tag)
             #looking for server updates, in which case we re-select the
@@ -129,9 +131,21 @@ define ['angular',
                 else if $location.path().slice(-4) is '/tag'
                     console.log $scope.boxes
                     selectBox $scope.boxes.tags[_.keys($location.search())[0]]
+            #search is driven from the navbar, queries then make up a 'fake'
+            #box much like the selected tags, but it is instead a list of
+            #matching ids
+            $scope.$on 'searchquery', (event, query) ->
+                if query
+                    keys = {}
+                    for result in LocalIndexes.fullTextSearch(query)
+                        keys[result.ref] = result
+                    #reselect with a post filter based on the full text search
+                    selectBox $scope.selected, (x) -> keys[x.id]
+                else
+                    selectBox $scope.selected
         #navbar provides all the tools and toggles to control the main user
         #interface, and contains the toolbox and searchbox
-        .controller 'Navbar', ($rootScope, $scope, Notifications) ->
+        .controller 'Navbar', ($rootScope, $scope, $location, Notifications) ->
             #bulk sharing is driven from the navbar
             rebuildAllUsers = (items) ->
                 allUsers = {}
@@ -155,21 +169,9 @@ define ['angular',
                     $scope.user.preferences.notifications = not $scope.user.preferences.notifications
                 if $scope.user.preferences.notifications
                     Notifications.deliverMessages()
+            #event to ask for a new task focus
             $scope.addTask = ->
                 $rootScope.$broadcast 'newtask'
-            #search is driven from the navbar, queries then make up a 'fake'
-            #box much like the selected tags, but it is instead a list of
-            #matching ids
-            $scope.$watch 'searchQuery', (searchQuery) ->
-                if searchQuery
-                    keys = {}
-                    for result in $scope.database.fullTextSearch(searchQuery)
-                        keys[result.ref] = result
-                    searchBox =
-                        forgettable: true
-                        title: 'Search Results'
-                        tag: '*'
-                        filter: -> $scope.database.items (x) -> keys[x.id]
         #toolbox has all the boxes, not sure of a better name we can use, what
         #do you call a box of boxes? boxula?
         .controller 'Toolbox', ($scope, $rootScope, LocalIndexes) ->

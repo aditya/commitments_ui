@@ -7,6 +7,148 @@
 <script data-main="root.js" src="lib/require.js"></script>
 </head>
 <body ng-controller="Application">
-<div ng-view></div>
+<div ng-view>
+    <!-- loading placeholder -->
+    <style>
+#movingBallG{
+    position:relative;
+    margin-top: 200px;
+    margin-right: auto;
+    margin-left: auto;
+    width:256px;
+    height:20px;
+}
+
+.movingBallLineG{
+    position:absolute;
+    left:0px;
+    top:8px;
+    height:4px;
+    width:256px;
+    background-color:#000000;
+    opacity: 0.4;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+.movingBallG{
+    background-color:#000000;
+    opacity: 0.8;
+    position:absolute;
+    top:0;
+    left:0;
+    width:20px;
+    height:20px;
+    -moz-border-radius:10px;
+    -moz-animation-name:bounce_movingBallG;
+    -moz-animation-duration:1.3s;
+    -moz-animation-iteration-count:infinite;
+    -moz-animation-direction:linear;
+    -webkit-border-radius:10px;
+    -webkit-animation-name:bounce_movingBallG;
+    -webkit-animation-duration:1.3s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-direction:linear;
+    -ms-border-radius:10px;
+    -ms-animation-name:bounce_movingBallG;
+    -ms-animation-duration:1.3s;
+    -ms-animation-iteration-count:infinite;
+    -ms-animation-direction:linear;
+    -o-border-radius:10px;
+    -o-animation-name:bounce_movingBallG;
+    -o-animation-duration:1.3s;
+    -o-animation-iteration-count:infinite;
+    -o-animation-direction:linear;
+    border-radius:10px;
+    animation-name:bounce_movingBallG;
+    animation-duration:1.3s;
+    animation-iteration-count:infinite;
+    animation-direction:linear;
+}
+
+@-moz-keyframes bounce_movingBallG{
+    0%{
+        left:0px;
+    }
+
+    50%{
+        left:236px;
+    }
+
+    100%{
+        left:0px;
+    }
+
+}
+
+@-webkit-keyframes bounce_movingBallG{
+    0%{
+        left:0px;
+    }
+
+    50%{
+        left:236px;
+    }
+
+    100%{
+        left:0px;
+    }
+
+}
+
+@-ms-keyframes bounce_movingBallG{
+    0%{
+        left:0px;
+    }
+
+    50%{
+        left:236px;
+    }
+
+    100%{
+        left:0px;
+    }
+
+}
+
+@-o-keyframes bounce_movingBallG{
+    0%{
+        left:0px;
+    }
+
+    50%{
+        left:236px;
+    }
+
+    100%{
+        left:0px;
+    }
+
+}
+
+@keyframes bounce_movingBallG{
+    0%{
+        left:0px;
+    }
+
+    50%{
+        left:236px;
+    }
+
+    100%{
+        left:0px;
+    }
+
+}
+
+    </style>
+    <div id="movingBallG">
+        <div class="movingBallLineG">
+        </div>
+        <div id="movingBallG_1" class="movingBallG">
+        </div>
+    </div>
+</div>
 </body>
 </html>

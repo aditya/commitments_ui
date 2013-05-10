@@ -52,9 +52,7 @@ define ['angular',
             database =
                 items: (filter) ->
                     _.filter _.values(items), filter
-                links: LocalIndexes.links
                 itemsByTag: LocalIndexes.itemsByTag
-                fullTextSearch: LocalIndexes.fullTextSearch
             #event handlers
             $rootScope.$on 'loginsuccess', ->
                 items = {}
