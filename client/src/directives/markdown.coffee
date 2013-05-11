@@ -104,15 +104,17 @@ define ['angular',
                 ngModel.$render = () ->
                     #markdown based display
                     display.html(markdown.toHTML(ngModel.$viewValue or ''))
-                    #placeholder text
                     if attrs.placeholder
+                        #placeholder text
                         if ngModel.$viewValue
                             display.removeClass('placeholder')
                         else
                             display.addClass('placeholder')
                             display.html($scope.$eval(attrs.placeholder))
-                    if ngModel.$viewValue
-                        element.show()
                     else
-                        element.hide()
+                        #without a placeholder just hide the thing
+                        if ngModel.$viewValue
+                            element.show()
+                        else
+                            element.hide()
         ])
