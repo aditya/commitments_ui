@@ -91,9 +91,10 @@ define ['angular',
             #the actual method to join
             $scope.join = () ->
                 User.join $scope.joinEmail, true
-                $scope.flash "Your join email is on its way to #{$scope.joinEmail}"
-                #clear the UI field for user re-use, now that is a phrase...
+                $scope.flashing = true
+            $scope.joinAgain = () ->
                 $scope.joinEmail = ''
+                $scope.flashing = false
         .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, $timeout, Database, StackRank, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
