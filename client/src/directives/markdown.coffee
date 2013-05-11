@@ -103,10 +103,12 @@ define ['angular',
                         event.stopPropagation()
                 ngModel.$render = () ->
                     #markdown based display
-                    if ngModel.$viewValue
-                        display.removeClass('placeholder')
-                        display.html(markdown.toHTML(ngModel.$viewValue))
-                    else if attrs.placeholder
-                        display.addClass('placeholder')
-                        display.html($scope.$eval(attrs.placeholder))
+                    display.html(markdown.toHTML(ngModel.$viewValue or ''))
+                    #placeholder text
+                    if attrs.placeholder
+                        if ngModel.$viewValue
+                            display.removeClass('placeholder')
+                        else
+                            display.addClass('placeholder')
+                            display.html($scope.$eval(attrs.placeholder))
         ])

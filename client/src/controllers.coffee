@@ -291,3 +291,10 @@ define ['angular',
                 #receive message and reset the bound scope
                 $scope.notifications =
                     $scope.database.notifications.deliverMessages()
+            $scope.iconFor = (notification) ->
+                if _.contains notification?.data?.tags, 'comment'
+                    return 'icon icon-comment'
+                if _.contains notification?.data?.tags, 'done'
+                    return 'icon icon-check'
+                if _.contains notification?.data?.tags, 'undone'
+                    return 'icon icon-check-empty'

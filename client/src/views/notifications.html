@@ -1,22 +1,39 @@
-<ul
-    toaster
-    animated-show="message"
-    class="notifications">
-    <li class="notification">
-    <button type="button" class="close" data-dismiss="alert"><i class="icon icon-remove"></i></button>
-    <div postdate ng-model="message.when"></div>
-    <div markdown readonly ng-model="message.data.message"></div>
-    </li>
-</ul>
-<ul
-    ng-controller="Notifications"
-    ng-model="notifications"
-    animated-show="user.preferences.notifications"
-    class="notifications">
-    <li
-    ng-repeat="notification in notifications.items"
-    class="notification">
-    <div postdate ng-model="notification.when"></div>
-    <div markdown readonly ng-model="notification.data.message"></div>
-    </li>
-</ul>
+<div ng-controller="Notifications">
+    <ul
+        toaster
+        animated-show="notification"
+        ng-init="notification"
+        class="notifications">
+        <li class="notification">
+        <button type="button" class="close" data-dismiss="alert"><i class="icon icon-remove"></i></button>
+        <div postdate ng-model="notification.when"></div>
+        <div>
+            <span class="notification-message">
+                <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
+                <i class={{iconFor(notification)}}></i>
+                <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
+            </span>
+        </div>
+        <div markdown readonly ng-model="notification.data.message"></div>
+        </li>
+    </ul>
+    <ul
+        ng-model="notifications"
+        animated-show="user.preferences.notifications"
+        class="notifications">
+        <li
+        ng-repeat="notification in notifications.items"
+        class="notification">
+        <div postdate ng-model="notification.when"></div>
+        <div>
+            <span class="notification-message">
+                <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
+                <i class={{iconFor(notification)}}></i>
+                <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
+            </span>
+        </div>
+        <div markdown readonly ng-model="notification.data.message"></div>
+        <div>{{notification}}</div>
+        </li>
+    </ul>
+</div>

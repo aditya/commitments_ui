@@ -20,10 +20,7 @@ define ['angular',
                     #This will ba a blank, not a zero
                     newCount unless not newCount
                 receiveMessage: (message) ->
-                    if User.preferences.notifications
-                        deliver message
-                    else
-                        receive message
+                    receive message
                 deliverMessages: ->
                     newCount = 0
                 items: items

@@ -10,11 +10,11 @@ define ['angular',
                 lastToast = null
                 element.find('.close').on 'click', ->
                     $scope.$apply ->
-                        $scope.message = null
+                        $scope.notification = null
                 $scope.$on 'notification', (event, message) ->
                     if user.preferences.notifications
                         #there is already a panel up, double showing would be
                         #disturbing
                     else
-                        $scope.message = message
+                        $scope.notification = message
         ])

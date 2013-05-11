@@ -108,6 +108,7 @@ define ['angular',
                         stdin: item
             $rootScope.$on 'filefromserver', _.debounce( ->
                     if socket
+                        console.log 'going for notifications'
                         socket.emit 'exec',
                             command: 'notify'
                             args: ['peek']
