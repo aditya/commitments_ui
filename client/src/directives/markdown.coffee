@@ -111,4 +111,8 @@ define ['angular',
                         else
                             display.addClass('placeholder')
                             display.html($scope.$eval(attrs.placeholder))
+                    if ngModel.$viewValue
+                        element.show()
+                    else
+                        element.hide()
         ])

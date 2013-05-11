@@ -8,7 +8,7 @@ define ['angular',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
-                    icon = angular.element("<i class='icon'/>")
+                    icon = angular.element("<i/>")
                     element.addClass 'check'
                     element.append(icon)
                     element.css 'cursor', 'pointer'

@@ -25,11 +25,15 @@
     }
     var lastBit = null;
     $.each(data.split(pattern), function(i) {
-      var tagbit = $("<span class='tagbar-search-choice-content overlay label'/>");
+      var tagbit = $("<span class='tagbar-search-choice-content label'/>");
       tagbit.append("<span>" + this + "</span>");
       if (i % 2 == 0) tagbit.addClass("label-info");
       if (i % 2 == 1) tagbit.addClass("label-inverse");
       tagbit.css('z-index', underZ--);
+      if (i > 0) {
+          tagbit.addClass('tagbar-stripe');
+          tagbit.addClass('underlay');
+      }
       tagbits.append(tagbit);
       lastBit = tagbit;
     });
@@ -310,10 +314,10 @@
         "class": "tagbar-container tagbar-container-multi"
       }).html([
         "<ul class='tagbar-choices'>",
-        "  <li class='tagbar-icon icon icon-" + this.opts.icon + "'></li>",
+        "  <li class='tagbar-icon icon-" + this.opts.icon + "'></li>",
         "  <li class='tagbar-search-field' contentEditable></li>" ,
         "</ul>"].join(""));
-        $(".icon", container).bind("click", this.bind(this.focusSearch));
+        $(".tagbar-icon", container).bind("click", this.bind(this.focusSearch));
         return container;
     },
     initContainer: function () {

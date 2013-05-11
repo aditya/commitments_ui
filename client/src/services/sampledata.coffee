@@ -31,7 +31,7 @@ sampledata =
     ,
         id: 'b'
         what: 'There is always more to do'
-        who: 'wballard@glgroup.com'
+        who: 'igroff@glgroup.com'
         tags:
             Tagged: 1
         links: {}
@@ -49,6 +49,16 @@ sampledata =
         id: 'c'
         what: 'Nothing fancy'
         who: 'wballard@glgroup.com'
+        tags: {}
+        links:
+            'igroff@glgroup.com': 1
+            'kwokoek@glgroup.com': 1
+        discussion:
+            comments: []
+    ,
+        id: 'd'
+        what: 'Reject this!'
+        who: 'igroff@glgroup.com'
         tags: {}
         links:
             'igroff@glgroup.com': 1

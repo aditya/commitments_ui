@@ -5,12 +5,12 @@
         ng-init="notification"
         class="notifications">
         <li class="notification">
-        <button type="button" class="close" data-dismiss="alert"><i class="icon icon-remove"></i></button>
+        <button type="button" class="close" data-dismiss="alert"><i class="icon-remove"></i></button>
+        <i class="notification-icon {{iconFor(notification)}}"></i>
         <div postdate ng-model="notification.when"></div>
         <div>
             <span class="notification-message">
                 <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
-                <i class={{iconFor(notification)}}></i>
                 <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
             </span>
         </div>
@@ -24,16 +24,15 @@
         <li
         ng-repeat="notification in notifications.items"
         class="notification">
+        <i class="notification-icon {{iconFor(notification)}}"></i>
         <div postdate ng-model="notification.when"></div>
         <div>
             <span class="notification-message">
                 <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
-                <i class={{iconFor(notification)}}></i>
                 <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
             </span>
         </div>
         <div markdown readonly ng-model="notification.data.message"></div>
-        <div>{{notification}}</div>
         </li>
     </ul>
 </div>

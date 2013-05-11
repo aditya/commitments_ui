@@ -245,17 +245,17 @@ define ['angular',
             null
         #accepting and rejecting tasks is simply about stamping it with
         #your user identity, or removing yourself
-        .controller 'TaskAccept', ($scope, $timeout) ->
+        .controller 'TaskAccept', ($scope, $rootScope) ->
             $scope.accept = (item) ->
                 item.links[$scope.user.email] = item.links[$scope.user.email] or Date.now()
                 item.accept[$scope.user.email] = Date.now()
                 delete item.reject[$scope.user.email]
-                $scope.database.update item
+                $rootScope.$broadcast 'itemfromlocal', item
             $scope.reject = (item) ->
                 item.reject[$scope.user.email] = Date.now()
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
-                $scope.database.update item
+                $rootScope.$broadcast 'itemfromlocal', item
         #bulk sharing function, puts all the users on all the items
         .controller 'BulkShare', ($scope) ->
             $scope.bulkShare = (all) ->
@@ -293,8 +293,16 @@ define ['angular',
                     $scope.database.notifications.deliverMessages()
             $scope.iconFor = (notification) ->
                 if _.contains notification?.data?.tags, 'comment'
-                    return 'icon icon-comment'
+                    return 'icon-comment'
                 if _.contains notification?.data?.tags, 'done'
-                    return 'icon icon-check'
+                    return 'icon-check'
                 if _.contains notification?.data?.tags, 'undone'
-                    return 'icon icon-check-empty'
+                    return 'icon-check-empty'
+                if _.contains notification?.data?.tags, 'accept'
+                    return 'icon-link'
+                if _.contains notification?.data?.tags, 'reject'
+                    return 'icon-unlink'
+                if _.contains notification?.data?.tags, 'share'
+                    return 'icon-share-alt'
+                if _.contains notification?.data?.tags, 'unshare'
+                    return 'icon-reply'

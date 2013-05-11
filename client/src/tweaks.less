@@ -210,8 +210,8 @@ body {
 }
 
 .gravatar-size {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
 }
 
 .gravatar-size-large {
@@ -220,10 +220,9 @@ body {
 }
 
 .gravatar {
-    border: 1px solid @borderColor;
-    .border-radius(@baseBorderRadius);
-    padding: 1px;
     img {
+        border: 1px solid @borderColor;
+        .border-radius(@baseBorderRadius);
         .border-radius(@baseBorderRadius);
         .gravatar-size;
     }
@@ -286,6 +285,9 @@ body {
         }
         .task-tools {
             .full-width;
+            .action {
+                vertical-align: text-bottom;
+            }
         }
         .task-discussion {
             .full-width;
@@ -328,6 +330,13 @@ body {
         }
         .notification-message {
             vertical-align: middle;
+        }
+        .notification-icon {
+            opacity: 0.5;
+            .pull-left;
+            .icon-3x;
+            padding: 2 * @defaultPad;
+            padding-left: 0px;
         }
     }
 }
@@ -449,11 +458,10 @@ hr {
 }
 
 .btn-nav {
+    max-height: 30px;
     @media (min-width: 460px) {
-        min-height: 36px;
     }
     @media (max-width: 460px) {
-        min-height: 36px;
         padding: @defaultPad @defaultPad;
     }
 }
@@ -464,4 +472,11 @@ hr {
         margin-top: 2px;
         margin-bottom: 2px;
     }
+    .tag {
+        max-height: 15px;
+    }
+}
+
+.navbar-inner {
+    min-height: 34px;
 }

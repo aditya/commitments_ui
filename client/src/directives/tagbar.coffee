@@ -53,6 +53,7 @@ define ['angular',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'tag'
                 ngModel.$render = ->
                     element.onetag(ngModel.$viewValue)
         ])

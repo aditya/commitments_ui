@@ -155,6 +155,7 @@ define [
         .directive('action', ['$timeout', ($timeout) ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
+                element.addClass 'action'
                 element.css 'cursor', 'pointer'
         ])
         .directive('dropdown', [ ->
