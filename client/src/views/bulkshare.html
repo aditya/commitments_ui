@@ -1,13 +1,16 @@
 <div
     ng-controller="BulkShare"
     animated-show="user.preferences.bulkShare"
-    class="alert">
-  <span>Share all the tasks below with</span>
-  <span tags
-      item-icon-from="gravatar"
-      item-icon-size="19"
-      icon="user"
-      ng-model="selected.allUsers"
-      tooltip="'share via email addresses'"></span>
-    <button class="btn btn-success" ng-click="bulkShare(selected.allUsers)">Share</button>
+    class="alert bulkshare">
+    <span class="bulkshare-message">
+        Share all the tasks below with
+        <span tags
+            item-icon-from="gravatar"
+            item-icon-size="19"
+            icon="user"
+            ng-model="selected.allUsers"
+            tooltip="'share via email addresses'">
+        </span>
+        <button class="btn btn-small btn-success" ng-click="bulkShare(selected.allUsers)">Share</button>
+    </span>
 </div>

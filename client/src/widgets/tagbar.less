@@ -2,6 +2,8 @@
 @tagColor: @infoText;
 @tagBorderColor: darken(@tagColor, 5%);
 @tagTextColor: lighten(@textColor, 0%);
+@defaultHeight: 22px;
+
 
 .tagbar-stripe {
     span {
@@ -15,13 +17,14 @@
 }
 
 .tagbar-icon {
-  padding-top: 4px;
+    padding-top: @defaultPad;
+    margin-right: @defaultMargin;
 }
 
 .tagbar-search-choice {
     border: 1px solid transparent;
     &:hover {
-      .focus-editor;
+        .focus-editor;
     }
 }
 
@@ -37,7 +40,7 @@
     position: relative;
     margin-right: -3px;
     z-index: 40;
-    height: 22px;
+    height: @defaultHeight;
     .pull-left;
 }
 
@@ -53,16 +56,15 @@
 .tagbar-search-choice-close {
     cursor: pointer;
     height: 100%;
-    margin-left: @defaultMargin;
+    margin-left: @defaultMargin !important;
+    margin-right: @defaultMargin !important;
     font-size: 1.1em;
     vertical-align: middle;
 }
 
 .underlay {
-}
-
-.underlay {
-    margin-left: -3px;
+    margin-left: -@defaultMargin / 2;
+    padding-left: 1.5 * @defaultPad;
 }
 
 .tagbar-search-field {
@@ -87,8 +89,10 @@
     position: relative;
     margin: 0px;
     li {
-    float: left;
-    list-style: none;
+        float: left;
+        list-style: none;
+        height: @defaultHeight;
+        margin-right: @defaultMargin;
     }
 }
 

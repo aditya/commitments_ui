@@ -30,7 +30,7 @@
       if (i % 2 == 0) tagbit.addClass("label-info");
       if (i % 2 == 1) tagbit.addClass("label-inverse");
       tagbit.css('z-index', underZ--);
-      if (i > 0) {
+      if (i > 0 || opts.iconUrl) {
           tagbit.addClass('tagbar-stripe');
           tagbit.addClass('underlay');
       }

@@ -282,11 +282,20 @@ body {
         .task-extended {
             .full-width;
             margin-top: @defaultMargin;
+            hr {
+                clear: both;
+            }
         }
         .task-tools {
             .full-width;
+            margin-left: @defaultMargin;
+            li {
+                float: left;
+                list-style: none;
+            }
             .action {
-                vertical-align: text-bottom;
+                margin-top: 1px;
+                margin-right: @defaultMargin * 2;
             }
         }
         .task-discussion {
@@ -301,8 +310,10 @@ body {
         .task-check {
             width: 40px;
             i {
-                .nudge-down;
+                .icon-2x;
             }
+            padding-top: @defaultPad;
+            padding-left: @defaultPad;
         }
         .task-delete {
             width: 40px;
@@ -338,6 +349,15 @@ body {
             padding: 2 * @defaultPad;
             padding-left: 0px;
         }
+    }
+}
+
+.bulkshare {
+    .bulkshare-message {
+        vertical-align: middle;
+    }
+    .btn-small {
+        padding: 3px 9px;
     }
 }
 
