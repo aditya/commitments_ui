@@ -51,7 +51,7 @@ define [
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'username'
-                element.append "<span class='icon-user'/>"
+                element.append "<i class='icon-user'/>"
                 display = angular.element "<span/>"
                 element.append display
                 ngModel.$render = ->
@@ -63,7 +63,7 @@ define [
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'postdate'
-                element.append "<span class='icon-time'/>"
+                element.append "<i class='icon-time'/>"
                 display = angular.element "<span/>"
                 element.append display
                 ngModel.$render = ->
