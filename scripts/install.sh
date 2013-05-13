@@ -38,5 +38,6 @@ echo Links complete
 superwatcher init
 superwatcher watch "${ROOT}"
 superwatcher environment "${ROOT}/environment/environment"
-superwatcher main superforker 8080 "${ROOT}/server_runtime" "${ROOT}/client"
+superwatcher task main superforker 8080 "${ROOT}/server_runtime" "${ROOT}/client"
+superwatcher task mail notify_to_email
 superwatcher info

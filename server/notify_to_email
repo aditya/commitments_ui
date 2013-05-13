@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+while [ -n "-" ]
+do
+  echo '....'
+  sleep 30
+done
