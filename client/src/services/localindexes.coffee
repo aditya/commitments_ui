@@ -4,7 +4,8 @@ Local in memory indexes drive full text search and tagging.
 define ['angular',
     'cs!src/inverted/inverted',
     'lunr',
-    'cs!./root'], (angular, inverted, lunr, root) ->
+    'lodash'
+    'cs!./root'], (angular, inverted, lunr, _, root) ->
         root.factory 'LocalIndexes', ->
             #parsing functions to keep track of all links and tags
             parseTags = (document, callback) ->
@@ -49,6 +50,11 @@ define ['angular',
                 links: (filter) ->
                     linkIndex.terms(filter)
                 itemsByTag: (tags, filter) ->
-                    tagIndex.search(tags, filter)
+                    if _.isString tags
+                        by_tag = {tags: {}}
+                        by_tag.tags[tags] = 1
+                    else
+                        by_tag = tags
+                    tagIndex.search(by_tag, filter)
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)

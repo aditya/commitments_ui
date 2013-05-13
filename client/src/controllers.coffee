@@ -105,7 +105,7 @@ define ['angular',
             #the scope to bind to the view
             selectBox = (box, bonusFilter) ->
                 if box
-                    console.log 'box', box.tag
+                    console.log 'box', box.title
                     bonusFilter = bonusFilter or -> true
                     #selecting fires off the filter for a box, then snapshots
                     #those items in stack rank order
@@ -114,9 +114,6 @@ define ['angular',
                         _.filter((box.filter or -> [])(), bonusFilter),
                         (x) -> x.id,
                         box.tag)
-                else
-                    $timeout ->
-                        selectBox $scope.todoBox
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'newitemfromserver', (event, item) ->
@@ -132,11 +129,19 @@ define ['angular',
                 $location.path '/'
             else
                 if $location.path().slice(-5) is '/todo'
-                    selectBox $scope.todoBox
+                    selectBox(
+                        title: 'Todo'
+                        filter: -> Database.items (x) -> not x.done
+                        hide: (x) -> x.done
+                        allowNew: true
+                    )
                 else if $location.path().slice(-5) is '/done'
-                    selectBox $scope.doneBox
+                    selectBox(
+                        title: 'Done'
+                        filter: -> Database.items (x) -> x.done
+                        hide: -> false
+                    )
                 else if $location.path().slice(0,5) is '/task'
-                    #this is a dynamic box
                     selectBox(
                         title: 'Task'
                         tag: ''
@@ -145,14 +150,25 @@ define ['angular',
                         allowNew: false
                         url: "/#/task#{$routeParams.taskid}"
                     )
-                    console.log $routeParams.taskid
                 else if $location.path().slice(-4) is '/tag'
-                    console.log $scope.boxes
-                    selectBox $scope.boxes.tags[_.keys($location.search())[0]]
+                    tag = _.keys($location.search())[0]
+                    selectBox(
+                        title: tag
+                        tag: tag
+                        filter: ->
+                            Database.itemsByTag tag
+                        stamp: (item) ->
+                            item.tags = item.tags or {}
+                            items.tags[tag] = Date.now()
+                        hide: -> false
+                        allowNew: true
+                        url: "/#/tag?#{encodeURIComponent(tag)}"
+                    )
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
             $scope.$on 'searchquery', (event, query) ->
+                console.log 'query', query
                 if query
                     keys = {}
                     for result in LocalIndexes.fullTextSearch(query)
@@ -206,50 +222,20 @@ define ['angular',
                 #always have the todo and done boxes
                 $rootScope.boxes.push(
                     title: 'Todo'
-                    tag: '*todo*'
-                    filter: -> $scope.database.items (x) -> not x.done
-                    hide: (x) -> x.done
-                    allowNew: true
                     url: '/#/todo'
                 ,
                     title: 'Done'
-                    tag: '*done*'
-                    filter: -> $scope.database.items (x) -> x.done
-                    hide: (x) -> not x.done
-                    allowNew: false
                     url: '/#/done'
                 )
-                $rootScope.boxes.tags = {}
-                #stash these, they may be re-ordered
-                $rootScope.todoBox = $rootScope.boxes[0]
-                $rootScope.doneBox = $rootScope.boxes[1]
-                #dynamic tags from the index, these are current
-                tags = {}
-                #the filtering methods used to select items under a tag
-                byTag = (tagTerm, filter) ->
-                    () ->
-                        by_tag = {tags: {}}
-                        by_tag.tags[tagTerm] = 1
-                        $scope.database.itemsByTag(by_tag, filter)
-                stampWithTag = (tagTerm) ->
-                    (item) ->
-                        item.tags = item.tags or {}
-                        item.tags[tagTerm] = Date.now()
                 #now build up a 'box' for each tag, not sure why I want to call
                 #it a box, just that the tags are drawn on screen in a... box?
                 #or maybe that it reminds me of a mailbox
                 for tagTerm in LocalIndexes.tags()
-                    dynamicTag =
+                    $rootScope.boxes.push(
                         title: tagTerm
                         tag: tagTerm
-                        when: Date.now()
-                        allowNew: true
-                        hide: -> false
-                        filter: byTag(tagTerm)
-                        stamp: stampWithTag(tagTerm)
                         url: "/#/tag?#{encodeURIComponent(tagTerm)}"
-                    $rootScope.boxes.push dynamicTag
-                    $rootScope.boxes.tags[tagTerm] = dynamicTag
+                    )
                 #ok, so, I really don't understand why this is required, but
                 #without it my boxes list in the navbar is just plain empty
                 $scope.boxes = $rootScope.boxes
