@@ -26,11 +26,11 @@
     var lastBit = null;
     $.each(data.split(pattern), function(i) {
       var tagbit = $("<span class='tagbar-search-choice-content label'/>");
-      tagbit.append("<span>" + this + "</span>");
+      tagbit.append("<span class='tagbar-search-choice-label'>" + this + "</span>");
       if (i % 2 == 0) tagbit.addClass("label-info");
       if (i % 2 == 1) tagbit.addClass("label-inverse");
       tagbit.css('z-index', underZ--);
-      if (i > 0 || opts.iconUrl) {
+      if (i > 0) {
           tagbit.addClass('tagbar-stripe');
           tagbit.addClass('underlay');
       }
@@ -40,6 +40,7 @@
     if (allowClose) {
       var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
       lastBit.append(closer);
+      item.addClass('tagbar-search-choice-editable');
     }
     item.append(tagbits);
     return item;
