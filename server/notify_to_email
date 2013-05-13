@@ -1,7 +1,27 @@
 #! /usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+#keep on going forever, and try to send messages
 while [ -n "-" ]
 do
-  echo '....'
-  sleep 30
+    #go through ever user that has pending notifications
+    for NOTIFY_DIR in "${NOTIFY_ROOT}"/*
+    do
+        export NOTIFICATIONS=$(ls "${NOTIFY_DIR}/new" | wc -l)
+        export EMAIL=$(basename $NOTIFY_DIR)
+        #any user that has pending notifications isn't logged in, otherwise they
+        #would have been consumed
+        if [ $NOTIFICATIONS -gt 0 ];  then
+            echo $EMAIL has $NOTIFICATIONS new notifications
+            #and here we send an email
+            export TOKEN=`token create ${EMAIL}`
+            notify receive $EMAIL \
+                | render "${DIR}/messages/updates.handlebars" \
+                | send --markdown ses
+            notify about user $EMAIL
+        else
+            echo $EMAIL has no new notifications
+        fi
+    done
+    sleep 30
 done

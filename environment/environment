@@ -1,5 +1,9 @@
-# vim: set filetype=sh
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# vim: set filetype=bash
+SCRIPT_PATH="$( readlink "${BASH_SOURCE[0]}" )"
+if [ -z "${SCRIPT_PATH}" ]; then
+    SCRIPT_PATH="${BASH_SOURCE[0]}"
+fi
+DIR="$( cd "$( dirname "${SCRIPT_PATH}" )" && pwd )"
 echo Environment sourced from ${DIR}
 export PATH="${DIR}/../server_runtime":"${DIR}/../node_modules/.bin":${PATH}
 echo Path is now ${PATH}
@@ -7,5 +11,5 @@ export COMMITMENTS_ROOT=~/var/commitments/todos
 export NOTIFY_ROOT=~/var/commitments/notify
 export TOKEN_ROOT=~/var/commitments/tokens
 export USER_ROOT=~/var/commitments/users
-export DOMAIN=${npm_config_domain-${npm_package_config_domain}}
+export DOMAIN=${npm_config_domain-${npm_package_config_domain-www.commitments.us}}
 echo Running on host/domain ${DOMAIN}
