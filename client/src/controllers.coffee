@@ -24,6 +24,11 @@ define ['angular',
                     controller: 'Desktop'
                 )
                 .when(
+                    '/task/:taskid',
+                    templateUrl: 'src/views/desktop.html'
+                    controller: 'Desktop'
+                )
+                .when(
                     '/logout',
                     templateUrl: 'src/views/desktop.html'
                     controller: 'Logout'
@@ -130,6 +135,17 @@ define ['angular',
                     selectBox $scope.todoBox
                 else if $location.path().slice(-5) is '/done'
                     selectBox $scope.doneBox
+                else if $location.path().slice(0,5) is '/task'
+                    #this is a dynamic box
+                    selectBox(
+                        title: 'Task'
+                        tag: ''
+                        filter: -> [Database.item($routeParams.taskid)]
+                        hide: -> false
+                        allowNew: false
+                        url: "/#/task#{$routeParams.taskid}"
+                    )
+                    console.log $routeParams.taskid
                 else if $location.path().slice(-4) is '/tag'
                     console.log $scope.boxes
                     selectBox $scope.boxes.tags[_.keys($location.search())[0]]
