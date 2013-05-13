@@ -47,12 +47,12 @@ define ['angular',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-        .run ($rootScope, $location, Server) ->
+        .run ($rootScope, $location, Server, User) ->
             #Theory Question: Should this be a service? There is the routing
             #bit which makes a lot more sense to keep in the controller
             #in this root most controller, listen for login and login failure
             $rootScope.$on 'loginsuccess', (event, identity) ->
-                $location.path '/todo'
+                $location.path User.lastLocation() or '/todo'
             $rootScope.$on 'loginfailure', ->
                 $rootScope.flash "Whoops, that's not a valid login link", true
             $rootScope.$on 'logout', ->
@@ -72,7 +72,6 @@ define ['angular',
                         $location.path '/'
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
-            $rootScope.database = Database
             $rootScope.notifications = Notifications
             $rootScope.user = User
         .controller 'Login', ($scope, $routeParams, User) ->
@@ -110,18 +109,24 @@ define ['angular',
                     #selecting fires off the filter for a box, then snapshots
                     #those items in stack rank order
                     $scope.selected = box
-                    $scope.selected.items = StackRank.sort(
+                    $scope.selected.fetchItems = -> StackRank.sort(
                         _.filter((box.filter or -> [])(), bonusFilter),
                         (x) -> x.id,
                         box.tag)
+                    $scope.selected.items = $scope.selected.fetchItems()
+                    User.lastLocation $location.path()
+            rebind = ->
+                if $scope.selected
+                    $scope.selected.items = $scope.selected.fetchItems()
+                    console.log $scope.selected.items.length
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'newitemfromserver', (event, item) ->
                 console.log 'new item', item.id
-                selectBox $scope.selected
+                rebind()
             $scope.$on 'deleteitemfromserver', ->
                 console.log 'delete item'
-                selectBox $scope.selected
+                rebind()
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if not User.email
@@ -131,22 +136,24 @@ define ['angular',
                 if $location.path().slice(-5) is '/todo'
                     selectBox(
                         title: 'Todo'
+                        tag: '**todo**'
                         filter: -> Database.items (x) -> not x.done
-                        hide: (x) -> x.done
                         allowNew: true
                     )
                 else if $location.path().slice(-5) is '/done'
                     selectBox(
                         title: 'Done'
+                        tag: '**done**'
                         filter: -> Database.items (x) -> x.done
-                        hide: -> false
+                        allowNew: true
+                        stamp: (item) ->
+                            item.done = Date.now()
                     )
                 else if $location.path().slice(0,5) is '/task'
                     selectBox(
                         title: 'Task'
                         tag: ''
                         filter: -> [Database.item($routeParams.taskid)]
-                        hide: -> false
                         allowNew: false
                         url: "/#/task#{$routeParams.taskid}"
                     )
@@ -160,22 +167,25 @@ define ['angular',
                         stamp: (item) ->
                             item.tags = item.tags or {}
                             items.tags[tag] = Date.now()
-                        hide: -> false
                         allowNew: true
                         url: "/#/tag?#{encodeURIComponent(tag)}"
                     )
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
+            #this isn't done with navigation, otherwise it would flash focus
+            #away from the desktop/input box and be a bit unpleasant
             $scope.$on 'searchquery', (event, query) ->
                 console.log 'query', query
                 if query
                     keys = {}
                     for result in LocalIndexes.fullTextSearch(query)
                         keys[result.ref] = result
-                    #reselect with a post filter based on the full text search
-                    selectBox $scope.selected, (x) -> keys[x.id]
+                    #just change the items
+                    $scope.selected.items =
+                        Database.items (x) -> keys[x.id]
                 else
+                    #reset to the selected box
                     selectBox $scope.selected
         #navbar provides all the tools and toggles to control the main user
         #interface, and contains the toolbox and searchbox

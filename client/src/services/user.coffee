@@ -29,10 +29,11 @@ define ['angular',
                         user.email = identity?.email
                         user.authtoken = identity?.authtoken
                     store.get 'identity'
-                clear: ->
-                    store.remove 'identity'
-                    user.email = null
-                    user.authtoken = null
+                lastLocation: (location) ->
+                    #getter with no args
+                    if arguments.length
+                        store.set 'lastLocation', location
+                    store.get 'lastLocation'
                 login: (authtoken) ->
                     #logging in is a request, so send a message which will be
                     #processed by the server
@@ -40,6 +41,7 @@ define ['angular',
                         $rootScope.$broadcast 'login', authtoken
                 logout: ->
                     user.persistentIdentity {}
+                    user.lastLocation ''
                     $rootScope.$broadcast 'logout'
                 join: (email) ->
                     #much like a login

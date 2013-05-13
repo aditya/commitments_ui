@@ -36,7 +36,14 @@ define ['angular',
                         _.extend items[item.id], item
                     else
                         items[item.id] = item
-                        $rootScope.$broadcast 'newitemfromserver', item
+                        #this is queued on purpose, that way the local indexes
+                        #are all updated and this event can be listend from the
+                        #UI to redraw post those local index changes. all event
+                        #driven anyhow, coming back from the server, if this was
+                        #synchronous, it would be before the indexes were updated
+                        #below...
+                        $timeout ->
+                            $rootScope.$broadcast 'newitemfromserver', item
                 LocalIndexes.update item
                 item
             deleteItem = (item, fromServer) ->
