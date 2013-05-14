@@ -220,7 +220,7 @@ define ['angular',
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
             #watch the index to see if we shoudl rebuild the facet filters
-            $scope.$watch 'localIndexes.tags()', ->
+            $scope.$watch 'localIndexes.signature()', ->
                 console.log 'rebuild boxes'
                 $rootScope.boxes = []
                 #always have the todo and done boxes
@@ -243,7 +243,6 @@ define ['angular',
                 #ok, so, I really don't understand why this is required, but
                 #without it my boxes list in the navbar is just plain empty
                 $scope.boxes = $rootScope.boxes
-            , true
         #nothing nuch going on here
         .controller 'User', ($rootScope, $scope) ->
             null

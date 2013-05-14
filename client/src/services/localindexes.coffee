@@ -47,6 +47,8 @@ define ['angular',
                         id: item.id
                 tags: (filter) ->
                     tagIndex.terms(filter)
+                signature: ->
+                    tagIndex.terms().sort().join('')
                 links: (filter) ->
                     linkIndex.terms(filter)
                 itemsByTag: (tags, filter) ->
