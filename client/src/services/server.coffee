@@ -2,8 +2,8 @@
 All about talking to the server, sending and receiving messages over socket.io
 that are then dispatched to appropriate services to maintain state.
 
-The server is completely event driven, exposing no methods. Let's keep it that
-way.
+The server is completely event driven to save stuff, exposing no methods.
+Let's keep it that way.
 ###
 define ['angular',
     'socketio',
@@ -12,7 +12,7 @@ define ['angular',
     'cs!./user',
     'cs!./sampledata',
     ], (angular, socketio, _, root) ->
-        root.factory 'Server', ($rootScope, $timeout, SampleData) ->
+        root.factory 'Server', ($rootScope, $timeout, SampleData, User) ->
             #socket io messages aren't in the angular scope, so here is a
             #helper to post a message into angular
             broadcast = (name, message...) ->
@@ -35,9 +35,9 @@ define ['angular',
                 #building up a connection string, different format depending on
                 #if the user is trying to join or not
                 if join
-                    connection_string = "#{$rootScope.user.preferences.server}?authtoken=join:#{encodeURIComponent(authtoken)}"
+                    connection_string = "#{User.preferences.server}?authtoken=join:#{encodeURIComponent(authtoken)}"
                 else
-                    connection_string = "#{$rootScope.user.preferences.server}?authtoken=#{encodeURIComponent(authtoken)}"
+                    connection_string = "#{User.preferences.server}?authtoken=#{encodeURIComponent(authtoken)}"
                 console.log 'connecting', connection_string
                 #here we go, a whole new socket starts up
                 socket = socketio.connect connection_string,
@@ -71,6 +71,7 @@ define ['angular',
                         #this appears to be the message coming back from
                         #socket.io on an auth failure
                         broadcast 'loginfailure'
+                        disconnect()
                 socket.on 'addFile', (item) ->
                     if item.filename.indexOf(socket.itemPath) is 0
                         broadcast 'itemfromserver', item.filename, item.data
@@ -86,13 +87,6 @@ define ['angular',
                         broadcast 'deleteitemfromserver', item.filename, item.data
                     else
                         broadcast 'deletefilefromserver', item.filename, item.data
-            #and now for the event listening
-            $rootScope.$on 'login', (event, authtoken) ->
-                connect authtoken
-            $rootScope.$on 'logout', ->
-            $rootScope.$on 'join', (event, email) ->
-                connect email, true
-                disconnect()
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 if socket
                     console.log 'will update', JSON.stringify(item)
@@ -122,6 +116,24 @@ define ['angular',
                 SampleData()
             window.fakeServer = ->
                 window.FAKE_SERVER = !window.FAKE_SERVER
-            #nothing is returned from this service, on purpose, you just go
-            #at it with events
-            null
+            server =
+                tryToBeLoggedIn: ->
+                    #check for a running session, this is a quick check to see
+                    #if we are logged in. ultimately, if this variable is faked
+                    #or poked, there still isn't a server session, so it is
+                    #a bit tamper resistant
+                    if socket
+                        return
+                    else if User.persistentIdentity()?.authtoken
+                        server.login User.persistentIdentity().authtoken
+                    else
+                        $rootScope.$broadcast 'notloggedin'
+                join: (email) ->
+                    connect email, true
+                login: (authtoken) ->
+                    connect authtoken
+                    $rootScope.$broadcast 'login'
+                logout: ->
+                    disconnect()
+                    $rootScope.$broadcast 'logout'
+            server

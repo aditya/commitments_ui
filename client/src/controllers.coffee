@@ -57,7 +57,11 @@ define ['angular',
                 $rootScope.flash "Whoops, that's not a valid login link", true
             $rootScope.$on 'logout', ->
                 $rootScope.flash "Logging you out"
-        .controller 'Application', ($rootScope, $location, Database, Notifications, StackRank, User) ->
+            $rootScope.$on 'notloggedin', ->
+                if $location.path() isnt '/'
+                    $location.path '/'
+        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User) ->
+            Server.tryToBeLoggedIn()
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, isError) ->
                 $rootScope.flashMessage = message
@@ -74,11 +78,11 @@ define ['angular',
             #to allow easy data binding
             $rootScope.notifications = Notifications
             $rootScope.user = User
-        .controller 'Login', ($scope, $routeParams, User) ->
-            User.login $routeParams.authtoken
+        .controller 'Login', ($scope, $routeParams, Server) ->
+            Server.login $routeParams.authtoken
             $scope.flash "Logging you in..."
-        .controller 'Logout', ($scope, $timeout, $location, User) ->
-            User.logout()
+        .controller 'Logout', ($scope, $timeout, $location, Server) ->
+            Server.logout()
         .controller 'Flash', ($scope, $timeout, $location) ->
             #Flash shows a message, and then takes you home to basically
             #simulate restarting/refreshing the app
@@ -86,12 +90,6 @@ define ['angular',
                 $location.path '/'
             , 3000
         .controller 'Splash', ($scope, $location, User, Database) ->
-            if User.persistentIdentity()
-                #If there is a saved login, let's try it
-                User.login User.persistentIdentity().authtoken
-            else
-                #Just show the splash page to anonymous cowards
-                $location.path '/'
             #the actual method to join
             $scope.join = () ->
                 User.join $scope.joinEmail, true
@@ -118,7 +116,46 @@ define ['angular',
             rebind = ->
                 if $scope.selected
                     $scope.selected.items = $scope.selected.fetchItems()
-                    console.log $scope.selected.items.length
+            #process where we are looking, this is a bit of a sub-router, it is
+            #not clear how to do this with the angular base router
+            if $location.path().slice(-5) is '/todo'
+                selectBox(
+                    title: 'Todo'
+                    tag: '**todo**'
+                    filter: -> Database.items (x) -> not x.done
+                    allowNew: true
+                )
+            else if $location.path().slice(-5) is '/done'
+                selectBox(
+                    title: 'Done'
+                    tag: '**done**'
+                    filter: -> Database.items (x) -> x.done
+                    allowNew: true
+                    stamp: (item) ->
+                        item.done = Date.now()
+                )
+            else if $location.path().slice(0,5) is '/task'
+                selectBox(
+                    title: 'Task'
+                    tag: ''
+                    filter: -> [Database.item($routeParams.taskid)]
+                    allowNew: false
+                    url: "/#/task#{$routeParams.taskid}"
+                )
+            else if $location.path().slice(-4) is '/tag'
+                tag = _.keys($location.search())[0]
+                selectBox(
+                    title: tag
+                    tag: tag
+                    filter: ->
+                        Database.itemsByTag tag
+                    stamp: (item) ->
+                        item.tags = item.tags or {}
+                        items.tags[tag] = Date.now()
+                    allowNew: true
+                    url: "/#/tag?#{encodeURIComponent(tag)}"
+                )
+            #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'newitemfromserver', (event, item) ->
@@ -127,49 +164,6 @@ define ['angular',
             $scope.$on 'deleteitemfromserver', ->
                 console.log 'delete item'
                 rebind()
-            #process where we are looking, this is a bit of a sub-router, it is
-            #not clear how to do this with the angular base router
-            if not User.email
-                #nobody logged in, welcome back to the home page
-                $location.path '/'
-            else
-                if $location.path().slice(-5) is '/todo'
-                    selectBox(
-                        title: 'Todo'
-                        tag: '**todo**'
-                        filter: -> Database.items (x) -> not x.done
-                        allowNew: true
-                    )
-                else if $location.path().slice(-5) is '/done'
-                    selectBox(
-                        title: 'Done'
-                        tag: '**done**'
-                        filter: -> Database.items (x) -> x.done
-                        allowNew: true
-                        stamp: (item) ->
-                            item.done = Date.now()
-                    )
-                else if $location.path().slice(0,5) is '/task'
-                    selectBox(
-                        title: 'Task'
-                        tag: ''
-                        filter: -> [Database.item($routeParams.taskid)]
-                        allowNew: false
-                        url: "/#/task#{$routeParams.taskid}"
-                    )
-                else if $location.path().slice(-4) is '/tag'
-                    tag = _.keys($location.search())[0]
-                    selectBox(
-                        title: tag
-                        tag: tag
-                        filter: ->
-                            Database.itemsByTag tag
-                        stamp: (item) ->
-                            item.tags = item.tags or {}
-                            items.tags[tag] = Date.now()
-                        allowNew: true
-                        url: "/#/tag?#{encodeURIComponent(tag)}"
-                    )
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids

@@ -14,6 +14,8 @@ define ['angular',
             #this comes back as an event
             $rootScope.$on 'loginsuccess', (event, identity) ->
                 user.persistentIdentity identity
+            $rootScope.$on 'logout', (event, identity) ->
+                user.persistentIdentity {}
             user =
                 email: ''
                 authtoken: ''
@@ -34,18 +36,6 @@ define ['angular',
                     if arguments.length
                         store.set 'lastLocation', location
                     store.get 'lastLocation'
-                login: (authtoken) ->
-                    #logging in is a request, so send a message which will be
-                    #processed by the server
-                    if authtoken
-                        $rootScope.$broadcast 'login', authtoken
-                logout: ->
-                    user.persistentIdentity {}
-                    user.lastLocation ''
-                    $rootScope.$broadcast 'logout'
-                join: (email) ->
-                    #much like a login
-                    $rootScope.$broadcast 'join', email
             #expose the methods with a variable, this is allowing self-reference
             #updates in the implementation above
             user
