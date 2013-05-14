@@ -32,7 +32,7 @@
         <div ng-show="focused && item.what && extended" class="task-extended">
             <hr/>
             <ul requires-object="extended.discussion" class="task-tools">
-                <li action tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"><i class="icon-hand-right"></i></li>
+                <li ng-hide="true" action tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></li>
                 <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></li>
             </ul>
