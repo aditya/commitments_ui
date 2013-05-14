@@ -50,11 +50,10 @@ define ['md5',
                         $scope.focused = true
                         #may need to digest, and only on the focus, the unfocsed
                         #things will get covered in the same digest loop implicitly
-                        if not $scope.$$phase
-                            $scope.$digest()
                     else
-                        if $scope.focused
-                            $scope.focused = false
+                        $scope.focused = false
+                    if not $scope.$$phase
+                        $scope.$digest()
                 #look for field level edits, in which case this record was
                 #update so send along an event
                 $scope.$on 'edit', (event) ->
