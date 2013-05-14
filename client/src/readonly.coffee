@@ -176,7 +176,6 @@ define [
                     event.stopPropagation()
                 menu = element.find '[role=menu]'
                 menu.on 'click', (event) ->
-                    console.log 'menu click'
                     #force close the menu
                     element.removeClass 'open'
                     event.stopPropagation()
