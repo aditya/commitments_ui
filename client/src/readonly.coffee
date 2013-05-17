@@ -186,3 +186,23 @@ define [
                 element.on 'click', (event) ->
                     event.preventDefault()
         ])
+        .directive('help', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.addClass 'help'
+                #capture the existing content, we'll use it later in a popup
+                content = element.children()
+                content.hide()
+                twizzler = $('<span class="icon-question"></span>')
+                element.append twizzler
+                twizzler.tooltip
+                    html: true
+                    title: content.html()
+                    placement: 'bottom'
+                    delay:
+                        show: ANIMATION_SPEED
+                        hide: ANIMATION_SPEED
+                twizzler.on 'click', (event)->
+                    event.stopPropagation()
+                    twizzler.tooltip('show')
+        ])

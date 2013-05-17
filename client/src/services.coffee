@@ -7,5 +7,6 @@ define ['angular',
     'cs!./services/stackrank',
     'cs!./services/database',
     'cs!./services/server',
+    'cs!./services/trash',
     ], (angular, root) ->
         root

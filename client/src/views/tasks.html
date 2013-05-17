@@ -1,3 +1,16 @@
+<script type='text/ng-template' id="texthelp">
+    <div help>
+        <span>
+            Save by hitting
+            <em>↵</em>
+            or
+            <em>ctrl</em>
+            +
+            <em>↵</em>
+            or clicking away. You can also mark up with markdown.
+        </span>
+    </div>
+</script>
 <ul
     ng-controller="Tasks"
     editable-list
@@ -24,7 +37,11 @@
         <table class="task-core">
             <tr>
                 <td  class="task-check"><span check ng-model="item.done" tooltip="'click here to mark done'"></span></td>
-                <td markdown required ng-model="item.what" class="larger"></td>
+                <td>
+                    <div markdown required ng-model="item.what" class="larger">
+                        <span ng-show="focused" ng-include src="'texthelp'"></span>
+                    </div>
+                </td>
                 <td class="task-delete"><button ng-show="focused" ng-click="delete(item)" class="close"><i class="icon-trash"></i></button></td>
             </tr>
         </table>
@@ -53,7 +70,9 @@
     editable-record-placeholder="placeholderItem"
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
-        <span focus-on="newtask" markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger"></span>
+        <span focus-on="newtask" markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
+            <span ng-show="focused" ng-include src="'texthelp'"></span>
+        </span>
     </div>
     </li>
 </ul>

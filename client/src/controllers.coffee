@@ -60,7 +60,7 @@ define ['angular',
             $rootScope.$on 'notloggedin', ->
                 if $location.path() isnt '/'
                     $location.path '/'
-        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User) ->
+        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User, Trash) ->
             Server.tryToBeLoggedIn()
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, isError) ->
@@ -78,6 +78,7 @@ define ['angular',
             #to allow easy data binding
             $rootScope.notifications = Notifications
             $rootScope.user = User
+            $rootScope.trash = Trash
         .controller 'Login', ($scope, $routeParams, Server) ->
             Server.login $routeParams.authtoken
             $scope.flash "Logging you in..."
@@ -159,10 +160,10 @@ define ['angular',
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
             $scope.$on 'newitemfromserver', (event, item) ->
-                console.log 'new item', item.id
                 rebind()
             $scope.$on 'deleteitemfromserver', ->
-                console.log 'delete item'
+                rebind()
+            $scope.$on 'deleteitem', ->
                 rebind()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
@@ -205,8 +206,8 @@ define ['angular',
                 else
                     #otherwise this is a normal toggle
                     $scope.user.preferences.notifications = not $scope.user.preferences.notifications
-                if $scope.user.preferences.notifications
-                    Notifications.deliverMessages()
+            $scope.toggleTrash = ->
+                $scope.user.preferences.trash = not $scope.user.preferences.trash
             #event to ask for a new task focus
             $scope.addTask = ->
                 $rootScope.$broadcast 'newtask'

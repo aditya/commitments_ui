@@ -24,14 +24,17 @@
                         class="badge badge-important">{{notifications.unreadCount()}}</span>
                 </button>
                 <button
+                    ng-click="toggleTrash()"
+                    class="btn btn-nav">
+                    <i class="icon-trash"></i>
+                    <span
+                        animated-visible="trash.trashcan"
+                        class="badge badge-important">{{trash.itemCount()}}</span>
+                </button>
+                <button
                     ng-click="toggleBulkShare()"
                     class="btn btn-nav">
                     <i class="icon-user"></i>
-                </button>
-                <button
-                    ng-click="addTask()"
-                    class="btn btn-nav">
-                    <i class="icon-plus"></i>
                 </button>
             </span>
             <span class="input-append">

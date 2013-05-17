@@ -1,3 +1,14 @@
+<script type='text/ng-template' id="texthelp">
+    <div help>
+        <span>
+            Save by hitting
+            <em>ctrl</em>
+            +
+            <em>↵</em>
+            or clicking away. You can also mark up with markdown.
+        </span>
+    </div>
+</script>
 <div ng-controller="Discussion" class="discussion">
     <ul editable-list
         editable-list-blank-record
@@ -22,7 +33,9 @@
                         markdown multiline
                         readonly-if="user.email != comment.who"
                         ng-model="comment.what"
-                        required></div>
+                        required>
+                        <span ng-include src="'texthelp'"></span>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -46,7 +59,9 @@
                         markdown multiline
                         placeholder="'Your comment here'"
                         ng-model="$$placeholder.what"
-                        required></div>
+                        required>
+                        <span ng-include src="'texthelp'"></span>
+                    </div>
                 </td>
             </tr>
         </table>
