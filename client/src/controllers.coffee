@@ -114,9 +114,6 @@ define ['angular',
                         box.tag)
                     $scope.selected.items = $scope.selected.fetchItems()
                     User.lastLocation $location.path()
-            rebind = ->
-                if $scope.selected
-                    $scope.selected.items = $scope.selected.fetchItems()
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'
@@ -157,14 +154,6 @@ define ['angular',
                     url: "/#/tag?#{encodeURIComponent(tag)}"
                 )
             #event handling
-            #looking for server updates, in which case we re-select the
-            #same box triggering a rebinding
-            $scope.$on 'newitemfromserver', (event, item) ->
-                rebind()
-            $scope.$on 'deleteitemfromserver', ->
-                rebind()
-            $scope.$on 'deleteitem', ->
-                rebind()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
@@ -281,7 +270,7 @@ define ['angular',
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
             $scope.poke = (item) ->
-                console.log 'poking', item
+                $rootScope.$broadcast 'pokeitem', item
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in that box
             $scope.placeholderItem = (item) ->
@@ -292,6 +281,18 @@ define ['angular',
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
                 $rootScope.$broadcast 'deleteitemfromlocal', item
+            #event handling
+            #looking for server updates, in which case we re-select the
+            #same box triggering a rebinding
+            rebind = ->
+                if $scope.selected
+                    $scope.selected.items = $scope.selected.fetchItems()
+            $scope.$on 'newitemfromserver', (event, item) ->
+                rebind()
+            $scope.$on 'deleteitemfromserver', ->
+                rebind()
+            $scope.$on 'deleteitem', ->
+                rebind()
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
             $scope.showNotifications = ->
