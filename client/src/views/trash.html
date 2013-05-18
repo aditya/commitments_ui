@@ -1,5 +1,8 @@
-<div ng-controller="Trash" >
-    <ul ng-model="trash" animated-show="user.preferences.trash" class="trash">
+<div ng-controller="Trash">
+    <ul ng-model="trash" class="trash">
+        <li class="alert" ng-show="trash.itemCount() == 0">
+        Nothing in the Trash
+        </li>
         <li ng-repeat="(id, item) in trash.items()" class="trash-item">
         <table>
             <tr>
@@ -17,5 +20,6 @@
             <div postdate ng-model="item.lastUpdatedAt"></div>
         </div>
         </li>
+        <li><a ng-click="emptyTrash()" ng-show="trash.itemCount()" class="btn btn-large btn-danger"><i class="icon-trash icon-large"></i> Empty Trash</a></li>
     </ul>
 </div>

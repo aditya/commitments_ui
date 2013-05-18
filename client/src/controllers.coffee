@@ -114,6 +114,12 @@ define ['angular',
                         box.tag)
                     $scope.selected.items = $scope.selected.fetchItems()
                     User.lastLocation $location.path()
+                    hideThemAll()
+                    $scope.showTasks = true
+            hideThemAll = ->
+                $scope.showTasks = false
+                $scope.showTrash = false
+                $scope.showNotifications = false
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'
@@ -149,7 +155,7 @@ define ['angular',
                         Database.itemsByTag tag
                     stamp: (item) ->
                         item.tags = item.tags or {}
-                        items.tags[tag] = Date.now()
+                        item.tags[tag] = Date.now()
                     allowNew: true
                     url: "/#/tag?#{encodeURIComponent(tag)}"
                 )
@@ -171,54 +177,73 @@ define ['angular',
                 else
                     #reset to the selected box
                     selectBox $scope.selected
+            $scope.$on "showTrash", ->
+                hideThemAll()
+                $scope.showTrash = true
+            $scope.$on "showNotifications", ->
+                hideThemAll()
+                $scope.showNotifications = true
+            $scope.$on "showTasks", ->
+                hideThemAll()
+                $scope.showTasks = true
         #navbar provides all the tools and toggles to control the main user
         #interface, and contains the toolbox and searchbox
         .controller 'Navbar', ($rootScope, $scope, $location, Notifications) ->
             $scope.toggleNotifications = ->
-                if Notifications.unreadCount()
-                    #if there are messages, always show
-                    $scope.user.preferences.notifications = true
-                else
-                    #otherwise this is a normal toggle
-                    $scope.user.preferences.notifications = not $scope.user.preferences.notifications
+                $rootScope.$broadcast "showNotifications"
             $scope.toggleTrash = ->
-                $scope.user.preferences.trash = not $scope.user.preferences.trash
+                $rootScope.$broadcast "showTrash"
+            $scope.toggleTasks = ->
+                $rootScope.$broadcast "showTasks"
             #event to ask for a new task focus
             $scope.addTask = ->
+                $rootScope.$broadcast 'showTasks'
                 $rootScope.$broadcast 'newtask'
         #toolbox has all the boxes, not sure of a better name we can use, what
         #do you call a box of boxes? boxula?
-        .controller 'Toolbox', ($scope, $rootScope, LocalIndexes) ->
+        .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
             $scope.boxes = []
             $scope.lastBox = null
             $scope.localIndexes = LocalIndexes
             $scope.todoCount = (box) ->
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
-            #watch the index to see if we shoudl rebuild the facet filters
-            $scope.$watch 'localIndexes.signature()', ->
+            rebuild = ->
                 console.log 'rebuild boxes'
                 $rootScope.boxes = []
                 #always have the todo and done boxes
                 $rootScope.boxes.push(
                     title: 'Todo'
                     url: '/#/todo'
+                    count: ->
+                        (Database.items (x) -> not x.done).length
                 ,
                     title: 'Done'
                     url: '/#/done'
+                    count: ->
+                        (Database.items (x) -> x.done).length
                 )
                 #now build up a 'box' for each tag, not sure why I want to call
                 #it a box, just that the tags are drawn on screen in a... box?
                 #or maybe that it reminds me of a mailbox
-                for tagTerm in LocalIndexes.tags()
+                make = (term) ->
                     $rootScope.boxes.push(
-                        title: tagTerm
-                        tag: tagTerm
-                        url: "/#/tag?#{encodeURIComponent(tagTerm)}"
+                        title: term
+                        tag: term
+                        url: "/#/tag?#{encodeURIComponent(term)}"
+                        count: ->
+                            (Database.itemsByTag term).length
                     )
+                for tagTerm in LocalIndexes.tags()
+                    make tagTerm
                 #ok, so, I really don't understand why this is required, but
                 #without it my boxes list in the navbar is just plain empty
                 $scope.boxes = $rootScope.boxes
+            #watch the index to see if we should rebuild the facet filtersk
+            $scope.$watch 'localIndexes.signature()', ->
+                rebuild()
+            $scope.$on 'rebuild', ->
+                rebuild()
         #nothing nuch going on here
         .controller 'User', ($rootScope, $scope) ->
             null
@@ -260,6 +285,7 @@ define ['angular',
             rebind = ->
                 if $scope.selected
                     $scope.selected.items = $scope.selected.fetchItems()
+                $rootScope.$broadcast 'rebuild'
             $scope.$on 'newitemfromserver', (event, item) ->
                 rebind()
             $scope.$on 'deleteitemfromserver', ->
@@ -269,12 +295,8 @@ define ['angular',
             $scope.$on 'itemfromlocal', ->
                 rebind()
         #notifications, button and dropdown
-        .controller 'Notifications', ($scope) ->
-            $scope.showNotifications = ->
-                #receive message and reset the bound scope
-                $scope.notifications =
-                    $scope.database.notifications.deliverMessages()
-            $scope.iconFor = (notification) ->
+        .controller 'Notifications', ($scope, $rootScope) ->
+            $rootScope.iconFor = (notification) ->
                 if _.contains notification?.data?.tags, 'comment'
                     return 'icon-comment'
                 if _.contains notification?.data?.tags, 'done'
@@ -290,7 +312,9 @@ define ['angular',
                 if _.contains notification?.data?.tags, 'unshare'
                     return 'icon-reply'
         #local trash can to allow undelete
-        .controller 'Trash', ($rootScope, $scope, $timeout) ->
+        .controller 'Trash', ($rootScope, $scope, $timeout, Trash) ->
+            $scope.emptyTrash = ->
+                Trash.empty()
             $scope.undelete = (item) ->
                 #and undelete is really just the same as an update
                 $rootScope.$broadcast 'itemfromlocal', item

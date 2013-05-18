@@ -8,18 +8,21 @@ define ['angular',
     'cs!./root'], (angular, store, _, root) ->
         root.factory 'Trash', ($rootScope) ->
             trashcan = store.get('.trash') or {}
+            save = (can) ->
+                trashcan = can
+                store.set '.trash', trashcan
             $rootScope.$on 'deleteitem', (event, item) ->
                 #such a very primitize API to get at local storage, not that
                 #it is a big deal to JSON things, but incremental adding
                 #would be preferred to me
                 trashcan = store.get('.trash') or {}
                 trashcan[item.id] = item
-                store.set '.trash', trashcan
+                save trashcan
             untrash = (item) ->
                 #just make sure the item isn't in the trash
                 trashcan = store.get('.trash') or {}
                 delete trashcan[item.id]
-                store.set '.trash', trashcan
+                save trashcan
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 #you undeleted the thing
                 untrash item
@@ -31,3 +34,5 @@ define ['angular',
                     trashcan
                 itemCount: ->
                     _.keys(trashcan).length
+                empty: ->
+                    save {}

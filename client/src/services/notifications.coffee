@@ -24,6 +24,8 @@ define ['angular',
                 deliverMessages: ->
                     newCount = 0
                 items: items
+                itemCount: ->
+                    items.length
                 clear: ->
                     items.splice()
             #event handling

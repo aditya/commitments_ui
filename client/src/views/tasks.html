@@ -1,5 +1,5 @@
 <script type='text/ng-template' id="texthelp">
-    <div help>
+<div help>
         <span>
             Save by hitting
             <em>↵</em>
@@ -11,6 +11,24 @@
         </span>
     </div>
 </script>
+<ul
+    toaster
+    animated-show="notification"
+    ng-init="notification"
+    class="notifications">
+    <li class="notification">
+    <button type="button" class="close" data-dismiss="alert"><i class="icon-remove"></i></button>
+    <i class="notification-icon {{iconFor(notification)}}"></i>
+    <div postdate ng-model="notification.when"></div>
+    <div>
+        <span class="notification-message">
+            <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
+            <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
+        </span>
+    </div>
+    <div markdown readonly ng-model="notification.data.message"></div>
+    </li>
+</ul>
 <ul
     ng-controller="Tasks"
     editable-list
