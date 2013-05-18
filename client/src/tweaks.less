@@ -398,10 +398,6 @@ body {
     }
 }
 
-.navbar-content {
-    margin-right: @defaultMargin;
-}
-
 .top-left {
     position: absolute;
     z-index: 200;
@@ -491,14 +487,9 @@ body {
     .larger;
 }
 
-.navbar-content {
-    margin-top: 3px;
-}
-
 .comment-gravatar {
     width: 40px;
 }
-
 
 .toaster {
     .alert {
@@ -512,30 +503,6 @@ input {
 
 hr {
     margin: @defaultMargin;
-}
-
-.btn-nav {
-    max-height: 30px;
-    @media (min-width: 460px) {
-    }
-    @media (max-width: 460px) {
-        padding: @defaultPad @defaultPad;
-    }
-}
-
-.navbuttons {
-    .pull-right;
-    .btn-group {
-        margin-top: 2px;
-        margin-bottom: 2px;
-    }
-    .tag {
-        display: inline-block;
-    }
-}
-
-.navbar-inner {
-    min-height: 34px;
 }
 
 .username {
@@ -559,5 +526,38 @@ hr {
     }
     .tooltip {
         font-size: 1.0em;
+    }
+}
+
+.navbar {
+    .form-search {
+        .pull-right;
+        padding-top: 3px;
+        padding-right: 3px;
+        margin-right: 0px;
+        input {
+            @media (max-width: 500px) {
+                width: 100px;
+            }
+            @media (min-width: 500px) {
+                width: 200px;
+            }
+        }
+    }
+    .nav {
+        li {
+            a {
+                i {
+                    font-size: 1.5em;
+                    vertical-align: middle;
+                }
+                @media (max-width: 460px) {
+                    padding-left: @defaultPad;
+                }
+                padding-right: @defaultPad;
+                padding-left: @defaultPad;
+                padding-bottom: 4px;
+            }
+        }
     }
 }
