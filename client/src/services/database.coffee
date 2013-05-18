@@ -49,6 +49,9 @@ define ['angular',
             deleteItem = (item, fromServer) ->
                 if not item
                     return
+                #you did it, so we record it :)
+                item.lastUpdatedBy = $rootScope.user.email
+                item.lastUpdatedAt = Date.now()
                 #removal of the item from the local database
                 delete items[item.id]
                 LocalIndexes.delete item

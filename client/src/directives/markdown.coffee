@@ -96,7 +96,8 @@ define ['angular',
                     element.scope().$on attrs.focusOn, ->
                         focus()
                 element.on 'click dblclick', (event) ->
-                    focus()
+                    if not display.hasClass 'readonly'
+                        focus()
                 element.on 'keydown', (event) ->
                     if event.which is 27 #escape
                         event.target.blur()

@@ -293,6 +293,8 @@ define ['angular',
                 rebind()
             $scope.$on 'deleteitem', ->
                 rebind()
+            $scope.$on 'itemfromlocal', ->
+                rebind()
         #notifications, button and dropdown
         .controller 'Notifications', ($scope) ->
             $scope.showNotifications = ->
@@ -314,3 +316,8 @@ define ['angular',
                     return 'icon-share-alt'
                 if _.contains notification?.data?.tags, 'unshare'
                     return 'icon-reply'
+        #local trash can to allow undelete
+        .controller 'Trash', ($rootScope, $scope, $timeout) ->
+            $scope.undelete = (item) ->
+                #and undelete is really just the same as an update
+                $rootScope.$broadcast 'itemfromlocal', item

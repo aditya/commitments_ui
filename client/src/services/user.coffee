@@ -24,6 +24,7 @@ define ['angular',
                     server: "http://#{window.location.host}/"
                     notifications: false
                     notificationsLRU: 20
+                    trash: false
                 persistentIdentity: (identity) ->
                     #this is a getter with no args
                     if arguments.length

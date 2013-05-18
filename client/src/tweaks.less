@@ -19,7 +19,6 @@
     border: 1px solid transparent;
 }
 
-
 .focus-editor {
     .border-radius(@baseBorderRadius);
     border: 1px solid @inputBorder;
@@ -164,12 +163,15 @@ body {
         .transparent-border;
         cursor: text;
         &:hover {
-            .focus-editor;
+            .hover-editor;
         }
     }
     .readonly {
-        border-color: @transparent !important;
+        .transparent-border;
         cursor: default;
+        &:hover {
+            .transparent-border;
+        }
     }
     .placeholder {
         cursor: text;
@@ -235,6 +237,7 @@ body {
     .gravatar-size;
 }
 
+
 .comments {
     .comment {
         padding: @defaultPad;
@@ -258,6 +261,30 @@ body {
             .gravatar-size;
             img {
                 .gravatar-size;
+            }
+        }
+    }
+}
+
+.trash {
+    list-style: none;
+    .no-margin;
+    .no-padding;
+    .trash-item {
+        .well;
+        padding: @defaultPad;
+        margin-bottom: @defaultMargin;
+        background-color: @bodyBackground;
+        background-image: url('../images/body-bg-texture-medium.png');
+        .trash-item-footer {
+            color: @grayLight;
+            margin: @defaultMargin;
+            .full-width;
+        }
+        .trash-item-undelete {
+            width: 40px;
+            i {
+                .pull-left;
             }
         }
     }
@@ -320,6 +347,7 @@ body {
             width: 40px;
             i {
                 .icon-2x;
+                .action-icon;
             }
             padding-top: @defaultPad;
             padding-left: @defaultPad;
