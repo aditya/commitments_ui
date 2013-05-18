@@ -174,20 +174,6 @@ define ['angular',
         #navbar provides all the tools and toggles to control the main user
         #interface, and contains the toolbox and searchbox
         .controller 'Navbar', ($rootScope, $scope, $location, Notifications) ->
-            #bulk sharing is driven from the navbar
-            rebuildAllUsers = (items) ->
-                allUsers = {}
-                for item in items
-                    for user, __ of (item.links or {})
-                        allUsers[user] = 1
-                if allUsers[$scope.user.email]
-                    delete allUsers[$scope.user.email]
-                $scope.selected.allUsers = allUsers
-            #ui toggle has a bit of data rebuild along with it
-            $scope.toggleBulkShare = ->
-                $scope.user.preferences.bulkShare = not $scope.user.preferences.bulkShare
-                if $scope.user.preferences.bulkShare
-                    rebuildAllUsers $scope.selected.items
             $scope.toggleNotifications = ->
                 if Notifications.unreadCount()
                     #if there are messages, always show
@@ -252,19 +238,6 @@ define ['angular',
                 delete item.links[$scope.user.email]
                 delete item.accept[$scope.user.email]
                 $rootScope.$broadcast 'itemfromlocal', item
-        #bulk sharing function, puts all the users on all the items
-        .controller 'BulkShare', ($scope) ->
-            $scope.bulkShare = (all) ->
-                for item in $scope.selected.items
-                    if item?.links?[$scope.user.email]
-                        item.links = {}
-                        item.links[$scope.user.email] = Date.now()
-                    else
-                        #big blank set
-                        item.links = {}
-                    for user in _.keys(all)
-                        item.links[user] = Date.now()
-                    $scope.database.update item
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, LocalIndexes) ->
             $scope.tags = LocalIndexes.tags
