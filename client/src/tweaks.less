@@ -2,7 +2,7 @@
 @defaultPad: 4px;
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
-
+@fillBackground: fade(@wellBackground, 60%);
 @borderColor: darken(@wellBackground, 7%);
 
 .pull-top {
@@ -69,6 +69,7 @@
 
 .fill {
   width: auto;
+  height: auto;
 }
 
 .rest {
@@ -216,11 +217,6 @@ body {
   height: 32px;
 }
 
-.gravatar-size-large {
-  width: 44px;
-  height: 44px;
-}
-
 .gravatar {
   img {
     border: 1px solid @borderColor;
@@ -228,6 +224,8 @@ body {
     .border-radius(@baseBorderRadius);
     .border-radius(@baseBorderRadius);
     .gravatar-size;
+    padding: 1px;
+    background: @borderColor;
   }
   text-align: center;
   .gravatar-size;
@@ -243,11 +241,9 @@ body {
     .username {
       color: @grayLight;
     }
-    .gravatar {
-      .gravatar-size;
-      img {
-        .gravatar-size;
-      }
+    .comment-gravatar {
+     vertical-align: top;
+     border-right: @borderColor 1px solid;
     }
   }
 }
@@ -427,7 +423,7 @@ body {
 }
 
 .well {
-  background-color: fade(@wellBackground, 60%);
+  background-color: @fillBackground;
 }
 
 .tiny-well {
