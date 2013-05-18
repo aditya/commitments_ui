@@ -4,7 +4,7 @@
     animated-hide="item.who == user.email || item.accept[user.email]"
     class="alert">
   <span>Task from</span>
-  <span gravatar ng-model="item.who" tooltip="item.who"></span>
+  <span gravatar ng-model="item.who"></span>
   <span class="btn-group">
     <button class="btn btn-success" ng-click="accept(item)">Accept</button>
     <button class="btn btn-danger" ng-click="reject(item)">Reject</button>

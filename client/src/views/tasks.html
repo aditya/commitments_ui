@@ -1,16 +1,3 @@
-<script type='text/ng-template' id="texthelp">
-<div help>
-        <span>
-            Save by hitting
-            <em>↵</em>
-            or
-            <em>ctrl</em>
-            +
-            <em>↵</em>
-            or clicking away. You can also mark up with markdown.
-        </span>
-    </div>
-</script>
 <ul
     toaster
     animated-show="notification"
@@ -51,10 +38,10 @@
         <!--core attributes of a task item, these always show and bind-->
         <table class="task-core">
             <tr>
-                <td  class="task-check"><span check ng-model="item.done" tooltip="'click here to mark done'"></span></td>
+                <td  class="task-check"><span check ng-model="item.done"></span></td>
                 <td>
                     <div markdown required ng-model="item.what" class="larger">
-                        <span ng-show="focused" ng-include src="'texthelp'"></span>
+                        <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>
                 <td class="task-delete"><button ng-click="delete(item)" class="close"><i class="icon-trash"></i></button></td>
@@ -64,9 +51,9 @@
         <div ng-show="focused && item.what && extended" class="task-extended">
             <hr/>
             <ul requires-object="extended.discussion" class="task-tools">
-                <li ng-hide="true" action tooltip="'poke folks for a status report'" tooltip-placement="right" ng-click="poke(extended)"><i class="icon-hand-right"></i></li>
-                <li tags tags-query="tags" icon="tags" ng-model="extended.tags" tooltip="'tags to help organize'"></li>
-                <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="extended.links" tooltip="'share via email addresses'"></li>
+                <li ng-hide="true" action ng-click="poke(extended)"><i class="icon-hand-right"></i></li>
+                <li tags tags-query="tags" icon="tags" ng-model="extended.tags"></li>
+                <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="extended.links"></li>
             </ul>
             <div class="task-discussion">
                 <div ng-include src="'src/views/discussion.html'"></div>
@@ -86,7 +73,7 @@
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
         <span focus-on="newtask" markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
-            <span ng-show="focused" ng-include src="'texthelp'"></span>
+            <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
         </span>
     </div>
     </li>

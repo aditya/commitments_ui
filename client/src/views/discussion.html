@@ -1,14 +1,3 @@
-<script type='text/ng-template' id="texthelp">
-    <div help>
-        <span>
-            Save by hitting
-            <em>ctrl</em>
-            +
-            <em>↵</em>
-            or clicking away. You can also mark up with markdown.
-        </span>
-    </div>
-</script>
 <div ng-controller="Discussion" class="discussion">
     <ul editable-list
         editable-list-blank-record
@@ -22,9 +11,7 @@
                     <div
                         gravatar
                         default="user.email"
-                        ng-model="comment.who"
-                        tooltip="comment.who"
-                        tooltip-placement="right"></div>
+                        ng-model="comment.who"></div>
                 </td>
                 <td class="fill">
                     <span username ng-model="comment.who"></span>
@@ -34,7 +21,7 @@
                         readonly-if="user.email != comment.who"
                         ng-model="comment.what"
                         required>
-                        <span ng-include src="'texthelp'"></span>
+                        <span ng-include src="'src/views/discussionhelp.html'"></span>
                     </div>
                 </td>
             </tr>
@@ -50,9 +37,7 @@
                     <div
                         gravatar
                         default="user.email"
-                        ng-model="comment.who"
-                        tooltip="comment.who"
-                        tooltip-placement="left"></div>
+                        ng-model="comment.who"></div>
                 </td>
                 <td class="fill">
                     <div
@@ -60,7 +45,7 @@
                         placeholder="'Your comment here'"
                         ng-model="$$placeholder.what"
                         required>
-                        <span ng-include src="'texthelp'"></span>
+                        <span ng-include src="'src/views/discussionhelp.html'"></span>
                     </div>
                 </td>
             </tr>

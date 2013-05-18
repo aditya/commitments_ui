@@ -32,20 +32,6 @@ define [
                     hash = md5((ngModel.$viewValue or '').toLowerCase())
                     icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{size}"
         ])
-        .directive('tooltip', ['$timeout', ($timeout)  ->
-            restrict: 'A'
-            compile: (templateElement, templateAttrs) ->
-                ($scope, element, attrs) ->
-                    placement = attrs.tooltipPlacement or 'top'
-                    $scope.$watch templateAttrs.tooltip, (tooltip) ->
-                        element.tooltip 'destroy'
-                        element.tooltip
-                            title: tooltip
-                            placement: placement
-                            delay:
-                                show: ANIMATION_SPEED
-                                hide: ANIMATION_SPEED
-        ])
         .directive('username', [() ->
             restrict: 'A'
             require: 'ngModel'
@@ -157,28 +143,6 @@ define [
             link: ($scope, element, attrs) ->
                 element.addClass 'action'
                 element.css 'cursor', 'pointer'
-        ])
-        .directive('dropdown', [ ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                element.addClass 'dropdown'
-                #toggler, appease the dropdown javascript to have the toggle
-                #have a common parent of the toggled menu itself
-                toggler = $("<span></span>")
-                element.append toggler
-                toggler.dropdown()
-                element.on 'click', (event) ->
-                    #close all other dropdowns
-                    $('.dropdown').removeClass 'open'
-                    if attrs.onDropdown
-                        $scope.$eval("#{attrs.onDropdown}")
-                    toggler.dropdown 'toggle'
-                    event.stopPropagation()
-                menu = element.find '[role=menu]'
-                menu.on 'click', (event) ->
-                    #force close the menu
-                    element.removeClass 'open'
-                    event.stopPropagation()
         ])
         .directive('eatClick', [ ->
             restrict: 'A'
