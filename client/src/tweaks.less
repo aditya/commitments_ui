@@ -247,16 +247,6 @@ body {
         .username {
             color: @grayLight;
         }
-        .popover {
-            .shadowed;
-            position: relative;
-            display: block;
-            float: left;
-            padding: @defaultPad;
-            min-width: 100%;
-            width: 100%;
-            z-index: 1;
-        }
         .gravatar {
             .gravatar-size;
             img {
@@ -437,37 +427,6 @@ body {
     @media (max-width: 720px) {
         font-weight: normal;
         .smaller;
-    }
-}
-
-//tweaking base bootstrap
-//Tweak the popover a tiny bit
-.popover {
-    .border-radius(@baseBorderRadius);
-    border-color: @borderColor;
-    &.right .arrow {
-        border-right-color: @borderColor;
-        &:after {
-            border-right-color: @borderColor;
-        }
-    }
-    &.top .arrow {
-        border-top-color: @borderColor;
-        &:after {
-            border-top-color: @borderColor;
-        }
-    }
-    &.bottom .arrow {
-        border-bottom-color: @borderColor;
-        &:after {
-            border-bottom-color: @borderColor;
-        }
-    }
-    &.left .arrow {
-        border-left-color: @borderColor;
-        &:after {
-            border-left-color: @borderColor;
-        }
     }
 }
 
