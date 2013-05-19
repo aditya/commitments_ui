@@ -49,7 +49,6 @@
         </table>
         <!--this div is to control visibility-->
         <div ng-show="focused && item.what && extended" class="task-extended">
-            <hr/>
             <ul requires-object="extended.discussion" class="task-tools">
                 <li ng-hide="true" action ng-click="poke(extended)"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" icon="tags" ng-model="extended.tags"></li>

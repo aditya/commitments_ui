@@ -93,7 +93,7 @@ define ['angular',
         .controller 'Splash', ($scope, $location, User, Database) ->
             #the actual method to join
             $scope.join = () ->
-                User.join $scope.joinEmail, true
+                Server.join $scope.joinEmail
                 $scope.flashing = true
             $scope.joinAgain = () ->
                 $scope.joinEmail = ''
