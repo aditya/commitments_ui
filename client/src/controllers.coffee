@@ -90,7 +90,7 @@ define ['angular',
             $timeout ->
                 $location.path '/'
             , 3000
-        .controller 'Splash', ($scope, $location, User, Database) ->
+        .controller 'Splash', ($scope, $location, Server) ->
             #the actual method to join
             $scope.join = () ->
                 Server.join $scope.joinEmail
