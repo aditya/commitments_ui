@@ -105,7 +105,7 @@ define ['angular',
                         console.log 'going for notifications'
                         socket.emit 'exec',
                             command: 'notify'
-                            args: ['peek']
+                            args: ['receive']
                             , (messages) ->
                                 for message in messages
                                     broadcast 'notification', message
