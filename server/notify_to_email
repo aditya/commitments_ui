@@ -4,25 +4,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #keep on going forever, and try to send messages
 while [ -n "-" ]
 do
-    #go through ever user that has pending notifications
-    for NOTIFY_DIR in "${NOTIFY_ROOT}"/*
-    do
-        export EMAIL=$(basename $NOTIFY_DIR)
-        #any user that has pending notifications isn't logged in, otherwise they
-        #would have been consumed
-        #and here we send an email
-        notify receive $EMAIL --throttle 60 > "/tmp/${EMAIL}"
-        NOTIFICATIONS=$?
-        if [ $NOTIFICATIONS == 0 ]; then
-            echo $EMAIL has new notifications
-            export TOKEN=`token create ${EMAIL}`
-            cat "/tmp/${EMAIL}" \
-            | render "${DIR}/messages/updates.handlebars" \
-            | send --markdown ses
-            notify about user $EMAIL
-        else
-            echo $EMAIL has no new notifications
-        fi
-    done
+    "${DIR}/notify_to_email_job"
     sleep 30
 done
