@@ -29,11 +29,6 @@ define ['angular',
                         user.email = identity?.email
                         user.authtoken = identity?.authtoken
                     store.get 'identity'
-                lastLocation: (location) ->
-                    #getter with no args
-                    if arguments.length
-                        store.set 'lastLocation', location
-                    store.get 'lastLocation'
             #expose the methods with a variable, this is allowing self-reference
             #updates in the implementation above
             user

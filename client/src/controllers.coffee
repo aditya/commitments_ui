@@ -52,7 +52,7 @@ define ['angular',
             #bit which makes a lot more sense to keep in the controller
             #in this root most controller, listen for login and login failure
             $rootScope.$on 'loginsuccess', (event, identity) ->
-                $location.path User.lastLocation() or '/todo'
+                $location.path '/todo'
             $rootScope.$on 'loginfailure', ->
                 $rootScope.flash "Whoops, that's not a valid login link", true
             $rootScope.$on 'logout', ->
@@ -113,7 +113,6 @@ define ['angular',
                         (x) -> x.id,
                         box.tag)
                     $scope.selected.items = $scope.selected.fetchItems()
-                    User.lastLocation $location.path()
                     hideThemAll()
                     $scope.showTasks = true
             hideThemAll = ->
