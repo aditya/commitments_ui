@@ -4,12 +4,20 @@
 @transparent: rgba(0,0,0,0);
 @fillBackground: fade(@wellBackground, 60%);
 @borderColor: darken(@wellBackground, 7%);
+@bodyBackground: lighten(@wellBackground, 50%);
 
 .center-layout(@max-width) {
     max-width: @max-width;
     margin-left: auto;
     margin-right: auto;
 }
+
+.well {
+        padding: @defaultPad;
+        margin-bottom: @defaultMargin;
+        background-color: @bodyBackground !important;
+        background-image: url('../images/body-bg-texture-medium.png');
+    }
 
 .well-border {
     .border-radius(@baseBorderRadius);
@@ -267,10 +275,6 @@ body {
     .no-padding;
     .trash-item {
         .well;
-        padding: @defaultPad;
-        margin-bottom: @defaultMargin;
-        background-color: @bodyBackground;
-        background-image: url('../images/body-bg-texture-medium.png');
         .trash-item-footer {
             color: @grayLight;
             margin: @defaultMargin;
@@ -291,10 +295,6 @@ body {
     .no-padding;
     .task {
         .well;
-        padding: @defaultPad;
-        margin-bottom: @defaultMargin;
-        background-color: @bodyBackground;
-        background-image: url('../images/body-bg-texture-medium.png');
         .task-footer {
             color: @grayLight;
             margin: @defaultMargin;
@@ -488,6 +488,7 @@ hr {
     .form-search {
         .pull-right;
         padding-top: 6px;
+        margin-right: @defaultMargin;
         input {
             @media (max-width: 500px) {
                 width: 100px;
@@ -529,4 +530,10 @@ hr {
     top: 0px;
     z-index: 2000;
     width: 100%;
+}
+
+.settings {
+    .no-margin;
+    .no-padding;
+    .well;
 }

@@ -1,8 +1,14 @@
 
-<h2>Avatar Photo</h2>
+<div class="settings">
+    <h2>Avatar Photo</h2>
+    <hr/>
+    <div class="row-fluid">
+        <div gravatar data-toggle="dropdown" ng-model="user.email" class="span1"></div>
+        <p class="span11">
+        Your avatar photo is set with
+        <a target="top" href="http://www.gravatar.com">gravatar</a>. Head on over there
+        and configure an avatar if you are seeing the default image.
+        </p>
 
-<p>
-<span gravatar data-toggle="dropdown" ng-model="user.email"></span>
-Your avatar photo is set with
-<a target="top" href="http://www.gravatar.com">gravatar</a>. Head on over there
-and configure an avatar if you are seeing the default image.</p>
+    </div>
+</div>
