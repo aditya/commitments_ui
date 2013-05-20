@@ -237,9 +237,8 @@ body {
         border: 1px solid @borderColor;
         color: @borderColor;
         .border-radius(@baseBorderRadius);
-        .border-radius(@baseBorderRadius);
         .gravatar-size;
-        padding: 1px;
+        padding: 0px;
         background: @borderColor;
     }
     text-align: center;
@@ -368,12 +367,15 @@ body {
             .a-lot-larger;
         }
         .notification-message {
+            .fill;
             vertical-align: middle;
         }
         .notification-gravatar {
+            width: 40px;
             vertical-align: middle;
         }
         .notification-icon {
+            width: 50px;
             opacity: 0.5;
             .icon-2x;
         }
