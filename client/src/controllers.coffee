@@ -302,6 +302,7 @@ define ['angular',
                     return 'icon-share-alt'
                 if _.contains notification?.data?.tags, 'unshare'
                     return 'icon-reply'
+                return 'icon-tasks'
             Notifications.deliverMessages()
         #local trash can to allow undelete
         .controller 'Trash', ($rootScope, $scope, $timeout, Trash) ->

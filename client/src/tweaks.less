@@ -355,6 +355,7 @@ body {
 
 .notifications {
     list-style: none;
+    .row;
     .no-margin;
     .notification {
         padding: @defaultPad;
@@ -369,12 +370,17 @@ body {
         .notification-message {
             vertical-align: middle;
         }
+        .notification-gravatar {
+            vertical-align: middle;
+        }
         .notification-icon {
             opacity: 0.5;
-            .pull-left;
-            .icon-3x;
-            padding: 2 * @defaultPad;
-            padding-left: 0px;
+            .icon-2x;
+        }
+        td {
+            .default-padding;
+            padding-top: 0px;
+            padding-bottom: 0px;
         }
     }
 }

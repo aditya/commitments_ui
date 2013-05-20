@@ -1,22 +1,31 @@
-<div ng-controller="Notifications">
-    <ul
-        ng-model="notifications"
-        class="notifications">
-        <li class="alert" ng-show="notifications.itemCount() == 0">
-        No Notifications
-        </li>
-        <li
-        ng-repeat="notification in notifications.items"
-        class="notification">
-        <i class="notification-icon {{iconFor(notification)}}"></i>
-        <div postdate ng-model="notification.when"></div>
-        <div>
-            <span class="notification-message">
+<ul
+    ng-controller="Notifications"
+    ng-model="notifications"
+    class="notifications">
+    <li class="alert" ng-show="notifications.itemCount() == 0">
+    No Notifications
+    </li>
+    <li
+    ng-repeat="notification in notifications.items"
+    class="notification">
+    <table>
+        <tr>
+            <td class="notification-icon">
+                <i class="notification-icon {{iconFor(notification)}}"></i>
+            </td>
+            <td class="notification-gravatar">
                 <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
-                <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
-            </span>
-        </div>
-        <div markdown readonly ng-model="notification.data.message"></div>
-        </li>
-    </ul>
-</div>
+            </td>
+            <td class="notification-message">
+                <div postdate ng-model="notification.when"></div>
+                <div>
+                    <span class="notification-message">
+                        <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
+                    </span>
+                </div>
+                <div markdown readonly ng-model="notification.data.message"></div>
+            </td>
+        </tr>
+    </table>
+    </li>
+</ul>
