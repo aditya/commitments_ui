@@ -119,7 +119,11 @@ define ['md5',
                 #using jQuery, so this is not all that impressive
                 element.sortable
                     cursor: 'move'
+                    placeholder: "sortable-placeholder icon-chevron-right"
+                    forcePlaceholderSize: true
                 element.css 'cursor', 'move'
+                element.on 'sortstart', ->
+                    null
                 element.on 'sortupdate', ->
                     StackRank.renumber(
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
@@ -131,6 +135,7 @@ define ['md5',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'editablelist'
                 #make sure there is always a list if we change models
                 $scope.$watch attrs.ngModel, ->
                     if not ngModel.$viewValue
