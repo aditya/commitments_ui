@@ -49,6 +49,11 @@ define ['angular',
                     controller: 'Login'
                 )
                 .when(
+                    '/settings',
+                    templateUrl: 'src/views/settings.html'
+                    controller: 'Settings'
+                )
+                .when(
                     '/',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
@@ -159,7 +164,7 @@ define ['angular',
             $scope.$on 'rebuild', ->
                 rebuild()
         #nothing nuch going on here
-        .controller 'User', ($rootScope, $scope) ->
+        .controller 'Settings', ($rootScope, $scope) ->
             null
         #nothing much going on here
         .controller 'Discussion', ($scope) ->
