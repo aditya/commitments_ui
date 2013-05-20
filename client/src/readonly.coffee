@@ -67,7 +67,7 @@ define [
                 $scope.$watch attrs.animatedHide, (hide) ->
                     if hide
                         if counter
-                            uelement.hide(ANIMATION_SPEED)
+                            element.hide(ANIMATION_SPEED)
                         else
                             element.hide()
                     else

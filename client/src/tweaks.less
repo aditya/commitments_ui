@@ -245,7 +245,6 @@ body {
     .gravatar-size;
 }
 
-
 .comments {
     .comment {
         padding: @defaultPad;
@@ -313,10 +312,11 @@ body {
             .full-width;
             margin-top: @defaultMargin;
             hr {
-                clear: both;
+                .clearfix;
             }
         }
         .task-tools {
+            .clearfix;
             .full-width;
             margin-left: @defaultMargin;
             li {
@@ -332,7 +332,8 @@ body {
                 .action-icon;
             }
         }
-        .task-cussion {
+        .task-discussion {
+            .clearfix;
             .full-width;
         }
         .task-placeholder {
