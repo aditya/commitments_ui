@@ -5,8 +5,10 @@
 @fillBackground: fade(@wellBackground, 60%);
 @borderColor: darken(@wellBackground, 7%);
 
-.pull-top {
-  z-index: 1000;
+.center-layout(@max-width) {
+    max-width: @max-width;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .well-border {
@@ -120,6 +122,11 @@ body {
 
 .view {
   padding-top: 50px;
+  .center-layout(720px);
+}
+
+.navbar-view {
+    .center-layout(720px);
 }
 
 .default-padding {
@@ -465,7 +472,7 @@ hr {
 
 .help {
   .pull-right;
-  .pull-top;
+  z-index: 2000;
   margin: @defaultMargin;
   .icon-question {
     .action-icon;
