@@ -117,7 +117,6 @@ define ['angular',
         .controller 'Navbar', ($rootScope, $scope, $location, Notifications) ->
             #event to ask for a new task focus
             $scope.addTask = ->
-                $rootScope.$broadcast 'showTasks'
                 $rootScope.$broadcast 'newtask'
         #toolbox has all the boxes, not sure of a better name we can use, what
         #do you call a box of boxes? boxula?

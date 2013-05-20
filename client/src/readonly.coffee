@@ -186,6 +186,7 @@ define [
             link: ($scope, element, attrs) ->
                 mappings =
                     'esc': 'deselect'
+                    '+': 'newtask'
                 for name, value of mappings
                     do ->
                         mousetrap.bind name, ->
