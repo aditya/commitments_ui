@@ -1,10 +1,11 @@
 <div
     ng-controller="Navbar"
+    ng-show="loggedIn"
     class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <ul class="nav">
             <li>
-            <a ng-click="toggleTrash()">
+            <a href="/#/trash">
                 <i class="icon-trash"></i>
                 <span
                     ng-show="trash.itemCount()"
@@ -13,7 +14,7 @@
             </a>
             </li>
             <li>
-            <a ng-click="toggleNotifications()">
+            <a href="/#/notifications">
                 <i class="icon-envelope-alt"></i>
                 <span
                     ng-show="notifications.unreadCount()"
@@ -26,8 +27,8 @@
                 <i class="icon-plus"></i>
             </a>
             </li>
-            <li class="dropdown" ng-click="toggleTasks()">
-            <a data-toggle="dropdown" ng-controller="Toolbox">
+            <li class="dropdown" ng-controller="Toolbox" ng-click="toggleTasks()">
+            <a data-toggle="dropdown">
                 <span tag ng-model="selected.title"></span>
             </a>
             <ul class="dropdown-menu" role="menu">
@@ -35,8 +36,8 @@
                 <a ng-href="{{box.url}}" ng-init="count=box.count()">
                     <span tag ng-model="box.title" class="pull-left"></span>
                     <span ng-show="count"
-                      class="offset-top badge badge-important pull-right">
-                      {{count}}
+                        class="offset-top badge badge-important pull-right">
+                        {{count}}
                     </span>
                     <span class="clearfix">&nbsp;</span>
                 </a>
@@ -49,7 +50,7 @@
                 <input delayed="searchquery" type="text" class="search-query">
                 <button type="submit" class="btn"><i class="icon-search"></i></button>
             </span>
-            <span ng-controller="User">
+            <span>
                 <span gravatar data-toggle="dropdown" ng-model="user.email"></span>
                 <ul class="dropdown-menu pull-right" role="menu">
                     <li><a href="#/logout">Logout</a></li>
@@ -58,4 +59,3 @@
         </div>
     </div>
 </div>
-

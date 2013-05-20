@@ -6,9 +6,8 @@
 <link rel="stylesheet/less" type="text/css" href="root.less">
 </head>
 <body ng-controller="Application">
-<div ng-view>
-    <!-- loading placeholder -->
-    <style>
+<!-- loading placeholder, inlined so it is here right away on page load -->
+<style>
 #loading{
     position:relative;
     margin-top: 200px;
@@ -17,11 +16,16 @@
     width:64px;
     height:64px;
 }
-
-    </style>
-    <div id="loading">
-        <img alt="loading" src="images/loading.gif"/>
+</style>
+<div loading id="loading">
+    <img alt="loading" src="images/loading.gif"/>
+</div>
+<!-- root of the application is included when angular starts -->
+<div ng-controller="Application" class="container-fluid">
+    <div>
+        <div ng-include src="'src/views/navbar.html'"></div>
     </div>
+    <div ng-view class="view"></div>
 </div>
 </body>
 <script data-main="root.js" src="lib/require.js"></script>

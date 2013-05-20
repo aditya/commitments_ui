@@ -126,8 +126,6 @@ define ['angular',
                         return
                     else if User.persistentIdentity()?.authtoken
                         server.login User.persistentIdentity().authtoken
-                    else
-                        $rootScope.$broadcast 'notloggedin'
                 join: (email) ->
                     connect email, true
                 login: (authtoken) ->

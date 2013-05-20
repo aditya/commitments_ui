@@ -170,3 +170,10 @@ define [
                     event.stopPropagation()
                     twizzler.tooltip('show')
         ])
+        #a loading image, this just hides as soon as possible, meaning that
+        #angular is on the air and running
+        .directive('loading', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.hide()
+        ])

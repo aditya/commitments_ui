@@ -7,7 +7,6 @@ define ['angular',
     'cs!./directives/tagbar',
     'cs!./directives/check',
     'cs!./directives/markdown',
-    'cs!./directives/toast',
     ], (angular, jquery) ->
     jquery ->
         angular.bootstrap document, ['Root']

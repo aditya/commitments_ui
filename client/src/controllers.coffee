@@ -10,32 +10,42 @@ define ['angular',
             $routeProvider.
                 when(
                     '/todo',
-                    templateUrl: 'src/views/desktop.html'
-                    controller: 'Desktop'
+                    templateUrl: 'src/views/tasks.html'
+                    controller: 'Tasks'
                 )
                 .when(
                     '/done',
-                    templateUrl: 'src/views/desktop.html'
-                    controller: 'Desktop'
+                    templateUrl: 'src/views/tasks.html'
+                    controller: 'Tasks'
                 )
                 .when(
                     '/tag',
-                    templateUrl: 'src/views/desktop.html'
-                    controller: 'Desktop'
+                    templateUrl: 'src/views/tasks.html'
+                    controller: 'Tasks'
                 )
                 .when(
                     '/task/:taskid',
-                    templateUrl: 'src/views/desktop.html'
-                    controller: 'Desktop'
+                    templateUrl: 'src/views/tasks.html'
+                    controller: 'Tasks'
+                )
+                .when(
+                    '/trash',
+                    templateUrl: 'src/views/trash.html'
+                    controller: 'Trash'
+                )
+                .when(
+                    '/notifications',
+                    templateUrl: 'src/views/notifications.html'
+                    controller: 'Notifications'
                 )
                 .when(
                     '/logout',
-                    templateUrl: 'src/views/desktop.html'
+                    templateUrl: 'src/views/splash.html'
                     controller: 'Logout'
                 )
                 .when(
                     '/login/:authtoken',
-                    templateUrl: 'src/views/desktop.html'
+                    templateUrl: 'src/views/splash.html'
                     controller: 'Login'
                 )
                 .when(
@@ -47,23 +57,25 @@ define ['angular',
                     templateUrl: 'src/views/splash.html'
                     controller: 'Splash'
                 )
-        .run ($rootScope, $location, Server, User) ->
-            #Theory Question: Should this be a service? There is the routing
-            #bit which makes a lot more sense to keep in the controller
-            #in this root most controller, listen for login and login failure
+        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User, Trash) ->
+            #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
+                $rootScope.loggedIn = true
                 $location.path '/todo'
             $rootScope.$on 'loginfailure', ->
+                $rootScope.loggedIn = false
                 $rootScope.flash "Whoops, that's not a valid login link", true
+                $location.path '/'
             $rootScope.$on 'logout', ->
+                $rootScope.loggedIn = false
                 $rootScope.flash "Logging you out"
-            $rootScope.$on 'notloggedin', ->
-                if $location.path() isnt '/'
-                    $location.path '/'
-        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User, Trash) ->
-            Server.tryToBeLoggedIn()
+                $location.path '/'
+            #relay this event
+            $rootScope.$on 'searchquery', (event, query) ->
+                $rootScope.searchQuery = query
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, isError) ->
+                console.log message
                 $rootScope.flashMessage = message
                 $rootScope.flashType = if isError
                         "alert alert-error"
@@ -79,17 +91,15 @@ define ['angular',
             $rootScope.notifications = Notifications
             $rootScope.user = User
             $rootScope.trash = Trash
+            $rootScope.loggedIn = false
+            #here we go
+            Server.tryToBeLoggedIn()
         .controller 'Login', ($scope, $routeParams, Server) ->
             Server.login $routeParams.authtoken
             $scope.flash "Logging you in..."
         .controller 'Logout', ($scope, $timeout, $location, Server) ->
             Server.logout()
-        .controller 'Flash', ($scope, $timeout, $location) ->
-            #Flash shows a message, and then takes you home to basically
-            #simulate restarting/refreshing the app
-            $timeout ->
-                $location.path '/'
-            , 3000
+            $scope.flash "Logging you out..."
         .controller 'Splash', ($scope, $location, Server) ->
             #the actual method to join
             $scope.join = () ->
@@ -98,102 +108,7 @@ define ['angular',
             $scope.joinAgain = () ->
                 $scope.joinEmail = ''
                 $scope.flashing = false
-        .controller 'Desktop', ($location, $rootScope, $scope, $routeParams, $timeout, Database, StackRank, LocalIndexes, User) ->
-            #this gets it done, selecting items in a box and hooking them to
-            #the scope to bind to the view
-            selectBox = (box, bonusFilter) ->
-                if box
-                    console.log 'box', box.title
-                    bonusFilter = bonusFilter or -> true
-                    #selecting fires off the filter for a box, then snapshots
-                    #those items in stack rank order
-                    $scope.selected = box
-                    $scope.selected.fetchItems = -> StackRank.sort(
-                        _.filter((box.filter or -> [])(), bonusFilter),
-                        (x) -> x.id,
-                        box.tag)
-                    $scope.selected.items = $scope.selected.fetchItems()
-                    hideThemAll()
-                    $scope.showTasks = true
-            hideThemAll = ->
-                $scope.showTasks = false
-                $scope.showTrash = false
-                $scope.showNotifications = false
-            #process where we are looking, this is a bit of a sub-router, it is
-            #not clear how to do this with the angular base router
-            if $location.path().slice(-5) is '/todo'
-                selectBox(
-                    title: 'Todo'
-                    tag: '**todo**'
-                    filter: -> Database.items (x) -> not x.done
-                    allowNew: true
-                )
-            else if $location.path().slice(-5) is '/done'
-                selectBox(
-                    title: 'Done'
-                    tag: '**done**'
-                    filter: -> Database.items (x) -> x.done
-                    allowNew: true
-                    stamp: (item) ->
-                        item.done = Date.now()
-                )
-            else if $location.path().slice(0,5) is '/task'
-                selectBox(
-                    title: 'Task'
-                    tag: ''
-                    filter: -> [Database.item($routeParams.taskid)]
-                    allowNew: false
-                    url: "/#/task#{$routeParams.taskid}"
-                )
-            else if $location.path().slice(-4) is '/tag'
-                tag = _.keys($location.search())[0]
-                selectBox(
-                    title: tag
-                    tag: tag
-                    filter: ->
-                        Database.itemsByTag tag
-                    stamp: (item) ->
-                        item.tags = item.tags or {}
-                        item.tags[tag] = Date.now()
-                    allowNew: true
-                    url: "/#/tag?#{encodeURIComponent(tag)}"
-                )
-            #event handling
-            #search is driven from the navbar, queries then make up a 'fake'
-            #box much like the selected tags, but it is instead a list of
-            #matching ids
-            #this isn't done with navigation, otherwise it would flash focus
-            #away from the desktop/input box and be a bit unpleasant
-            $scope.$on 'searchquery', (event, query) ->
-                console.log 'query', query
-                if query
-                    keys = {}
-                    for result in LocalIndexes.fullTextSearch(query)
-                        keys[result.ref] = result
-                    #just change the items
-                    $scope.selected.items =
-                        Database.items (x) -> keys[x.id]
-                else
-                    #reset to the selected box
-                    selectBox $scope.selected
-            $scope.$on "showTrash", ->
-                hideThemAll()
-                $scope.showTrash = true
-            $scope.$on "showNotifications", ->
-                hideThemAll()
-                $scope.showNotifications = true
-            $scope.$on "showTasks", ->
-                hideThemAll()
-                $scope.showTasks = true
-        #navbar provides all the tools and toggles to control the main user
-        #interface, and contains the toolbox and searchbox
         .controller 'Navbar', ($rootScope, $scope, $location, Notifications) ->
-            $scope.toggleNotifications = ->
-                $rootScope.$broadcast "showNotifications"
-            $scope.toggleTrash = ->
-                $rootScope.$broadcast "showTrash"
-            $scope.toggleTasks = ->
-                $rootScope.$broadcast "showTasks"
             #event to ask for a new task focus
             $scope.addTask = ->
                 $rootScope.$broadcast 'showTasks'
@@ -202,7 +117,6 @@ define ['angular',
         #do you call a box of boxes? boxula?
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
             $scope.boxes = []
-            $scope.lastBox = null
             $scope.localIndexes = LocalIndexes
             $scope.todoCount = (box) ->
                 (_.reject (box.filter or -> [])(), (x) -> x.done).length
@@ -263,7 +177,66 @@ define ['angular',
                 delete item.accept[$scope.user.email]
                 $rootScope.$broadcast 'itemfromlocal', item
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope, LocalIndexes) ->
+        .controller 'Tasks', ($scope, $rootScope, $location, $routeParams
+            Database, LocalIndexes, StackRank) ->
+            #this gets it done, selecting items in a box and hooking them to
+            #the scope to bind to the view
+            selectBox = (box, bonusFilter) ->
+                if box
+                    console.log 'box', box.title
+                    bonusFilter = bonusFilter or -> true
+                    #selecting fires off the filter for a box, then snapshots
+                    #those items in stack rank order
+                    $rootScope.selected = box
+                    #keep a filter function so we can rebind
+                    box.fetchItems = -> StackRank.sort(
+                        _.filter((box.filter or -> [])(), bonusFilter),
+                        (x) -> x.id,
+                        box.tag)
+                    box.items = $scope.selected.fetchItems()
+            rebind = ->
+                if $rootScope.selected
+                    $rootScope.selected.items = $scope.selected.fetchItems()
+                $rootScope.$broadcast 'rebuild'
+            #process where we are looking, this is a bit of a sub-router, it is
+            #not clear how to do this with the angular base router
+            if $location.path().slice(-5) is '/todo'
+                selectBox(
+                    title: 'Todo'
+                    tag: '**todo**'
+                    filter: -> Database.items (x) -> not x.done
+                    allowNew: true
+                )
+            else if $location.path().slice(-5) is '/done'
+                selectBox(
+                    title: 'Done'
+                    tag: '**done**'
+                    filter: -> Database.items (x) -> x.done
+                    allowNew: true
+                    stamp: (item) ->
+                        item.done = Date.now()
+                )
+            else if $location.path().slice(0,5) is '/task'
+                selectBox(
+                    title: 'Task'
+                    tag: ''
+                    filter: -> [Database.item($routeParams.taskid)]
+                    allowNew: false
+                    url: "/#/task#{$routeParams.taskid}"
+                )
+            else if $location.path().slice(-4) is '/tag'
+                tag = _.keys($location.search())[0]
+                selectBox(
+                    title: tag
+                    tag: tag
+                    filter: ->
+                        Database.itemsByTag tag
+                    stamp: (item) ->
+                        item.tags = item.tags or {}
+                        item.tags[tag] = Date.now()
+                    allowNew: true
+                    url: "/#/tag?#{encodeURIComponent(tag)}"
+                )
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
             $scope.poke = (item) ->
@@ -281,10 +254,6 @@ define ['angular',
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
-            rebind = ->
-                if $scope.selected
-                    $scope.selected.items = $scope.selected.fetchItems()
-                $rootScope.$broadcast 'rebuild'
             $scope.$on 'newitemfromserver', (event, item) ->
                 rebind()
             $scope.$on 'deleteitemfromserver', ->
@@ -293,8 +262,25 @@ define ['angular',
                 rebind()
             $scope.$on 'itemfromlocal', ->
                 rebind()
+            #search is driven from the navbar, queries then make up a 'fake'
+            #box much like the selected tags, but it is instead a list of
+            #matching ids
+            #this isn't done with navigation, otherwise it would flash focus
+            #away from the desktop/input box and be a bit unpleasant
+            $scope.$watch 'searchQuery', (query) ->
+                console.log 'query', query
+                if query
+                    keys = {}
+                    for result in LocalIndexes.fullTextSearch(query)
+                        keys[result.ref] = result
+                    #just change the items
+                    $scope.selected.items =
+                        Database.items (x) -> keys[x.id]
+                else
+                    #reset to the selected box
+                    selectBox $scope.selected
         #notifications, button and dropdown
-        .controller 'Notifications', ($scope, $rootScope) ->
+        .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->
                 if _.contains notification?.data?.tags, 'comment'
                     return 'icon-comment'
@@ -310,6 +296,7 @@ define ['angular',
                     return 'icon-share-alt'
                 if _.contains notification?.data?.tags, 'unshare'
                     return 'icon-reply'
+            Notifications.deliverMessages()
         #local trash can to allow undelete
         .controller 'Trash', ($rootScope, $scope, $timeout, Trash) ->
             $scope.emptyTrash = ->
