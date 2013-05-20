@@ -61,6 +61,7 @@ define ['angular',
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
                 $rootScope.loggedIn = true
+                $rootScope.flash ''
                 $location.path '/todo'
             $rootScope.$on 'loginfailure', ->
                 $rootScope.loggedIn = false

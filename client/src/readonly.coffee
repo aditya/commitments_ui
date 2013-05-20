@@ -9,6 +9,7 @@ define [
             restrict: 'A'
             link: ($scope, element, attrs, ngModel) ->
                 $scope.$watch attrs.flashMessage, (message) ->
+                    element.addClass 'flashmessage'
                     messageLayout = $("<span>#{message}</span>")
                     element.children().remove()
                     element.append messageLayout
@@ -65,7 +66,7 @@ define [
                 $scope.$watch attrs.animatedHide, (hide) ->
                     if hide
                         if counter
-                            element.hide(ANIMATION_SPEED)
+                            uelement.hide(ANIMATION_SPEED)
                         else
                             element.hide()
                     else
