@@ -5,6 +5,12 @@
     <div class="navbar-inner">
         <div class="navbar-view">
             <ul class="nav">
+                <li class="dropdown">
+                    <a gravatar data-toggle="dropdown" ng-model="user.email"></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/#/logout">Logout</a></li>
+                    </ul>
+                </li>
                 <li>
                 <a href="/#/trash">
                     <i class="icon-trash"></i>
@@ -28,7 +34,7 @@
                     <i class="icon-plus"></i>
                 </a>
                 </li>
-                <li class="dropdown" ng-controller="Toolbox" ng-click="toggleTasks()">
+                <li class="dropdown" ng-controller="Toolbox">
                 <a data-toggle="dropdown">
                     <span tag ng-model="selected.title"></span>
                 </a>
@@ -50,12 +56,6 @@
                 <span class="input-append">
                     <input delayed="searchquery" type="text" class="search-query">
                     <button type="submit" class="btn"><i class="icon-search"></i></button>
-                </span>
-                <span>
-                    <span gravatar data-toggle="dropdown" ng-model="user.email"></span>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="#/logout">Logout</a></li>
-                    </ul>
                 </span>
             </div>
         </div>
