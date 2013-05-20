@@ -54,6 +54,8 @@ define ['md5',
                         $scope.focused = false
                     if not $scope.$$phase
                         $scope.$digest()
+                $scope.$on 'deselect', ->
+                    $scope.focused = false
                 #look for field level edits, in which case this record was
                 #update so send along an event
                 $scope.$on 'edit', (event) ->

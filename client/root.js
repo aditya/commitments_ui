@@ -17,6 +17,7 @@ require.config({
         tagbar: 'src/widgets/tagbar',
         less: 'lib/less',
         lunr: 'lib/lunr',
+        mousetrap: 'lib/mousetrap',
         codemirror: 'lib/codemirror/lib/codemirror',
         codemirrormarkdown: 'lib/codemirror/mode/markdown/markdown',
     },

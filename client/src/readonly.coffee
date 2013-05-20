@@ -1,6 +1,7 @@
 define [
     'bootstrap',
-    ], () ->
+    'mousetrap',
+    ], (__ignore__bootstrap__, mousetrap) ->
     AUTOHIDE_DELAY = 3000
     ANIMATION_SPEED = 100
     KEY_DELAY = 300
@@ -178,3 +179,17 @@ define [
             link: ($scope, element, attrs) ->
                 element.hide()
         ])
+        #hotkeys mapping from key strokes to specific named events
+        #in the root scope to allow them to be broadly seen
+        .directive('hotkeys', [ '$rootScope', ($rootScope) ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                mappings =
+                    'esc': 'deselect'
+                for name, value of mappings
+                    do ->
+                        mousetrap.bind name, ->
+                            $rootScope.$apply ->
+                                $rootScope.$broadcast value
+        ])
+

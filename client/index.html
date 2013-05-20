@@ -5,7 +5,7 @@
 <title></title>
 <link rel="stylesheet/less" type="text/css" href="root.less">
 </head>
-<body ng-controller="Application">
+<body hotkeys ng-controller="Application">
 <!-- loading placeholder, inlined so it is here right away on page load -->
 <style>
 #loading{
@@ -22,7 +22,7 @@
 </div>
 <!-- root of the application is included when angular starts -->
 <div flash-message="flashMessage" class="{{flashType}}"></div>
-<div ng-controller="Application" class="container-fluid">
+<div class="container-fluid">
     <div>
         <div ng-include src="'src/views/navbar.html'"></div>
     </div>
