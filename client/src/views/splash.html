@@ -3,18 +3,6 @@
 <div class="hero-unit">
     <h1>Commitments</h1>
     <p class="lead">Keeping track of what <strong><em>we</em></strong> said we'd do.</p>
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <span ng-repeat="(email,authtoken) in sampleUsers">
-                <a gravatar
-                    ng-model="email"
-                    ng-href="#/login/{{authtoken}}"></a>
-            </span>
-        </div>
-        <div class="row-fluid">
-            &nbsp
-        </div>
-    </div>
     <form animated-hide="flashing" class="form-inline">
         <div class="input-append">
             <input ng-model="joinEmail" type="text" placeholder="email address here" class="larger">
