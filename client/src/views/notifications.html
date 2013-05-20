@@ -13,11 +13,11 @@
             <td class="notification-icon">
                 <i class="notification-icon {{iconFor(notification)}}"></i>
             </td>
-            <td class="notification-gravatar">
-                <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
-            </td>
             <td class="notification-message">
-                <div postdate ng-model="notification.when"></div>
+                <div>
+                    <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
+                    <span postdate ng-model="notification.when"></span>
+                </div>
                 <div>
                     <span class="notification-message">
                         <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
