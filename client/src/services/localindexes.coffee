@@ -14,6 +14,7 @@ define ['angular',
             parseLinks = (document, callback) ->
                 for link, v of (document?.links or {})
                     callback link
+                callback. document.who
             #inverted indexing for tags
             tagIndex = inverted.index [parseTags], (x) -> x.id
             #inverted indexing for links
