@@ -21,7 +21,7 @@
                         readonly-if="user.email != comment.who"
                         ng-model="comment.what"
                         required>
-                        <span ng-include src="'src/views/discussionhelp.html'"></span>
+                        <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                     </div>
                 </td>
             </tr>
@@ -45,7 +45,7 @@
                         placeholder="'Your comment here'"
                         ng-model="$$placeholder.what"
                         required>
-                        <span ng-include src="'src/views/discussionhelp.html'"></span>
+                        <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                     </div>
                 </td>
             </tr>

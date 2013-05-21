@@ -51,6 +51,7 @@
     &:hover {
         text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
     }
+    font-size: 1.25em;
 }
 
 .a-lot-larger {
@@ -285,6 +286,9 @@ body {
             }
         }
     }
+    .action {
+        .action-icon;
+    }
 }
 
 .tasks {
@@ -332,7 +336,7 @@ body {
                 .action-icon;
             }
         }
-        .task-discussion {
+        .task-dicussion {
             .clearfix;
             .full-width;
         }
@@ -345,14 +349,21 @@ body {
         .task-check {
             width: 40px;
             i {
-                .icon-2x;
                 .action-icon;
+                .icon-2x;
             }
             padding-top: @defaultPad;
             padding-left: @defaultPad;
         }
         .task-delete {
-            width: 40px;
+            padding-left: 2* @defaultPad;
+            width: 20px;
+            .action {
+                .action-icon;
+            }
+        }
+        .task-text {
+            .fill;
         }
     }
 }
@@ -483,7 +494,6 @@ hr {
 .help {
     .pull-right;
     z-index: 2000;
-    margin: @defaultMargin;
     .icon-question {
         .action-icon;
     }
@@ -519,7 +529,7 @@ hr {
                 padding-left: 1.5 * @defaultPad;
             }
             .gravatar {
-                display: inline-block;
+                play: inline-block;
                 padding-top: 4px;
                 padding-bottom: 0px;
                 img {

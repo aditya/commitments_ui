@@ -7,10 +7,10 @@
         <table>
             <tr>
                 <td class="trash-item-undelete">
-                    <button class="close" ng-click="undelete(item)">
+                    <span action ng-click="undelete(item)">
                         <i class="icon-mail-reply"></i>
                         <i class="icon-trash"></i>
-                    </button>
+                    </span>
                 </td>
                 <td><div markdown readonly ng-model="item.what"></div></td>
             </tr>

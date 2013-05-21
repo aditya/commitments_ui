@@ -26,7 +26,9 @@
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>
-                <td class="task-delete"><button ng-click="delete(item)" class="close"><i class="icon-trash"></i></button></td>
+                <td class="task-delete">
+                    <span action ng-click="delete(item)"><i class="icon-trash"></i></span>
+                </td>
             </tr>
         </table>
         <!--this div is to control visibility-->
