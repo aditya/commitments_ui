@@ -29,6 +29,11 @@ define ['angular',
                     controller: 'Tasks'
                 )
                 .when(
+                    '/task/:taskid/:commentid',
+                    templateUrl: 'src/views/tasks.html'
+                    controller: 'Tasks'
+                )
+                .when(
                     '/trash',
                     templateUrl: 'src/views/trash.html'
                     controller: 'Trash'
