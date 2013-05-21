@@ -44,7 +44,6 @@ define ['md5',
                     #if this is used in any view, it will now bind, so we have
                     #afforded delayed binding if you hook on to extended as
                     #a property
-                    focusBefore = $scope.focused
                     if data is ngModel.$modelValue
                         $scope.extended = ngModel.$modelValue
                         $scope.focused = true
@@ -139,9 +138,12 @@ define ['md5',
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'editablelist'
                 #make sure there is always a list if we change models
-                $scope.$watch attrs.ngModel, ->
+                $scope.$watch attrs.ngModel, (model) ->
                     if not ngModel.$viewValue
                         ngModel.$setViewValue([])
+                    if model?.length is 1
+                        $timeout ->
+                            $scope.$broadcast 'selectedrecord', model[0]
                 #this is a relay event from contained records up to this list
                 #tell all the child records that there has been a selection
                 #so they can hide themselves, unbind, etc.
