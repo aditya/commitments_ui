@@ -187,10 +187,11 @@ define [
                 mappings =
                     'esc': 'deselect'
                     '+': 'newtask'
-                for name, value of mappings
-                    do ->
-                        mousetrap.bind name, ->
-                            $rootScope.$apply ->
-                                $rootScope.$broadcast value
+                map = (key, value) ->
+                    mousetrap.bind key, ->
+                        $rootScope.$apply ->
+                            $rootScope.$broadcast value
+                for key, value of mappings
+                    map key, value
         ])
 
