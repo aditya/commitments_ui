@@ -140,7 +140,6 @@
       this.elementTabIndex = this.opts.element.attr("tabIndex");
       this.opts.element.data('tagbar', this).append(this.container);
       this.search = this.container.find(".tagbar-search-field");
-      this.search.popover({content: "<ul class='tagbar-results'></ul>", html: true, placement: "bottom"});
       //forward the tab index, this makes it a lot friendlier for full on
       this.search.attr("tabIndex", this.elementTabIndex);
       this.resultsPage = 0;
@@ -152,19 +151,29 @@
       this.container.remove();
     },
     populateResults: function(results, query) {
-      var addTo = $(".tagbar-results", this.container);
+      var tagbar = this;
+      var addTo = this.container.find(".tagbar-results");
       addTo.children().remove();
       for (var i = 0; i < results.length; i = i + 1) {
         var result=results[i];
-        var node=$("<li></li>");
-        node.addClass("tagbar-result");
-        var label=$(document.createElement("div"));
+        var node=$("<li class='tagbar-result'></li>");
+        var item=$("<a></a>");
+        var label=$(document.createElement("span"));
         label.addClass("tagbar-result-label");
         label.html(result);
-        node.append(label);
+        item.append(label);
+        node.append(item);
         node.data("tagbar-data", result);
+        node.data("tagbar-index", i);
+        node.hover( function (){
+            tagbar.highlight($(this).data("tagbar-index"));
+        });
+        node.click( function (){
+            tagbar.onSelect($(this).data("tagbar-data"));
+        });
         addTo.append(node);
       }
+      console.log(addTo, addTo.html());
     },
     prepareOpts: function (opts) {
       var element, select, idKey;
@@ -197,21 +206,14 @@
       this.container.addClass("tagbar-container-disabled");
     },
     opened: function () {
-      return $(".tagbar-results", this.container).length;
-    },
-    shouldOpen: function() {
-      if (this.opened()) return false;
-      if (this.search.text().length == 0) return false;
-      return true;
+      return this.container.find(".tagbar-results").length;
     },
     open: function () {
-      if (!this.shouldOpen()) return false;
-      this.search.popover('show');
-      this.focusSearch();
+      if (this.search.text().length == 0) return false;
+      this.container.find(".tagbar-results").show();
     },
     close: function () {
-      if (!this.opened()) return;
-      this.search.popover('hide');
+      this.container.find(".tagbar-results").hide();
     },
     clear: function () {
       this.close();
@@ -220,14 +222,14 @@
       this.resizeSearch();
     },
     ensureHighlightVisible: function () {
-      var results = $(".tagbar-results", this.container),
-      children, index, child, hb, rb, y, more;
+      var results = this.container.find(".tagbar-results");
+      var children, index, child, hb, rb, y, more;
       index = this.highlight();
       if (index < 0) return;
       if (index == 0) {
         // if the first element is highlighted scroll all the way to the top,
         // into view
-        $(".tagbar-results", this.container).scrollTop(0);
+        results.scrollTop(0);
         return;
       }
       children = this.findHighlightableChoices();
@@ -244,7 +246,7 @@
       }
     },
     findHighlightableChoices: function() {
-      return $(".tagbar-result", this.container);
+      return this.container.find(".tagbar-result");
     },
     moveHighlight: function (delta) {
       this.highlight(this.highlight() + delta);
@@ -287,8 +289,6 @@
         control: this,
         term: text,
         callback: this.bind(function (data) {
-          // ignore a response if the tagbar has been closed before it was received
-          this.open();
           this.populateResults(data.results, {term: text, page: this.resultsPage, context:null});
           this.ensureSomethingHighlighted();
           this.search.removeClass("tagbar-active");
@@ -316,13 +316,16 @@
       }).html([
         "<ul class='tagbar-choices'>",
         "  <li class='tagbar-icon icon-" + this.opts.icon + "'></li>",
-        "  <li class='tagbar-search-field' contentEditable></li>" ,
-        "</ul>"].join(""));
+        "  <li class='tagbar-search-field' contentEditable>" ,
+        "  </li>",
+        "</ul>",
+        "<ul class='tagbar-results dropdown-menu'>",
+        "</ul>",
+        ].join(""));
         $(".tagbar-icon", container).bind("click", this.bind(this.focusSearch));
         return container;
     },
     initContainer: function () {
-      this.searchContainer = this.container.find(".tagbar-search-field");
       this.search.bind("keydown", this.bind(function (e) {
         //key sequences that close
         if (e.which === KEY.BACKSPACE && this.search.text() === "") {
@@ -391,7 +394,7 @@
         })).dequeue();
         killEvent(e);
       }));
-      item.insertBefore(this.searchContainer);
+      item.insertBefore(this.search);
       this.values[data] = value || Date.now();
       if (!supressChange) {
         this.triggerChange();

@@ -8,15 +8,23 @@
     display: inline-block;
 }
 
+.tag-display {
+    display: inline-block;
+}
+
 .tagbar-stripe {
     span {
         margin-left: 1px;
     }
 }
 
+.tagbar-input {
+}
+
 .tagbar-container {
     display: inline-block;
     vertical-align: bottom;
+    position: relative;
 }
 
 .tagbar-icon {
@@ -102,8 +110,12 @@ button {
 }
 
 .tagbar-highlighted {
-    .border-radius(@baseBorderRadius);
-    background-color: @tagColor;
+    a {
+        color: @dropdownLinkColorActive !important;
+        text-decoration: none;
+        outline: 0;
+        #gradient > .vertical(@dropdownLinkBackgroundActive, darken(@dropdownLinkBackgroundActive, 5%));
+    }
 }
 
 //when a query is active
@@ -123,23 +135,18 @@ button {
 }
 
 .tagbar-results {
-    max-height: 200px;
-    position: relative;
-    overflow-y: auto;
-    margin: 0px;
-    ul {
-        margin: 0px;
-    }
+    width: auto;
+    height: auto;
+    max-height: 160px;
+    overflow: scroll;
+    position: absolute;
     li {
-        padding: @defaultPad;
         list-style: none;
         display: list-item;
-    }
-}
-
-
-.dropdown-menu {
-    li {
         text-align: left;
+        width: 100%;
     }
+    left: auto;
+    right: 2px;
 }
+
