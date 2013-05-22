@@ -119,9 +119,7 @@ define ['angular',
                                    content.replace(
                                        new RegExp(word, 'gi'),
                                        '<span class="highlight">$&</span>')
-                    console.log content
                     rendered = marked content
-                    console.log rendered
                     display.html rendered
                     if attrs.placeholder
                         #placeholder text
