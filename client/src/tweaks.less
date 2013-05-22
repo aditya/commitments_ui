@@ -13,11 +13,11 @@
 }
 
 .well {
-        padding: @defaultPad;
-        margin-bottom: @defaultMargin;
-        background-color: @bodyBackground !important;
-        background-image: url('../images/body-bg-texture-medium.png');
-    }
+    padding: @defaultPad;
+    margin-bottom: @defaultMargin;
+    background-color: @bodyBackground !important;
+    background-image: url('../images/body-bg-texture-medium.png');
+}
 
 .well-border {
     .border-radius(@baseBorderRadius);
@@ -51,6 +51,10 @@
     &:hover {
         text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
     }
+    font-size: 1.25em;
+}
+
+.info-icon {
     font-size: 1.25em;
 }
 
@@ -223,14 +227,9 @@ body {
     }
 }
 
-.cussion {
+.discussion {
     margin: 0px;
     margin-top: @defaultMargin;
-}
-
-.gravatar-size {
-    width: 32px;
-    height: 32px;
 }
 
 .gravatar {
@@ -238,12 +237,15 @@ body {
         border: 1px solid @borderColor;
         color: @borderColor;
         .border-radius(@baseBorderRadius);
-        .gravatar-size;
         padding: 0px;
         background: @borderColor;
+        width: 32px;
+        height: 32px;
     }
     text-align: center;
-    .gravatar-size;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
 }
 
 .comments {
@@ -258,6 +260,7 @@ body {
         .comment-gravatar {
             vertical-align: top;
             border-right: @borderColor 1px solid;
+            width: 40px;
         }
         .placeholder {
             margin-top: @defaultMargin;
@@ -323,8 +326,15 @@ body {
             .clearfix;
             .full-width;
             margin-left: @defaultMargin;
+            ul {
+                .pull-left;
+                display: inline-block;
+                margin: 0px;
+                margin-right: @defaultMargin;
+            }
             li {
-                float: left;
+                .pull-left;
+                display: inline-block;
                 list-style: none;
             }
             .action {
@@ -333,7 +343,21 @@ body {
                 .action-icon;
             }
             .tagbar-icon {
+                padding-top: @defaultPad;
                 .action-icon;
+            }
+            .info-icon {
+                margin-right: 6px;
+                padding-top: @defaultPad;
+            }
+            .gravatar {
+                img {
+                    width: 22px;
+                    height: 22px;
+                }
+                width: 22px;
+                height: 22px;
+                margin-right: @defaultMargin / 2;
             }
         }
         .task-dicussion {
@@ -467,14 +491,6 @@ body {
     .larger;
 }
 
-.comment-gravatar {
-    width: 40px;
-}
-
-input {
-    .placeholder(@linkColor);
-}
-
 hr {
     margin: @defaultMargin;
 }
@@ -529,13 +545,9 @@ hr {
                 padding-left: 1.5 * @defaultPad;
             }
             .gravatar {
-                play: inline-block;
+                display: inline-block;
                 padding-top: 4px;
                 padding-bottom: 0px;
-                img {
-                    width: 28px;
-                    height: 28px;
-                }
             }
         }
     }

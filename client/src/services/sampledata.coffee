@@ -28,6 +28,13 @@ sampledata =
         links:
             'igroff@glgroup.com': 1
             'wballard@glgroup.com': 1
+            'nandrews@glgroup.com': 1
+        accept:
+            'igroff@glgroup.com': 1
+            'wballard@glgroup.com': 1
+        reject:
+            'nandrews@glgroup.com': 1
+            'farai@glgroup.com': 1
     ,
         id: 'b'
         what: 'There is always more to do'

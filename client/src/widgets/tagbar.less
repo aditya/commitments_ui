@@ -94,9 +94,11 @@ button {
 
 .tagbar-search-field {
     position: relative;
-    margin-top: 5px;
     height: 100%;
     cursor: text;
+    &:focus {
+        margin-left: @defaultMargin;
+    }
 }
 
 .tagbar-highlighted {
@@ -117,7 +119,6 @@ button {
         float: left;
         list-style: none;
         height: @defaultHeight;
-        margin-right: @defaultMargin;
     }
 }
 
