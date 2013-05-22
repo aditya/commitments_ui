@@ -1,9 +1,8 @@
 define ['md5',
-    'markdown',
     'moment',
     'lodash',
     'jqueryui'
-    ], (md5, markdown, moment, _) ->
+    ], (md5, moment, _) ->
     counter = 0;
     ANIMATION_SPEED = 200
     module = angular.module('editable', ['Root'])

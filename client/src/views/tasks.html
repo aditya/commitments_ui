@@ -22,7 +22,7 @@
             <tr>
                 <td  class="task-check"><span check ng-model="item.done"></span></td>
                 <td>
-                    <div markdown required ng-model="item.what" class="larger">
+                    <div search-highlight="searchQuery" markdown required ng-model="item.what" class="larger">
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>

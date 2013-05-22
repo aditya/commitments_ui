@@ -8,7 +8,7 @@ require.config({
         jqueryui: 'lib/jqueryui',
         lodash: 'lib/lodash',
         socketio: 'lib/socket.io',
-        markdown: 'lib/markdown',
+        marked: 'lib/marked',
         moment: 'lib/moment',
         angular: 'lib/angular/angular',
         'coffee-script': 'lib/coffee-script',

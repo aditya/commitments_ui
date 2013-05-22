@@ -8,7 +8,7 @@ define [
     module = angular.module('readonly', [])
         .directive('flashMessage', [() ->
             restrict: 'A'
-            link: ($scope, element, attrs, ngModel) ->
+            link: ($scope, element, attrs) ->
                 $scope.$watch attrs.flashMessage, (message) ->
                     element.addClass 'flashmessage'
                     messageLayout = $("<span>#{message}</span>")
@@ -194,4 +194,3 @@ define [
                 for key, value of mappings
                     map key, value
         ])
-

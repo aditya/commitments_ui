@@ -1,8 +1,9 @@
 #Markdown editor using codemirror
 define ['angular',
     'lodash',
+    'marked'
     'codemirror',
-    'cs!src/editable'], (angular, _) ->
+    'cs!src/editable'], (angular, _, marked) ->
     PAD = 6
     module = angular.module('editable')
         .directive('markdown', ['$timeout', ($timeout) ->
@@ -102,9 +103,26 @@ define ['angular',
                     if event.which is 27 #escape
                         event.target.blur()
                         event.stopPropagation()
+                hilightCount = 0
+                $scope.$watch attrs.searchHighlight, (value) ->
+                    if hilightCount++ > 0
+                        ngModel.$render()
                 ngModel.$render = () ->
                     #markdown based display
-                    display.html(markdown.toHTML(ngModel.$viewValue or ''))
+                    content = ngModel.$viewValue or ''
+                    if attrs.searchHighlight
+                        search = $scope.$eval(attrs.searchHighlight)
+                        if search
+                            for word in search.split(' ')
+                                word = word.trim()
+                                content =
+                                   content.replace(
+                                       new RegExp(word, 'gi'),
+                                       '<span class="highlight">$&</span>')
+                    console.log content
+                    rendered = marked content
+                    console.log rendered
+                    display.html rendered
                     if attrs.placeholder
                         #placeholder text
                         if ngModel.$viewValue
