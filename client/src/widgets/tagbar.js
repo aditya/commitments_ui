@@ -173,7 +173,6 @@
         });
         addTo.append(node);
       }
-      console.log(addTo, addTo.html());
     },
     prepareOpts: function (opts) {
       var element, select, idKey;

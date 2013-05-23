@@ -20,7 +20,9 @@
         <!--core attributes of a task item, these always show and bind-->
         <table class="task-core">
             <tr>
-                <td  class="task-check"><span check ng-model="item.done"></span></td>
+                <td class="task-check">
+                    <span check ng-model="item.done" tooltip="'Mark Done'"></span>
+                </td>
                 <td>
                     <div search-highlight="searchQuery" markdown required ng-model="item.what" class="larger">
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
