@@ -1,7 +1,8 @@
 define [
     'bootstrap',
     'mousetrap',
-    ], (__ignore__bootstrap__, mousetrap) ->
+    'grid',
+    ], (__ignore__bootstrap__, mousetrap, grid) ->
     AUTOHIDE_DELAY = 3000
     ANIMATION_SPEED = 100
     KEY_DELAY = 300
@@ -206,4 +207,15 @@ define [
                             $rootScope.$broadcast value
                 for key, value of mappings
                     map key, value
+        ])
+        #grid a licious grid
+        .directive('grid', [ '$timeout', ($timeout) ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs) ->
+                $timeout ->
+                    element.gridalicious(
+                        animate: true
+                        selector: attrs.grid
+                    )
         ])

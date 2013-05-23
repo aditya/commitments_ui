@@ -10,6 +10,7 @@ require.config({
         socketio: 'lib/socket.io',
         marked: 'lib/marked',
         moment: 'lib/moment',
+        grid: 'lib/grid-a-licious',
         angular: 'lib/angular/angular',
         'coffee-script': 'lib/coffee-script',
         cs: 'lib/require-cs',

@@ -39,6 +39,11 @@ define ['angular',
                     controller: 'Trash'
                 )
                 .when(
+                    '/people',
+                    templateUrl: 'src/views/people.html'
+                    controller: 'People'
+                )
+                .when(
                     '/notifications',
                     templateUrl: 'src/views/notifications.html'
                     controller: 'Notifications'
@@ -163,7 +168,7 @@ define ['angular',
                 #without it my boxes list in the navbar is just plain empty
                 $scope.boxes = $rootScope.boxes
             #watch the index to see if we should rebuild the facet filtersk
-            $scope.$watch 'localIndexes.signature()', ->
+            $scope.$watch 'localIndexes.tagSignature()', ->
                 rebuild()
             $scope.$on 'rebuild', ->
                 rebuild()
@@ -315,3 +320,8 @@ define ['angular',
             $scope.undelete = (item) ->
                 #and undelete is really just the same as an update
                 $rootScope.$broadcast 'itemfromlocal', item
+        #all the people in all the boxes...
+        .controller 'People', ($scope, LocalIndexes) ->
+            $scope.localIndexes = LocalIndexes
+            $scope.$watch 'localIndexes.linkSignature()', ->
+                $scope.people = LocalIndexes.links()

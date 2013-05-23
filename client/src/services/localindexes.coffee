@@ -48,8 +48,10 @@ define ['angular',
                         id: item.id
                 tags: (filter) ->
                     tagIndex.terms(filter)
-                signature: ->
+                tagSignature: ->
                     tagIndex.terms().sort().join('')
+                linkSignature: ->
+                    linkIndex.terms().sort().join('')
                 links: (filter) ->
                     linkIndex.terms(filter)
                 itemsByTag: (tags, filter) ->
