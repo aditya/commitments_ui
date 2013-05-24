@@ -133,8 +133,6 @@ define ['angular',
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
             $scope.boxes = []
             $scope.localIndexes = LocalIndexes
-            $scope.todoCount = (box) ->
-                (_.reject (box.filter or -> [])(), (x) -> x.done).length
             #here are the various boxes and filters
             rebuild = ->
                 console.log 'rebuild boxes'
@@ -188,54 +186,34 @@ define ['angular',
             Database, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
-            $rootScope.selected = {}
-            selectBox = (box) ->
-                if box
-                    console.log 'box', box.title
-                    box.hide = box.hide or -> false
-                    box.items = $rootScope.items
-                    _.extend $rootScope.selected, box
-                    #and any stashed function is now useless
-                    delete $rootScope.selected.replaceHide
+            selected = $rootScope.selected = {}
+            selected.items = Database.items()
             #this really grabs new data
             rebind = ->
-                $rootScope.items = Database.items()
-                if $rootScope.selected
-                    $rootScope.selected.items = $rootScope.items
+                console.log 'rebind'
+                selected.items = Database.items()
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'
-                selectBox(
-                    title: 'Todo'
-                    hide: (x) -> x.done
-                    allowNew: true
-                )
+                selected.title = "Todo"
+                selected.allowNew = true
+                selected.hide = (x) -> x.done
             else if $location.path().slice(-5) is '/done'
-                selectBox(
-                    title: 'Done'
-                    hide: (x) -> not x.done
-                )
+                selected.title = "Done"
+                selected.allowNew = false
+                selected.hide = (x) -> not x.done
             else if $location.path().slice(0,5) is '/task'
-                selectBox(
-                    title: 'Task'
-                    tag: ''
-                    hide: (x) -> x?.id isnt $routeParams.taskid
-                    allowNew: false
-                    url: "/#/task#{$routeParams.taskid}"
-                )
+                selected.title = "Task"
+                selected.allowNew = false
+                selected.hide = (x) -> x?.id isnt $routeParams.taskid
             else if $location.path().slice(-4) is '/tag'
                 tag = _.keys($location.search())[0]
-                selectBox(
-                    title: tag
-                    tag: tag
-                    hide: (x) ->
-                        not (x.tags or {})[tag]
-                    stamp: (item) ->
-                        item.tags = item.tags or {}
-                        item.tags[tag] = Date.now()
-                    allowNew: true
-                    url: "/#/tag?#{encodeURIComponent(tag)}"
-                )
+                selected.title = tag
+                selected.allowNew = true
+                selected.hide = (x) -> not (x.tags or {})[tag]
+                selected.stamp = (item) ->
+                    item.tags = item.tags or {}
+                    item.tags[tag] = Date.now()
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
             $scope.poke = (item) ->
