@@ -5,21 +5,20 @@ stack ranking of lists.
 define ['angular',
     'store',
     'cs!./root'], (angular, store, root) ->
-        root.factory 'StackRank', () ->
+        root.factory 'StackRank', (User) ->
             do ->
                 #standardized sorting function, works to provide per user / per
                 #tag stack ranking, with the when creation timestamp providing
                 #the tiebreaker, meaning time sorted items go to the end as their
                 #indexes are going to be a *lot* larger than 1..n
-                sort: (list, key, tag) ->
-                    stack = store.get(tag) or {}
-                    extractIndex = (item) ->
-                        item.when = item.when or Date.now()
-                        stack[key(item)] or item.when
-                    _.sortBy(list, extractIndex)
-                renumber: (list, key, tag) ->
-                    stack = store.get(tag) or {}
+                comparator: (item) ->
+                    #this will modify the object
+                    item.when = item.when or Date.now()
+                    #this won't add to an object, just look up lazy
+                    item_stack = item.stackRank or {}
+                    item_stack[User.email] or item.when
+                renumber: (list) ->
                     index = 1
                     for item in list
-                        stack[key(item)] = index++
-                    store.set tag, stack
+                        item_stack = item.stackRank = item.stackRank or {}
+                        item_stack[User.email] = index++

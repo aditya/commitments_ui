@@ -65,7 +65,6 @@ define ['angular',
                     _.filter _.values(items), filter
                 item: (id) ->
                     items[id]
-                itemsByTag: LocalIndexes.itemsByTag
             #event handlers
             $rootScope.$on 'loginsuccess', ->
                 items = {}

@@ -115,7 +115,8 @@ define ['md5',
         #equip a list with drag and drop reordering, used ot stack rank tasks
         .directive('editableListReorder', ['StackRank', (StackRank) ->
             restrict: 'A'
-            link: ($scope, element, attrs) ->
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
                 #using jQuery, so this is not all that impressive
                 element.sortable
                     cursor: 'move'
@@ -126,9 +127,14 @@ define ['md5',
                     null
                 element.on 'sortupdate', ->
                     StackRank.renumber(
-                        element.children('.editableRecord').map((_, x) -> $(x).data 'record'),
-                        (x) -> x.id,
-                        $scope.$eval(attrs.editableListReorder))
+                        element.children('.editableRecord').map((_, x) -> $(x).data 'record')
+                    )
+                    #this is the mildly painful bit -- sorting is a lot of updates
+                    for item in ngModel.$viewValue
+                        $scope.$emit 'updaterecord', item
+                #make the comparator function available to the scope
+                $scope.stackRankSort = StackRank.comparator
+
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true

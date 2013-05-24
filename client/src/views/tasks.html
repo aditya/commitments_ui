@@ -1,14 +1,14 @@
 <ul
     ng-controller="Tasks"
     editable-list
-    editable-list-reorder="selected.tag"
+    editable-list-reorder
     on-delete="delete"
     on-update="update"
     ng-model="selected.items"
     class="tasks">
     <!--repeat items-->
     <li
-    ng-repeat="item in selected.items"
+    ng-repeat="item in selected.items | orderBy:stackRankSort"
     editable-record
     ng-model="item"
     animated-hide="item.reject[user.email] || selected.hide(item)"

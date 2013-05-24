@@ -160,7 +160,7 @@ define ['angular',
                         tag: term
                         url: "/#/tag?#{encodeURIComponent(term)}"
                         count: ->
-                            (Database.itemsByTag term).length
+                            (LocalIndexes.itemsByTag term).length
                     )
                 for tagTerm in LocalIndexes.tags()
                     make tagTerm
@@ -193,49 +193,42 @@ define ['angular',
                 $rootScope.$broadcast 'itemfromlocal', item
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $routeParams
-            Database, LocalIndexes, StackRank) ->
+            Database, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
-            selectBox = (box, bonusFilter) ->
+            selectBox = (box) ->
                 if box
                     console.log 'box', box.title
-                    bonusFilter = bonusFilter or -> true
                     #selecting fires off the filter for a box, then snapshots
                     #those items in stack rank order
                     $rootScope.selected = box
-                    #keep a filter function so we can rebind
-                    box.fetchItems = -> StackRank.sort(
-                        _.filter((box.filter or -> [])(), bonusFilter),
-                        (x) -> x.id,
-                        box.tag)
-                    box.items = $scope.selected.fetchItems()
+                    #and items can be hidden
+                    box.hide = box.hide or -> false
+                    #and any stashed function is now useless
+                    delete box.replaceHide
+                    box.items = Database.items()
             rebind = ->
                 if $rootScope.selected
-                    $rootScope.selected.items = $scope.selected.fetchItems()
+                    $rootScope.selected.items = Database.items()
                 $rootScope.$broadcast 'rebuild'
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'
                 selectBox(
                     title: 'Todo'
-                    tag: '**todo**'
-                    filter: -> Database.items (x) -> not x.done
+                    hide: (x) -> x.done
                     allowNew: true
                 )
             else if $location.path().slice(-5) is '/done'
                 selectBox(
                     title: 'Done'
-                    tag: '**done**'
-                    filter: -> Database.items (x) -> x.done
-                    allowNew: true
-                    stamp: (item) ->
-                        item.done = Date.now()
+                    hide: (x) -> not x.done
                 )
             else if $location.path().slice(0,5) is '/task'
                 selectBox(
                     title: 'Task'
                     tag: ''
-                    filter: -> [Database.item($routeParams.taskid)]
+                    hide: (x) -> x?.id isnt $routeParams.taskid
                     allowNew: false
                     url: "/#/task#{$routeParams.taskid}"
                 )
@@ -244,8 +237,8 @@ define ['angular',
                 selectBox(
                     title: tag
                     tag: tag
-                    filter: ->
-                        Database.itemsByTag tag
+                    hide: (x) ->
+                        not (x.tags or {})[tag]
                     stamp: (item) ->
                         item.tags = item.tags or {}
                         item.tags[tag] = Date.now()
@@ -283,17 +276,23 @@ define ['angular',
             #this isn't done with navigation, otherwise it would flash focus
             #away from the desktop/input box and be a bit unpleasant
             $scope.$watch 'searchQuery', (query) ->
-                console.log 'query', query
+                #this will save the prior hiding function and swap it out
+                #with a search based hiding function
                 if query
+                    #here is an actual query, the objects are already in memor
+                    #so this isn't a copy, just a reference
                     keys = {}
                     for result in LocalIndexes.fullTextSearch(query)
                         keys[result.ref] = result
-                    #just change the items
-                    $scope.selected.items =
-                        Database.items (x) -> keys[x.id]
+                    #stash the last hiding function if we haven't already
+                    if not $scope.selected.replaceHide
+                        $scope.selected.replaceHide = $scope.selected.hide
+                    $scope.selected.hide = (x) ->
+                        not keys[x.id]
                 else
-                    #reset to the selected box
-                    selectBox $scope.selected
+                    if $scope.selected.replaceHide
+                        $scope.selected.hide = $scope.selected.replaceHide
+                        delete $scope.selected.replaceHide
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->
