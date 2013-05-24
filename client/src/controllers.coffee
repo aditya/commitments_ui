@@ -143,13 +143,9 @@ define ['angular',
                 $rootScope.boxes.push(
                     title: 'Todo'
                     url: '/#/todo'
-                    count: ->
-                        (Database.items (x) -> not x.done).length
                 ,
                     title: 'Done'
                     url: '/#/done'
-                    count: ->
-                        (Database.items (x) -> x.done).length
                 )
                 #now build up a 'box' for each tag, not sure why I want to call
                 #it a box, just that the tags are drawn on screen in a... box?
@@ -159,8 +155,6 @@ define ['angular',
                         title: term
                         tag: term
                         url: "/#/tag?#{encodeURIComponent(term)}"
-                        count: ->
-                            (LocalIndexes.itemsByTag term).length
                     )
                 for tagTerm in LocalIndexes.tags()
                     make tagTerm
@@ -169,8 +163,6 @@ define ['angular',
                 $scope.boxes = $rootScope.boxes
             #watch the index to see if we should rebuild the facet filtersk
             $scope.$watch 'localIndexes.tagSignature()', ->
-                rebuild()
-            $scope.$on 'rebuild', ->
                 rebuild()
         #nothing nuch going on here
         .controller 'Settings', ($rootScope, $scope) ->
@@ -196,22 +188,20 @@ define ['angular',
             Database, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
+            $rootScope.selected = {}
             selectBox = (box) ->
                 if box
                     console.log 'box', box.title
-                    #selecting fires off the filter for a box, then snapshots
-                    #those items in stack rank order
-                    $rootScope.selected = box
-                    #and items can be hidden
                     box.hide = box.hide or -> false
-                    #and any stashed function is now useless
-                    delete box.replaceHide
                     box.items = $rootScope.items
+                    _.extend $rootScope.selected, box
+                    #and any stashed function is now useless
+                    delete $rootScope.selected.replaceHide
+            #this really grabs new data
             rebind = ->
                 $rootScope.items = Database.items()
                 if $rootScope.selected
                     $rootScope.selected.items = $rootScope.items
-                    $rootScope.$broadcast 'rebuild'
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'

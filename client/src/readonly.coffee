@@ -135,12 +135,6 @@ define [
                 element.addClass 'action'
                 element.css 'cursor', 'pointer'
         ])
-        .directive('eatClick', [ ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                element.on 'click', (event) ->
-                    event.preventDefault()
-        ])
         .directive('help', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

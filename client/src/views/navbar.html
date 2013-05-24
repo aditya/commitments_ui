@@ -46,13 +46,8 @@
                 </a>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="box in boxes" ng-model="box">
-                    <a ng-href="{{box.url}}" ng-init="count=box.count()">
-                        <span tag ng-model="box.title" class="pull-left"></span>
-                        <span ng-show="count"
-                            class="offset-top badge badge-important pull-right">
-                            {{count}}
-                        </span>
-                        <span class="clearfix">&nbsp;</span>
+                    <a ng-href="{{box.url}}">
+                        <span tag ng-model="box.title"></span>
                     </a>
                     </li>
                 </ul>

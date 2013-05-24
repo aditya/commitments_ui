@@ -49,9 +49,9 @@ define ['angular',
                 tags: (filter) ->
                     tagIndex.terms(filter)
                 tagSignature: ->
-                    tagIndex.terms().sort().join('')
+                    tagIndex.terms().join('')
                 linkSignature: ->
-                    linkIndex.terms().sort().join('')
+                    linkIndex.terms().join('')
                 links: (filter) ->
                     linkIndex.terms(filter)
                 itemsByTag: (tags, filter) ->

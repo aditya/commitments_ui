@@ -86,8 +86,8 @@ define ['angular',
                 #a fake user, this is much like connecting to the server
                 #in that if we failed to authenticate, there would be
                 #no messages
+                cloneFromItem = sampledata[2]
                 for item in sampledata
-                    cloneFromItem = item
                     if User.email isnt item.who
                         item.links[User.email] = 1
                     $rootScope.$broadcast 'itemfromserver', 'fake', item
