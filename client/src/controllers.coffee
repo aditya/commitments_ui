@@ -206,11 +206,12 @@ define ['angular',
                     box.hide = box.hide or -> false
                     #and any stashed function is now useless
                     delete box.replaceHide
-                    box.items = Database.items()
+                    box.items = $rootScope.items
             rebind = ->
+                $rootScope.items = Database.items()
                 if $rootScope.selected
-                    $rootScope.selected.items = Database.items()
-                $rootScope.$broadcast 'rebuild'
+                    $rootScope.selected.items = $rootScope.items
+                    $rootScope.$broadcast 'rebuild'
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'

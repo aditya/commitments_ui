@@ -70,9 +70,10 @@ define [
                         if counter
                             element.hide(ANIMATION_SPEED)
                         else
+                            #first hit, hide right away
                             element.hide()
                     else
-                        element.show()
+                        element.show(ANIMATION_SPEED)
                     counter++
         ])
         .directive('animatedShow', [ ->
@@ -93,19 +94,6 @@ define [
                         else
                             element.hide(0)
                     counter++
-        ])
-        .directive('animatedVisible', [ ->
-            restrict: 'A'
-            link: ($scope, element, attrs) ->
-                $scope.$watch attrs.animatedVisible, (show) ->
-                    if show
-                        element.animate
-                            opacity: 1
-                        , ANIMATION_SPEED
-                    else
-                        element.animate
-                            opacity: 0
-                        , ANIMATION_SPEED
         ])
         .directive('activeIf', [ ->
             restrict: 'A'
@@ -215,7 +203,7 @@ define [
             link: ($scope, element, attrs) ->
                 $timeout ->
                     element.gridalicious(
-                        animate: true
+                        animate: false
                         selector: attrs.grid
                     )
         ])
