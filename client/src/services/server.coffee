@@ -1,9 +1,6 @@
 ###
 All about talking to the server, sending and receiving messages over socket.io
 that are then dispatched to appropriate services to maintain state.
-
-The server is completely event driven to save stuff, exposing no methods.
-Let's keep it that way.
 ###
 define ['angular',
     'socketio',
@@ -134,4 +131,11 @@ define ['angular',
                 logout: ->
                     disconnect()
                     $rootScope.$broadcast 'logout'
+                userItems: (user, callback) ->
+                    if socket
+                        socket.emit 'exec',
+                            command: 'commitments'
+                            args: ['list', 'tasks', user]
+                            , (items) ->
+                                callback user, items
             server

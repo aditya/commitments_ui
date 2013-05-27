@@ -91,17 +91,18 @@ define ['angular',
                 $rootScope.searchQuery = query
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, isError) ->
-                console.log message
-                $rootScope.flashMessage = message
-                $rootScope.flashType = if isError
-                        "alert alert-error"
-                    else
-                        "alert alert-info"
-                if $rootScope.$$phase
-                    $location.path '/'
-                else
-                    $rootScope.$apply ->
+                if message
+                    console.log 'FLASH', message
+                    $rootScope.flashMessage = message
+                    $rootScope.flashType = if isError
+                            "alert alert-error"
+                        else
+                            "alert alert-info"
+                    if $rootScope.$$phase
                         $location.path '/'
+                    else
+                        $rootScope.$apply ->
+                            $location.path '/'
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
             $rootScope.notifications = Notifications
@@ -289,7 +290,19 @@ define ['angular',
                 #and undelete is really just the same as an update
                 $rootScope.$broadcast 'itemfromlocal', item
         #all the people in all the boxes...
-        .controller 'People', ($scope, LocalIndexes) ->
+        .controller 'People', ($scope, $timeout, LocalIndexes, Server, StackRank) ->
             $scope.localIndexes = LocalIndexes
             $scope.$watch 'localIndexes.linkSignature()', ->
                 $scope.people = LocalIndexes.links()
+                $scope.items = {}
+                for user in $scope.people
+                    Server.userItems user, (user, items) ->
+                        #items not yet done, stack rank order
+                        items = _.filter items, (x) -> not x.done
+                        items = _.sortBy items, StackRank.comparator
+                        #top 2, just a preference
+                        items = items.slice(0, 2)
+                        console.log user, items.slice(0, 2)
+                        $scope.items[user] = items
+                        $timeout ->
+                            $scope.$digest()

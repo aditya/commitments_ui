@@ -22,7 +22,7 @@ define ['angular',
                     #this is a getter with no args
                     if arguments.length
                         store.set 'identity', identity
-                        user.email = identity?.email
+                        user.email = identity?.email.toLowerCase()
                         user.authtoken = identity?.authtoken
                     store.get 'identity'
             #expose the methods with a variable, this is allowing self-reference

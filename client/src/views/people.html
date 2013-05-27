@@ -5,7 +5,20 @@
     class="people"
     >
     <div class="person" ng-repeat="email in people">
-        <span gravatar size="64" ng-model="email" class="person-gravatar"></span>
+        <table>
+            <tr>
+                <td class="people-avatar">
+                    <span gravatar size="64" ng-model="email" class="person-gravatar"></span>
+                </td>
+                <td class="people-tasks">
+                    <ul>
+                        <li ng-repeat="item in items[email]" class="people-task">
+                        <i class="icon-li icon-check-empty"></i>
+                        {{item.what}}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
     </div>
-
 </div>
