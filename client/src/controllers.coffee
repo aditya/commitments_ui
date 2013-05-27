@@ -39,9 +39,9 @@ define ['angular',
                     controller: 'Trash'
                 )
                 .when(
-                    '/people',
-                    templateUrl: 'src/views/people.html'
-                    controller: 'People'
+                    '/users',
+                    templateUrl: 'src/views/users.html'
+                    controller: 'Users'
                 )
                 .when(
                     '/notifications',
@@ -290,19 +290,20 @@ define ['angular',
                 #and undelete is really just the same as an update
                 $rootScope.$broadcast 'itemfromlocal', item
         #all the people in all the boxes...
-        .controller 'People', ($scope, $timeout, LocalIndexes, Server, StackRank) ->
+        .controller 'Users', ($scope, $timeout, LocalIndexes) ->
             $scope.localIndexes = LocalIndexes
             $scope.$watch 'localIndexes.linkSignature()', ->
-                $scope.people = LocalIndexes.links()
+                $scope.users = LocalIndexes.links()
                 $scope.items = {}
-                for user in $scope.people
-                    Server.userItems user, (user, items) ->
-                        #items not yet done, stack rank order
-                        items = _.filter items, (x) -> not x.done
-                        items = _.sortBy items, StackRank.comparator
-                        #top 2, just a preference
-                        items = items.slice(0, 2)
-                        console.log user, items.slice(0, 2)
-                        $scope.items[user] = items
-                        $timeout ->
-                            $scope.$digest()
+        #each task, in a controller to limit the digest scope
+        .controller 'UserTasks', ($scope, $timeout, Server, StackRank) ->
+            #for this user, go and get their items
+            Server.userItems $scope.user, (items) ->
+                #items not yet done, stack rank order
+                items = _.filter items, (x) -> not x.done
+                items = _.sortBy items, StackRank.comparator
+                #top 2, just a preference
+                items = items.slice(0, 2)
+                $scope.items[$scope.user] = items
+                $timeout ->
+                    $scope.$digest()

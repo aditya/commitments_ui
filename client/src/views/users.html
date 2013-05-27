@@ -1,0 +1,24 @@
+<div
+    ng-controller="Users"
+    ng-model="user"
+    grid=".user"
+    class="users"
+    >
+    <div class="user" ng-repeat="user in users">
+        <table>
+            <tr>
+                <td class="user-avatar">
+                    <span gravatar size="64" ng-model="user" class="user-gravatar"></span>
+                </td>
+                <td class="user-tasks" ng-controller="UserTasks">
+                    <ul>
+                        <li ng-repeat="item in items[user]" class="user-task">
+                        <i class="icon-li icon-check-empty"></i>
+                        {{item.what}}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

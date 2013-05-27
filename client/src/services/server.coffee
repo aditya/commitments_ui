@@ -137,5 +137,5 @@ define ['angular',
                             command: 'commitments'
                             args: ['list', 'tasks', user]
                             , (items) ->
-                                callback user, items
+                                callback items
             server
