@@ -40,4 +40,5 @@ superwatcher watch "${ROOT}"
 superwatcher environment "${ROOT}/environment/environment"
 superwatcher task main superforker 8080 "${ROOT}/server_runtime" "${ROOT}/client"
 superwatcher task mail notify_to_email
+superwatcher task optimizeapp "app"
 superwatcher info

@@ -2,41 +2,56 @@ define ['angular',
     'lodash',
     'store',
     'cs!./services',
-    'cs!./services/database',
+    'text!src/views/tasks.html',
+    'text!src/views/trash.html',
+    'text!src/views/splash.html',
+    'text!src/views/navbar.html',
+    'text!src/views/taskhelp.html',
+    'text!src/views/taskaccept.html',
+    'text!src/views/discussion.html',
+    'text!src/views/discussionhelp.html',
     'cs!./editable',
-    'cs!./readonly'], (angular, _, store, services) ->
+    'cs!./readonly'], (angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, taskaccept_template, discussion_template, discussionhelp_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
+        .run(['$templateCache', ($templateCache) ->
+            console.log 'here we go'
+            $templateCache.put 'src/views/navbar.html', navbar_template
+            $templateCache.put 'src/views/taskhelp.html', taskhelp_template
+            $templateCache.put 'src/views/taskaccept.html', taskaccept_template
+            $templateCache.put 'src/views/discussion.html', discussion_template
+            $templateCache.put 'src/views/discussionhelp.html', discussionhelp_template
+        ])
         .config ($routeProvider) ->
             $routeProvider.
                 when(
                     '/todo',
-                    templateUrl: 'src/views/tasks.html'
+                    template: task_template
                     controller: 'Tasks'
                 )
                 .when(
                     '/done',
-                    templateUrl: 'src/views/tasks.html'
+                    template: task_template
                     controller: 'Tasks'
                 )
                 .when(
                     '/tag',
-                    templateUrl: 'src/views/tasks.html'
+                    template: task_template
                     controller: 'Tasks'
                 )
                 .when(
                     '/task/:taskid',
-                    templateUrl: 'src/views/tasks.html'
+                    template: task_template
                     controller: 'Tasks'
                 )
                 .when(
                     '/task/:taskid/:commentid',
-                    templateUrl: 'src/views/tasks.html'
+                    template: task_template
                     controller: 'Tasks'
                 )
                 .when(
                     '/trash',
                     templateUrl: 'src/views/trash.html'
-                    controller: 'Trash'
+                    template: trash_template
                 )
                 .when(
                     '/users',
@@ -50,12 +65,12 @@ define ['angular',
                 )
                 .when(
                     '/logout',
-                    templateUrl: 'src/views/splash.html'
+                    template: splash_template
                     controller: 'Logout'
                 )
                 .when(
                     '/login/:authtoken',
-                    templateUrl: 'src/views/splash.html'
+                    template: splash_template
                     controller: 'Login'
                 )
                 .when(
@@ -65,11 +80,11 @@ define ['angular',
                 )
                 .when(
                     '/',
-                    templateUrl: 'src/views/splash.html'
+                    template: splash_template
                     controller: 'Splash'
                 )
                 .otherwise(
-                    templateUrl: 'src/views/splash.html'
+                    template: splash_template
                     controller: 'Splash'
                 )
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User, Trash) ->
@@ -103,6 +118,8 @@ define ['angular',
                     else
                         $rootScope.$apply ->
                             $location.path '/'
+                else
+                    $rootScope.flashMessage = message
             #bootstrap the application with the core services, put in the scope
             #to allow easy data binding
             $rootScope.notifications = Notifications

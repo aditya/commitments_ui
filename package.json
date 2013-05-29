@@ -11,6 +11,10 @@
     "shellscript": "git://github.com/wballard/shellscript.git",
     "superwatcher": "git://github.com/wballard/superwatcher.git",
     "superforker": "git://github.com/wballard/superforker.git",
+    "coffee-script":"",
+    "chokidar": "",
+    "colors": "",
+    "underscore": "",
     "requirejs": ""
   },
   "config": {

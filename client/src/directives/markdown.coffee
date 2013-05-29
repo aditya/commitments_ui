@@ -2,7 +2,7 @@
 define ['angular',
     'lodash',
     'marked'
-    'codemirror',
+    'codemirrormarkdown',
     'cs!src/editable'], (angular, _, marked) ->
     PAD = 6
     module = angular.module('editable')

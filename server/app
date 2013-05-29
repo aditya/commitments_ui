@@ -1,4 +1,35 @@
-#! /usr/bin/env bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#!/usr/bin/env coffee
 
-"${DIR}/../node_modules/.bin/r.js" -o "${DIR}/../client/optimized.js" out=/tmp/scratch.js
+# vim: set ft=coffee:
+
+chokidar = require 'chokidar'
+path = require 'path'
+child_process = require 'child_process'
+util = require 'util'
+_ = require 'underscore'
+require 'colors'
+
+CONFIG_FILE = path.resolve(path.join __dirname, '..', 'client', 'optimized.js')
+APP_FILE = path.resolve(path.join __dirname, '..', 'client', 'app.js')
+
+watcher = chokidar.watch path.join(__dirname, '..', 'client'),
+    ignored: (item) ->
+        path.resolve(item) is APP_FILE
+    persistent: true
+
+
+build = (stuff) ->
+    util.log "Optimizing #{APP_FILE}".green
+    child_process.execFile path.join(__dirname, '../node_modules/.bin/r.js'),
+        ['-o', CONFIG_FILE, "out=#{APP_FILE}"], (error, stdout, stderr) ->
+            util.log stderr.red
+            util.log stdout.green
+build = _.debounce build, 1000
+
+watcher.on 'add', (item) ->
+    util.log item.blue
+    build()
+watcher.on 'change', (item) ->
+    util.log item.blue
+    build()
+util.log 'watching'.green

@@ -22,6 +22,7 @@ module.exports = {
     'coffee-script': 'lib/coffee-script',
     cs: 'lib/require/cs',
     less: 'lib/require/less',
+    text: 'lib/require/text',
     css: 'lib/require/css',
     'less-builder': 'lib/require/less-builder',
     'css-builder': 'lib/require/css-builder',
@@ -65,10 +66,10 @@ module.exports = {
       deps: ['jquery']
     },
     'codemirror': {
-      exports: 'CodeMirror',
-      init: function () {
-        require(['lib/codemirror/mode/markdown/markdown']);
-      }
+      exports: 'CodeMirror'
+    },
+    'codemirrormarkdown': {
+      deps: ['codemirror']
     },
     'lunr': {
       exports: 'lunr'
