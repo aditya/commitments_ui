@@ -10,7 +10,8 @@
     "token": "git://github.com/wballard/token.git",
     "shellscript": "git://github.com/wballard/shellscript.git",
     "superwatcher": "git://github.com/wballard/superwatcher.git",
-    "superforker": "git://github.com/wballard/superforker.git"
+    "superforker": "git://github.com/wballard/superforker.git",
+    "requirejs": ""
   },
   "config": {
     "domain": "www.commitments.us"

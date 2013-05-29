@@ -3,8 +3,11 @@ module.exports = {
   logLevel: 0,
   baseUrl: './',
   optimize: 'none',
-  optimizeCss: 'none',
+  cssoptimize: 'node',
+  findNestedDependencies: false,
   name: 'root',
+  //this needs to be in explicitly, not sure why it isn't picking up
+  deps: ['css'],
   paths: {
     md5: 'lib/md5',
     store: 'lib/store',
@@ -17,13 +20,20 @@ module.exports = {
     grid: 'lib/grid-a-licious',
     angular: 'lib/angular/angular',
     'coffee-script': 'lib/coffee-script',
-    cs: 'lib/cs',
+    cs: 'lib/require/cs',
+    less: 'lib/require/less',
+    css: 'lib/require/css',
+    'less-builder': 'lib/require/less-builder',
+    'css-builder': 'lib/require/css-builder',
+    'normalize': 'lib/require/normalize',
+    'lessc-server': 'lib/require/lessc-server',
+    'lessc': 'lib/require/lessc',
     bootstrap: 'lib/bootstrap/js/bootstrap',
     tagbar: 'src/widgets/tagbar',
-    less: 'lib/less',
     lunr: 'lib/lunr',
     mousetrap: 'lib/mousetrap',
     codemirror: 'lib/codemirror/lib/codemirror',
+    codemirrormarkdown: 'lib/codemirror/mode/markdown/markdown',
   },
   shim: {
     //export this, allows plug ins to hook on
@@ -64,5 +74,4 @@ module.exports = {
       exports: 'lunr'
     },
   },
-  stubModules: ['cs'],
 }

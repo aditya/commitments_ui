@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <title></title>
-<link rel="stylesheet/less" type="text/css" href="root.less">
 </head>
 <body hotkeys ng-controller="Application">
 <!-- loading placeholder, inlined so it is here right away on page load -->
@@ -29,13 +28,13 @@
     <div ng-view class="view"></div>
 </div>
 </body>
-<script data-main="optimized.js" src="lib/require.js"></script>
+<script data-main="optimized.js?optimize" src="lib/require.js"></script>
 <script>
 requirejs.onError = function (err) {
     //on any error, just go into a spin to reload
     console.log("Darn, failed to load");
     console.log(err);
-    window.location.reload();
+    //window.location.reload();
 };
 </script>
 </html>

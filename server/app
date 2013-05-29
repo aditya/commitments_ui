@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+"${DIR}/../node_modules/.bin/r.js" -o "${DIR}/../client/optimized.js" out=/tmp/scratch.js
