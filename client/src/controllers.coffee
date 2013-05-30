@@ -209,6 +209,8 @@ define ['angular',
             #the scope to bind to the view
             selected = $rootScope.selected = {}
             selected.items = Database.items()
+            selected.itemCount = ->
+                _.reject selected.items, selected.hide
             #this really grabs new data
             rebind = ->
                 console.log 'rebind'
@@ -249,16 +251,20 @@ define ['angular',
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
                 $rootScope.$broadcast 'deleteitemfromlocal', item
+            $scope.archive = (item) ->
+                $rootScope.$broadcast 'archiveitemfromlocal', item
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
-            $scope.$on 'newitemfromserver', (event, item) ->
+            $scope.$on 'newitemfromserver', ->
                 rebind()
             $scope.$on 'deleteitemfromserver', ->
                 rebind()
-            $scope.$on 'deleteitem', ->
+            $scope.$on 'deleteitemfromlocal', ->
                 rebind()
             $scope.$on 'itemfromlocal', ->
+                rebind()
+            $scope.$on 'archiveitemfromlocal', ->
                 rebind()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of

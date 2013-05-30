@@ -86,7 +86,6 @@ define ['angular',
                         broadcast 'deletefilefromserver', item.filename, item.data
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 if socket
-                    console.log 'will update', JSON.stringify(item)
                     socket.emit 'exec',
                         command: 'commitments'
                         args: ['update', 'task']
@@ -97,9 +96,14 @@ define ['angular',
                         command: 'commitments'
                         args: ['delete', 'task']
                         stdin: item
+            $rootScope.$on 'archiveitemfromlocal', (event, item) ->
+                if socket
+                    socket.emit 'exec',
+                        command: 'commitments'
+                        args: ['archive', 'task']
+                        stdin: item
             $rootScope.$on 'filefromserver', _.debounce( ->
                     if socket
-                        console.log 'going for notifications'
                         socket.emit 'exec',
                             command: 'notify'
                             args: ['receive']

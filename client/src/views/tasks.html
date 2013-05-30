@@ -6,12 +6,14 @@
     on-update="update"
     ng-model="selected.items"
     class="tasks">
+    <li class="alert" ng-show="selected.itemCount() == 0">
+    No Items
+    </li>
     <!--repeat items-->
-    <li
-    ng-repeat="item in selected.items | orderBy:stackRankSort"
+    <li ng-repeat="item in selected.items | orderBy:stackRankSort"
     editable-record
     ng-model="item"
-    animated-hide="item.reject[user.email] || selected.hide(item)"
+    animated-hide="selected.hide(item)"
     class="task">
     <div>
         <div class="task-accept">
@@ -29,7 +31,8 @@
                     </div>
                 </td>
                 <td class="task-delete">
-                    <span action ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action ng-hide="item.done" ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action ng-hide="!item.done" ng-click="archive(item)" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>

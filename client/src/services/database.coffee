@@ -55,7 +55,6 @@ define ['angular',
                 #removal of the item from the local database
                 delete items[item.id]
                 LocalIndexes.delete item
-                $rootScope.$broadcast 'deleteitem', item
                 item
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
@@ -76,5 +75,7 @@ define ['angular',
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 updateItem item
             $rootScope.$on 'deleteitemfromlocal', (event, item) ->
+                deleteItem item
+            $rootScope.$on 'archiveitemfromlocal', (event, item) ->
                 deleteItem item
             database

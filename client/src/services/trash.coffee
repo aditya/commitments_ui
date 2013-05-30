@@ -11,7 +11,7 @@ define ['angular',
             save = (can) ->
                 trashcan = can
                 store.set '.trash', trashcan
-            $rootScope.$on 'deleteitem', (event, item) ->
+            trash = (item) ->
                 #such a very primitize API to get at local storage, not that
                 #it is a big deal to JSON things, but incremental adding
                 #would be preferred to me
@@ -23,6 +23,8 @@ define ['angular',
                 trashcan = store.get('.trash') or {}
                 delete trashcan[item.id]
                 save trashcan
+            $rootScope.$on 'deleteitemfromlocal', (event, item) ->
+                trash item
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 #you undeleted the thing
                 untrash item
