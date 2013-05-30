@@ -167,6 +167,8 @@ define [
                             show: ANIMATION_SPEED
                             hide: ANIMATION_SPEED
                     )
+                    element.on 'mousedown', ->
+                        element.tooltip 'hide'
         ])
         #a loading image, this just hides as soon as possible, meaning that
         #angular is on the air and running

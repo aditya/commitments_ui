@@ -145,10 +145,12 @@ define ['angular',
             $scope.joinAgain = () ->
                 $scope.joinEmail = ''
                 $scope.flashing = false
-        .controller 'Navbar', ($rootScope, $scope, $location, Notifications) ->
+        .controller 'Navbar', ($rootScope, $scope, $location, $timeout, Notifications) ->
             #event to ask for a new task focus
             $scope.addTask = ->
-                $rootScope.$broadcast 'newtask'
+                $location.path $rootScope.lastTaskLocation
+                $timeout ->
+                    $rootScope.$broadcast 'newtask'
         #toolbox has all the boxes, not sure of a better name we can use, what
         #do you call a box of boxes? boxula?
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
@@ -215,6 +217,8 @@ define ['angular',
             rebind = ->
                 console.log 'rebind'
                 selected.items = Database.items()
+            #hang on to this
+            $rootScope.lastTaskLocation = $location.path()
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'

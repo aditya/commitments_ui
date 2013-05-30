@@ -15,6 +15,10 @@
     ng-model="item"
     animated-hide="selected.hide(item)"
     class="task">
+    <div animated-show="hover || sorting"
+        class="handle icon-reorder"
+        tooltip="'Drag to reorder'">
+    </div>
     <div>
         <div class="task-accept">
             <div ng-include src="'src/views/taskaccept.html'"></div>

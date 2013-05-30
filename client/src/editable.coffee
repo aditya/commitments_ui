@@ -12,6 +12,13 @@ define ['md5',
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'editableRecord'
+                element.hover (->
+                    $scope.hover = true
+                    $scope.$digest()
+                ), (->
+                    $scope.hover = false
+                    $scope.$digest()
+                )
                 #fields that are always required
                 $scope.$watch attrs.ngModel, (model) ->
                     if model
@@ -119,12 +126,14 @@ define ['md5',
             link: ($scope, element, attrs, ngModel) ->
                 #using jQuery, so this is not all that impressive
                 element.sortable
-                    cursor: 'move'
+                    handle: '.handle'
                     placeholder: "sortable-placeholder icon-chevron-right"
                     forcePlaceholderSize: true
-                element.css 'cursor', 'move'
-                element.on 'sortstart', ->
-                    null
+                    containment: 'parent'
+                    items: '> li'
+                    opacity: 0.8
+                    tolerance: 'pointer'
+                    axis: 'y'
                 element.on 'sortupdate', ->
                     StackRank.renumber(
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record')
