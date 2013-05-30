@@ -85,32 +85,34 @@ define ['angular',
                     else
                         broadcast 'deletefilefromserver', item.filename, item.data
             $rootScope.$on 'itemfromlocal', (event, item) ->
-                if socket
-                    socket.emit 'exec',
-                        command: 'commitments'
-                        args: ['update', 'task']
-                        stdin: item
+                socket.emit 'exec',
+                    command: 'commitments'
+                    args: ['update', 'task']
+                    stdin: item
             $rootScope.$on 'deleteitemfromlocal', (event, item) ->
-                if socket
-                    socket.emit 'exec',
-                        command: 'commitments'
-                        args: ['delete', 'task']
-                        stdin: item
+                socket.emit 'exec',
+                    command: 'commitments'
+                    args: ['delete', 'task']
+                    stdin: item
             $rootScope.$on 'archiveitemfromlocal', (event, item) ->
-                if socket
-                    socket.emit 'exec',
-                        command: 'commitments'
-                        args: ['archive', 'task']
-                        stdin: item
+                socket.emit 'exec',
+                    command: 'commitments'
+                    args: ['archive', 'task']
+                    stdin: item
             $rootScope.$on 'filefromserver', _.debounce( ->
-                    if socket
-                        socket.emit 'exec',
-                            command: 'notify'
-                            args: ['receive']
-                            , (messages) ->
-                                for message in messages
-                                    broadcast 'notification', message
+                    socket.emit 'exec',
+                        command: 'notify'
+                        args: ['receive']
+                        , (messages) ->
+                            for message in messages
+                                broadcast 'notification', message
                 , 500)
+            $rootScope.$on 'useritems', (event, user, callback) ->
+                socket.emit 'exec',
+                    command: 'commitments'
+                    args: ['list', 'tasks', user]
+                    , (items) ->
+                        callback items
             #**used for local testing**
             window.sampleData = ->
                 window.FAKE_SERVER = false
@@ -135,11 +137,4 @@ define ['angular',
                 logout: ->
                     disconnect()
                     $rootScope.$broadcast 'logout'
-                userItems: (user, callback) ->
-                    if socket
-                        socket.emit 'exec',
-                            command: 'commitments'
-                            args: ['list', 'tasks', user]
-                            , (items) ->
-                                callback items
             server

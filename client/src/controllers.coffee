@@ -322,9 +322,9 @@ define ['angular',
                 $scope.users = LocalIndexes.links()
                 $scope.items = {}
         #each task, in a controller to limit the digest scope
-        .controller 'UserTasks', ($scope, $timeout, Server, StackRank) ->
+        .controller 'UserTasks', ($rootScope, $scope, $timeout, StackRank) ->
             #for this user, go and get their items
-            Server.userItems $scope.user, (items) ->
+            $rootScope.$broadcast 'useritems', $scope.user, (items) ->
                 #items not yet done, stack rank order
                 items = _.filter items, (x) -> not x.done
                 items = _.sortBy items, StackRank.comparator
