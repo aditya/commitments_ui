@@ -92,7 +92,10 @@ define ['angular',
             $rootScope.$on 'loginsuccess', (event, identity) ->
                 $rootScope.loggedIn = true
                 $rootScope.flash ''
-                $location.path '/todo'
+                #default location if nowhere
+                console.log $location.path()
+                if $location.path() is '/'
+                    $location.path '/todo'
             $rootScope.$on 'loginfailure', ->
                 $rootScope.loggedIn = false
                 $rootScope.flash "Whoops, that's not a valid login link", true
@@ -134,7 +137,7 @@ define ['angular',
         .controller 'Logout', ($scope, $timeout, $location, Server) ->
             Server.logout()
             $scope.flash "Logging you out..."
-        .controller 'Splash', ($scope, $location, Server) ->
+        .controller 'Splash', ($scope, $rootScope, $location, Server) ->
             #the actual method to join
             $scope.join = () ->
                 Server.join $scope.joinEmail
