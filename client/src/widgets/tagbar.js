@@ -153,11 +153,19 @@
     populateResults: function(results, query) {
       var tagbar = this;
       var addTo = this.container.find(".tagbar-results");
+      //clear out and replace all the results
       addTo.children().remove();
       for (var i = 0; i < results.length; i = i + 1) {
         var result=results[i];
         var node=$("<li class='tagbar-result'></li>");
         var item=$("<a></a>");
+        if (this.opts.iconUrl) {
+          var url = this.opts.iconUrl(result);
+          if (url) {
+            icon = $("<image class='tagbar-result-icon' src='" + url + "'/>");
+            item.append(icon);
+          }
+        }
         var label=$(document.createElement("span"));
         label.addClass("tagbar-result-label");
         label.html(result);
@@ -374,8 +382,7 @@
     },
     onSelect: function (data) {
       this.addSelectedChoice(data);
-      this.clear();
-      this.focusSearch();
+      this.cancel();
     },
     cancel: function () {
       this.clear();
@@ -426,14 +433,11 @@
         }
       }
     },
-    previous: function () {
-      return this.previousValues || {};
-    },
   };}
   $.fn.tagbar = function () {
     var args = Array.prototype.slice.call(arguments, 0),
     opts,
-    value, allowedMethods = ["focusSearch", "val", "previous", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable", "data"];
+    value, allowedMethods = ["focusSearch", "val", "destroy", "opened", "open", "close", "focus", "container", "enable", "disable"];
     this.each(function () {
       if (args.length === 0 || typeof(args[0]) === "object") {
         opts = args.length === 0 ? {} : $.extend({}, args[0]);
