@@ -69,6 +69,8 @@ define ['angular',
                         #socket.io on an auth failure
                         broadcast 'loginfailure'
                         disconnect()
+                socket.on 'reconnect', ->
+                    broadcast 'reconnect'
                 socket.on 'addFile', (item) ->
                     if item.filename.indexOf(socket.itemPath) is 0
                         broadcast 'itemfromserver', item.filename, item.data

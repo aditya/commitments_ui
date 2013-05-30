@@ -10,9 +10,6 @@ define ['angular',
         root.factory 'Database', ($rootScope, $timeout, LocalIndexes, SampleData) ->
             #here is the 'database' in memory, items tracked by ID
             items = {}
-            #things in from the server are tracked, this is storing ids to
-            #avoid thinking about if objects are updated or cloned
-            items_from_server = {}
             updateItem = (item, fromServer) ->
                 if not item
                     return
@@ -27,8 +24,6 @@ define ['angular',
                     #with its hidden variables since these came from out of the
                     #current angular application
                     delete item['$$hashKey']
-                    #track that it came from the server
-                    items_from_server[fromServer] = item.id
                     #this came from a remote update, so new data needs to be
                     #merge into the existing object, allowing the data binding
                     #to be pointed at the same reference
@@ -67,7 +62,10 @@ define ['angular',
             #event handlers
             $rootScope.$on 'loginsuccess', ->
                 items = {}
-                items_from_server = {}
+            $rootScope.$on 'reconnect', ->
+                #save everything if there was a reconnect, safety-pup!
+                for item in _.values(items)
+                    $rootScope.$broadcast 'itemfromlocal', item
             $rootScope.$on 'itemfromserver', (event, filename, item) ->
                 updateItem item, filename
             $rootScope.$on 'deleteitemfromserver', (event, filename, item) ->
