@@ -48,7 +48,7 @@
                 <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="extended.links"></li>
                 <li>
                     <ul class="task-accept">
-                        <li class="info-icon icon-link"></li>
+                        <li class="info-icon icon-ok-sign"></li>
                         <li ng-repeat="(email, _) in item.accept">
                             <span gravatar ng-model="email"></span>
                         </li>
@@ -56,7 +56,7 @@
                 </li>
                 <li>
                     <ul class="task-reject">
-                        <li class="info-icon icon-unlink"></li>
+                        <li class="info-icon icon-remove-sign"></li>
                         <li ng-repeat="(email, _) in item.reject">
                             <span gravatar ng-model="email"></span>
                         </li>
