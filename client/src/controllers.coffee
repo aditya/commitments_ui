@@ -148,7 +148,10 @@ define ['angular',
         .controller 'Navbar', ($rootScope, $scope, $location, $timeout, Notifications) ->
             #event to ask for a new task focus
             $scope.addTask = ->
-                $location.url $rootScope.lastTaskLocation
+                if $location.path().slice(-5) is '/done' or $rootScope.lastTaskLocation is '/done'
+                    $location.path '/todo'
+                else
+                    $location.url $rootScope.lastTaskLocation
                 $timeout ->
                     $rootScope.$broadcast 'newtask'
         #toolbox has all the boxes, not sure of a better name we can use, what
