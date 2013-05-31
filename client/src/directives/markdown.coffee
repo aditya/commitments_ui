@@ -4,7 +4,7 @@ define ['angular',
     'marked'
     'codemirrormarkdown',
     'cs!src/editable'], (angular, _, marked) ->
-    PAD = 6
+    ANIMATION_SPEED = 300
     module = angular.module('editable')
         .directive('markdown', ['$timeout', ($timeout) ->
             restrict: 'A'
@@ -16,7 +16,7 @@ define ['angular',
                 attachTo.width('100%')
                 attachTo.height('auto')
                 attachTo.hide()
-                display = $ "<div class='display'></div>"
+                display = $ "<div class='display collapsed'></div>"
                 if attrs.multiline?
                     display.addClass 'multiline'
                 else
@@ -30,6 +30,17 @@ define ['angular',
                 if attrs.readonly?
                     display.addClass 'readonly'
                 element.append display, attachTo
+                twizzlerMore = $('<span class="twizzler icon-double-angle-right"></span>').hide()
+                twizzlerMore.on 'click', ->
+                    display.removeClass 'collapsed', ANIMATION_SPEED
+                    twizzlerMore.hide()
+                    twizzlerLess.show()
+                twizzlerLess = $('<span class="twizzler icon-double-angle-left"></span>').hide()
+                twizzlerLess.on 'click', ->
+                    display.addClass 'collapsed', ANIMATION_SPEED
+                    twizzlerLess.hide()
+                    twizzlerMore.show()
+                element.append twizzlerLess, twizzlerMore
                 #these are the handlers that apply the edits
                 whenOK = ->
                     if codemirror
@@ -96,7 +107,7 @@ define ['angular',
                 if attrs.focusOn?
                     element.scope().$on attrs.focusOn, ->
                         focus()
-                element.on 'click dblclick', (event) ->
+                display.on 'click dblclick', (event) ->
                     if not display.hasClass 'readonly'
                         focus()
                 element.on 'keydown', (event) ->
@@ -134,4 +145,11 @@ define ['angular',
                             element.show()
                         else
                             element.hide()
+                    setTimeout ->
+                        console.log display[0].offsetHeight, display[0].scrollHeight
+                        if display[0].offsetHeight < display[0].scrollHeight
+                            twizzlerMore.show()
+                        else
+                            twizzlerMore.hide()
+                    , ANIMATION_SPEED
         ])

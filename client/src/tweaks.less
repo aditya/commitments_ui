@@ -171,17 +171,21 @@ body {
     opacity: 0;
 }
 
-.play {
+.display {
     padding: @defaultPad;
 }
 
 .markdown {
-    .play {
+    .display {
         .transparent-border;
         cursor: text;
         &:hover {
             .hover-editor;
         }
+    }
+    .collapsed {
+        max-height: 120px;
+        overflow: hidden;
     }
     .readonly {
         .transparent-border;
@@ -195,10 +199,13 @@ body {
         color: @linkColor;
         font-style: italic;
     }
-    .play, .oneline {
+    .display, .oneline {
         p {
             margin: 1px;
         }
+    }
+    .twizzler {
+        .action-icon;
     }
 }
 
@@ -606,3 +613,4 @@ hr {
     cursor: move;
     font-size: 2.0em;
 }
+
