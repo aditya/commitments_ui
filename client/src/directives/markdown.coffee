@@ -146,7 +146,6 @@ define ['angular',
                         else
                             element.hide()
                     setTimeout ->
-                        console.log display[0].offsetHeight, display[0].scrollHeight
                         if display[0].offsetHeight < display[0].scrollHeight
                             twizzlerMore.show()
                         else
