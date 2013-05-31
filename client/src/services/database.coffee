@@ -39,7 +39,7 @@ define ['angular',
                         #below...
                         $timeout ->
                             $rootScope.$broadcast 'newitemfromserver', item
-                LocalIndexes.update item
+                LocalIndexes.update item, items
                 item
             deleteItem = (item, fromServer) ->
                 if not item
@@ -49,7 +49,7 @@ define ['angular',
                 item.lastUpdatedAt = Date.now()
                 #removal of the item from the local database
                 delete items[item.id]
-                LocalIndexes.delete item
+                LocalIndexes.delete item, items
                 item
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller

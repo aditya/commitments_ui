@@ -11,14 +11,8 @@ define ['angular',
             parseTags = (document, callback) ->
                 for tag, v of (document?.tags or {})
                     callback tag
-            parseLinks = (document, callback) ->
-                for link, v of (document?.links or {})
-                    callback link
-                callback. document?.who
             #inverted indexing for tags
             tagIndex = inverted.index [parseTags], (x) -> x.id
-            #inverted indexing for links
-            linkIndex = inverted.index [parseLinks], (x) -> x.id
             #full text index for searchacross items
             fullTextIndex = lunr ->
                 @field 'what', 8
@@ -35,25 +29,31 @@ define ['angular',
                     comments: (_.map(
                         item?.discussion?.comments,
                         (x) -> x.what).join ' ') or ''
+            links = {}
+            update_links = (items) ->
+                links = {}
+                for id, item of items
+                    for link, v of (item.links or {})
+                        links[link] = true
             do ->
-                update: (item) ->
+                update: (item, items) ->
                     #indexing to drive the tags, autocomplete, and screens
                     tagIndex.add item
-                    linkIndex.add item
                     fullTextIndex.addToIndex item
-                delete: (item) ->
+                    update_links items
+                delete: (item, items) ->
                     tagIndex.remove item
-                    linkIndex.remove item
                     fullTextIndex.remove
                         id: item.id
-                tags: (filter) ->
-                    tagIndex.terms(filter)
+                    update_links items
+                tags: ->
+                    tagIndex.terms()
                 tagSignature: ->
                     tagIndex.terms().join('')
                 linkSignature: ->
-                    linkIndex.terms().join('')
+                    _.keys(links).join ''
                 links: (filter) ->
-                    linkIndex.terms(filter)
+                    _.select _.keys(links), filter
                 itemsByTag: (tags, filter) ->
                     if _.isString tags
                         by_tag = {tags: {}}
