@@ -205,7 +205,7 @@ define ['angular',
                 delete item.accept[$scope.user.email]
                 $rootScope.$broadcast 'itemfromlocal', item
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope, $location, $routeParams
+        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams
             Database, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
@@ -213,10 +213,14 @@ define ['angular',
             selected.items = Database.items()
             selected.itemCount = ->
                 _.reject selected.items, selected.hide
-            #this really grabs new data
-            rebind = ->
+            #this really grabs new data, with a bit of a debounce so we don't
+            #bind once for every message on startup
+            rebind = _.debounce ->
                 console.log 'rebind'
-                selected.items = Database.items()
+                $timeout ->
+                    selected.items = Database.items()
+                    $scope.$digest()
+            , 300
             #hang on to this
             $rootScope.lastTaskLocation = $location.path()
             #process where we are looking, this is a bit of a sub-router, it is
