@@ -134,6 +134,8 @@ define ['md5',
                     opacity: 0.8
                     tolerance: 'pointer'
                     axis: 'y'
+                    #enough room for the navbar
+                    scrollSensitivity: 64
                 element.on 'sortupdate', ->
                     StackRank.renumber(
                         element.children('.editableRecord').map((_, x) -> $(x).data 'record')
