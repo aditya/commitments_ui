@@ -148,7 +148,7 @@ define ['angular',
         .controller 'Navbar', ($rootScope, $scope, $location, $timeout, Notifications) ->
             #event to ask for a new task focus
             $scope.addTask = ->
-                $location.path $rootScope.lastTaskLocation
+                $location.url $rootScope.lastTaskLocation
                 $timeout ->
                     $rootScope.$broadcast 'newtask'
         #toolbox has all the boxes, not sure of a better name we can use, what
@@ -222,7 +222,8 @@ define ['angular',
                     $scope.$digest()
             , 300
             #hang on to this
-            $rootScope.lastTaskLocation = $location.path()
+            console.log $location.url()
+            $rootScope.lastTaskLocation = $location.url()
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
             if $location.path().slice(-5) is '/todo'
