@@ -301,6 +301,12 @@ define ['angular',
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
+        #each independent task
+        .controller 'Task', ($scope) ->
+            #adding a subitem is just making a nested object
+            $scope.subitem = (item) ->
+                item.sub = item.sub or []
+                item.sub.push {}
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->
@@ -311,9 +317,9 @@ define ['angular',
                 if _.contains notification?.data?.tags, 'undone'
                     return 'icon-check-empty'
                 if _.contains notification?.data?.tags, 'accept'
-                    return 'icon-link'
+                    return 'icon-ok-sign'
                 if _.contains notification?.data?.tags, 'reject'
-                    return 'icon-unlink'
+                    return 'icon-remove-sign'
                 if _.contains notification?.data?.tags, 'share'
                     return 'icon-share-alt'
                 if _.contains notification?.data?.tags, 'unshare'

@@ -1,0 +1,19 @@
+<table class="task-core">
+    <tr>
+        <td class="task-check">
+            <span check ng-model="item.done" tooltip="'Mark done'"></span>
+        </td>
+        <td class="task-subtask">
+            <span action ng-click="subtem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
+        </td>
+        <td class="task-what">
+            <div search-highlight="searchQuery" markdown required ng-model="item.what" class="larger">
+                <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
+            </div>
+        </td>
+        <td class="task-delete">
+            <span action ng-hide="item.done" ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+            <span action ng-hide="!item.done" ng-click="archive(item)" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
+        </td>
+    </tr>
+</table>
