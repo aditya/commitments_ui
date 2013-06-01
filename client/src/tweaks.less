@@ -309,6 +309,11 @@ body {
         .icon-2x;
         margin-left: -24px;
     }
+    .tasks-subtasks {
+        list-style: none;
+        .no-margin;
+        .no-padding;
+    }
     .task {
         position: relative;
         .well;
@@ -392,6 +397,15 @@ body {
         }
         .task-action {
             width: 16px;
+            i {
+                .action-icon;
+                font-size: 1.5em;
+            }
+            padding-top: @defaultPad;
+            padding-left: @defaultPad;
+        }
+        .task-indent {
+            width: 24px;
             i {
                 .action-icon;
                 font-size: 1.5em;

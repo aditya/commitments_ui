@@ -129,15 +129,16 @@ define [
                     element.val ''
                     fire()
         ])
-        .directive('action', ['$timeout', ($timeout) ->
+        .directive('action', [ ->
             restrict: 'A'
-            link: ($scope, element, attrs) ->
+            require: '^ngModel'
+            link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'action'
                 element.css 'cursor', 'pointer'
                 #named event emission
                 if attrs.action
                     element.on 'click', ->
-                        $scope.$emit attrs.action
+                        $scope.$emit attrs.action, ngModel.$modelValue
         ])
         .directive('help', [ ->
             restrict: 'A'

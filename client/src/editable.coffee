@@ -78,10 +78,6 @@ define ['md5',
                 $scope.$on 'editmissingrequired', (event) ->
                     event.stopPropagation()
                     $scope.$emit 'deleterecord', ngModel.$modelValue
-                #look for deletes
-                $scope.$on 'delete', (event) ->
-                    event.stopPropagation()
-                    $scope.$emit 'deleterecord', ngModel.$modelValue
         ])
         #a required field will trigger an event when the value is set or unset
         #this is used for implicit deletes as well as turning placeholder
@@ -226,4 +222,22 @@ define ['md5',
             link: ($scope, element, attrs) ->
                 if not $scope.$eval(attrs.requiresArray)
                     $scope.$eval("#{attrs.requiresArray}=[]")
+        ])
+        .directive('indentable', [ ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                $scope.$watch attrs.ngModel, (model) ->
+                    if not model.indent or model.indent < 0
+                        model.indent = 0
+                $scope.$on 'indent', (event) ->
+                    event.stopPropagation()
+                    ngModel.$modelValue.indent += 1
+                    element.css 'margin-left', 24 * ngModel.$modelValue.indent
+                    $scope.$digest()
+                $scope.$on 'outdent', (event) ->
+                    event.stopPropagation()
+                    ngModel.$modelValue.indent -= 1
+                    element.css 'margin-left', 24 * ngModel.$modelValue.indent
+                    $scope.$digest()
         ])

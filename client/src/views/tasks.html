@@ -43,24 +43,30 @@
                 </td>
             </tr>
         </table>
-        <table editable-list ng-model="item.subitems" class="task-subtasks">
-            <tr ng-repeat="subitem in item.subitems" editable-record ng-model="subitem">
-                <td class="task-action">
-                    <!--indent tool-->
-                </td>
-                <td class="task-check">
-                    <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
-                </td>
-                <td class="task-what">
-                    <div search-highlight="searchQuery" markdown required placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
-                    </div>
-                </td>
-                <td class="task-action" animated-show="hover || true">
-                    <span action="delete" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
-                </td>
-            </tr>
-
-        </table>
+        <ul editable-list ng-model="item.subitems" class="tasks-subtasks">
+            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" indentable>
+            <table class="task-core">
+                <tr>
+                    <td class="task-action">
+                        <span action="outdent" animated-show="subitem.indent"><i class="icon-chevron-left"></i></span>
+                    </td>
+                    <td class="task-action">
+                        <span action="indent" animated-show="subitem.indent < 3"><i class="icon-chevron-right"></i></span>
+                    </td>
+                    <td class="task-check">
+                        <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
+                    </td>
+                    <td class="task-what">
+                        <div search-highlight="searchQuery" markdown required placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
+                        </div>
+                    </td>
+                    <td class="task-action" animated-show="hover || true">
+                        <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
+                    </td>
+                </tr>
+            </table>
+            </li>
+        </ul>
         <!--this div is to control visibility so that extended items are show on demand-->
         <div animated-show="focused && item.what && extended" class="task-extended">
             <ul requires-object="extended.discussion" class="task-tools">
