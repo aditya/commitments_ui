@@ -68,7 +68,6 @@ define ['md5',
                     $scope.$emit 'updaterecord', ngModel.$modelValue
                 #a nested record perhaps? re-emit for this record
                 $scope.$on 'updaterecord', (event, record) ->
-                    console.log 'updaterecord', record
                     if record isnt ngModel.$modelValue
                         event.stopPropagation()
                         $scope.$emit 'updaterecord', ngModel.$modelValue

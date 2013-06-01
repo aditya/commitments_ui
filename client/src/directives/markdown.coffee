@@ -132,19 +132,13 @@ define ['angular',
                                        '<span class="highlight">$&</span>')
                     rendered = marked content
                     display.html rendered
-                    if attrs.placeholder
-                        #placeholder text
-                        if ngModel.$viewValue
-                            display.removeClass('placeholder')
-                        else
-                            display.addClass('placeholder')
-                            display.html($scope.$eval(attrs.placeholder))
+                    placeholder = $scope.$eval(attrs.placeholder) or "..."
+                    #placeholder text
+                    if ngModel.$viewValue
+                        display.removeClass('placeholder')
                     else
-                        #without a placeholder just hide the thing
-                        if ngModel.$viewValue
-                            element.show()
-                        else
-                            element.hide()
+                        display.addClass('placeholder')
+                        display.html(placeholder)
                     setTimeout ->
                         if display[0].offsetHeight < display[0].scrollHeight
                             twizzlerMore.show()
