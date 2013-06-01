@@ -235,7 +235,7 @@ define ['angular',
             else if $location.path().slice(-5) is '/done'
                 selected.title = "Done"
                 selected.allowNew = false
-                selected.hide = (x) -> not x.done
+                selected.hide = (x) -> (not x.done) or x.archived
             else if $location.path().slice(0,5) is '/task'
                 selected.title = "Task"
                 selected.allowNew = false
@@ -244,7 +244,7 @@ define ['angular',
                 tag = _.keys($location.search())[0]
                 selected.title = tag
                 selected.allowNew = true
-                selected.hide = (x) -> not (x.tags or {})[tag]
+                selected.hide = (x) -> (not (x.tags or {})[tag]) or x.archived
                 selected.stamp = (item) ->
                     item.tags = item.tags or {}
                     item.tags[tag] = Date.now()
@@ -277,6 +277,10 @@ define ['angular',
                 rebind()
             $rootScope.$on 'itemfromlocal', ->
                 rebind()
+            $scope.$on 'archiveitem', (event, item) ->
+                console.log 'archive', item
+                item.archived = true
+                $scope.$digest()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
