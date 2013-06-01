@@ -208,8 +208,7 @@ define ['angular',
                 delete item.accept[$scope.user.email]
                 $rootScope.$broadcast 'itemfromlocal', item
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams
-            Database, LocalIndexes, User) ->
+        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, LocalIndexes, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             selected = $rootScope.selected = {}
@@ -265,6 +264,10 @@ define ['angular',
                 $rootScope.$broadcast 'deleteitemfromlocal', item
             $scope.archive = (item) ->
                 $rootScope.$broadcast 'archiveitemfromlocal', item
+            #adding a subitem is just making a nested object
+            $scope.subitem = (item) ->
+                item.sub = item.sub or []
+                item.sub.push {}
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
@@ -301,12 +304,6 @@ define ['angular',
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
-        #each independent task
-        .controller 'Task', ($scope) ->
-            #adding a subitem is just making a nested object
-            $scope.subitem = (item) ->
-                item.sub = item.sub or []
-                item.sub.push {}
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->

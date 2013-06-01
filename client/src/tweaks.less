@@ -378,8 +378,8 @@ body {
         .markdown {
             .fill;
         }
-        .task-check {
-            width: 40px;
+        .task-check, .task-nest {
+            width: 24px;
             i {
                 .action-icon;
                 .icon-2x;
@@ -387,12 +387,14 @@ body {
             padding-top: @defaultPad;
             padding-left: @defaultPad;
         }
-        .task-delete {
-            padding-left: 2* @defaultPad;
-            width: 20px;
-            .action {
+        .task-action {
+            width: 16px;
+            i {
                 .action-icon;
+                font-size: 1.5em;
             }
+            padding-top: @defaultPad;
+            padding-left: @defaultPad;
         }
         .task-text {
             .fill;
@@ -543,6 +545,8 @@ hr {
     .icon-question {
         .action-icon;
     }
+    margin-top: @defaultMargin;
+    margin-bottom: @defaultMargin;
 }
 
 .helptext {
@@ -613,4 +617,3 @@ hr {
     cursor: move;
     font-size: 2.0em;
 }
-
