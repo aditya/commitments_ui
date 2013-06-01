@@ -12,6 +12,8 @@ define ['md5',
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'editableRecord'
+                #record hove tracking
+                $scope.hover = false
                 element.hover (->
                     $scope.hover = true
                     $scope.$digest()

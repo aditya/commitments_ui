@@ -29,7 +29,7 @@
                 <td class="task-check">
                     <span check ng-model="item.done" tooltip="'Mark done'"></span>
                 </td>
-                <td class="task-action" animated-show="hover || true">
+                <td class="task-action" animated-show="hover">
                     <span action ng-click="subitem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
@@ -43,7 +43,7 @@
                 </td>
             </tr>
         </table>
-        <ul editable-list ng-model="item.subitems" class="tasks-subtasks">
+        <ul animated-show="focused" editable-list ng-model="item.subitems" class="tasks-subtasks">
             <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" indentable=".task-indent">
             <table class="task-core">
                 <tr>
@@ -61,7 +61,7 @@
                         <div search-highlight="searchQuery" markdown placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
                         </div>
                     </td>
-                    <td class="task-action" animated-show="hover || true">
+                    <td class="task-action" animated-show="hover">
                         <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
                     </td>
                 </tr>
