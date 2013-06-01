@@ -134,6 +134,10 @@ define [
             link: ($scope, element, attrs) ->
                 element.addClass 'action'
                 element.css 'cursor', 'pointer'
+                #named event emission
+                if attrs.action
+                    element.on 'click', ->
+                        $scope.$emit attrs.action
         ])
         .directive('help', [ ->
             restrict: 'A'

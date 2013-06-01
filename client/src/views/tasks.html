@@ -29,7 +29,7 @@
                 <td class="task-check">
                     <span check ng-model="item.done" tooltip="'Mark done'"></span>
                 </td>
-                <td class="task-action" animated-show="hover">
+                <td class="task-action" animated-show="hover || true">
                     <span action ng-click="subitem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
@@ -42,6 +42,24 @@
                     <span action ng-hide="!item.done" ng-click="archive(item)" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
+        </table>
+        <table editable-list ng-model="item.subitems" class="task-subtasks">
+            <tr ng-repeat="subitem in item.subitems" editable-record ng-model="subitem">
+                <td class="task-action">
+                    <!--indent tool-->
+                </td>
+                <td class="task-check">
+                    <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
+                </td>
+                <td class="task-what">
+                    <div search-highlight="searchQuery" markdown required placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
+                    </div>
+                </td>
+                <td class="task-action" animated-show="hover || true">
+                    <span action="delete" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
+                </td>
+            </tr>
+
         </table>
         <!--this div is to control visibility so that extended items are show on demand-->
         <div animated-show="focused && item.what && extended" class="task-extended">

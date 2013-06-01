@@ -266,8 +266,8 @@ define ['angular',
                 $rootScope.$broadcast 'archiveitemfromlocal', item
             #adding a subitem is just making a nested object
             $scope.subitem = (item) ->
-                item.sub = item.sub or []
-                item.sub.push {}
+                item.subitems = item.subitems or []
+                item.subitems.push {}
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding

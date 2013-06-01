@@ -78,6 +78,10 @@ define ['md5',
                 $scope.$on 'editmissingrequired', (event) ->
                     event.stopPropagation()
                     $scope.$emit 'deleterecord', ngModel.$modelValue
+                #look for deletes
+                $scope.$on 'delete', (event) ->
+                    event.stopPropagation()
+                    $scope.$emit 'deleterecord', ngModel.$modelValue
         ])
         #a required field will trigger an event when the value is set or unset
         #this is used for implicit deletes as well as turning placeholder
@@ -192,6 +196,7 @@ define ['md5',
                         list.splice(foundAt, 1)
                     if attrs.onDelete
                         $scope.$eval("#{attrs.onDelete}")(record)
+                    $scope.$digest()
                 #and handle events coming up from nested editable records
                 #and fire the controller callback if specified
                 $scope.$on 'updaterecord', (event, record) ->
