@@ -96,7 +96,7 @@ define ['angular',
                     command: 'commitments'
                     args: ['delete', 'task']
                     stdin: item
-            $rootScope.$on 'archiveitemfromlocal', (event, item) ->
+            $rootScope.$on 'archiveitem', (event, item) ->
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['archive', 'task']

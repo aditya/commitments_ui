@@ -218,13 +218,9 @@ define ['angular',
             #this really grabs new data, with a bit of a debounce so we don't
             #bind once for every message on startup
             rebindNow = ->
-                keys_now = _.pluck selected.items, 'id'
-                items = Database.items()
-                keys_maybe = _.pluck items, 'id'
-                if _.intersection(keys_now, keys_maybe).length isnt keys_maybe.length
-                    console.log 'rebind'
-                    selected.items = items
-                    $scope.$digest()
+                console.log 'rebind'
+                selected.items = Database.items()
+                $scope.$digest()
             rebind = _.debounce ->
                 rebindNow()
             , 300
@@ -266,8 +262,6 @@ define ['angular',
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
                 $rootScope.$broadcast 'deleteitemfromlocal', item
-            $scope.archive = (item) ->
-                $rootScope.$broadcast 'archiveitemfromlocal', item
             #adding a subitem is just making a nested object
             $scope.subitem = (item) ->
                 item.subitems = item.subitems or []
@@ -275,15 +269,13 @@ define ['angular',
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
-            $scope.$on 'newitemfromserver', ->
+            $rootScope.$on 'newitemfromserver', ->
                 rebind()
-            $scope.$on 'deleteitemfromserver', ->
+            $rootScope.$on 'deleteitemfromserver', ->
                 rebind()
-            $scope.$on 'deleteitemfromlocal', ->
+            $rootScope.$on 'deleteitemfromlocal', ->
                 rebind()
-            $scope.$on 'itemfromlocal', ->
-                rebind()
-            $scope.$on 'archiveitemfromlocal', ->
+            $rootScope.$on 'itemfromlocal', ->
                 rebind()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of

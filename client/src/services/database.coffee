@@ -10,16 +10,18 @@ define ['angular',
         root.factory 'Database', ($rootScope, $timeout, LocalIndexes, SampleData) ->
             #here is the 'database' in memory, items tracked by ID
             items = {}
-            updateItem = (item, fromServer) ->
+            items_by_file = {}
+            updateItem = (item, filename) ->
                 if not item
                     return
-                if not fromServer
+                if not filename
                     #this came from a local update, not back from the server
                     #so send it along
                     item.lastUpdatedBy = $rootScope.user.email
                     item.lastUpdatedAt = Date.now()
                     items[item.id] = item
                 else
+                    items_by_file[filename] = item
                     #just in case these snuck in, no need to taunt angular
                     #with its hidden variables since these came from out of the
                     #current angular application
@@ -41,12 +43,11 @@ define ['angular',
                             $rootScope.$broadcast 'newitemfromserver', item
                 LocalIndexes.update item, items
                 item
-            deleteItem = (item, fromServer) ->
+            deleteItem = (item, filename) ->
+                item = item or items_by_file[filename]
+                console.log 'delete', item, filename
                 if not item
                     return
-                #you did it, so we record it :)
-                item.lastUpdatedBy = $rootScope.user.email
-                item.lastUpdatedAt = Date.now()
                 #removal of the item from the local database
                 delete items[item.id]
                 LocalIndexes.delete item, items

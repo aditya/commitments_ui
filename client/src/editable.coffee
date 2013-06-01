@@ -154,7 +154,6 @@ define ['md5',
                     $scope.$broadcast 'selectedrecord', record
                     #buble up an update, a new is an update too and this is
                     #needed to allow parent records to know of a child update
-                    $scope.$emit 'updaterecord', list
                     $scope.$emit 'updaterecord', record
                 #When there is a deleted record, remove it from the local view
                 #and fire the callback

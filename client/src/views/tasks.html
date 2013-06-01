@@ -39,7 +39,7 @@
                 </td>
                 <td class="task-action" animated-show="hover">
                     <span action ng-hide="item.done" ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action ng-hide="!item.done" ng-click="archive(item)" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
+                    <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>
