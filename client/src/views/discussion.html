@@ -19,8 +19,7 @@
                     <div
                         markdown multiline
                         readonly-if="user.email != comment.who"
-                        ng-model="comment.what"
-                        required>
+                        ng-model="comment.what">
                         <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                     </div>
 
@@ -44,8 +43,7 @@
                     <div
                         markdown multiline
                         placeholder="'Your comment here'"
-                        ng-model="$$placeholder.what"
-                        required>
+                        ng-model="$$placeholder.what">
                         <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                     </div>
                 </td>

@@ -33,7 +33,7 @@
                     <span action ng-click="subitem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
-                    <div search-highlight="searchQuery" markdown required ng-model="item.what" class="larger">
+                    <div search-highlight="searchQuery" markdown ng-model="item.what" class="larger">
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>
@@ -57,7 +57,7 @@
                         <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
                     </td>
                     <td class="task-what">
-                        <div search-highlight="searchQuery" markdown required placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
+                        <div search-highlight="searchQuery" markdown placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
                         </div>
                     </td>
                     <td class="task-action" animated-show="hover || true">
@@ -107,7 +107,7 @@
     editable-record-placeholder="placeholderItem"
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
-        <span focus-on="newtask" markdown required ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
+        <span focus-on="newtask" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
             <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
         </span>
     </div>

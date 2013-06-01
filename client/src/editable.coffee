@@ -66,35 +66,12 @@ define ['md5',
                 $scope.$on 'edit', (event) ->
                     event.stopPropagation()
                     $scope.$emit 'updaterecord', ngModel.$modelValue
-                $scope.$on 'editrequired', (event) ->
-                    event.stopPropagation()
-                    $scope.$emit 'updaterecord', ngModel.$modelValue
                 #a nested record perhaps? re-emit for this record
                 $scope.$on 'updaterecord', (event, record) ->
+                    console.log 'updaterecord', record
                     if record isnt ngModel.$modelValue
                         event.stopPropagation()
                         $scope.$emit 'updaterecord', ngModel.$modelValue
-                #if we are missing required fields, delete the record
-                $scope.$on 'editmissingrequired', (event) ->
-                    event.stopPropagation()
-                    $scope.$emit 'deleterecord', ngModel.$modelValue
-        ])
-        #a required field will trigger an event when the value is set or unset
-        #this is used for implicit deletes as well as turning placeholder
-        #records into real records
-        .directive('required', [() ->
-            restrict: 'A'
-            require: 'ngModel'
-            priority: 100
-            link: ($scope, element, attrs, ngModel) ->
-                #supress any edit, we are changing this to another event as
-                #it has different semantics
-                $scope.$on 'edit', (event, name, value) ->
-                    event.stopPropagation()
-                    if not value
-                        $scope.$emit 'editmissingrequired', attrs.ngModel
-                    else
-                        $scope.$emit 'editrequired', attrs.ngModel
         ])
         #placeholders give you a spot to enter new records
         .directive('editableRecordPlaceholder', [() ->
@@ -104,12 +81,8 @@ define ['md5',
             link: ($scope, element, attrs, ngModel) ->
                 if not $scope.$$placeholder
                     $scope.$$placeholder = {}
-                #eat this event, there is no deleting placeholders
-                $scope.$on 'editmissingrequired', (event) ->
-                    event.stopPropagation()
-                #if the required field is in place, then make sure
-                #we treat this as a real record
-                $scope.$on 'editrequired', (event) ->
+                #on an edit, treat this as a real record
+                $scope.$on 'edit', (event) ->
                     event.stopPropagation()
                     #if we have a callback defined to work on any new item, call
                     #it now to set the record with what is needed
@@ -172,13 +145,15 @@ define ['md5',
                 #back to the underlying database
                 $scope.$on 'newrecord', (event, record) ->
                     event.stopPropagation()
+                    list = ngModel.$modelValue
                     $scope.selectedrecord = record
-                    ngModel.$modelValue.push record
+                    list.push record
                     #new records should be selected right away, you are working
                     #on it right now after all...
                     $scope.$broadcast 'selectedrecord', record
                     #buble up an update, a new is an update too and this is
                     #needed to allow parent records to know of a child update
+                    $scope.$emit 'updaterecord', list
                     $scope.$emit 'updaterecord', record
                 #When there is a deleted record, remove it from the local view
                 #and fire the callback
@@ -190,9 +165,10 @@ define ['md5',
                     foundAt = list.indexOf(record)
                     if foundAt >= 0
                         list.splice(foundAt, 1)
-                    if attrs.onDelete
-                        $scope.$eval("#{attrs.onDelete}")(record)
-                    $scope.$digest()
+                        if attrs.onDelete
+                            $scope.$eval("#{attrs.onDelete}")(record)
+                        #and with an item removed, the list itself is updated
+                        $scope.$emit 'updaterecord', list
                 #and handle events coming up from nested editable records
                 #and fire the controller callback if specified
                 $scope.$on 'updaterecord', (event, record) ->
@@ -227,17 +203,19 @@ define ['md5',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
+                ngModel.$render = ->
+                    element.css 'margin-left', 24 * ngModel.$modelValue.indent
                 $scope.$watch attrs.ngModel, (model) ->
                     if not model.indent or model.indent < 0
                         model.indent = 0
                 $scope.$on 'indent', (event) ->
                     event.stopPropagation()
                     ngModel.$modelValue.indent += 1
-                    element.css 'margin-left', 24 * ngModel.$modelValue.indent
-                    $scope.$digest()
+                    $scope.$emit 'edit', ngModel.$modelValue
+                    ngModel.$render()
                 $scope.$on 'outdent', (event) ->
                     event.stopPropagation()
                     ngModel.$modelValue.indent -= 1
-                    element.css 'margin-left', 24 * ngModel.$modelValue.indent
-                    $scope.$digest()
+                    $scope.$emit 'edit', ngModel.$modelValue
+                    ngModel.$render()
         ])
