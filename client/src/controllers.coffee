@@ -217,14 +217,18 @@ define ['angular',
                 _.reject selected.items, selected.hide
             #this really grabs new data, with a bit of a debounce so we don't
             #bind once for every message on startup
-            rebind = _.debounce ->
-                console.log 'rebind'
-                $timeout ->
-                    selected.items = Database.items()
+            rebindNow = ->
+                keys_now = _.pluck selected.items, 'id'
+                items = Database.items()
+                keys_maybe = _.pluck items, 'id'
+                if _.intersection(keys_now, keys_maybe).length isnt keys_maybe.length
+                    console.log 'rebind'
+                    selected.items = items
                     $scope.$digest()
+            rebind = _.debounce ->
+                rebindNow()
             , 300
             #hang on to this
-            console.log $location.url()
             $rootScope.lastTaskLocation = $location.url()
             #process where we are looking, this is a bit of a sub-router, it is
             #not clear how to do this with the angular base router
@@ -304,6 +308,8 @@ define ['angular',
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
+            #go!
+            rebind()
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->

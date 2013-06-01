@@ -198,12 +198,17 @@ define ['md5',
                 if not $scope.$eval(attrs.requiresArray)
                     $scope.$eval("#{attrs.requiresArray}=[]")
         ])
-        .directive('indentable', [ ->
+        .directive('indentable', [ '$timeout', ($timeout) ->
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 ngModel.$render = ->
-                    element.css 'margin-left', 24 * ngModel.$modelValue.indent
+                    if attrs.indentable
+                        indent = element.find attrs.indentable
+                    else
+                        indent = element
+                    indent.css 'margin-left', 24 * ngModel.$modelValue.indent
+                    indent.css 'min-width', 24 * ngModel.$modelValue.indent
                 $scope.$watch attrs.ngModel, (model) ->
                     if not model.indent or model.indent < 0
                         model.indent = 0
@@ -211,10 +216,8 @@ define ['md5',
                     event.stopPropagation()
                     ngModel.$modelValue.indent += 1
                     $scope.$emit 'edit', ngModel.$modelValue
-                    ngModel.$render()
                 $scope.$on 'outdent', (event) ->
                     event.stopPropagation()
                     ngModel.$modelValue.indent -= 1
                     $scope.$emit 'edit', ngModel.$modelValue
-                    ngModel.$render()
         ])
