@@ -280,6 +280,9 @@ define ['angular',
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
+            $scope.$on 'archiveitem', (event, item) ->
+                item.archived = true
+
         .controller 'Task', ($scope) ->
             #adding a subitem is just making a nested object
             $scope.subitem = (item) ->
