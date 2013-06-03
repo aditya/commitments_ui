@@ -309,10 +309,22 @@ body {
         .icon-2x;
         margin-left: -24px;
     }
+    .handle {
+        position: absolute;
+        margin-top: @defaultMargin / 2;
+        left: -18px;
+        .action-icon;
+        color: @navbarLinkColor;
+        cursor: move;
+        font-size: 2.0em;
+    }
     .tasks-subtasks {
         list-style: none;
         .no-margin;
         .no-padding;
+        .handle {
+            left: 2px;
+        }
     }
     .task {
         position: relative;
@@ -408,6 +420,9 @@ body {
             width: 0px;
             margin: 0px;
             padding: 0px;
+        }
+        .task-pad {
+            width: 16px;
         }
         .task-text {
             .fill;
@@ -621,12 +636,3 @@ hr {
     background: @yellow;
 }
 
-.handle {
-    position: absolute;
-    margin-top: @defaultMargin / 2;
-    left: -18px;
-    .action-icon;
-    color: @navbarLinkColor;
-    cursor: move;
-    font-size: 2.0em;
-}
