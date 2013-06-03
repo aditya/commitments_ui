@@ -112,8 +112,10 @@ define ['md5',
                     scrollSensitivity: 64
                     zIndex: 100
                 element.on 'sortupdate', ->
-                    new_order = element.children('.editableRecord').map((_, x) -> $(x).data 'record')
-                    console.log new_order
+                    #non-jquery array, this is pure data
+                    new_order = _.map element.children('.editableRecord'), (x) -> $(x).data 'record'
+                    if attrs.sortUpdate
+                        $scope.$eval(attrs.sortUpdate) new_order
 
         ])
         .directive('editableList', ['$timeout', ($timeout) ->

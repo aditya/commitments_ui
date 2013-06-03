@@ -262,10 +262,6 @@ define ['angular',
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
                 $rootScope.$broadcast 'deleteitemfromlocal', item
-            #adding a subitem is just making a nested object
-            $scope.subitem = (item) ->
-                item.subitems = item.subitems or []
-                item.subitems.push {}
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
@@ -306,6 +302,15 @@ define ['angular',
                         delete $scope.selected.replaceHide
             #go!
             rebind()
+        .controller 'Task', ($scope) ->
+            #adding a subitem is just making a nested object
+            $scope.subitem = (item) ->
+                item.subitems = item.subitems or []
+                item.subitems.push {}
+            $scope.sorted = (items) ->
+                $scope.item.subitems = items
+                console.log $scope.item
+                $scope.$emit 'updaterecord', $scope.item
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->

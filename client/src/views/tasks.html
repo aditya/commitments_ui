@@ -19,7 +19,7 @@
         class="task-handle handle icon-reorder"
         tooltip="'Drag to reorder'">
     </div>
-    <div>
+    <div ng-controller="Task">
         <div class="task-accept">
             <div ng-include src="'src/views/taskaccept.html'"></div>
         </div>
@@ -46,6 +46,7 @@
         <ul animated-show="focused || true"
             editable-list
             editable-list-reorder=".subtask-handle"
+            sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
             <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" indentable=".task-indent">
             <div animated-show="hover || sorting"
