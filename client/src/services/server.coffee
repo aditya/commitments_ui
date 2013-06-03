@@ -40,10 +40,16 @@ define ['angular',
                     'force new connection': true
                 #this is a successful login message
                 socket.on 'hello', (email) ->
+                    #let everything know
                     broadcast 'loginsuccess',
                         authtoken: authtoken
                         email: email
-                    #now that we know who we are, hook up file events
+                    #now that we are logged in, go and get some tasks
+                    socket.emit 'exec',
+                        command: 'commitments'
+                        args: ['list', 'tasks', email]
+                        , (items) ->
+                            console.log items
                     #looking for new tasks...
                     socket.emit 'exec',
                         command: 'commitments'

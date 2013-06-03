@@ -269,8 +269,6 @@ define ['angular',
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
-            $rootScope.$on 'newitemfromserver', ->
-                rebind()
             $rootScope.$on 'deleteitemfromserver', ->
                 rebind()
             $rootScope.$on 'deleteitemfromlocal', ->
