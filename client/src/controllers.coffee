@@ -1,4 +1,6 @@
-define ['angular',
+define [
+    'md5',
+    'angular',
     'lodash',
     'store',
     'cs!./services',
@@ -11,7 +13,7 @@ define ['angular',
     'text!src/views/discussion.html',
     'text!src/views/discussionhelp.html',
     'cs!./editable',
-    'cs!./readonly'], (angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, taskaccept_template, discussion_template, discussionhelp_template) ->
+    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, taskaccept_template, discussion_template, discussionhelp_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .run(['$templateCache', ($templateCache) ->
             console.log 'here we go'
@@ -128,6 +130,7 @@ define ['angular',
             $rootScope.notifications = Notifications
             $rootScope.user = User
             $rootScope.trash = Trash
+            $rootScope.database = Database
             $rootScope.loggedIn = false
             #here we go
             Server.tryToBeLoggedIn()
@@ -212,9 +215,8 @@ define ['angular',
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             selected = $rootScope.selected = {}
-            selected.items = Database.items
             selected.itemCount = ->
-                _.reject selected.items, selected.hide
+                _.reject Database.items, selected.hide
             #hang on to this
             $rootScope.lastTaskLocation = $location.url()
             #process where we are looking, this is a bit of a sub-router, it is
@@ -283,11 +285,15 @@ define ['angular',
             $scope.$on 'archiveitem', (event, item) ->
                 item.archived = true
 
-        .controller 'Task', ($scope) ->
+        .controller 'Task', ($scope, $timeout) ->
             #adding a subitem is just making a nested object
             $scope.subitem = (item) ->
+                new_id = md5(Date.now() + '')
                 item.subitems = item.subitems or []
-                item.subitems.push {}
+                item.subitems.push id: new_id
+                #fire the new id as an event, this is used to hook the focus
+                $timeout ->
+                    $scope.$broadcast new_id
             #sorting the subitems triggers an update on the item
             $scope.sorted = (items) ->
                 $scope.item.subitems = items

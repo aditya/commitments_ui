@@ -1,8 +1,9 @@
 define [
+    'md5',
     'bootstrap',
     'mousetrap',
     'grid',
-    ], (__ignore__bootstrap__, mousetrap, grid) ->
+    ], (md5, __ignore__bootstrap__, mousetrap, grid) ->
     AUTOHIDE_DELAY = 3000
     ANIMATION_SPEED = 100
     KEY_DELAY = 300

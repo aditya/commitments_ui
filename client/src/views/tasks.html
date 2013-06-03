@@ -11,7 +11,7 @@
     No Items
     </li>
     <!--repeat items-->
-    <li ng-repeat="item in selected.items"
+    <li ng-repeat="item in database.items"
     editable-record
     ng-model="item"
     animated-hide="selected.hide(item)"
@@ -70,7 +70,7 @@
                             <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
                         </td>
                         <td class="task-what">
-                            <div search-highlight="searchQuery" markdown placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
+                            <div search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
                             </div>
                         </td>
                         <td class="task-action" animated-show="hover">
@@ -121,7 +121,7 @@
     editable-record-placeholder="placeholderItem"
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
-        <span focus-on="newtask" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
+        <span focus-on="'newtask'" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
             <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
         </span>
     </div>

@@ -105,7 +105,7 @@ define ['angular',
                             codemirror.setOption('theme', 'neat')
                             codemirror.refresh()
                 if attrs.focusOn?
-                    element.scope().$on attrs.focusOn, ->
+                    element.scope().$on $scope.$eval(attrs.focusOn), ->
                         focus()
                 display.on 'click dblclick', (event) ->
                     if not display.hasClass 'readonly'
