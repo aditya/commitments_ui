@@ -1,7 +1,7 @@
 <ul
     ng-controller="Tasks"
     editable-list
-    editable-list-reorder
+    editable-list-reorder=".task-handle"
     on-delete="delete"
     on-update="update"
     ng-model="selected.items"
@@ -16,7 +16,7 @@
     animated-hide="selected.hide(item)"
     class="task">
     <div animated-show="hover || sorting"
-        class="handle icon-reorder"
+        class="task-handle handle icon-reorder"
         tooltip="'Drag to reorder'">
     </div>
     <div>
@@ -43,10 +43,13 @@
                 </td>
             </tr>
         </table>
-        <ul animated-show="focused || true" editable-list ng-model="item.subitems" class="tasks-subtasks">
+        <ul animated-show="focused || true"
+            editable-list
+            editable-list-reorder=".subtask-handle"
+            ng-model="item.subitems" class="tasks-subtasks">
             <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" indentable=".task-indent">
             <div animated-show="hover || sorting"
-                class="handle icon-reorder"
+                class="subtask-handle handle icon-reorder"
                 tooltip="'Drag to reorder'">
             </div>
             <div>

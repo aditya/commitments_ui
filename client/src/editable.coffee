@@ -94,13 +94,13 @@ define ['md5',
                     $scope.$$placeholder = {}
         ])
         #equip a list with drag and drop reordering, used ot stack rank tasks
-        .directive('editableListReorder', ['StackRank', (StackRank) ->
+        .directive('editableListReorder', [ ->
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 #using jQuery, so this is not all that impressive
                 element.sortable
-                    handle: '.handle'
+                    handle: attrs.editableListReorder or '.handle'
                     placeholder: "sortable-placeholder icon-chevron-right"
                     forcePlaceholderSize: true
                     containment: 'parent'
@@ -110,15 +110,10 @@ define ['md5',
                     axis: 'y'
                     #enough room for the navbar
                     scrollSensitivity: 64
+                    zIndex: 100
                 element.on 'sortupdate', ->
-                    StackRank.renumber(
-                        element.children('.editableRecord').map((_, x) -> $(x).data 'record')
-                    )
-                    #this is the mildly painful bit -- sorting is a lot of updates
-                    for item in ngModel.$viewValue
-                        $scope.$emit 'updaterecord', item
-                #make the comparator function available to the scope
-                $scope.stackRankSort = StackRank.comparator
+                    new_order = element.children('.editableRecord').map((_, x) -> $(x).data 'record')
+                    console.log new_order
 
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
