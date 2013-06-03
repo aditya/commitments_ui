@@ -115,6 +115,12 @@ define ['angular',
                     args: ['list', 'tasks', user]
                     , (items) ->
                         callback items
+            $rootScope.$on 'updatesort', (event, items) ->
+                socket.emit 'exec',
+                    command: 'commitments'
+                    args: ['rank', 'tasks', User.email].concat _.map(items, (x) -> x.id)
+                    , (items) ->
+                        callback items
             #**used for local testing**
             window.sampleData = ->
                 window.FAKE_SERVER = false

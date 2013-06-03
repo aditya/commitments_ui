@@ -262,6 +262,10 @@ define ['angular',
                 $rootScope.$broadcast 'itemfromlocal', item
             $scope.delete = (item) ->
                 $rootScope.$broadcast 'deleteitemfromlocal', item
+            #re-ordering and sort of items turns into an event to get back
+            #to the server
+            $scope.sorted = (items) ->
+                $scope.$emit 'updatesort', items
             #event handling
             #looking for server updates, in which case we re-select the
             #same box triggering a rebinding
@@ -307,9 +311,9 @@ define ['angular',
             $scope.subitem = (item) ->
                 item.subitems = item.subitems or []
                 item.subitems.push {}
+            #sorting the subitems triggers an update on the item
             $scope.sorted = (items) ->
                 $scope.item.subitems = items
-                console.log $scope.item
                 $scope.$emit 'updaterecord', $scope.item
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
