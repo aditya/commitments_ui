@@ -9,7 +9,7 @@ define ['angular',
     'cs!./user',
     'cs!./sampledata',
     ], (angular, socketio, _, root) ->
-        root.factory 'Server', ($rootScope, $timeout, SampleData, User) ->
+        root.factory 'Server', ($rootScope, $timeout, SampleData, User, Database) ->
             #socket io messages aren't in the angular scope, so here is a
             #helper to post a message into angular
             broadcast = (name, message...) ->
@@ -28,6 +28,7 @@ define ['angular',
                 socket = null
             #connect to the server, with an optional 'join' mode
             connect = (authtoken, join) ->
+                #clean up before we start
                 disconnect()
                 #building up a connection string, different format depending on
                 #if the user is trying to join or not
@@ -49,14 +50,14 @@ define ['angular',
                         command: 'commitments'
                         args: ['list', 'tasks', email]
                         , (items) ->
-                            console.log items
-                    #looking for new tasks...
-                    socket.emit 'exec',
-                        command: 'commitments'
-                        args: ['about', 'user', email]
-                        , (about) ->
-                            socket.itemPath = about.directory
-                            socket.emit 'watch', about
+                            broadcast 'itemsfromserver', items
+                            #looking for new tasks...
+                            socket.emit 'exec',
+                                command: 'commitments'
+                                args: ['about', 'user', email]
+                                , (about) ->
+                                    socket.itemPath = about.directory
+                                    socket.emit 'watch', about
                     #...and notifications
                     socket.emit 'exec',
                         command: 'notify'
@@ -65,6 +66,7 @@ define ['angular',
                             console.log 'watch', about
                             socket.notifyPath = about.directory
                             socket.emit 'watch', about
+                #
                 socket.on 'error', ->
                     console.log 'socketerror', arguments
                     if join
@@ -76,38 +78,46 @@ define ['angular',
                         #socket.io on an auth failure
                         broadcast 'loginfailure'
                         disconnect()
+                #
                 socket.on 'reconnect', ->
                     broadcast 'reconnect'
+                #
                 socket.on 'addFile', (item) ->
                     if item.filename.indexOf(socket.itemPath) is 0
                         broadcast 'itemfromserver', item.filename, item.data
                     else
                         broadcast 'filefromserver', item.filename, item.data
+                #
                 socket.on 'changeFile', (item) ->
                     if item.filename.indexOf(socket.itemPath) is 0
                         broadcast 'itemfromserver', item.filename, item.data
                     else
                         broadcast 'filefromserver', item.filename, item.data
+                #
                 socket.on 'unlinkFile', (item) ->
                     if item.filename.indexOf(socket.itemPath) is 0
                         broadcast 'deleteitemfromserver', item.filename, item.data
                     else
                         broadcast 'deletefilefromserver', item.filename, item.data
+            #
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['update', 'task']
                     stdin: item
+            #
             $rootScope.$on 'deleteitemfromlocal', (event, item) ->
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['delete', 'task']
                     stdin: item
+            #
             $rootScope.$on 'archiveitem', (event, item) ->
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['archive', 'task']
                     stdin: item
+            #
             $rootScope.$on 'filefromserver', _.debounce( ->
                     socket.emit 'exec',
                         command: 'notify'
@@ -116,6 +126,7 @@ define ['angular',
                             for message in messages
                                 broadcast 'notification', message
                 , 500)
+            #
             $rootScope.$on 'useritems', (event, user, callback) ->
                 socket.emit 'exec',
                     command: 'commitments'
@@ -153,4 +164,3 @@ define ['angular',
                 logout: ->
                     disconnect()
                     $rootScope.$broadcast 'logout'
-            server

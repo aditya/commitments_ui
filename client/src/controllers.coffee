@@ -212,18 +212,9 @@ define ['angular',
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             selected = $rootScope.selected = {}
-            selected.items = Database.items()
+            selected.items = Database.items
             selected.itemCount = ->
                 _.reject selected.items, selected.hide
-            #this really grabs new data, with a bit of a debounce so we don't
-            #bind once for every message on startup
-            rebindNow = ->
-                console.log 'rebind'
-                selected.items = Database.items()
-                $scope.$digest()
-            rebind = _.debounce ->
-                rebindNow()
-            , 300
             #hang on to this
             $rootScope.lastTaskLocation = $location.url()
             #process where we are looking, this is a bit of a sub-router, it is
@@ -266,19 +257,6 @@ define ['angular',
             #to the server
             $scope.sorted = (items) ->
                 $scope.$emit 'updatesort', items
-            #event handling
-            #looking for server updates, in which case we re-select the
-            #same box triggering a rebinding
-            $rootScope.$on 'deleteitemfromserver', ->
-                rebind()
-            $rootScope.$on 'deleteitemfromlocal', ->
-                rebind()
-            $rootScope.$on 'itemfromlocal', ->
-                rebind()
-            $scope.$on 'archiveitem', (event, item) ->
-                console.log 'archive', item
-                item.archived = true
-                $scope.$digest()
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
@@ -302,8 +280,6 @@ define ['angular',
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
-            #go!
-            rebind()
         .controller 'Task', ($scope) ->
             #adding a subitem is just making a nested object
             $scope.subitem = (item) ->
@@ -349,7 +325,7 @@ define ['angular',
         .controller 'UserTasks', ($rootScope, $scope, $timeout) ->
             #for this user, go and get their items
             $rootScope.$broadcast 'useritems', $scope.user, (items) ->
-                #items not yet done, stack rank order
+                #items not yet done
                 items = _.filter items, (x) -> not x.done
                 #top 2, just a preference
                 items = items.slice(0, 2)
