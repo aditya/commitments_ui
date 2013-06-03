@@ -87,7 +87,7 @@ define ['angular',
                     template: splash_template
                     controller: 'Splash'
                 )
-        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, StackRank, User, Trash) ->
+        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
                 $rootScope.loggedIn = true
@@ -348,12 +348,11 @@ define ['angular',
                 $scope.users = LocalIndexes.links()
                 $scope.items = {}
         #each task, in a controller to limit the digest scope
-        .controller 'UserTasks', ($rootScope, $scope, $timeout, StackRank) ->
+        .controller 'UserTasks', ($rootScope, $scope, $timeout) ->
             #for this user, go and get their items
             $rootScope.$broadcast 'useritems', $scope.user, (items) ->
                 #items not yet done, stack rank order
                 items = _.filter items, (x) -> not x.done
-                items = _.sortBy items, StackRank.comparator
                 #top 2, just a preference
                 items = items.slice(0, 2)
                 $scope.items[$scope.user] = items

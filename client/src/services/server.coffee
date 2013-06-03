@@ -115,6 +115,7 @@ define ['angular',
                     args: ['list', 'tasks', user]
                     , (items) ->
                         callback items
+            #tell the server about a new sort order
             $rootScope.$on 'updatesort', (event, items) ->
                 socket.emit 'exec',
                     command: 'commitments'
