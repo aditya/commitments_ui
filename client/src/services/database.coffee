@@ -11,6 +11,7 @@ define ['angular',
             #here is the 'database' in memory, items tracked by ID
             items = {}
             items_by_file = {}
+            #
             updateItem = (item, filename) ->
                 if not item
                     return
@@ -43,6 +44,7 @@ define ['angular',
                             $rootScope.$broadcast 'newitemfromserver', item
                 LocalIndexes.update item, items
                 item
+            #
             deleteItem = (item, filename) ->
                 item = item or items_by_file[filename]
                 console.log 'delete', item, filename
@@ -75,6 +77,6 @@ define ['angular',
                 updateItem item
             $rootScope.$on 'deleteitemfromlocal', (event, item) ->
                 deleteItem item
-            $rootScope.$on 'archiveitemfromlocal', (event, item) ->
+            $rootScope.$on 'archiveitem', (event, item) ->
                 deleteItem item
             database

@@ -35,7 +35,6 @@ define ['angular',
                     connection_string = "#{User.preferences.server}?authtoken=join:#{encodeURIComponent(authtoken)}"
                 else
                     connection_string = "#{User.preferences.server}?authtoken=#{encodeURIComponent(authtoken)}"
-                console.log 'connecting', connection_string
                 #here we go, a whole new socket starts up
                 socket = socketio.connect connection_string,
                     'force new connection': true
@@ -45,12 +44,14 @@ define ['angular',
                         authtoken: authtoken
                         email: email
                     #now that we know who we are, hook up file events
+                    #looking for new tasks...
                     socket.emit 'exec',
                         command: 'commitments'
                         args: ['about', 'user', email]
                         , (about) ->
                             socket.itemPath = about.directory
                             socket.emit 'watch', about
+                    #...and notifications
                     socket.emit 'exec',
                         command: 'notify'
                         args: ['about', 'user']
