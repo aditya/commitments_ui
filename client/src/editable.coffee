@@ -1,7 +1,7 @@
 define ['md5',
     'moment',
     'lodash',
-    'jqueryui'
+    'jquery-sortable'
     ], (md5, moment, _) ->
     counter = 0;
     ANIMATION_SPEED = 200
@@ -98,25 +98,22 @@ define ['md5',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
-                #using jQuery, so this is not all that impressive
                 element.sortable
                     handle: attrs.editableListReorder or '.handle'
-                    placeholder: "sortable-placeholder icon-chevron-right"
-                    forcePlaceholderSize: true
-                    containment: 'parent'
-                    items: '> li'
-                    opacity: 0.8
-                    tolerance: 'pointer'
-                    axis: 'y'
-                    #enough room for the navbar
-                    scrollSensitivity: 64
-                    zIndex: 100
-                element.on 'sortupdate', ->
-                    #non-jquery array, this is pure data
-                    new_order = _.map element.children('.editableRecord'), (x) -> $(x).data 'record'
-                    if attrs.sortUpdate
-                        $scope.$eval(attrs.sortUpdate) new_order
-
+                    nested: attrs.nested?
+                    placeholder: '<li class="icon-chevron-right placeholder"/>'
+                    onDragStart: ($item, container, _super) ->
+                        $scope.sorting = true
+                        element.addClass 'sorting'
+                        _super $item, container
+                    onDrop: ($item, targetContainer, _super) ->
+                        $scope.sorting = false
+                        element.removeClass 'sorting'
+                        #non-jquery array, this is pure data
+                        new_order = _.map element.children('.editableRecord'), (x) -> $(x).data 'record'
+                        if attrs.sortUpdate
+                            $scope.$eval(attrs.sortUpdate) new_order
+                        _super $item, targetContainer
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true
@@ -195,27 +192,4 @@ define ['md5',
             link: ($scope, element, attrs) ->
                 if not $scope.$eval(attrs.requiresArray)
                     $scope.$eval("#{attrs.requiresArray}=[]")
-        ])
-        .directive('indentable', [ '$timeout', ($timeout) ->
-            restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs, ngModel) ->
-                ngModel.$render = ->
-                    if attrs.indentable
-                        indent = element.find attrs.indentable
-                    else
-                        indent = element
-                    indent.css 'margin-left', 24 * ngModel.$modelValue.indent
-                    indent.css 'min-width', 24 * ngModel.$modelValue.indent
-                $scope.$watch attrs.ngModel, (model) ->
-                    if not model.indent or model.indent < 0
-                        model.indent = 0
-                $scope.$on 'indent', (event) ->
-                    event.stopPropagation()
-                    ngModel.$modelValue.indent += 1
-                    $scope.$emit 'edit', ngModel.$modelValue
-                $scope.$on 'outdent', (event) ->
-                    event.stopPropagation()
-                    ngModel.$modelValue.indent -= 1
-                    $scope.$emit 'edit', ngModel.$modelValue
         ])

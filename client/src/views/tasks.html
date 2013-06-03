@@ -1,7 +1,7 @@
-<ul
+<ol
     ng-controller="Tasks"
     editable-list
-    editable-list-reorder=".task-handle"
+    editable-list-reorder=".handle"
     sort-update="sorted"
     on-delete="delete"
     on-update="update"
@@ -16,11 +16,10 @@
     ng-model="item"
     animated-hide="selected.hide(item)"
     class="task">
-    <div animated-show="hover || sorting"
-        class="task-handle handle icon-reorder"
-        tooltip="'Drag to reorder'">
-    </div>
-    <div ng-controller="Task">
+    <div ng-controller="Task" class="task-content">
+        <div class="handle icon-reorder"
+            tooltip="'Drag to reorder'">
+        </div>
         <div class="task-accept">
             <div ng-include src="'src/views/taskaccept.html'"></div>
         </div>
@@ -30,7 +29,7 @@
                 <td class="task-check">
                     <span check ng-model="item.done" tooltip="'Mark done'"></span>
                 </td>
-                <td class="task-action" animated-show="hover">
+                <td class="task-action" animated-show="hover && !sorting">
                     <span action ng-click="subitem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
@@ -38,34 +37,26 @@
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>
-                <td class="task-action" animated-show="hover">
+                <td class="task-action" animated-show="hover && !sorting">
                     <span action ng-hide="item.done" ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
                     <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>
-        <ul animated-show="focused || true"
+        <ol animated-show="focused || true"
             editable-list
-            editable-list-reorder=".subtask-handle"
+            editable-list-reorder=".handle"
+            nested
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
-            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" indentable=".task-indent">
-            <div animated-show="hover || sorting"
-                class="subtask-handle handle icon-reorder"
-                tooltip="'Drag to reorder'">
-            </div>
+            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" class="task-subtask">
             <div>
+                <div
+                    class="handle handle icon-reorder"
+                    tooltip="'Drag to reorder'">
+                </div>
                 <table class="task-core">
                     <tr>
-                        <td class="task-pad">
-                        </td>
-                        <td class="task-action">
-                            <span action="outdent" animated-show="subitem.indent"><i class="icon-chevron-left"></i></span>
-                        </td>
-                        <td class="task-action">
-                            <span action="indent" animated-show="subitem.indent < 3"><i class="icon-chevron-right"></i></span>
-                        </td>
-                        <td class="task-indent"></td>
                         <td class="task-check">
                             <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
                         </td>
@@ -73,14 +64,16 @@
                             <div search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
                             </div>
                         </td>
-                        <td class="task-action" animated-show="hover">
+                        <td class="task-action" animated-show="hover && !sorting">
                             <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
                         </td>
                     </tr>
                 </table>
             </div>
+            <ol class="dropstar">
+            </ol>
             </li>
-        </ul>
+        </ol>
         <!--this div is to control visibility so that extended items are show on demand-->
         <div animated-show="focused && item.what && extended" class="task-extended">
             <ul requires-object="extended.discussion" class="task-tools">
@@ -126,4 +119,4 @@
         </span>
     </div>
     </li>
-</ul>
+</ol>

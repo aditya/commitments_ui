@@ -6,6 +6,7 @@
 @borderColor: darken(@wellBackground, 7%);
 @bodyBackground: lighten(@wellBackground, 50%);
 
+
 .center-layout(@max-width) {
     max-width: @max-width;
     margin-left: auto;
@@ -22,6 +23,10 @@
 .well-border {
     .border-radius(@baseBorderRadius);
     border: 1px solid @borderColor;
+}
+
+.no-border {
+    border: 0px;
 }
 
 .transparent-border {
@@ -131,6 +136,9 @@
 body {
     background-image: url('../images/gray_jean.png');
     background-color: @grayLighter;
+    .dragging, .dragging * {
+        cursor: move !important;
+    }
 }
 
 .view {
@@ -302,33 +310,46 @@ body {
 }
 
 .tasks {
+    .dragged {
+        position: absolute;
+        opacity: 0.8;
+        z-index: 2000;
+        .well-border;
+    }
     list-style: none;
     .no-margin;
     .no-padding;
-    .sortable-placeholder {
+    li.placeholder {
         .icon-2x;
-        margin-left: -24px;
     }
     .handle {
         position: absolute;
         margin-top: @defaultMargin / 2;
-        left: -18px;
+        left: -22px;
         .action-icon;
         color: @navbarLinkColor;
         cursor: move;
         font-size: 2.0em;
-    }
-    .tasks-subtasks {
-        list-style: none;
-        .no-margin;
-        .no-padding;
-        .handle {
-            left: 2px;
+        opacity: 0.1;
+        &:hover {
+            opacity: 1.0;
         }
     }
     .task {
-        position: relative;
+        .tasks-subtasks {
+            list-style: none;
+            .full-width;
+            .no-margin;
+            .no-padding;
+            margin-left: 24px;
+            .handle {
+                left: 2px;
+            }
+        }
         .well;
+        .task-content {
+            position: relative;
+        }
         .task-footer {
             color: @grayLight;
             margin: @defaultMargin;
@@ -337,8 +358,7 @@ body {
         .task-core {
             .full-width;
         }
-        .task-subtasks {
-            .full-width;
+        .task-subtask {
         }
         .task-accept {
             .full-width;
@@ -396,7 +416,7 @@ body {
             .full-width;
         }
         .markdown {
-            .fill;
+            .full-width;
         }
         .task-check, .task-nest {
             width: 24px;
@@ -425,7 +445,7 @@ body {
             width: 16px;
         }
         .task-text {
-            .fill;
+            .full-width;
         }
     }
 }
@@ -499,9 +519,6 @@ body {
     left: 0px;
     margin-top: -0.75em;
     margin-left: 0.25em;
-}
-
-.handled {
 }
 
 .countbadge {
@@ -634,5 +651,18 @@ hr {
 
 .highlight {
     background: @yellow;
+}
+
+.sorting.tasks-subtasks {
+    ol {
+        .well-border;
+        min-height: 24px;
+        margin-bottom: @defaultMargin;
+        margin-right: @defaultMargin;
+    }
+    li {
+        margin-top: @defaultMargin;
+        margin-bottom: @defaultMargin;
+    }
 }
 

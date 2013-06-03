@@ -15,7 +15,7 @@ module.exports = {
         md5: 'lib/md5',
         store: 'lib/store',
         jquery: 'lib/jquery',
-        jqueryui: 'lib/jqueryui',
+        'jquery-sortable': 'lib/jquery-sortable',
         lodash: 'lib/lodash',
         socketio: 'lib/socket.io',
         marked: 'lib/marked',
@@ -59,7 +59,7 @@ module.exports = {
         'bootstrap': {
             deps: ['jquery']
         },
-        'jqueryui': {
+        'jquery-sortable': {
             deps: ['jquery']
         },
         'tagbar': {
