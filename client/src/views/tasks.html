@@ -1,3 +1,29 @@
+<script type="text/ng-template" id="subitem.html">
+            <div>
+                <table class="task-core">
+                    <tr>
+                        <td class="task-action" animated-visible="hover || sorting">
+                            <div handle class="icon-reorder" tooltip="'Drag to reorder'" >
+                            </div>
+                        </td>
+                        <td class="task-check">
+                            <span check ng-model="item.done" tooltip="'Mark done'"></span>
+                        </td>
+                        <td class="task-what">
+                            <span search-highlight="searchQuery" markdown focus-on="item.id" placeholder="'New subtask here'" ng-model="item.what" class="larger"></span>
+                        </td>
+                        <td class="task-action" animated-visible="hover && !sorting">
+                            <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <ol class="tasks-subtasks">
+            <li ng-repeat="item in item.subitems" editable-record ng-model="item" ng-include="'subitem.html'" class="task-subtask">
+            </li>
+            </ol>
+</script>
+
 <ol
     ng-controller="Tasks"
     editable-list
@@ -18,7 +44,8 @@
     class="task">
     <div ng-controller="Task" class="task-content">
         <div handle class="icon-reorder"
-            tooltip="'Drag to reorder'">
+            tooltip="'Drag to reorder'"
+            animated-visible="hover || sorting">
         </div>
         <div class="task-accept">
             <div ng-include src="'src/views/taskaccept.html'"></div>
@@ -29,7 +56,7 @@
                 <td class="task-check">
                     <span check ng-model="item.done" tooltip="'Mark done'"></span>
                 </td>
-                <td class="task-action" animated-show="hover && !sorting">
+                <td class="task-action" animated-visible="hover && !sorting">
                     <span action ng-click="subitem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
@@ -37,7 +64,7 @@
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>
-                <td class="task-action" animated-show="hover && !sorting">
+                <td class="task-action" animated-visible="hover && !sorting">
                     <span action ng-hide="item.done" ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
                     <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
@@ -49,27 +76,7 @@
             nested
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
-            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" class="task-subtask">
-            <div>
-                <div handle class="icon-reorder"
-                    tooltip="'Drag to reorder'">
-                </div>
-                <table class="task-core">
-                    <tr>
-                        <td class="task-check">
-                            <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
-                        </td>
-                        <td class="task-what">
-                            <span search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger"></span>
-                        </td>
-                        <td class="task-action" animated-show="hover && !sorting">
-                            <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <ol>
-            </ol>
+            <li ng-repeat="item in item.subitems" editable-record ng-model="item" ng-include="'subitem.html'" class="task-subtask">
             </li>
         </ol>
         <!--this div is to control visibility so that extended items are show on demand-->

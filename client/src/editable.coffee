@@ -111,34 +111,34 @@ define ['md5',
                     onDrop: ($item, targetContainer, _super) ->
                         $scope.sorting = false
                         element.removeClass 'sorting'
-                        console.log element.sortable('serialize')
-                        #non-jquery array, this is pure data
-                        new_order = _.map element.children('.editableRecord'), (x) -> $(x).data 'record'
+                        new_order = []
+                        serialized = element.sortable('serialize')
+                        recurse = (buffer, source) ->
+                            for o in (source or [])
+                                if o.record
+                                    buffer.push o.record
+                                    if attrs.nested?
+                                        #new blank buffer, as this may be empty now
+                                        o.record.subitems = []
+                                        recurse o.record.subitems, o.children
+                        recurse new_order, serialized
                         if attrs.sortUpdate
                             $scope.$eval(attrs.sortUpdate) new_order
+                        element.sortable 'disable'
                         _super $item, targetContainer
                 #flipping drag on and off allows nested lists with separate
                 #sort spaces
-                if not attrs.nested?
-                    element.sortable 'disable'
-                    $scope.$on 'handleon', (event) ->
-                        element.sortable 'enable'
-                        event.stopPropagation()
-                    $scope.$on 'handleoff', (event) ->
-                        element.sortable 'disable'
-                        event.stopPropagation()
-                else
-                    $scope.$on 'handleon', (event) ->
-                        event.stopPropagation()
-                    $scope.$on 'handleoff', (event) ->
-                        event.stopPropagation()
+                element.sortable 'disable'
+                $scope.$on 'handleon', (event) ->
+                    element.sortable 'enable'
+                    event.stopPropagation()
         ])
         #drag handles give off events to inform draggable lists
         .directive('handle', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 element.addClass 'handle'
-                element.hover (-> $scope.$emit 'handleon'), (-> $scope.$emit 'handleoff')
+                element.on 'mousedown', (-> $scope.$emit 'handleon'),
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true

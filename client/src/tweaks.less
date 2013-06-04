@@ -330,10 +330,6 @@ body {
         color: @navbarLinkColor;
         cursor: move;
         font-size: 2.0em;
-        opacity: 0.1;
-        &:hover {
-            opacity: 1.0;
-        }
     }
     .task {
         .tasks-subtasks {
@@ -343,6 +339,7 @@ body {
             margin-left: 24px;
             .handle {
                 left: 2px;
+                position: static;
             }
         }
         .well;

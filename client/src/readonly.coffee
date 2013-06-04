@@ -96,6 +96,18 @@ define [
                             element.hide(0)
                     counter++
         ])
+        .directive('animatedVisible', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                $scope.$watch attrs.animatedVisible, (show) ->
+                    element.removeClass 'animated'
+                    if show
+                        element.removeClass 'flipOutX'
+                        element.addClass 'animated flipInX'
+                    else
+                        element.removeClass 'flipInX'
+                        element.addClass 'animated flipOutX'
+        ])
         .directive('activeIf', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

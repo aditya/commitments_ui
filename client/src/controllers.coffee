@@ -284,7 +284,7 @@ define [
                         delete $scope.selected.replaceHide
             $scope.$on 'archiveitem', (event, item) ->
                 item.archived = true
-
+        #each individual task
         .controller 'Task', ($scope, $timeout) ->
             #adding a subitem is just making a nested object
             $scope.subitem = (item) ->
