@@ -1,7 +1,7 @@
 <ol
     ng-controller="Tasks"
     editable-list
-    editable-list-reorder=".handle"
+    editable-list-reorder
     sort-update="sorted"
     on-delete="delete"
     on-update="update"
@@ -17,7 +17,7 @@
     animated-hide="selected.hide(item)"
     class="task">
     <div ng-controller="Task" class="task-content">
-        <div class="handle icon-reorder"
+        <div handle class="icon-reorder"
             tooltip="'Drag to reorder'">
         </div>
         <div class="task-accept">
@@ -45,14 +45,13 @@
         </table>
         <ol animated-show="focused || true"
             editable-list
-            editable-list-reorder=".handle"
+            editable-list-reorder
             nested
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
             <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" class="task-subtask">
             <div>
-                <div
-                    class="handle handle icon-reorder"
+                <div handle class="icon-reorder"
                     tooltip="'Drag to reorder'">
                 </div>
                 <table class="task-core">
@@ -61,8 +60,7 @@
                             <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
                         </td>
                         <td class="task-what">
-                            <div search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger">
-                            </div>
+                            <span search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger"></span>
                         </td>
                         <td class="task-action" animated-show="hover && !sorting">
                             <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
@@ -70,7 +68,7 @@
                     </tr>
                 </table>
             </div>
-            <ol class="dropstar">
+            <ol>
             </ol>
             </li>
         </ol>

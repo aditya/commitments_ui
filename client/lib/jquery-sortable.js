@@ -320,7 +320,7 @@
             pointer = getRelativePosition(pointer, offsetParent)
             lastPointer = getRelativePosition(lastPointer, offsetParent)
           }
-          if(container.searchValidTarget(pointer, lastPointer))
+          if(container && container.searchValidTarget(pointer, lastPointer))
             return true
         }
       }

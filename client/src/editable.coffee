@@ -98,8 +98,10 @@ define ['md5',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
+                id = md5("#{Date.now()}#{counter++}")
                 element.sortable
-                    handle: attrs.editableListReorder or '.handle'
+                    group: id
+                    handle: attrs.handle or '.handle'
                     nested: attrs.nested?
                     placeholder: '<li class="icon-chevron-right placeholder"/>'
                     onDragStart: ($item, container, _super) ->
@@ -109,11 +111,34 @@ define ['md5',
                     onDrop: ($item, targetContainer, _super) ->
                         $scope.sorting = false
                         element.removeClass 'sorting'
+                        console.log element.sortable('serialize')
                         #non-jquery array, this is pure data
                         new_order = _.map element.children('.editableRecord'), (x) -> $(x).data 'record'
                         if attrs.sortUpdate
                             $scope.$eval(attrs.sortUpdate) new_order
                         _super $item, targetContainer
+                #flipping drag on and off allows nested lists with separate
+                #sort spaces
+                if not attrs.nested?
+                    element.sortable 'disable'
+                    $scope.$on 'handleon', (event) ->
+                        element.sortable 'enable'
+                        event.stopPropagation()
+                    $scope.$on 'handleoff', (event) ->
+                        element.sortable 'disable'
+                        event.stopPropagation()
+                else
+                    $scope.$on 'handleon', (event) ->
+                        event.stopPropagation()
+                    $scope.$on 'handleoff', (event) ->
+                        event.stopPropagation()
+        ])
+        #drag handles give off events to inform draggable lists
+        .directive('handle', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.addClass 'handle'
+                element.hover (-> $scope.$emit 'handleon'), (-> $scope.$emit 'handleoff')
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true
