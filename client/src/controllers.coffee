@@ -286,14 +286,8 @@ define [
         .controller 'Task', ($scope, $timeout, User) ->
             #give the task a status poke
             $scope.poke = (item) ->
-                #this may seem silly, but two saves drive the workflow, this way
-                #there is a 'diff' server side to generate notification records
-                #about who was and wasn't poked. lots less code than keeping track
-                #of state, and leverages the server based git. unfortunately it
-                #takes this huge comment since it is an odd technique :)
                 my_last_status = (item.poke or {})[User.email]
                 item.poke = {}
-                $scope.$emit 'updaterecord', $scope.item
                 for user, ignore of item.links
                     item.poke[user] = null
                 item.poke[User.email] = my_last_status
