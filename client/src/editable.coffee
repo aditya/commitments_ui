@@ -212,17 +212,10 @@ define ['md5',
                 #and fire the callback
                 $scope.$on 'deleterecord', (event, record) ->
                     event.stopPropagation()
-                    #update the bound list without going back to the data source
-                    #so we avoid a re-draw of the entire list
-                    list = ngModel.$modelValue
-                    foundAt = list.indexOf(record)
-                    if foundAt >= 0
-                        list.splice(foundAt, 1)
-                        if attrs.onDelete
-                            $scope.$eval(attrs.onDelete)(record)
-                        $scope.$digest()
-                        #and with an item removed, the list itself is updated
-                        $scope.$emit 'updaterecord', list
+                    if attrs.onDelete
+                        $scope.$eval(attrs.onDelete)(record)
+                    #and with an item removed, the list itself is updated
+                    $scope.$emit 'updaterecord', list
                 #and handle events coming up from nested editable records
                 #and fire the controller callback if specified
                 $scope.$on 'updaterecord', (event, record) ->
