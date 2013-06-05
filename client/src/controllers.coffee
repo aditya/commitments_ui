@@ -287,13 +287,22 @@ define [
         #each individual task
         .controller 'Task', ($scope, $timeout) ->
             #adding a subitem is just making a nested object
+            #but only if we need a new one
             $scope.subitem = (item) ->
-                new_id = md5(Date.now() + '')
+                #need a space to store subitems
                 item.subitems = item.subitems or []
-                item.subitems.push id: new_id
-                #fire the new id as an event, this is used to hook the focus
-                $timeout ->
-                    $scope.$broadcast new_id
+                #only make a new record if the current blank is 'used up'
+                if _.last(item.subitems)?.what
+                    blank_record =
+                        id: md5(Date.now() + '')
+                    item.subitems = item.subitems or []
+                    item.subitems.push blank_record
+                    #fire the new id as an event, this is used to hook the focus
+                    $timeout ->
+                        $scope.$broadcast blank_record.id
+                else
+                    $timeout ->
+                        $scope.$broadcast _.last(item.subitems)?.id
             #sorting the subitems triggers an update on the item
             $scope.sorted = (items) ->
                 $scope.item.subitems = items

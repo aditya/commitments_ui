@@ -139,10 +139,11 @@ define ['angular',
                     else
                         display.addClass('placeholder')
                         display.html(placeholder)
-                    setTimeout ->
-                        if display[0].offsetHeight < display[0].scrollHeight
-                            twizzlerMore.show()
-                        else
-                            twizzlerMore.hide()
-                    , ANIMATION_SPEED
+                    if attrs.multiline?
+                        setTimeout ->
+                            if display[0].offsetHeight < display[0].scrollHeight
+                                twizzlerMore.show()
+                            else
+                                twizzlerMore.hide()
+                        , ANIMATION_SPEED
         ])
