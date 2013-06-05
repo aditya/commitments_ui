@@ -451,8 +451,9 @@
                                          lastPointer),
       i = distances.length,
       rootGroup = this.rootGroup,
+      tail = (distances[i-1] || [i]),
       validTarget = !rootGroup.options.isValidTarget ||
-        rootGroup.options.isValidTarget(rootGroup.item, this, i, distances[i-1][0])
+        rootGroup.options.isValidTarget(rootGroup.item, this, i, tail[0])
 
       if(!i && validTarget){
         rootGroup.movePlaceholder(this, this.el, "append")
