@@ -3,7 +3,7 @@
                 <table class="task-core">
                     <tr>
                         <td class="task-action">
-                            <div handle class="icon-reorder" tooltip="'Drag to reorder'" >
+                            <div handle class="icon-reorder subtask-handle" tooltip="'Drag to reorder'" >
                             </div>
                         </td>
                         <td class="task-check">
@@ -28,7 +28,7 @@
     ng-controller="Tasks"
     editable-list
     editable-list-reorder
-    handle=".task-handle"
+    drag-handle=".task-handle"
     sort-update="sorted"
     on-delete="delete"
     on-update="update"
@@ -72,7 +72,8 @@
         </table>
         <ol animated-show="focused || true"
             editable-list
-            editable-list-reorderx
+            editable-list-reorder
+            drag-handle=".subtask-handle"
             nested
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">

@@ -96,7 +96,7 @@ define ['md5',
                 id = md5("#{Date.now()}#{counter++}")
                 element.sortable
                     group: id
-                    handle: attrs.handle or '.handle'
+                    handle: attrs.dragHandle or '.handle'
                     nested: attrs.nested?
                     placeholder: '<li class="icon-chevron-right placeholder"/>'
                     onDragStart: ($item, container, _super) ->
