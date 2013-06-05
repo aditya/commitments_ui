@@ -16,9 +16,11 @@ define ['md5',
                 $scope.hover = false
                 element.hover (->
                     $scope.hover = true
+                    $scope.$emit 'hover', true, ngModel.$modelValue
                     $scope.$digest()
                 ), (->
                     $scope.hover = false
+                    $scope.$emit 'hover', false, ngModel.$modelValue
                     $scope.$digest()
                 )
                 #fields that are always required
@@ -89,7 +91,7 @@ define ['md5',
                     $scope.$$placeholder = {}
         ])
         #equip a list with drag and drop reordering, used ot stack rank tasks
-        .directive('editableListReorder', [ ->
+        .directive('editableListReorder', [ '$rootScope', ($rootScope) ->
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
@@ -100,12 +102,14 @@ define ['md5',
                     nested: attrs.nested?
                     placeholder: '<li class="icon-chevron-right placeholder"/>'
                     onDragStart: ($item, container, _super) ->
-                        $scope.sorting = true
+                        $rootScope.sorting = true
                         element.addClass 'sorting'
+                        $item.addClass 'sorted'
                         _super $item, container
                     onDrop: ($item, targetContainer, _super) ->
-                        $scope.sorting = false
+                        $rootScope.sorting = false
                         element.removeClass 'sorting'
+                        $item.removeClass 'sorted'
                         new_order = []
                         serialized = element.sortable('serialize')
                         recurse = (buffer, source) ->
@@ -117,6 +121,7 @@ define ['md5',
                                         o.record.subitems = []
                                         recurse o.record.subitems, o.children
                         recurse new_order, serialized
+                        console.log new_order
                         if attrs.sortUpdate
                             $scope.$eval(attrs.sortUpdate) new_order
                         _super $item, targetContainer
@@ -134,7 +139,18 @@ define ['md5',
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 element.addClass 'handle'
-                element.on 'mousedown', (-> $scope.$emit 'handleon')
+                #drag handles need to show when you are in the item, and hide
+                #when you leave the item
+                $scope.$watch 'hover', (hovering) ->
+                    if hovering
+                        #...but not show on items you drag over, that would be silly
+                        #so if we are already sorting, hovered over handles are hidden still
+                        if not $scope.sorting
+                            element.removeClass 'flipOutX'
+                            element.addClass 'animated flipInX'
+                    else
+                        element.removeClass 'flipInX'
+                        element.addClass 'animated flipOutX'
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true

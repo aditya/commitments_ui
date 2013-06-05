@@ -73,8 +73,8 @@
         <ol animated-show="focused || true"
             editable-list
             editable-list-reorder
-            drag-handle=".subtask-handle"
             nested
+            drag-handle=".subtask-handle"
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
             <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" ng-include="'subitem.html'" class="task-subtask">
