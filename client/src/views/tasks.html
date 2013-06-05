@@ -84,11 +84,11 @@
             </li>
         </ol>
         <!--this div is to control visibility so that extended items are show on demand-->
-        <div animated-show="focused && item.what" class="task-extended">
+        <div animated-show="true || focused && item.what" class="task-extended">
             <ul requires-object="item.discussion" class="task-tools">
                 <li action ng-click="poke(item)"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" icon="tags" ng-model="item.tags"></li>
-                <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="item.links"></li>
+                <li tags tags-query="links" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="item.links"></li>
                 <li>
                 <ul class="task-accept">
                     <li class="info-icon icon-ok-sign"></li>

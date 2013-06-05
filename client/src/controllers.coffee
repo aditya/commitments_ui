@@ -307,6 +307,20 @@ define [
                 item.poke[User.email] = 'done'
                 item.done = Date.now()
                 $scope.$emit 'updaterecord', item
+            #callback to get a status display
+            $scope.pokestatus = (email) ->
+                poke = $scope.item.poke or {}
+                if $scope.item.done
+                    $ "<span/>"
+                else if _.keys(poke).length
+                    if poke[email] is 'notstarted'
+                        $ "<span class='icon-frown'/>"
+                    else if poke[email] is 'inprogress'
+                        $ "<span class='icon-smile'/>"
+                    else if poke[email] is 'blocked'
+                        $ "<span class='icon-exclamation'/>"
+                    else
+                        $ "<span class='icon-question'/>"
             #adding a subitem is just making a nested object
             #but only if we need a new one
             $scope.subitem = (item) ->

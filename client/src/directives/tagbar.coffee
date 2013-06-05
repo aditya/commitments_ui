@@ -32,6 +32,7 @@ define ['angular',
                                 hash = md5((tagValue or '').toLowerCase())
                                 return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
                             null
+                        statusIcon: $scope.$eval(attrs.statusIconFrom) or null
                     #just propagate tag values back to the model
                     input.on 'change', (event) ->
                         $scope.$apply ->
