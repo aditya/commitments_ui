@@ -290,8 +290,7 @@ define [
                 item.poke = {}
                 for user, ignore of item.links
                     item.poke[user] = null
-                item.poke[User.email] = my_last_status
-                console.log my_last_status
+                item.poke[User.email] = my_last_status or 'poker'
                 item.poke.poker = User.email
                 $scope.$emit 'updaterecord', $scope.item
             $scope.notstarted = (item) ->
