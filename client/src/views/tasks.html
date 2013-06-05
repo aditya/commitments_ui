@@ -7,10 +7,10 @@
                             </div>
                         </td>
                         <td class="task-check">
-                            <span check ng-model="item.done" tooltip="'Mark done'"></span>
+                            <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
                         </td>
                         <td class="task-what">
-                            <span search-highlight="searchQuery" markdown focus-on="item.id" placeholder="'New subtask here'" ng-model="item.what" class="larger"></span>
+                            <span search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger"></span>
                         </td>
                         <td class="task-action" animated-visible="hover && !sorting">
                             <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
@@ -19,7 +19,7 @@
                 </table>
             </div>
             <ol class="tasks-subtasks">
-            <li ng-repeat="item in item.subitems" editable-record ng-model="item" ng-include="'subitem.html'" class="task-subtask">
+            <li ng-repeat="subitem in subitem.subitems" editable-record ng-model="subitem" ng-include="'subitem.html'" class="task-subtask">
             </li>
             </ol>
 </script>
@@ -76,15 +76,15 @@
             nested
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
-            <li ng-repeat="item in item.subitems" editable-record ng-model="item" ng-include="'subitem.html'" class="task-subtask">
+            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" ng-include="'subitem.html'" class="task-subtask">
             </li>
         </ol>
         <!--this div is to control visibility so that extended items are show on demand-->
-        <div animated-show="focused && item.what && extended" class="task-extended">
-            <ul requires-object="extended.discussion" class="task-tools">
-                <li ng-hide="true" action ng-click="poke(extended)"><i class="icon-hand-right"></i></li>
-                <li tags tags-query="tags" icon="tags" ng-model="extended.tags"></li>
-                <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="extended.links"></li>
+        <div animated-show="focused && item.what" class="task-extended">
+            <ul requires-object="item.discussion" class="task-tools">
+                <li ng-hide="true" action ng-click="poke(item)"><i class="icon-hand-right"></i></li>
+                <li tags tags-query="tags" icon="tags" ng-model="item.tags"></li>
+                <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="item.links"></li>
                 <li>
                 <ul class="task-accept">
                     <li class="info-icon icon-ok-sign"></li>
@@ -107,8 +107,8 @@
             </div>
             <hr/>
             <div class="task-footer">Last Updated:
-                <span username ng-model="extended.lastUpdatedBy"></span>
-                <span postdate ng-model="extended.lastUpdatedAt"></span>
+                <span username ng-model="item.lastUpdatedBy"></span>
+                <span postdate ng-model="item.lastUpdatedAt"></span>
             </div>
         </div>
     </div>

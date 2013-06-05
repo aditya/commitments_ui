@@ -40,7 +40,6 @@ define ['md5',
                 #a chance to bind up
                 $timeout ->
                     if $scope.selectedrecord is ngModel.$modelValue
-                        $scope.extended = ngModel.$modelValue
                         $scope.focused = true
                     else
                         $scope.focused = false
@@ -48,12 +47,7 @@ define ['md5',
                 #entended/hidden properties, this is coming 'down' from the
                 #parent list
                 $scope.$on 'selectedrecord', (event, data) ->
-                    #Set a value in scope to then trigger a bind of extended
-                    #if this is used in any view, it will now bind, so we have
-                    #afforded delayed binding if you hook on to extended as
-                    #a property
                     if data is ngModel.$modelValue
-                        $scope.extended = ngModel.$modelValue
                         $scope.focused = true
                         #may need to digest, and only on the focus, the unfocsed
                         #things will get covered in the same digest loop implicitly
