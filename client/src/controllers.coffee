@@ -243,8 +243,6 @@ define [
                     item.tags[tag] = Date.now()
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
-            $scope.poke = (item) ->
-                $rootScope.$broadcast 'pokeitem', item
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in that box
             $scope.placeholderItem = (item) ->
@@ -285,7 +283,33 @@ define [
             $scope.$on 'archiveitem', (event, item) ->
                 item.archived = true
         #each individual task
-        .controller 'Task', ($scope, $timeout) ->
+        .controller 'Task', ($scope, $timeout, User) ->
+            #give the task a status poke
+            $scope.poke = (item) ->
+                #this may seem silly, but two saves drive the workflow, this way
+                #there is a 'diff' server side to generate notification records
+                #about who was and wasn't poked. lots less code than keeping track
+                #of state, and leverages the server based git. unfortunately it
+                #takes this huge comment since it is an odd technique :)
+                item.poke = {}
+                $scope.$emit 'updaterecord', $scope.item
+                for user, ignore of item.links
+                    item.poke[user] = null
+                item.poke.poker = User.email
+                $scope.$emit 'updaterecord', $scope.item
+            $scope.notstarted = (item) ->
+                item.poke[User.email] = 'notstarted'
+                $scope.$emit 'updaterecord', item
+            $scope.inprogress = (item) ->
+                item.poke[User.email] = 'inprogress'
+                $scope.$emit 'updaterecord', item
+            $scope.blocked = (item) ->
+                item.poke[User.email] = 'blocked'
+                $scope.$emit 'updaterecord', item
+            $scope.done = (item) ->
+                item.poke[User.email] = 'done'
+                item.done = Date.now()
+                $scope.$emit 'updaterecord', item
             #adding a subitem is just making a nested object
             #but only if we need a new one
             $scope.subitem = (item) ->

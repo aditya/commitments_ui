@@ -50,6 +50,9 @@
         <div class="task-accept">
             <div ng-include src="'src/views/taskaccept.html'"></div>
         </div>
+        <div class="task-poke">
+            <div ng-include src="'src/views/taskpoke.html'"></div>
+        </div>
         <!-- this is the main visible todo -->
         <table class="task-core">
             <tr>
@@ -83,7 +86,7 @@
         <!--this div is to control visibility so that extended items are show on demand-->
         <div animated-show="focused && item.what" class="task-extended">
             <ul requires-object="item.discussion" class="task-tools">
-                <li ng-hide="true" action ng-click="poke(item)"><i class="icon-hand-right"></i></li>
+                <li action ng-click="poke(item)"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" icon="tags" ng-model="item.tags"></li>
                 <li tags tags-query="links" item-icon-from="gravatar" icon="user" ng-model="item.links"></li>
                 <li>
