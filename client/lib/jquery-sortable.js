@@ -452,7 +452,7 @@
       i = distances.length,
       rootGroup = this.rootGroup,
       validTarget = !rootGroup.options.isValidTarget ||
-        rootGroup.options.isValidTarget(rootGroup.item, this)
+        rootGroup.options.isValidTarget(rootGroup.item, this, i, distances[i-1][0])
 
       if(!i && validTarget){
         rootGroup.movePlaceholder(this, this.el, "append")
@@ -560,7 +560,6 @@
         this.group.addContainer(this)
       if(!ignoreChildren)
         processChildContainers(this.el, this.options.containerSelector, "enable", true)
-
       this.el.on(eventNames.start, this.handle, this.dragInitProxy)
     },
     disable: function  (ignoreChildren) {

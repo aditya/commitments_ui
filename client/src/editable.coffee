@@ -74,6 +74,7 @@ define ['md5',
             require: 'ngModel'
             priority: 100
             link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'editableRecordPlaceholder'
                 if not $scope.$$placeholder
                     $scope.$$placeholder = {}
                 #on an edit, treat this as a real record
@@ -118,21 +119,22 @@ define ['md5',
                         recurse new_order, serialized
                         if attrs.sortUpdate
                             $scope.$eval(attrs.sortUpdate) new_order
-                        element.sortable 'disable'
                         _super $item, targetContainer
-                #flipping drag on and off allows nested lists with separate
-                #sort spaces
-                element.sortable 'disable'
-                $scope.$on 'handleon', (event) ->
-                    element.sortable 'enable'
-                    event.stopPropagation()
+                    isValidTarget: (item, container, totalSlots, toSlot) ->
+                        #if there is a placeholder we can't drag to the last record
+                        #as that makes an odd visual layout. this has the effect
+                        #of keeping the placeholder last
+                        if element.find('.editableRecordPlaceholder').length
+                            (toSlot + 1) < totalSlots
+                        else
+                            true
         ])
         #drag handles give off events to inform draggable lists
         .directive('handle', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 element.addClass 'handle'
-                element.on 'mousedown', (-> $scope.$emit 'handleon'),
+                element.on 'mousedown', (-> $scope.$emit 'handleon')
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true

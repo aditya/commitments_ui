@@ -2,7 +2,7 @@
             <div>
                 <table class="task-core">
                     <tr>
-                        <td class="task-action" animated-visible="hover || sorting">
+                        <td class="task-action">
                             <div handle class="icon-reorder" tooltip="'Drag to reorder'" >
                             </div>
                         </td>
@@ -28,6 +28,7 @@
     ng-controller="Tasks"
     editable-list
     editable-list-reorder
+    handle=".task-handle"
     sort-update="sorted"
     on-delete="delete"
     on-update="update"
@@ -43,9 +44,8 @@
     animated-hide="selected.hide(item)"
     class="task">
     <div ng-controller="Task" class="task-content">
-        <div handle class="icon-reorder"
-            tooltip="'Drag to reorder'"
-            animated-visible="hover || sorting">
+        <div handle class="icon-reorder task-handle"
+            tooltip="'Drag to reorder'">
         </div>
         <div class="task-accept">
             <div ng-include src="'src/views/taskaccept.html'"></div>
@@ -72,7 +72,7 @@
         </table>
         <ol animated-show="focused || true"
             editable-list
-            editable-list-reorder
+            editable-list-reorderx
             nested
             sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
