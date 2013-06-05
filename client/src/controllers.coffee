@@ -292,7 +292,7 @@ define [
                 #need a space to store subitems
                 item.subitems = item.subitems or []
                 #only make a new record if the current blank is 'used up'
-                if _.last(item.subitems)?.what
+                if (item.subitems.length is 0) or (_.last(item.subitems)?.what)
                     blank_record =
                         id: md5(Date.now() + '')
                     item.subitems = item.subitems or []
