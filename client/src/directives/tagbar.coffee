@@ -41,7 +41,6 @@ define ['angular',
                         $scope.$emit 'edit', attrs.ngModel, input.tagbar('val')
                     $scope.$watch attrs.ngModel, (model) ->
                         ngModel.$render()
-                    , true
                     #rendering is really just setting the values
                     ngModel.$render = () ->
                         if not ngModel.$viewValue
