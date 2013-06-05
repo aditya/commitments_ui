@@ -44,6 +44,9 @@ define ['angular',
                 if item
                     #removal of the item from the local database
                     delete items[item.id]
+                    #and from the sorted list
+                    idx = _.findIndex items_in_order, (x) -> x.id is item.id
+                    items_in_order.splice idx, 1
                     LocalIndexes.delete item, items
                 item
             #here is the database service construction function itself
