@@ -106,6 +106,7 @@ define ['md5',
                             if attrs.onDelete
                                 $scope.$eval(attrs.onDelete)(record)
                             #and with an item removed, the list itself is updated
+                            $scope.$digest()
                             $scope.$emit 'updaterecord', list
                         else
                             for item in list
@@ -219,6 +220,7 @@ define ['md5',
                         list.splice(foundAt, 1)
                         if attrs.onDelete
                             $scope.$eval(attrs.onDelete)(record)
+                        $scope.$digest()
                         #and with an item removed, the list itself is updated
                         $scope.$emit 'updaterecord', list
                 #and handle events coming up from nested editable records
