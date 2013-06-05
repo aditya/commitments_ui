@@ -151,6 +151,7 @@ define [
                 #named event emission
                 if attrs.action
                     element.on 'click', ->
+                        console.log attrs.action, ngModel.$modelValue
                         $scope.$emit attrs.action, ngModel.$modelValue
         ])
         .directive('help', [ ->

@@ -90,6 +90,28 @@ define ['md5',
                     #and a fresh placeholder
                     $scope.$$placeholder = {}
         ])
+        #nestedLists have special delete behavior
+        .directive('editableListNested', [ ->
+            restrict: 'A'
+            require: 'ngModel'
+            priority: 200
+            link: ($scope, element, attrs, ngModel) ->
+                $scope.$on 'deleterecord', (event, record) ->
+                    event.stopPropagation()
+                    #hunt for nested records all the way down
+                    prune = (record, list) ->
+                        foundAt = list.indexOf(record)
+                        if foundAt >= 0
+                            list.splice(foundAt, 1)
+                            if attrs.onDelete
+                                $scope.$eval(attrs.onDelete)(record)
+                            #and with an item removed, the list itself is updated
+                            $scope.$emit 'updaterecord', list
+                        else
+                            for item in list
+                                prune record, item.subitems or []
+                    prune record, ngModel.$modelValue
+        ])
         #equip a list with drag and drop reordering, used ot stack rank tasks
         .directive('editableListReorder', [ '$rootScope', ($rootScope) ->
             restrict: 'A'
@@ -99,7 +121,7 @@ define ['md5',
                 element.sortable
                     group: id
                     handle: attrs.dragHandle or '.handle'
-                    nested: attrs.nested?
+                    nested: attrs.editableListNested?
                     placeholder: '<li class="icon-chevron-right placeholder"/>'
                     onDragStart: ($item, container, _super) ->
                         $rootScope.sorting = true
@@ -116,12 +138,11 @@ define ['md5',
                             for o in (source or [])
                                 if o.record
                                     buffer.push o.record
-                                    if attrs.nested?
+                                    if attrs.editableListNested?
                                         #new blank buffer, as this may be empty now
                                         o.record.subitems = []
                                         recurse o.record.subitems, o.children
                         recurse new_order, serialized
-                        console.log new_order
                         if attrs.sortUpdate
                             $scope.$eval(attrs.sortUpdate) new_order
                         _super $item, targetContainer
@@ -197,7 +218,7 @@ define ['md5',
                     if foundAt >= 0
                         list.splice(foundAt, 1)
                         if attrs.onDelete
-                            $scope.$eval("#{attrs.onDelete}")(record)
+                            $scope.$eval(attrs.onDelete)(record)
                         #and with an item removed, the list itself is updated
                         $scope.$emit 'updaterecord', list
                 #and handle events coming up from nested editable records
