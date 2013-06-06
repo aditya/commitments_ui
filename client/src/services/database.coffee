@@ -39,7 +39,7 @@ define ['angular',
                 LocalIndexes.update item, items
                 item
             #
-            deleteItem = (item, filename) ->
+            deleteItem = (item, fromserver, filename) ->
                 item = item or items_by_file[filename]
                 if item
                     #removal of the item from the local database
@@ -70,7 +70,7 @@ define ['angular',
             $rootScope.$on 'itemfromserver', (event, filename, item) ->
                 updateItem item, true, filename
             $rootScope.$on 'deleteitemfromserver', (event, filename, item) ->
-                deleteItem item, filename
+                deleteItem item, true, filename
             $rootScope.$on 'itemfromlocal', (event, item) ->
                 updateItem item
             $rootScope.$on 'deleteitemfromlocal', (event, item) ->

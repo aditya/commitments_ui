@@ -9,17 +9,15 @@ define [
     'text!src/views/splash.html',
     'text!src/views/navbar.html',
     'text!src/views/taskhelp.html',
-    'text!src/views/taskaccept.html',
     'text!src/views/discussion.html',
     'text!src/views/discussionhelp.html',
     'cs!./editable',
-    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, taskaccept_template, discussion_template, discussionhelp_template) ->
+    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .run(['$templateCache', ($templateCache) ->
             console.log 'here we go'
             $templateCache.put 'src/views/navbar.html', navbar_template
             $templateCache.put 'src/views/taskhelp.html', taskhelp_template
-            $templateCache.put 'src/views/taskaccept.html', taskaccept_template
             $templateCache.put 'src/views/discussion.html', discussion_template
             $templateCache.put 'src/views/discussionhelp.html', discussionhelp_template
         ])
@@ -199,21 +197,11 @@ define [
         #nothing much going on here
         .controller 'Discussion', ($scope) ->
             null
-        #accepting and rejecting tasks is simply about stamping it with
-        #your user identity, or removing yourself
-        .controller 'TaskAccept', ($scope, $rootScope) ->
-            $scope.accept = (item) ->
-                item.links[$scope.user.email] = item.links[$scope.user.email] or Date.now()
-                item.accept[$scope.user.email] = Date.now()
-                delete item.reject[$scope.user.email]
-                $rootScope.$broadcast 'itemfromlocal', item
-            $scope.reject = (item) ->
-                item.reject[$scope.user.email] = Date.now()
-                delete item.links[$scope.user.email]
-                delete item.accept[$scope.user.email]
-                $rootScope.$broadcast 'itemfromlocal', item
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, LocalIndexes, User) ->
+        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, LocalIndexes, User, Task) ->
+            #load up all the per task verbs
+            for verb, fn of Task
+                $scope[verb] = fn
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             selected = $rootScope.selected = {}
@@ -251,14 +239,8 @@ define [
                 ($scope.selected.stamp or ->)(item)
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
-            $scope.update = (item) ->
-                $rootScope.$broadcast 'itemfromlocal', item
-            $scope.delete = (item) ->
-                $rootScope.$broadcast 'deleteitemfromlocal', item
             #re-ordering and sort of items turns into an event to get back
             #to the server
-            $scope.sorted = (items) ->
-                $scope.$emit 'updatesort', items
             #search is driven from the navbar, queries then make up a 'fake'
             #box much like the selected tags, but it is instead a list of
             #matching ids
@@ -282,8 +264,6 @@ define [
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
-            $scope.$on 'archiveitem', (event, item) ->
-                item.archived = true
         #each individual task
         .controller 'Task', ($scope, $timeout, User) ->
             #give the task a status poke

@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="subitem.html">
-            <div>
+<div>
                 <table class="task-core">
                     <tr>
                         <td class="task-action">
@@ -27,7 +27,7 @@
 <ol
     ng-controller="Tasks"
     editable-list
-    editable-list-reorder
+    editable-list-reorder="taskssorted"
     drag-handle=".task-handle"
     sort-update="sorted"
     on-delete="delete"
@@ -47,11 +47,30 @@
         <div handle class="icon-reorder task-handle"
             tooltip="'Drag to reorder'">
         </div>
-        <div class="task-accept">
-            <div ng-include src="'src/views/taskaccept.html'"></div>
+        <!-- accept/reject -->
+        <div
+            requires-object="item.accept, item.reject"
+            animated-hide="item.who == user.email || item.accept[user.email]"
+            class="alert">
+            <span>Task from</span>
+            <span gravatar ng-model="item.who"></span>
+            <span class="btn-group">
+                <button class="btn btn-success" ng-click="accept(item)"><i class="icon-ok-sign icon-large"></i> Accept</button>
+                <button class="btn btn-danger" ng-click="reject(item)"><i class="icon-remove-sign icon-large"></i> Reject</button>
+            </span>
         </div>
-        <div class="task-poke">
-            <div ng-include src="'src/views/taskpoke.html'"></div>
+        <!-- poke -->
+        <div
+            animated-hide="item.poke[user.email] || !item.poke || item.poke.pokerr == user.email"
+            class="alert">
+            <span>Poke from</span>
+            <span gravatar ng-model="item.poke.poker"></span>
+            <span class="btn-group">
+                <button class="btn " ng-click="notstarted(item)"><i class="icon-frown icon-large"></i> Not Started</button>
+                <button class="btn " ng-click="inprogress(item)"><i class="icon-smile icon-large"></i> In Progress</button>
+                <button class="btn btn-danger" ng-click="blocked(item)"><i class="icon-exclamation icon-large"></i> Blocked</button>
+                <button class="btn btn-success" ng-click="done(item)"><i class="icon-check icon-large"></i> Done</button>
+            </span>
         </div>
         <!-- this is the main visible todo -->
         <table class="task-core">
