@@ -230,6 +230,7 @@ define [
                 selected.stamp = (item) ->
                     item.tags = item.tags or {}
                     item.tags[tag] = Date.now()
+            #all the links and tags, used to make the autocomplete
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
             #placeholders call back to the currently selected box to stamp them
@@ -239,12 +240,6 @@ define [
                 ($scope.selected.stamp or ->)(item)
                 console.log 'new item configured', item
                 $scope.$emit 'updateitem', item
-            $scope.$on 'subtask', (event, task) ->
-                subtask = Task.subtask task
-                $timeout ->
-                    #redraw, and try to get the focus
-                    $scope.$digest()
-                    $scope.$broadcast subtask.id
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
             #re-ordering and sort of items turns into an event to get back
@@ -273,12 +268,19 @@ define [
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
         #each individual task
-        .controller 'Task', ($scope, $timeout, User) ->
+        .controller 'Task', ($scope, $timeout, User, Task) ->
             $scope.$on 'edit', (event) ->
-                console.log 'edit', $scope, $scope.item
+                console.log 'edit', $scope.item
                 $scope.$emit 'updateitem', $scope.item
                 if not $scope.$$phase
                     $scope.$digest()
+            $scope.$on 'subtask', (event, task) ->
+                subtask = Task.subtask task
+                $timeout ->
+                    #redraw, and try to get the focus
+                    $scope.$digest()
+                    $timeout ->
+                        $scope.$broadcast subtask.id
             #give the task a status poke
             $scope.poke = (item) ->
                 my_last_status = (item.poke or {})[User.email]

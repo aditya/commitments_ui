@@ -23,7 +23,7 @@ define ['md5',
                     $scope.$emit 'hover', false, ngModel.$modelValue
                     $scope.$digest()
                 )
-                #fields that are always required
+                #hang on to the data in jquery
                 $scope.$watch attrs.ngModel, (model) ->
                     element.data 'record', model
                 element.on 'click', (event) ->
@@ -185,6 +185,7 @@ define ['md5',
                         $scope.$broadcast 'selectedrecord', record
                     if attrs.editableListNew
                         $scope.$emit attrs.editableListNew, record
+                    $scope.$emit 'edit'
         ])
         .directive('requiresObject', [ ->
             restrict: 'A'
