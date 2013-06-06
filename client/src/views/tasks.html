@@ -59,7 +59,7 @@
         </div>
         <!-- poke -->
         <div
-            animated-hide="item.poke[user.email] || !item.poke || item.poke.pokerr == user.email"
+            animated-hide="!debug && (item.poke[user.email] || !item.poke || item.poke.pokerr == user.email)"
             class="alert">
             <span>Poke from</span>
             <span gravatar ng-model="item.poke.poker"></span>
