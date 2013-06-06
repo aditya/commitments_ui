@@ -56,7 +56,7 @@ define ['angular',
             #call this in controllers, or really - just the root most controller
             #to get one database
             database =
-                items: items_in_order
+                items: -> items_in_order
             #save everything if there was a reconnect, safety-pup!
             $rootScope.$on 'reconnect', ->
                 for item in _.values(items)
@@ -79,4 +79,6 @@ define ['angular',
                 deleteItem item
             $rootScope.$on 'archiveitem', (event, item) ->
                 deleteItem item
+            $rootScope.$on 'taskssorted', (event, items) ->
+                items_in_order = items
             database

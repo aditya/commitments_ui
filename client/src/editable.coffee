@@ -112,7 +112,9 @@ define ['md5',
                         serialized = element.sortable('serialize')
                         recurse = (buffer, source) ->
                             for o in (source or [])
-                                if o.record
+                                if o?.$scope?.$$placeholder is o?.record
+                                    #skip
+                                else if o.record
                                     buffer.push o.record
                                     if attrs.editableListNested?
                                         #new blank buffer, as this may be empty now

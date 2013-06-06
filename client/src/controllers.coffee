@@ -204,7 +204,8 @@ define [
                 $scope[verb] = fn
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
-            $scope.items = Database.items
+            $scope.items = Database.items()
+            console.log 'items', $scope.items
             selected = $rootScope.selected = {}
             selected.itemCount = ->
                 _.reject $scope.items, selected.hide
