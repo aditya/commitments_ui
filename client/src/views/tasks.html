@@ -1,4 +1,4 @@
-<script type="text/ng-template" id="subitem.html">
+<script type="text/ng-template" id="subtask.html">
 <div>
                 <table class="task-core">
                     <tr>
@@ -19,7 +19,7 @@
                 </table>
             </div>
             <ol class="tasks-subtasks">
-            <li ng-repeat="subitem in subitem.subitems" editable-record ng-model="subitem" ng-include="'subitem.html'" class="task-subtask">
+            <li ng-repeat="subitem in subitem.subitems" editable-record ng-model="subitem" ng-include="'subtask.html'" class="task-subtask">
             </li>
             </ol>
 </script>
@@ -48,13 +48,13 @@
         <!-- accept/reject -->
         <div
             requires-object="item.accept, item.reject"
-            animated-hide="item.who == user.email || item.accept[user.email]"
+            animated-hide="!debug && (item.who == user.email || item.accept[user.email])"
             class="alert">
             <span>Task from</span>
             <span gravatar ng-model="item.who"></span>
             <span class="btn-group">
-                <button class="btn btn-success" ng-click="accept(item)"><i class="icon-ok-sign icon-large"></i> Accept</button>
-                <button class="btn btn-danger" ng-click="reject(item)"><i class="icon-remove-sign icon-large"></i> Reject</button>
+                <button action="taskaccept" class="btn btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
+                <button action="taskreject" class="btn btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
             </span>
         </div>
         <!-- poke -->
@@ -64,10 +64,10 @@
             <span>Poke from</span>
             <span gravatar ng-model="item.poke.poker"></span>
             <span class="btn-group">
-                <button class="btn " ng-click="notstarted(item)"><i class="icon-frown icon-large"></i> Not Started</button>
-                <button class="btn " ng-click="inprogress(item)"><i class="icon-smile icon-large"></i> In Progress</button>
-                <button class="btn btn-danger" ng-click="blocked(item)"><i class="icon-exclamation icon-large"></i> Blocked</button>
-                <button class="btn btn-success" ng-click="done(item)"><i class="icon-check icon-large"></i> Done</button>
+                <button action="tasknotstarted" class="btn "><i class="icon-frown icon-large"></i> Not Started</button>
+                <button action="taskinprogress" class="btn "><i class="icon-smile icon-large"></i> In Progress</button>
+                <button action="taskblocked" class="btn btn-danger"><i class="icon-exclamation icon-large"></i> Blocked</button>
+                <button action="taskdone" class="btn btn-success"><i class="icon-check icon-large"></i> Done</button>
             </span>
         </div>
         <!-- this is the main visible todo -->
@@ -85,7 +85,7 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deleteitem" ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="taskdelete" ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
                     <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
@@ -96,7 +96,7 @@
             editable-list-nested
             drag-handle=".subtask-handle"
             ng-model="item.subitems" class="tasks-subtasks">
-            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" ng-include="'subitem.html'" class="task-subtask">
+            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" ng-include="'subtask.html'" class="task-subtask">
             </li>
         </ol>
         <!--this div is to control visibility so that extended items are show on demand-->

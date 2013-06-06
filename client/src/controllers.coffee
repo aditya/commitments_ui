@@ -199,9 +199,6 @@ define [
             null
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, LocalIndexes, User, Task) ->
-            #load up all the per task verbs
-            for verb, fn of Task
-                $scope[verb] = fn
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             $scope.items = Database.items()
