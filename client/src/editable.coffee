@@ -215,7 +215,7 @@ define ['md5',
                     if attrs.onDelete
                         $scope.$eval(attrs.onDelete)(record)
                     #and with an item removed, the list itself is updated
-                    $scope.$emit 'updaterecord', list
+                    $scope.$emit 'updaterecord', ngModel.$modelValue
                 #and handle events coming up from nested editable records
                 #and fire the controller callback if specified
                 $scope.$on 'updaterecord', (event, record) ->

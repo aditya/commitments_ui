@@ -73,7 +73,7 @@
                 </td>
             </tr>
         </table>
-        <ol animated-show="focused"
+        <ol animated-show="focused || debug"
             editable-list
             editable-list-reorder
             editable-list-nested
@@ -84,7 +84,7 @@
             </li>
         </ol>
         <!--this div is to control visibility so that extended items are show on demand-->
-        <div animated-show="focused && item.what" class="task-extended">
+        <div animated-show="(focused && item.what) || debug" class="task-extended">
             <ul requires-object="item.discussion" class="task-tools">
                 <li action ng-click="poke(item)"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" icon="tags" ng-model="item.tags"></li>

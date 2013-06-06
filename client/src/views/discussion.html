@@ -1,9 +1,10 @@
 <div ng-controller="Discussion" class="discussion">
     <ul editable-list
+        editable-list-nested
         editable-list-blank-record
-        ng-model="extended.discussion.comments" class="container-fluid unstyled comments">
+        ng-model="item.discussion.comments" class="container-fluid unstyled comments">
         <li
-        ng-repeat="comment in extended.discussion.comments"
+        ng-repeat="comment in item.discussion.comments"
         class="row-fluid comment">
         <table editable-record ng-model="comment" class="full-width">
             <tr>
@@ -11,18 +12,32 @@
                     <div
                         gravatar
                         default="user.email"
-                        ng-model="comment.who"></div>
+                        ng-model="comment.who">
+                    </div>
                 </td>
                 <td class="fill">
-                    <span username ng-model="comment.who"></span>
-                    <span postdate ng-model="comment.when"></span>
-                    <div
-                        markdown multiline
-                        readonly-if="user.email != comment.who"
-                        ng-model="comment.what">
-                        <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
-                    </div>
-
+                    <table>
+                        <tr>
+                            <td class="fill">
+                                <span username ng-model="comment.who"></span>
+                                <span postdate ng-model="comment.when"></span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="fill"
+                                <div
+                                    markdown multiline
+                                    readonly-if="user.email != comment.who"
+                                    ng-model="comment.what">
+                                    <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
+                                </div>
+                            </td>
+                            <td animated-visible="hover" class="task-action">
+                                <span action="deleterecord" tooltip="'Delete this comment'"><i class="icon-trash"></i></span>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
