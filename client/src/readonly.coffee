@@ -203,7 +203,7 @@ define [
             link: ($scope, element, attrs) ->
                 mappings =
                     'esc': 'deselect'
-                    '+': 'newtask'
+                    '+': 'newtaskplaceholder'
                 map = (key, value) ->
                     mousetrap.bind key, ->
                         $rootScope.$apply ->

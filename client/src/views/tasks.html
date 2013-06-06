@@ -13,7 +13,7 @@
                             <span search-highlight="searchQuery" markdown focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
                         </td>
                         <td class="task-action" animated-visible="hover && !sorting">
-                            <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
+                            <span action="deleterecord" tooltip="'Delete this sub task'"><i class="icon-trash"></i></span>
                         </td>
                     </tr>
                 </table>
@@ -28,7 +28,7 @@
     ng-controller="Tasks"
     editable-list
     editable-list-reorder="taskssorted"
-    editable-list-new="newitem"
+    editable-list-new="newtask"
     drag-handle=".task-handle"
     ng-model="items"
     class="tasks">
@@ -102,7 +102,7 @@
         <!--this div is to control visibility so that extended items are show on demand-->
         <div animated-show="(focused && item.what) || debug" class="task-extended">
             <ul requires-object="item.discussion" class="task-tools">
-                <li action ng-click="poke(item)"><i class="icon-hand-right"></i></li>
+                <li action="taskpoke"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" icon="tags" ng-model="item.tags"></li>
                 <li tags tags-query="links" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="item.links"></li>
             </ul>
@@ -123,7 +123,7 @@
     editable-record-placeholder
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
-        <span focus-on="'newtask'" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
+        <span focus-on="'newtaskplaceholder'" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
             <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
         </span>
     </div>

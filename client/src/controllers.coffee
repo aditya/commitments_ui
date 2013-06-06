@@ -156,7 +156,7 @@ define [
                 else
                     $location.url $rootScope.lastTaskLocation
                 $timeout ->
-                    $rootScope.$broadcast 'newtask'
+                    $rootScope.$broadcast 'newtaskplaceholder'
         #toolbox has all the boxes, not sure of a better name we can use, what
         #do you call a box of boxes? boxula?
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
@@ -235,7 +235,8 @@ define [
             $scope.links = LocalIndexes.links
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in that box
-            $scope.$on 'newitem', (event, item) ->
+            $scope.$on 'newtask', (event, item) ->
+                console.log arguments
                 Task.new item
                 ($scope.selected.stamp or ->)(item)
                 console.log 'new item configured', item

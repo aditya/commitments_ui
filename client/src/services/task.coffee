@@ -7,13 +7,13 @@ define ['angular',
     'cs!./root'], (angular, _, root) ->
         root.factory 'Task', ($timeout, $rootScope, User) ->
             do ->
-                new: (item) ->
-                    if not item.who
-                        item.who = User.email
-                    if not item.id
-                        item.id = md5("#{Date.now()}")
-                    if not item.when
-                        item.when = Date.now()
+                new: (task) ->
+                    if not task.who
+                        task.who = User.email
+                    if not task.id
+                        task.id = md5("#{Date.now()}")
+                    if not task.when
+                        task.when = Date.now()
                 accept: (item) ->
                     item.links[User.email] = Date.now()
                     item.accept[User.email] = Date.now()
