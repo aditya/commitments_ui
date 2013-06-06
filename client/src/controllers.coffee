@@ -239,6 +239,12 @@ define [
                 ($scope.selected.stamp or ->)(item)
                 console.log 'new item configured', item
                 $scope.$emit 'updateitem', item
+            $scope.$on 'subtask', (event, task) ->
+                subtask = Task.subtask task
+                $timeout ->
+                    #redraw, and try to get the focus
+                    $scope.$digest()
+                    $scope.$broadcast subtask.id
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
             #re-ordering and sort of items turns into an event to get back
@@ -309,23 +315,6 @@ define [
                         $ "<span class='icon-exclamation'/>"
                     else
                         $ "<span class='icon-question'/>"
-            #adding a subitem is just making a nested object
-            #but only if we need a new one
-            $scope.subitem = (item) ->
-                #need a space to store subitems
-                item.subitems = item.subitems or []
-                #only make a new record if the current blank is 'used up'
-                if (item.subitems.length is 0) or (_.last(item.subitems)?.what)
-                    blank_record =
-                        id: md5(Date.now() + '')
-                    item.subitems = item.subitems or []
-                    item.subitems.push blank_record
-                    #fire the new id as an event, this is used to hook the focus
-                    $timeout ->
-                        $scope.$broadcast blank_record.id
-                else
-                    $timeout ->
-                        $scope.$broadcast _.last(item.subitems)?.id
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->

@@ -135,6 +135,9 @@ define ['md5',
                             (toSlot + 1) < totalSlots
                         else
                             true
+                $scope.$on 'newrecord', (event, model) ->
+                    if model is ngModel.$modelValue
+                        ngModel.$modelValue.push id: md5("#{Date.now()}")
         ])
         #drag handles give off events to inform draggable lists
         .directive('handle', [ ->

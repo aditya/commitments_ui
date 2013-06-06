@@ -7,10 +7,10 @@
                             </div>
                         </td>
                         <td class="task-check">
-                            <span check ng-model="subitem.done" tooltip="'Mark done'"></span>
+                            <span check ng-model="subtask.done" tooltip="'Mark done'"></span>
                         </td>
                         <td class="task-what">
-                            <span search-highlight="searchQuery" markdown focus-on="subitem.id" placeholder="'New subtask here'" ng-model="subitem.what" class="larger"></span>
+                            <span search-highlight="searchQuery" markdown focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
                         </td>
                         <td class="task-action" animated-visible="hover && !sorting">
                             <span action="deleterecord" tooltip="'Delete this sub item'"><i class="icon-trash"></i></span>
@@ -19,7 +19,7 @@
                 </table>
             </div>
             <ol class="tasks-subtasks">
-            <li ng-repeat="subitem in subitem.subitems" editable-record ng-model="subitem" ng-include="'subtask.html'" class="task-subtask">
+            <li ng-repeat="subtask in subtask.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
             </li>
             </ol>
 </script>
@@ -77,7 +77,7 @@
                     <span check ng-model="item.done" tooltip="'Mark done'"></span>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action ng-click="subitem(item)" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
+                    <span action="subtask" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
                     <div search-highlight="searchQuery" markdown ng-model="item.what" class="larger">
@@ -96,7 +96,7 @@
             editable-list-nested
             drag-handle=".subtask-handle"
             ng-model="item.subitems" class="tasks-subtasks">
-            <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" ng-include="'subtask.html'" class="task-subtask">
+            <li ng-repeat="subtask in item.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
             </li>
         </ol>
         <!--this div is to control visibility so that extended items are show on demand-->
