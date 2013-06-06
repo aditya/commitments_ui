@@ -14,6 +14,7 @@ define ['angular',
             items_in_order = []
             #
             updateItem = (item, fromserver, filename) ->
+                console.log 'database'
                 if not item
                     return
                 if not fromserver
@@ -35,7 +36,8 @@ define ['angular',
                     _.extend items[item.id], item
                 else
                     items[item.id] = item
-                    items_in_order.push item
+                    if _.indexOf(items_in_order, item) is -1
+                        items_in_order.push item
                 LocalIndexes.update item, items
                 item
             #
@@ -58,7 +60,7 @@ define ['angular',
             #save everything if there was a reconnect, safety-pup!
             $rootScope.$on 'reconnect', ->
                 for item in _.values(items)
-                    $rootScope.$broadcast 'itemfromlocal', item
+                    $rootScope.$broadcast 'updateitem', item
             #every item from the server, replaces the world
             $rootScope.$on 'itemsfromserver', (event, serveritems) ->
                 items = {}
@@ -71,9 +73,9 @@ define ['angular',
                 updateItem item, true, filename
             $rootScope.$on 'deleteitemfromserver', (event, filename, item) ->
                 deleteItem item, true, filename
-            $rootScope.$on 'itemfromlocal', (event, item) ->
+            $rootScope.$on 'updateitem', (event, item) ->
                 updateItem item
-            $rootScope.$on 'deleteitemfromlocal', (event, item) ->
+            $rootScope.$on 'deleteitem', (event, item) ->
                 deleteItem item
             $rootScope.$on 'archiveitem', (event, item) ->
                 deleteItem item

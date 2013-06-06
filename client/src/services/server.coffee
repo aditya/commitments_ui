@@ -100,13 +100,14 @@ define ['angular',
                     else
                         broadcast 'deletefilefromserver', item.filename, item.data
             #
-            $rootScope.$on 'itemfromlocal', (event, item) ->
+            $rootScope.$on 'updateitem', (event, item) ->
+                console.log 'server'
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['update', 'task']
                     stdin: item
             #
-            $rootScope.$on 'deleteitemfromlocal', (event, item) ->
+            $rootScope.$on 'deleteitem', (event, item) ->
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['delete', 'task']

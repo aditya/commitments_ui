@@ -23,18 +23,17 @@ define ['angular',
                 trashcan = store.get('.trash') or {}
                 delete trashcan[item.id]
                 save trashcan
-            $rootScope.$on 'deleteitemfromlocal', (event, item) ->
+            $rootScope.$on 'deleteitem', (event, item) ->
                 trash item
-            $rootScope.$on 'itemfromlocal', (event, item) ->
-                #you undeleted the thing
+            $rootScope.$on 'updateitem', (event, item) ->
                 untrash item
             $rootScope.$on 'itemfromserver', (event, item) ->
                 #somebody else may have undeleted the thing
                 untrash item
+            $rootScope.$on 'emptytrash', (event, item) ->
+                save {}
             do ->
                 items: ->
                     trashcan
                 itemCount: ->
                     _.keys(trashcan).length
-                empty: ->
-                    save {}

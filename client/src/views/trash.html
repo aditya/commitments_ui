@@ -7,7 +7,7 @@
         <table>
             <tr>
                 <td class="trash-item-undelete">
-                    <span action ng-click="undelete(item)">
+                    <span action="updateitem" ng-model="item">
                         <i class="icon-mail-reply"></i>
                         <i class="icon-trash"></i>
                     </span>
@@ -20,6 +20,6 @@
             <div postdate ng-model="item.lastUpdatedAt"></div>
         </div>
         </li>
-        <li><a ng-click="emptyTrash()" ng-show="trash.itemCount()" class="btn btn-large btn-danger"><i class="icon-trash icon-large"></i> Empty Trash</a></li>
+        <li><a action="emptytrash" ng-show="trash.itemCount()" class="btn btn-large btn-danger"><i class="icon-trash icon-large"></i> Empty Trash</a></li>
     </ul>
 </div>

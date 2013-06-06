@@ -88,7 +88,7 @@ define [
                     controller: 'Splash'
                 )
         .run ($rootScope) ->
-            $rootScope.debug = true
+            $rootScope.debug = false
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
@@ -204,9 +204,10 @@ define [
                 $scope[verb] = fn
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
+            $scope.items = Database.items
             selected = $rootScope.selected = {}
             selected.itemCount = ->
-                _.reject Database.items, selected.hide
+                _.reject $scope.items, selected.hide
             #hang on to this
             $rootScope.lastTaskLocation = $location.url()
             #process where we are looking, this is a bit of a sub-router, it is
@@ -235,8 +236,11 @@ define [
             $scope.links = LocalIndexes.links
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in that box
-            $scope.placeholderItem = (item) ->
+            $scope.$on 'newitem', (event, item) ->
+                Task.new item
                 ($scope.selected.stamp or ->)(item)
+                console.log 'new item configured', item
+                $scope.$emit 'updateitem', item
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
             #re-ordering and sort of items turns into an event to get back
@@ -266,6 +270,11 @@ define [
                         delete $scope.selected.replaceHide
         #each individual task
         .controller 'Task', ($scope, $timeout, User) ->
+            $scope.$on 'edit', (event) ->
+                console.log 'edit', $scope, $scope.item
+                $scope.$emit 'updateitem', $scope.item
+                if not $scope.$$phase
+                    $scope.$digest()
             #give the task a status poke
             $scope.poke = (item) ->
                 my_last_status = (item.poke or {})[User.email]
@@ -319,10 +328,6 @@ define [
                 else
                     $timeout ->
                         $scope.$broadcast _.last(item.subitems)?.id
-            #sorting the subitems triggers an update on the item
-            $scope.sorted = (items) ->
-                $scope.item.subitems = items
-                $scope.$emit 'updaterecord', $scope.item
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->
@@ -344,11 +349,7 @@ define [
             Notifications.deliverMessages()
         #local trash can to allow undelete
         .controller 'Trash', ($rootScope, $scope, $timeout, Trash) ->
-            $scope.emptyTrash = ->
-                Trash.empty()
-            $scope.undelete = (item) ->
-                #and undelete is really just the same as an update
-                $rootScope.$broadcast 'itemfromlocal', item
+            $scope.trash = Trash
         #all the people in all the boxes...
         .controller 'Users', ($scope, $timeout, LocalIndexes) ->
             $scope.localIndexes = LocalIndexes

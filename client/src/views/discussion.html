@@ -33,7 +33,7 @@
                                     <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                                 </div>
                             </td>
-                            <td animated-visible="hover" class="task-action">
+                            <td animated-visible="hover && (user.email == comment.who)" class="task-action">
                                 <span action="deleterecord" tooltip="'Delete this comment'"><i class="icon-trash"></i></span>
                             </td>
                         </tr>

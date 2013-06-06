@@ -28,16 +28,15 @@
     ng-controller="Tasks"
     editable-list
     editable-list-reorder="taskssorted"
+    editable-list-new="newitem"
     drag-handle=".task-handle"
-    on-delete="delete"
-    on-update="update"
-    ng-model="selected.items"
+    ng-model="items"
     class="tasks">
     <li class="alert" ng-show="selected.itemCount() == 0">
     No Items
     </li>
     <!--repeat items-->
-    <li ng-repeat="item in database.items"
+    <li ng-repeat="item in items"
     editable-record
     ng-model="item"
     animated-hide="selected.hide(item)"
@@ -86,7 +85,7 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action ng-hide="item.done" ng-click="delete(item)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="deleteitem" ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
                     <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
@@ -121,7 +120,7 @@
     <!--the new record placeholder-->
     <li
     editable-record
-    editable-record-placeholder="placeholderItem"
+    editable-record-placeholder
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
         <span focus-on="'newtask'" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
