@@ -53,8 +53,8 @@
             <span>Task from</span>
             <span gravatar ng-model="item.who"></span>
             <span class="btn-group">
-                <button action="taskaccept" class="btn btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
-                <button action="taskreject" class="btn btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
+                <button action="accepttask" class="btn btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
+                <button action="rejecttask" class="btn btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
             </span>
         </div>
         <!-- poke -->
@@ -64,10 +64,10 @@
             <span>Poke from</span>
             <span gravatar ng-model="item.poke.poker"></span>
             <span class="btn-group">
-                <button action="tasknotstarted" class="btn "><i class="icon-frown icon-large"></i> Not Started</button>
-                <button action="taskinprogress" class="btn "><i class="icon-smile icon-large"></i> In Progress</button>
-                <button action="taskblocked" class="btn btn-danger"><i class="icon-exclamation icon-large"></i> Blocked</button>
-                <button action="taskdone" class="btn btn-success"><i class="icon-check icon-large"></i> Done</button>
+                <button action="notstartedtask" class="btn "><i class="icon-frown icon-large"></i> Not Started</button>
+                <button action="inprogresstask" class="btn "><i class="icon-smile icon-large"></i> In Progress</button>
+                <button action="blockedtask" class="btn btn-danger"><i class="icon-exclamation icon-large"></i> Blocked</button>
+                <button action="donetask" class="btn btn-success"><i class="icon-check icon-large"></i> Done</button>
             </span>
         </div>
         <!-- this is the main visible todo -->
@@ -85,7 +85,7 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="taskdelete" ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="deletetask" ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
                     <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>

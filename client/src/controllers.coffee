@@ -233,14 +233,14 @@ define [
             #all the links and tags, used to make the autocomplete
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
+            #here a new task is created
             #placeholders call back to the currently selected box to stamp them
-            #as needed to appear in that box
-            $scope.$on 'newtask', (event, item) ->
-                console.log arguments
-                Task.new item
-                ($scope.selected.stamp or ->)(item)
-                console.log 'new item configured', item
-                $scope.$emit 'updateitem', item
+            #as needed to appear in the current filter box, as well as the
+            #actual update event
+            $scope.$on 'newtask', (event, task) ->
+                console.log 'new', task
+                ($scope.selected.stamp or ->)(task)
+                Task.new task
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
             #re-ordering and sort of items turns into an event to get back
@@ -270,11 +270,15 @@ define [
                         delete $scope.selected.replaceHide
         #each individual task
         .controller 'Task', ($scope, $timeout, User, Task) ->
+            #This is where we stop propagating edits and hand it along
+            #as an actual update event
             $scope.$on 'edit', (event) ->
                 console.log 'edit', $scope.item
-                $scope.$emit 'updateitem', $scope.item
+                Task.update $scope.item
                 if not $scope.$$phase
                     $scope.$digest()
+            #create a new subtask, and then use a bit of delay to make sure
+            #it has time to render, then focus
             $scope.$on 'subtask', (event, task) ->
                 subtask = Task.subtask task
                 $timeout ->
@@ -282,6 +286,16 @@ define [
                     $scope.$digest()
                     $timeout ->
                         $scope.$broadcast subtask.id
+            #junction box action events through to the task service
+            #this gives a place to work with the local scope to redraw
+            for eventname in ['deletetask', 'rejecttask', 'accepttask']
+                do ->
+                    #oh, Javascript, your scopes are odd in loops
+                    tohandle = eventname
+                    $scope.$on tohandle, (event, task) ->
+                        Task[tohandle] task
+                        $timeout ->
+                            $scope.$digest()
             #give the task a status poke
             $scope.poke = (item) ->
                 my_last_status = (item.poke or {})[User.email]

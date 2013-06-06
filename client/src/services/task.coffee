@@ -6,7 +6,7 @@ define ['angular',
     'lodash',
     'cs!./root'], (angular, _, root) ->
         root.factory 'Task', ($timeout, $rootScope, User) ->
-            do ->
+            service =
                 new: (task) ->
                     if not task.who
                         task.who = User.email
@@ -14,16 +14,21 @@ define ['angular',
                         task.id = md5("#{Date.now()}")
                     if not task.when
                         task.when = Date.now()
-                accept: (item) ->
-                    item.links[User.email] = Date.now()
-                    item.accept[User.email] = Date.now()
-                    delete item.reject[User.email]
-                    $rootScope.$broadcast 'itemfromlocal', item
-                reject: (item) ->
-                    item.reject[User.email] = Date.now()
-                    delete item.links[User.email]
-                    delete item.accept[User.email]
-                    $rootScope.$broadcast 'itemfromlocal', item
+                    service.update task
+                update: (task) ->
+                    $rootScope.$broadcast 'updateitem', task
+                delete: (task) ->
+                    $rootScope.$broadcast 'deleteitem', task
+                accepttask: (task) ->
+                    task.links[User.email] = Date.now()
+                    task.accept[User.email] = Date.now()
+                    delete task.reject[User.email]
+                    service.update task
+                rejecttask: (task) ->
+                    task.reject[User.email] = Date.now()
+                    delete task.links[User.email]
+                    delete task.accept[User.email]
+                    service.update task
                 subtask: (task) ->
                     task.subitems = task.subitems or []
                     #only make a new record if the current blank is 'used up'
@@ -34,4 +39,12 @@ define ['angular',
                         blank_record
                     else
                         _.last task.subitems
-
+                deletetask: (task) ->
+                    #you really only truly delete tasks you create, otherwise
+                    #it is the same thing as rejecting
+                    console.log task, 's'
+                    if task.who is User.email
+                        #real delete
+                        service.delete task
+                    else
+                        service.rejecttask task
