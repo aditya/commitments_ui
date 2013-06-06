@@ -37,11 +37,12 @@
     </li>
     <!--repeat items-->
     <li ng-repeat="item in items"
-    editable-record
+    editable-record="updatetask"
+    ng-controller="Task"
     ng-model="item"
     animated-hide="selected.hide(item)"
     class="task">
-    <div ng-controller="Task" class="task-content">
+    <div class="task-content">
         <div handle class="icon-reorder task-handle"
             tooltip="'Drag to reorder'">
         </div>

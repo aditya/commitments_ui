@@ -44,6 +44,9 @@ define ['md5',
                         $scope.$digest()
                 $scope.$on 'deselect', ->
                     $scope.focused = false
+                $scope.$on 'edit', ->
+                    if attrs.editableRecord
+                        $scope.$emit attrs.editableRecord, ngModel.$modelValue
         ])
         #placeholders give you a spot to enter new records
         .directive('editableRecordPlaceholder', [() ->

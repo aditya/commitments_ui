@@ -270,32 +270,25 @@ define [
                         delete $scope.selected.replaceHide
         #each individual task
         .controller 'Task', ($scope, $timeout, User, Task) ->
-            #This is where we stop propagating edits and hand it along
-            #as an actual update event
-            $scope.$on 'edit', (event) ->
-                console.log 'edit', $scope.item
-                Task.update $scope.item
-                if not $scope.$$phase
-                    $scope.$digest()
-            #create a new subtask, and then use a bit of delay to make sure
-            #it has time to render, then focus
-            $scope.$on 'subtask', (event, task) ->
-                subtask = Task.subtask task
-                $timeout ->
-                    #redraw, and try to get the focus
-                    $scope.$digest()
+            #relay events to the task service, but in the local scope
+            #to allow digest and redraw
+            handle = (event_name, action) ->
+                $scope.$on event_name, (event, task) ->
+                    action task
                     $timeout ->
-                        $scope.$broadcast subtask.id
-            #junction box action events through to the task service
-            #this gives a place to work with the local scope to redraw
-            for eventname in ['deletetask', 'rejecttask', 'accepttask']
-                do ->
-                    #oh, Javascript, your scopes are odd in loops
-                    tohandle = eventname
-                    $scope.$on tohandle, (event, task) ->
-                        Task[tohandle] task
-                        $timeout ->
-                            $scope.$digest()
+                        $scope.$digest()
+                        if bonus_actions[event_name]
+                            $timeout ->
+                                bonus_actions[event_name] task
+            #register them all, this way you can just add methods on to Task
+            #that are new event handlers
+            for event_name, action of Task
+                handle event_name, action
+            #extra callbacks for the UI
+            bonus_actions =
+                subtask: (task) ->
+                    $scope.$broadcast _.last(task.subitems).id
+
             #give the task a status poke
             $scope.poke = (item) ->
                 my_last_status = (item.poke or {})[User.email]
