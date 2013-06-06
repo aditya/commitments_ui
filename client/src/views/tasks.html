@@ -29,7 +29,6 @@
     editable-list
     editable-list-reorder="taskssorted"
     drag-handle=".task-handle"
-    sort-update="sorted"
     on-delete="delete"
     on-update="update"
     ng-model="selected.items"
@@ -97,7 +96,6 @@
             editable-list-reorder
             editable-list-nested
             drag-handle=".subtask-handle"
-            sort-update="sorted"
             ng-model="item.subitems" class="tasks-subtasks">
             <li ng-repeat="subitem in item.subitems" editable-record ng-model="subitem" ng-include="'subitem.html'" class="task-subtask">
             </li>

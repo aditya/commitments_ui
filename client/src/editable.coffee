@@ -112,6 +112,11 @@ define ['md5',
                             for item in list
                                 prune record, item.subitems or []
                     prune record, ngModel.$modelValue
+                #nested lists update the record itself, then propagate an
+                #edit once we know that data is saved into the object
+                $scope.$on 'reorder', (event, items) ->
+                    ngModel.$setViewValue items
+                    $scope.$emit 'edit', ngModel.$modelValue
         ])
         #equip a list with drag and drop reordering, used ot stack rank tasks
         .directive('editableListReorder', [ '$rootScope', ($rootScope) ->
@@ -144,9 +149,11 @@ define ['md5',
                                         o.record.subitems = []
                                         recurse o.record.subitems, o.children
                         recurse new_order, serialized
-                        if attrs.editableListReorder
-                            $scope.$apply ->
+                        $scope.$apply ->
+                            if attrs.editableListReorder
                                 $scope.$emit attrs.editableListReorder, new_order
+                            else
+                                $scope.$emit 'reorder', new_order
                         _super $item, targetContainer
                     isValidTarget: (item, container, totalSlots, toSlot) ->
                         #if there is a placeholder we can't drag to the last record

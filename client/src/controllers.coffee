@@ -88,7 +88,7 @@ define [
                     controller: 'Splash'
                 )
         .run ($rootScope) ->
-            $rootScope.debug = false
+            $rootScope.debug = true
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
