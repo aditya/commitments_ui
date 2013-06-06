@@ -150,7 +150,8 @@ define [
                 $scope.flashing = false
         .controller 'Navbar', ($rootScope, $scope, $location, $timeout, Notifications) ->
             #event to ask for a new task focus
-            $scope.addTask = ->
+            $scope.$on 'addtask', (event) ->
+                console.log 'adddddd', event
                 if $location.path().slice(-5) is '/done' or $rootScope.lastTaskLocation is '/done'
                     $location.path '/todo'
                 else
@@ -240,7 +241,7 @@ define [
             $scope.$on 'newtask', (event, task) ->
                 console.log 'new', task
                 ($scope.selected.stamp or ->)(task)
-                Task.new task
+                Task.newtask task
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
             #re-ordering and sort of items turns into an event to get back

@@ -196,20 +196,18 @@ define [
             link: ($scope, element, attrs) ->
                 element.hide()
         ])
-        #hotkeys mapping from key strokes to specific named events
-        #in the root scope to allow them to be broadly seen
-        .directive('hotkeys', [ '$rootScope', ($rootScope) ->
+        #a single hotkey binding
+        .directive('hotkey', [ '$rootScope', ($rootScope) ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
-                mappings =
-                    'esc': 'deselect'
-                    '+': 'newtaskplaceholder'
-                map = (key, value) ->
-                    mousetrap.bind key, ->
-                        $rootScope.$apply ->
-                            $rootScope.$broadcast value
-                for key, value of mappings
-                    map key, value
+                key_name = attrs.hotkey.split(',')
+                act = ->
+                    console.log key_name
+                    $rootScope.$apply ->
+                        for en in _.rest(key_name)
+                            $rootScope.$broadcast en
+                element.on 'click', act
+                mousetrap.bind key_name[0], act
         ])
         #grid a licious grid
         .directive('grid', [ '$timeout', ($timeout) ->
