@@ -48,6 +48,7 @@ define ['angular',
                             value = codemirror.getValue().trimLeft().trimRight()
                             if value is ngModel.$viewValue
                                 #no need to fire an edit if there is no change
+                            else if (not value) and (not ngModel.$viewValue)
                             else
                                 $scope.$apply ->
                                     ngModel.$setViewValue(value)
