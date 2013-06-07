@@ -88,7 +88,7 @@ define [
                     controller: 'Splash'
                 )
         .run ($rootScope) ->
-            $rootScope.debug = true
+            $rootScope.debug = false
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
@@ -289,29 +289,6 @@ define [
             bonus_actions =
                 subtask: (task) ->
                     $scope.$broadcast _.last(task.subitems).id
-
-            #give the task a status poke
-            $scope.poke = (item) ->
-                my_last_status = (item.poke or {})[User.email]
-                item.poke = {}
-                for user, ignore of item.links
-                    item.poke[user] = null
-                item.poke[User.email] = my_last_status or 'poker'
-                item.poke.poker = User.email
-                $scope.$emit 'updaterecord', $scope.item
-            $scope.notstarted = (item) ->
-                item.poke[User.email] = 'notstarted'
-                $scope.$emit 'updaterecord', item
-            $scope.inprogress = (item) ->
-                item.poke[User.email] = 'inprogress'
-                $scope.$emit 'updaterecord', item
-            $scope.blocked = (item) ->
-                item.poke[User.email] = 'blocked'
-                $scope.$emit 'updaterecord', item
-            $scope.done = (item) ->
-                item.poke[User.email] = 'done'
-                item.done = Date.now()
-                $scope.$emit 'updaterecord', item
             #callback to get a status display
             $scope.pokestatus = (email) ->
                 poke = $scope.item.poke or {}
@@ -324,6 +301,10 @@ define [
                         $ "<span class='icon-smile'/>"
                     else if poke[email] is 'blocked'
                         $ "<span class='icon-exclamation'/>"
+                    else if poke[email] is 'done'
+                        $ "<span class='icon-check'/>"
+                    else if poke[email] is 'poker'
+                        $ "<span class='icon-hand-right'/>"
                     else
                         $ "<span class='icon-question'/>"
         #notifications, button and dropdown

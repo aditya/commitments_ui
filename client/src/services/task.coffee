@@ -45,3 +45,21 @@ define ['angular',
                         $rootScope.$broadcast 'deleteitem', task
                     else
                         service.rejecttask task
+                poketask: (task) ->
+                    task.poke = {}
+                    #poke is all about asking for new status, so it resets
+                    for user, ignore of task.links
+                        task.poke[user] = null
+                    task.links[User.email] = Date.now()
+                    task.poke[User.email] = 'poker'
+                    task.poke.poker = User.email
+                    service.updatetask task
+            #factory these up rather than copy pasta
+            for status in ['notstarted', 'inprogress', 'blocked', 'done']
+                do ->
+                    status_name = status
+                    service["#{status_name}task"] = (task) ->
+                        task.links[User.email] = Date.now()
+                        task.poke[User.email] = status_name
+                        service.updatetask task
+            service

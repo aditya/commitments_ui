@@ -14,7 +14,7 @@ define ['angular',
             items_in_order = []
             #
             updateItem = (item, fromserver, filename) ->
-                console.log 'database'
+                console.log 'database', fromserver
                 if not item
                     return
                 if not fromserver
