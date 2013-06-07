@@ -10,7 +10,11 @@ samplenotifications =
         data:
             tags: [ 'info' ]
             message: 'Hello Again'
-
+    ,
+        when: Date.now()
+        data:
+            tags: [ 'poke' ]
+            message: 'POKE!'
     ]
 #Build up some sample data for UI testing, this is used when we don't have
 #a server going to allow interactive testing

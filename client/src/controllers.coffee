@@ -350,6 +350,8 @@ define [
                     return 'icon-share-alt'
                 if _.contains notification?.data?.tags, 'unshare'
                     return 'icon-reply'
+                if _.contains notification?.data?.tags, 'poke'
+                    return 'icon-hand-right'
                 return 'icon-tasks'
             Notifications.deliverMessages()
         #local trash can to allow undelete
