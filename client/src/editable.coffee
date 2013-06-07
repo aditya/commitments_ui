@@ -175,13 +175,11 @@ define ['md5',
                 #so they can hide themselves, unbind, etc.
                 $scope.$on 'selectrecord', (event, record) ->
                     event.stopPropagation()
-                    $scope.selectedrecord = record
                     $scope.$broadcast 'selectedrecord', record
                 #when there is a new record, add it into the current view model
-                #this is in addition to any update that fires to send things
-                #back to the underlying database
                 $scope.$on 'newrecord', (event, record) ->
                     event.stopPropagation()
+                    #push to the underlying model, new records start at the end
                     list = ngModel.$modelValue
                     list.push record
                     $timeout ->
