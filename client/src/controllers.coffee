@@ -11,8 +11,10 @@ define [
     'text!src/views/taskhelp.html',
     'text!src/views/discussion.html',
     'text!src/views/discussionhelp.html',
+    'text!src/views/users.html',
+    'text!src/views/notifications.html',
     'cs!./editable',
-    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template) ->
+    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template, users_template, notifications_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .run(['$templateCache', ($templateCache) ->
             console.log 'here we go'
@@ -20,6 +22,8 @@ define [
             $templateCache.put 'src/views/taskhelp.html', taskhelp_template
             $templateCache.put 'src/views/discussion.html', discussion_template
             $templateCache.put 'src/views/discussionhelp.html', discussionhelp_template
+            $templateCache.put 'src/views/users.html', users_template
+            $templateCache.put 'src/views/notifications.html', notifications_template
         ])
         .config ($routeProvider) ->
             $routeProvider.
