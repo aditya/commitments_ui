@@ -162,7 +162,6 @@ define [
         #do you call a box of boxes? boxula?
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
             $scope.boxes = []
-            $scope.localIndexes = LocalIndexes
             #here are the various boxes and filters
             rebuild = ->
                 console.log 'rebuild boxes'
@@ -190,7 +189,7 @@ define [
                 #without it my boxes list in the navbar is just plain empty
                 $scope.boxes = $rootScope.boxes
             #watch the index to see if we should rebuild the facet filtersk
-            $scope.$watch 'localIndexes.tagSignature()', ->
+            $scope.$watch LocalIndexes.tagSignature, ->
                 rebuild()
         #nothing nuch going on here
         .controller 'Settings', ($rootScope, $scope) ->
@@ -331,8 +330,7 @@ define [
             $scope.trash = Trash
         #all the people in all the boxes...
         .controller 'Users', ($scope, $timeout, LocalIndexes) ->
-            $scope.localIndexes = LocalIndexes
-            $scope.$watch 'localIndexes.linkSignature()', ->
+            $scope.$watch LocalIndexes.linkSignature, ->
                 $scope.users = LocalIndexes.links()
                 $scope.items = {}
         #each task, in a controller to limit the digest scope
