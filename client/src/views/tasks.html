@@ -87,8 +87,8 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deletetask" ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action="archiveitem" ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
+                    <span action="deletetask" eat-click ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="archiveitem" eat-click ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>

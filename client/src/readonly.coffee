@@ -154,6 +154,15 @@ define [
                         console.log 'action', attrs.action, ngModel.$modelValue
                         $scope.$emit attrs.action, ngModel.$modelValue
         ])
+        #This is low priority, so that an element can have click handlers, but
+        #ultimately is a firewall to keep clicks from making it out of an element
+        .directive('eatClick', [ ->
+            restrict: 'A'
+            priority: -1000
+            link: ($scope, element) ->
+                element.click (event) ->
+                    event.stopPropagation()
+        ])
         .directive('help', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

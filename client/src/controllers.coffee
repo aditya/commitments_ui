@@ -297,11 +297,15 @@ define [
             handle = (event_name, action) ->
                 $scope.$on event_name, (event, task) ->
                     action task
-                    $timeout ->
+                    followon = ->
                         $scope.$digest()
                         if bonus_actions[event_name]
                             $timeout ->
                                 bonus_actions[event_name] task
+                    if $scope.$$phase
+                        $timeout followon
+                    else
+                        do followon
             #register them all, this way you can just add methods on to Task
             #that are new event handlers
             for event_name, action of Task
@@ -309,7 +313,8 @@ define [
             #extra callbacks for the UI
             bonus_actions =
                 subtask: (task) ->
-                    $scope.$broadcast _.last(task.subitems).id
+                    $timeout ->
+                        $scope.$broadcast _.last(task.subitems).id
             #callback to get a status display
             $scope.pokestatus = (email) ->
                 poke = $scope.item.poke or {}
