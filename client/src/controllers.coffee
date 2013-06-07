@@ -38,6 +38,11 @@ define [
                     controller: 'Tasks'
                 )
                 .when(
+                    '/untagged',
+                    template: task_template
+                    controller: 'Tasks'
+                )
+                .when(
                     '/tag',
                     template: task_template
                     controller: 'Tasks'
@@ -93,6 +98,7 @@ define [
                 )
         .run ($rootScope) ->
             $rootScope.debug = false
+        #Root application controller, deals with login and error messages
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
@@ -138,12 +144,15 @@ define [
             $rootScope.loggedIn = false
             #here we go
             Server.tryToBeLoggedIn()
+        #Go here to log in, this is used by login token links
         .controller 'Login', ($scope, $routeParams, Server) ->
             Server.login $routeParams.authtoken
             $scope.flash "Logging you in..."
+        #Go here to log out
         .controller 'Logout', ($scope, $timeout, $location, Server) ->
             Server.logout()
             $scope.flash "Logging you out..."
+        #The splash screen shows when the app starts and you aren't logged in
         .controller 'Splash', ($scope, $rootScope, $location, Server) ->
             #the actual method to join
             $scope.join = () ->
@@ -152,6 +161,7 @@ define [
             $scope.joinAgain = () ->
                 $scope.joinEmail = ''
                 $scope.flashing = false
+        #Top level navigation bar, this is where to hook up hotkeys
         .controller 'Navbar', ($rootScope, $scope, $location, $timeout, Notifications) ->
             #event to ask for a new task focus
             $scope.$on 'addtask', (event) ->
@@ -163,7 +173,8 @@ define [
                 $timeout ->
                     $rootScope.$broadcast 'newtaskplaceholder'
         #toolbox has all the boxes, not sure of a better name we can use, what
-        #do you call a box of boxes? boxula?
+        #do you call a box of boxes? boxula? Each _box_ is a stored filter, either
+        #on a tag or a pre-defined set of tasks
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
             $scope.boxes = []
             #here are the various boxes and filters
@@ -177,6 +188,9 @@ define [
                 ,
                     title: 'Done'
                     url: '/#/done'
+                ,
+                    title: 'Untagged'
+                    url: '/#/untagged'
                 )
                 #now build up a 'box' for each tag, not sure why I want to call
                 #it a box, just that the tags are drawn on screen in a... box?
@@ -222,6 +236,10 @@ define [
                 selected.title = "Done"
                 selected.allowNew = false
                 selected.hide = (x) -> (not x.done) or x.archived
+            else if $location.path().slice(-9) is '/untagged'
+                selected.title = "Untagged"
+                selected.allowNew = false
+                selected.hide = (x) -> not _.keys(x.tags).length
             else if $location.path().slice(0,5) is '/task'
                 selected.title = "Task"
                 selected.allowNew = false
@@ -237,7 +255,7 @@ define [
             #all the links and tags, used to make the autocomplete
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
-            #here a new task is created
+            #dealing with creating new tasks is a task list level control action
             #placeholders call back to the currently selected box to stamp them
             #as needed to appear in the current filter box, as well as the
             #actual update event
@@ -337,7 +355,8 @@ define [
             $scope.$watch LocalIndexes.linkSignature, ->
                 $scope.users = LocalIndexes.links()
                 $scope.items = {}
-        #each task, in a controller to limit the digest scope
+        #Tasks for each user, setting up a scope to query out their current
+        #task list
         .controller 'UserTasks', ($rootScope, $scope, $timeout) ->
             #for this user, go and get their items
             $rootScope.$broadcast 'useritems', $scope.user, (items) ->
