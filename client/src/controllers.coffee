@@ -239,7 +239,7 @@ define [
             else if $location.path().slice(-9) is '/untagged'
                 selected.title = "Untagged"
                 selected.allowNew = false
-                selected.hide = (x) -> not _.keys(x.tags).length
+                selected.hide = (x) -> x.done or _.keys(x.tags).length
             else if $location.path().slice(0,5) is '/task'
                 selected.title = "Task"
                 selected.allowNew = false
@@ -248,7 +248,7 @@ define [
                 tag = _.keys($location.search())[0]
                 selected.title = tag
                 selected.allowNew = true
-                selected.hide = (x) -> (not (x.tags or {})[tag]) or x.archived
+                selected.hide = (x) -> (not (x.tags or {})[tag]) or x.archived or x.done
                 selected.stamp = (item) ->
                     item.tags = item.tags or {}
                     item.tags[tag] = Date.now()
