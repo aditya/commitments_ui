@@ -32,27 +32,26 @@
     drag-handle=".task-handle"
     ng-model="items"
     class="tasks">
-    <li class="alert" ng-show="selected.itemCount() == 0">
-    No Items
+    <li class="alert" ng-show="selected.Count() == 0">
+    Nothing to see here...
     </li>
-    <!--repeat items-->
     <li ng-repeat="item in items"
     editable-record="updatetask"
     ng-controller="Task"
     ng-model="item"
     animated-hide="selected.hide(item)"
     class="task">
-    <div class="task-content">
+    <div class="task-content" ng-init="task=item;">
         <div handle class="icon-reorder task-handle"
             tooltip="'Drag to reorder'">
         </div>
         <!-- accept/reject -->
         <div
-            requires-object="item.accept, item.reject"
-            animated-hide="!debug && (item.who == user.email || item.accept[user.email])"
+            requires-object="task.accept, task.reject"
+            animated-hide="!debug && (task.who == user.email || task.accept[user.email])"
             class="alert">
             <span>Task from</span>
-            <span gravatar ng-model="item.who"></span>
+            <span gravatar ng-model="task.who"></span>
             <span class="btn-group">
                 <button action="accepttask" class="btn btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
                 <button action="rejecttask" class="btn btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
@@ -60,11 +59,11 @@
         </div>
         <!-- poke -->
         <div
-            requires-object="item.links"
-            animated-hide="!debug && (item.poke[user.email] || !item.poke)"
+            requires-object="task.links"
+            animated-hide="!debug && (task.poke[user.email] || !task.poke)"
             class="alert">
             <span>Poke from</span>
-            <span gravatar ng-model="item.poke.poker"></span>
+            <span gravatar ng-model="task.poke.poker"></span>
             <span class="btn-group">
                 <button action="notstartedtask" class="btn "><i class="icon-frown icon-large"></i> Not Started</button>
                 <button action="inprogresstask" class="btn "><i class="icon-smile icon-large"></i> In Progress</button>
@@ -76,19 +75,19 @@
         <table class="task-core">
             <tr>
                 <td class="task-check">
-                    <span check ng-model="item.done" tooltip="'Mark done'"></span>
+                    <span check ng-model="task.done" tooltip="'Mark done'"></span>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
                     <span action="subtask" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
-                    <div search-highlight="searchQuery" markdown ng-model="item.what" class="larger">
+                    <div search-highlight="searchQuery" markdown ng-model="task.what" class="larger">
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deletetask" eat-click ng-hide="item.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action="archiveitem" eat-click ng-hide="!item.done" tooltip="'Archive old items'"><i class="icon-download-alt"></i></span>
+                    <span action="deletetask" eat-click ng-hide="task.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="archivetask" eat-click ng-hide="!task.done" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>
@@ -97,24 +96,23 @@
             editable-list-reorder
             editable-list-nested
             drag-handle=".subtask-handle"
-            ng-model="item.subitems" class="tasks-subtasks">
-            <li ng-repeat="subtask in item.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
+            ng-model="task.subitems" class="tasks-subtasks">
+            <li ng-repeat="subtask in task.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
             </li>
         </ol>
-        <!--this div is to control visibility so that extended items are show on demand-->
-        <div animated-show="(focused && item.what) || debug" class="task-extended">
-            <ul requires-object="item.discussion" class="task-tools">
+        <div animated-show="(focused && task.what) || debug" class="task-extended">
+            <ul requires-object="task.discussion" class="task-tools">
                 <li action="poketask"><i class="icon-hand-right"></i></li>
-                <li tags tags-query="tags" icon="tags" ng-model="item.tags"></li>
-                <li tags tags-query="links" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="item.links"></li>
+                <li tags tags-query="tags" icon="tags" ng-model="task.tags"></li>
+                <li tags tags-query="links" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
             </ul>
             <div class="task-discussion">
                 <div ng-include src="'src/views/discussion.html'"></div>
             </div>
             <hr/>
             <div class="task-footer">Last Updated:
-                <span username ng-model="item.lastUpdatedBy"></span>
-                <span postdate ng-model="item.lastUpdatedAt"></span>
+                <span username ng-model="task.lastUpdatedBy"></span>
+                <span postdate ng-model="task.lastUpdatedAt"></span>
             </div>
         </div>
     </div>

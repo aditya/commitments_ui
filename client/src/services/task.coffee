@@ -45,6 +45,9 @@ define ['angular',
                         $rootScope.$broadcast 'deleteitem', task
                     else
                         service.rejecttask task
+                archivetask: (task) ->
+                    task.archived = true
+                    $rootScope.$broadcast 'archiveitem', task
                 poketask: (task) ->
                     task.poke = {}
                     #poke is all about asking for new status, so it resets
