@@ -42,7 +42,11 @@
     // If true, search for nested containers within an item
     nested: true,
     // If true, the items are assumed to be arranged vertically
-    vertical: true
+    vertical: true,
+    //if true, scroll the container at the edges
+    scroll: true,
+    //control when scrolling starts
+    scrollSensitivity: 32
   }, // end container defaults
   groupDefaults = {
     // This is executed after the placeholder has been moved.
@@ -275,6 +279,34 @@
       if(!box || box.top - t > y || box.bottom + t < y || box.left - t > x || box.right + t < x)
         if(!this.searchValidTarget())
           this.placeholder.detach()
+
+      //scrolling management
+      if(this.options.scroll) {
+        var scrollTop = $(document).scrollTop(),
+        listTop = this.itemContainer.el.offset().top,
+        listBottom = listTop + this.itemContainer.el.height(),
+        viewTop = $(window).scrollTop(),
+        viewHeight = $(window).height(),
+        viewBottom = viewTop + viewHeight;
+        //simple algorithm, if your position is up against the edges, scroll
+        if ((e.clientY + this.options.scrollSensitivity) > viewHeight) {
+          if (listBottom <= viewBottom) {
+              //already full scrolled
+          } else {
+            $(document).scrollTop(scrollTop + this.options.scrollSensitivity);
+          }
+        }
+        //scroll up if the pointer is near the top of the list, this is a bit different
+        //than scrolling down
+        else if((e.pageY - viewTop - this.options.scrollSensitivity) <= viewTop) {
+          if (e.pageY <= viewTop) {
+            //the mouse pointer is over a page position before the list
+            //so we are seeing the top of the list
+          } else {
+            $(document).scrollTop(scrollTop - this.options.scrollSensitivity);
+          }
+        }
+      }
     },
     drop: function  (e) {
       this.toggleListeners('off')
