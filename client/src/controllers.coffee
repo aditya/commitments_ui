@@ -13,8 +13,9 @@ define [
     'text!src/views/discussionhelp.html',
     'text!src/views/users.html',
     'text!src/views/notifications.html',
+    'text!src/views/user.html',
     'cs!./editable',
-    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template, users_template, notifications_template) ->
+    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template, users_template, notifications_template, user_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .run(['$templateCache', ($templateCache) ->
             console.log 'here we go'
@@ -24,6 +25,7 @@ define [
             $templateCache.put 'src/views/discussionhelp.html', discussionhelp_template
             $templateCache.put 'src/views/users.html', users_template
             $templateCache.put 'src/views/notifications.html', notifications_template
+            $templateCache.put 'src/views/user.html', user_template
         ])
         .config ($routeProvider) ->
             $routeProvider.
@@ -56,6 +58,11 @@ define [
                     '/task/:taskid/:commentid',
                     template: task_template
                     controller: 'Tasks'
+                )
+                .when(
+                    '/users/:email',
+                    template: user_template,
+                    controller: 'User'
                 )
                 .when(
                     '/trash',
@@ -380,3 +387,6 @@ define [
                 $scope.items[$scope.user] = items
                 $timeout ->
                     $scope.$digest()
+        #All about a single user
+        .controller 'User', ($rootScope, $scope, $routeParams) ->
+            $scope.user = $routeParams.email

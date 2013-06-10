@@ -6,6 +6,14 @@ define ['angular',
     'cs!src/editable'], (angular, _, marked) ->
     ANIMATION_SPEED = 300
     module = angular.module('editable')
+        .directive('renderMarkdown', ['$timeout', ($timeout) ->
+            restrict: 'A'
+            link: ($scope, element) ->
+                element.addClass 'markdown'
+                text = element.text()
+                console.log marked(text)
+                element.html marked(text)
+        ])
         .directive('markdown', ['$timeout', ($timeout) ->
             restrict: 'A'
             require: 'ngModel'

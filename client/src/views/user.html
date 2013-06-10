@@ -1,0 +1,35 @@
+<div
+    ng-controller="User"
+    class="notifications">
+    <ul class="notifications">
+        <li class="notification">
+        <table>
+            <tr>
+                <td class="notification-icon">
+                    <span gravatar ng-model="notification.data.from" ng-visible="notification.data.from"></span>
+                </td>
+                <td class="notification-message">
+                    <div render-markdown>
+You are looking at **another User's list**. Remember, this is a shared system so
+you can:
+
+* Edit, as this is a shared system
+* Comment
+* Tag
+* Stack Rank, but be polite!
+
+You can't:
+
+* Accept
+* Update a Poke
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </li>
+    </ul>
+</div>
+<div ng-include="'src/views/tasks.html'">
+
+</div>
