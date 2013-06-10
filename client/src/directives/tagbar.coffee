@@ -33,6 +33,8 @@ define ['angular',
                                 return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
                             null
                         statusIcon: $scope.$eval(attrs.statusIconFrom) or null
+                        tagClickable: $scope.$eval(attrs.tagClickEvent)
+                        tagUrl: $scope.$eval(attrs.tagUrl)
                     #just propagate tag values back to the model
                     input.on 'change', (event) ->
                         $scope.$apply ->
@@ -56,5 +58,5 @@ define ['angular',
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'tag'
                 ngModel.$render = ->
-                    element.onetag(ngModel.$viewValue)
+                    element.onetag(ngModel.$viewValue, $scope.$eval(attrs.tagUrl))
         ])

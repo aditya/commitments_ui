@@ -177,6 +177,8 @@ define [
         #on a tag or a pre-defined set of tasks
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
             $scope.boxes = []
+            $scope.tagUrl = (tag) ->
+                "/#/tag?#{encodeURIComponent(tag)}"
             #here are the various boxes and filters
             rebuild = ->
                 console.log 'rebuild boxes'
@@ -199,7 +201,6 @@ define [
                     $rootScope.boxes.push(
                         title: term
                         tag: term
-                        url: "/#/tag?#{encodeURIComponent(term)}"
                     )
                 for tagTerm in LocalIndexes.tags()
                     make tagTerm
@@ -217,6 +218,11 @@ define [
             null
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, LocalIndexes, User, Task) ->
+            $scope.tagUrl = (tag) ->
+                console.log 'tag', tag
+                "/#/tag?#{encodeURIComponent(tag)}"
+            $scope.userUrl = (tag) ->
+                "/#/users/#{encodeURIComponent(tag)}"
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             $scope.items = Database.items()

@@ -3,7 +3,7 @@
     return;
   }
 
-  function makeATag(data, allowClose, opts) {
+  function makeATag(data, opts) {
     data = data || '';
     opts = opts || $.fn.tagbar.defaults;
     var item = null;
@@ -31,7 +31,12 @@
             tagbit.append(opts.statusIcon(this));
             tagbit.addClass('tagbar-search-choice-label');
         }
-        tagbit.append("<span class='tagbar-search-choice-label'>" + this + "</span>");
+        //content may be a hyperlink
+        var content = this;
+        if (opts.tagUrl && opts.tagUrl(this)) {
+          content = "<a href='" + opts.tagUrl(this) + "'>" + this + "</a";
+        }
+        tagbit.append("<span class='tagbar-search-choice-label'>" + content + "</span>");
         if (i % 2 == 0) tagbit.addClass("label-info");
         if (i % 2 == 1) tagbit.addClass("label-inverse");
         tagbit.css('z-index', underZ--);
@@ -42,7 +47,7 @@
         item.append(tagbit);
         lastBit = tagbit;
     });
-    if (allowClose) {
+    if (opts.allowClose) {
       var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
       lastBit.append(closer);
       item.addClass('tagbar-search-choice-editable');
@@ -393,7 +398,7 @@
       this.focusSearch();
     },
     addSelectedChoice: function (data, value, supressChange) {
-      var item = makeATag(data, true, this.opts);
+      var item = makeATag(data, this.opts);
       item.find('.closer').bind("click dblclick", this.bind(function (e) {
         if (!this.enabled) return;
         $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
@@ -472,9 +477,13 @@
     maximumInputLength: 128,
     tagSeparators: [',', ';'],
     tagNamespaceSeparators: ['/', ':'],
+    allowClose: true,
   };
   // plugin to make just one tag
-  $.fn.onetag = function(data) {
-      this.empty().append(makeATag(data));
+  $.fn.onetag = function(data, url) {
+      options = $.fn.tagbar.defaults;
+      options.allowClose = false;
+      options.tagUrl = function() { return url; };
+      this.empty().append(makeATag(data, options));
   };
 }(jQuery));
