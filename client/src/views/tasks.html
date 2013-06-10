@@ -25,14 +25,14 @@
 </script>
 
 <ol
-    ng-controller="Tasks"
+    ng-controller="TaskList"
     editable-list
     editable-list-reorder="taskssorted"
     editable-list-new="newtask"
     drag-handle=".task-handle"
     ng-model="items"
     class="tasks">
-    <li class="alert" ng-show="selected.Count() == 0">
+    <li class="alert" ng-show="selected.itemCount() == 0">
     Nothing to see here...
     </li>
     <li ng-repeat="item in items"
@@ -48,7 +48,7 @@
         <!-- accept/reject -->
         <div
             requires-object="task.accept, task.reject"
-            animated-hide="!debug && (task.who == user.email || task.accept[user.email])"
+            animated-hide="hideAcceptReject(task)"
             class="alert">
             <span>Task from</span>
             <span gravatar ng-model="task.who"></span>
@@ -60,7 +60,7 @@
         <!-- poke -->
         <div
             requires-object="task.links"
-            animated-hide="!debug && (task.poke[user.email] || !task.poke)"
+            animated-hide="hidePokeStatus(task)"
             class="alert">
             <span>Poke from</span>
             <span gravatar ng-model="task.poke.poker"></span>

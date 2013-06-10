@@ -11,7 +11,6 @@ define ['angular',
             link: ($scope, element) ->
                 element.addClass 'markdown'
                 text = element.text()
-                console.log marked(text)
                 element.html marked(text)
         ])
         .directive('markdown', ['$timeout', ($timeout) ->

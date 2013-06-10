@@ -224,16 +224,10 @@ define [
         .controller 'Discussion', ($scope) ->
             null
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, LocalIndexes, User, Task) ->
-            $scope.tagUrl = (tag) ->
-                console.log 'tag', tag
-                "/#/tag?#{encodeURIComponent(tag)}"
-            $scope.userUrl = (tag) ->
-                "/#/users/#{encodeURIComponent(tag)}"
+        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User) ->
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             $scope.items = Database.items()
-            console.log 'items', $scope.items
             selected = $rootScope.selected = {}
             selected.itemCount = ->
                 _.reject $scope.items, selected.hide
@@ -265,17 +259,6 @@ define [
                 selected.stamp = (item) ->
                     item.tags = item.tags or {}
                     item.tags[tag] = Date.now()
-            #all the links and tags, used to make the autocomplete
-            $scope.tags = LocalIndexes.tags
-            $scope.links = LocalIndexes.links
-            #dealing with creating new tasks is a task list level control action
-            #placeholders call back to the currently selected box to stamp them
-            #as needed to appear in the current filter box, as well as the
-            #actual update event
-            $scope.$on 'newtask', (event, task) ->
-                console.log 'new', task
-                ($scope.selected.stamp or ->)(task)
-                Task.newtask task
             #relay controller binding along to events, it's not convenient to
             #type all this in an ng-click...
             #re-ordering and sort of items turns into an event to get back
@@ -303,6 +286,32 @@ define [
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
+            #visibiliy for accept/reject/poke
+            $scope.hideAcceptReject = (task) ->
+                (not $scope.debug) and
+                    (task.who is User.email or task.accept[User.email])
+            $scope.hidePokeStatus = (task) ->
+                (not $scope.debug) and
+                    (not task.poke or task.poke[User.email])
+        #Show a tasklist, provided data has been installed into .selected
+        #by a higher level scope.
+        .controller 'TaskList', ($scope, $timeout, LocalIndexes, Task) ->
+            #all the links and tags, used to make the autocomplete
+            $scope.tags = LocalIndexes.tags
+            $scope.links = LocalIndexes.links
+            #url rendering, allows navigation from within tags
+            $scope.tagUrl = (tag) ->
+                "/#/tag?#{encodeURIComponent(tag)}"
+            $scope.userUrl = (tag) ->
+                "/#/users/#{encodeURIComponent(tag)}"
+            #dealing with creating new tasks is a task list level control action
+            #placeholders call back to the currently selected box to stamp them
+            #as needed to appear in the current filter box, as well as the
+            #actual update event
+            $scope.$on 'newtask', (event, task) ->
+                console.log 'new', task
+                ($scope.selected.stamp or ->)(task)
+                Task.newtask task
         #each individual task
         .controller 'Task', ($scope, $timeout, User, Task) ->
             #relay events to the task service, but in the local scope
@@ -388,5 +397,23 @@ define [
                 $timeout ->
                     $scope.$digest()
         #All about a single user
-        .controller 'User', ($rootScope, $scope, $routeParams) ->
-            $scope.user = $routeParams.email
+        .controller 'User', ($rootScope, $scope, $routeParams, $timeout) ->
+            $scope.from = $routeParams.email
+            $scope.items = []
+            $scope.hideAcceptReject = -> true
+            $scope.hidePokeStatus = -> true
+            #for this user, go and get their items
+            $rootScope.$broadcast 'useritems', $scope.from, (items) ->
+                console.log $scope.from, items
+                $scope.items = items
+                $rootScope.selected =
+                    itemCount: -> items.length
+                    title: $scope.from
+                    allowNew: true
+                    stamp: (item) ->
+                        #make sure this is linked to the target user, we are in
+                        #their list after all
+                        item.links = item.links or {}
+                        item.links[$scope.from] = Date.now()
+                $timeout ->
+                    $scope.$digest()
