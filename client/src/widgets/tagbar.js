@@ -1,5 +1,6 @@
 (function ($, undefined) {
-  "use strict"; if (window.tagbar !== undefined) {
+  "use strict";
+  if (window.tagbar !== undefined) {
     return;
   }
 
@@ -12,57 +13,44 @@
     } else {
       var item = $("<span class='tagbar-search-choice'></span>");
     }
-    var pattern = new RegExp("[" + opts.tagNamespaceSeparators.join("") + "]+", "g");
-    var underZ = 20;
-    var icon = null;
-    var lastBit = null;
-    $.each(data.split(pattern), function(i) {
-      var tagbit = $("<span class='tagbar-search-choice-content label'/>");
-        //text content
-        var text = this;
-        //just a display item, likely to be a gravatar
-        if (opts.iconUrl) {
-          var url = opts.iconUrl(data);
-          if (url) {
-            icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
-            tagbit.append(icon);
-            if (opts.iconOnly) {
-              text = "";
-            }
-          }
-        }
-        //status icons show a bit more than just a display item
-        if (opts.statusIcon && i == 0) {
-            tagbit.append(opts.statusIcon(this));
-            tagbit.addClass('tagbar-search-choice-label tagbar-status-icon');
-        }
-        //content may be a hyperlink
-        if (text) {
-          var content = "";
-          if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
-            content = "<a href='" + opts.tagUrl(text) + "'>" + text + "</a";
-          } else if (opts.tagUrl) {
-            content = "<a href='" + opts.tagUrl + "'>" + text + "</a";
-          } else {
-            content = text;
-          }
-          tagbit.append("<span class='tagbar-search-choice-label'>" + content + "</span>");
-          if (i % 2 == 0) tagbit.addClass("label-info");
-          if (i % 2 == 1) tagbit.addClass("label-inverse");
-          tagbit.css('z-index', underZ--);
-          if (i > 0) {
-              tagbit.addClass('tagbar-stripe');
-              tagbit.addClass('underlay');
-          }
-        }
-        item.append(tagbit);
-        lastBit = tagbit;
-    });
-    if (opts.allowClose) {
+    //this is the main tag display
+    var tagbit = $("<span class='tagbar-search-choice-content label label-info'/>");
+    //just a display item, likely to be a gravatar
+    if (opts.iconUrl) {
+      var url = opts.iconUrl(data);
+      if (url) {
+        var icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
+        tagbit.append(icon);
+      }
+    }
+    //status icons show a bit more than just a display item
+    if (opts.statusIcon) {
+      var statusIcon = $(opts.statusIcon(data));
+      statusIcon.addClass('tagbar-status-icon');
+      tagbit.append(statusIcon);
+    }
+    var content = "";
+    if (url && opts.iconOnly) {
+      //no content, and no label
+      tagbit.removeClass('label');
+      tagbit.removeClass('label-info');
+    } else if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
+      content = "<a href='" + opts.tagUrl(data) + "'>" + data + "</a";
+    } else if (opts.tagUrl) {
+      content = "<a href='" + opts.tagUrl + "'>" + data + "</a";
+    } else {
+      content = data;
+    }
+    if (content) {
+      label = $("<span class='tagbar-search-choice-label'>" + content + "</span>");
+      tagbit.append(label)
+    }
+    if (opts.allowClose && label) {
       var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
-      lastBit.append(closer);
+      tagbit.append(closer);
       item.addClass('tagbar-search-choice-editable');
     }
+    item.append(tagbit);
     return item;
   }
 
@@ -487,7 +475,6 @@
     minimumInputLength: 0,
     maximumInputLength: 128,
     tagSeparators: [',', ';'],
-    tagNamespaceSeparators: ['/', ':'],
     allowClose: true,
     iconOnly: false
   };
