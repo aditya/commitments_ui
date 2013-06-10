@@ -407,6 +407,7 @@ define [
                 console.log $scope.from, items
                 $scope.items = items
                 $rootScope.selected =
+                    iconfrom: 'gravatar'
                     itemCount: -> items.length
                     title: $scope.from
                     allowNew: true

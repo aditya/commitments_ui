@@ -18,31 +18,42 @@
     var lastBit = null;
     $.each(data.split(pattern), function(i) {
       var tagbit = $("<span class='tagbar-search-choice-content label'/>");
+        //text content
+        var text = this;
         //just a display item, likely to be a gravatar
         if (opts.iconUrl) {
           var url = opts.iconUrl(data);
           if (url) {
             icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
             tagbit.append(icon);
+            if (opts.iconOnly) {
+              text = "";
+            }
           }
         }
         //status icons show a bit more than just a display item
         if (opts.statusIcon && i == 0) {
             tagbit.append(opts.statusIcon(this));
-            tagbit.addClass('tagbar-search-choice-label');
+            tagbit.addClass('tagbar-search-choice-label tagbar-status-icon');
         }
         //content may be a hyperlink
-        var content = this;
-        if (opts.tagUrl && opts.tagUrl(this)) {
-          content = "<a href='" + opts.tagUrl(this) + "'>" + this + "</a";
-        }
-        tagbit.append("<span class='tagbar-search-choice-label'>" + content + "</span>");
-        if (i % 2 == 0) tagbit.addClass("label-info");
-        if (i % 2 == 1) tagbit.addClass("label-inverse");
-        tagbit.css('z-index', underZ--);
-        if (i > 0) {
-            tagbit.addClass('tagbar-stripe');
-            tagbit.addClass('underlay');
+        if (text) {
+          var content = "";
+          if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
+            content = "<a href='" + opts.tagUrl(text) + "'>" + text + "</a";
+          } else if (opts.tagUrl) {
+            content = "<a href='" + opts.tagUrl + "'>" + text + "</a";
+          } else {
+            content = text;
+          }
+          tagbit.append("<span class='tagbar-search-choice-label'>" + content + "</span>");
+          if (i % 2 == 0) tagbit.addClass("label-info");
+          if (i % 2 == 1) tagbit.addClass("label-inverse");
+          tagbit.css('z-index', underZ--);
+          if (i > 0) {
+              tagbit.addClass('tagbar-stripe');
+              tagbit.addClass('underlay');
+          }
         }
         item.append(tagbit);
         lastBit = tagbit;
@@ -478,12 +489,12 @@
     tagSeparators: [',', ';'],
     tagNamespaceSeparators: ['/', ':'],
     allowClose: true,
+    iconOnly: false
   };
   // plugin to make just one tag
-  $.fn.onetag = function(data, url) {
-      options = $.fn.tagbar.defaults;
-      options.allowClose = false;
-      options.tagUrl = function() { return url; };
-      this.empty().append(makeATag(data, options));
+  $.fn.onetag = function(data, passedOptions) {
+      var opts = $.extend({}, $.fn.tagbar.defaults, passedOptions);
+      opts.allowClose = false;
+      this.empty().append(makeATag(data, opts));
   };
 }(jQuery));

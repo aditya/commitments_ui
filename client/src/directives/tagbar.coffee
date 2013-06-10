@@ -56,7 +56,19 @@ define ['angular',
             restrict: 'A'
             require: 'ngModel'
             link: ($scope, element, attrs, ngModel) ->
+                iconSize = attrs.itemIconSize or 32
                 element.addClass 'tag'
                 ngModel.$render = ->
-                    element.onetag(ngModel.$viewValue, $scope.$eval(attrs.tagUrl))
+                    options =
+                        tagUrl: $scope.$eval(attrs.tagUrl)
+                        iconUrl: (tagValue) ->
+                            console.log 'tag', ngModel.$viewValue, attrs.itemIconFrom
+                            if $scope.$eval(attrs.itemIconFrom) is 'gravatar'
+                                hash = md5((tagValue or '').toLowerCase())
+                                return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
+                            null
+                        iconOnly: attrs.iconOnly?
+                    element.onetag(ngModel.$viewValue, options)
+                $scope.$watch attrs.itemIconFrom, (from) ->
+                    console.log 'from', from
         ])
