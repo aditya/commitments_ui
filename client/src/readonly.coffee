@@ -229,3 +229,17 @@ define [
                         selector: attrs.grid
                     )
         ])
+        .directive('animatedFocus', [ ->
+            restrict: 'A'
+            link: ($scope, element) ->
+                element.on 'focus', ->
+                    console.log 'focus'
+                    element.addClass 'focused'
+                element.on 'blur', ->
+                    console.log 'blur'
+                    element.removeClass 'focused'
+                element.on 'keydown', (event) ->
+                    if event.which is 27 #escape
+                        element.blur()
+                        event.stopPropagation()
+        ])
