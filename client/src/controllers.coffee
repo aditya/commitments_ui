@@ -287,6 +287,8 @@ define [
                     if $scope.selected.replaceHide
                         $scope.selected.hide = $scope.selected.replaceHide
                         delete $scope.selected.replaceHide
+            $scope.tasksSorted = (tasks) ->
+                $scope.$emit 'taskssorted', User.email, tasks
             #visibiliy for accept/reject/poke
             $scope.hideAcceptReject = (task) ->
                 (not $scope.debug) and
@@ -405,6 +407,8 @@ define [
             else
                 console.log 'getting items for other user', $routeParams.email
                 $scope.from = $routeParams.email
+                $scope.tasksSorted = (tasks) ->
+                    $scope.$emit 'taskssorted', $scope.from, tasks
                 $scope.items = []
                 $scope.hideAcceptReject = -> true
                 $scope.hidePokeStatus = -> true

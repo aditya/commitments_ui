@@ -7,7 +7,7 @@ define ['angular',
     'cs!./root',
     'cs!./sampledata',
     'cs!./localindexes'], (angular, store, root) ->
-        root.factory 'Database', ($rootScope, $timeout, LocalIndexes, SampleData) ->
+        root.factory 'Database', ($rootScope, $timeout, User, LocalIndexes, SampleData) ->
             #here is the 'database' in memory, items tracked by ID and file
             items = {}
             items_by_file = {}
@@ -79,6 +79,8 @@ define ['angular',
                 deleteItem item
             $rootScope.$on 'archiveitem', (event, item) ->
                 deleteItem item
-            $rootScope.$on 'taskssorted', (event, items) ->
-                items_in_order = items
+            $rootScope.$on 'taskssorted', (event, user, items) ->
+                #these are only your items
+                if User.email is user
+                    items_in_order = items
             database

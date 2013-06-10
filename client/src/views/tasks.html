@@ -27,7 +27,8 @@
 <ol
     ng-controller="TaskList"
     editable-list
-    editable-list-reorder="taskssorted"
+    editable-list-reorder
+    on-reorder="tasksSorted"
     editable-list-new="newtask"
     drag-handle=".task-handle"
     ng-model="items"

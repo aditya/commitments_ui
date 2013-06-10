@@ -124,11 +124,9 @@ define ['md5',
                                         o.record.subitems = []
                                         recurse o.record.subitems, o.children
                         recurse new_order, serialized
-                        $scope.$apply ->
-                            if attrs.editableListReorder
-                                $scope.$emit attrs.editableListReorder, new_order
-                            else
-                                $scope.$emit 'reorder', new_order
+                        if attrs.onReorder
+                            $scope.$apply ->
+                                $scope.$eval(attrs.onReorder) new_order
                         _super $item, targetContainer
                     isValidTarget: (item, container, totalSlots, toSlot) ->
                         #if there is a placeholder we can't drag to the last record

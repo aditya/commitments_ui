@@ -135,10 +135,10 @@ define ['angular',
                     , (items) ->
                         callback items
             #tell the server about a new sort order
-            $rootScope.$on 'taskssorted', (event, tasks) ->
+            $rootScope.$on 'taskssorted', (event, user, tasks) ->
                 socket.emit 'exec',
                     command: 'commitments'
-                    args: ['rank', 'tasks', User.email].concat _.map(tasks, (x) -> x.id)
+                    args: ['rank', 'tasks', user].concat _.map(tasks, (x) -> x.id)
             #**used for local testing**
             window.sampleData = ->
                 window.FAKE_SERVER = false
