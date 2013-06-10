@@ -62,13 +62,10 @@ define ['angular',
                     options =
                         tagUrl: $scope.$eval(attrs.tagUrl)
                         iconUrl: (tagValue) ->
-                            console.log 'tag', ngModel.$viewValue, attrs.itemIconFrom
                             if $scope.$eval(attrs.itemIconFrom) is 'gravatar'
                                 hash = md5((tagValue or '').toLowerCase())
                                 return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
                             null
                         iconOnly: attrs.iconOnly?
                     element.onetag(ngModel.$viewValue, options)
-                $scope.$watch attrs.itemIconFrom, (from) ->
-                    console.log 'from', from
         ])

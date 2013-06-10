@@ -225,6 +225,7 @@ define [
             null
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User) ->
+            console.log 'getting items for current user'
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
             $scope.items = Database.items()
@@ -397,24 +398,29 @@ define [
                 $timeout ->
                     $scope.$digest()
         #All about a single user
-        .controller 'User', ($rootScope, $scope, $routeParams, $timeout) ->
-            $scope.from = $routeParams.email
-            $scope.items = []
-            $scope.hideAcceptReject = -> true
-            $scope.hidePokeStatus = -> true
-            #for this user, go and get their items
-            $rootScope.$broadcast 'useritems', $scope.from, (items) ->
-                console.log $scope.from, items
-                $scope.items = items
-                $rootScope.selected =
-                    iconfrom: 'gravatar'
-                    itemCount: -> items.length
-                    title: $scope.from
-                    allowNew: true
-                    stamp: (item) ->
-                        #make sure this is linked to the target user, we are in
-                        #their list after all
-                        item.links = item.links or {}
-                        item.links[$scope.from] = Date.now()
-                $timeout ->
-                    $scope.$digest()
+        .controller 'User', ($rootScope, $scope, $routeParams, $timeout, $location, User) ->
+            if $routeParams.email is User.email
+                console.log 'you clicked yourself'
+                $location.path "/todo"
+            else
+                console.log 'getting items for other user', $routeParams.email
+                $scope.from = $routeParams.email
+                $scope.items = []
+                $scope.hideAcceptReject = -> true
+                $scope.hidePokeStatus = -> true
+                #for this user, go and get their items
+                $rootScope.$broadcast 'useritems', $scope.from, (items) ->
+                    console.log $scope.from, items
+                    $scope.items = items
+                    $rootScope.selected =
+                        iconfrom: 'gravatar'
+                        itemCount: -> items.length
+                        title: $scope.from
+                        allowNew: true
+                        stamp: (item) ->
+                            #make sure this is linked to the target user, we are in
+                            #their list after all
+                            item.links = item.links or {}
+                            item.links[$scope.from] = Date.now()
+                    $timeout ->
+                        $scope.$digest()
