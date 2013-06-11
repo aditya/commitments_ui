@@ -10,7 +10,7 @@ module.exports = {
         excludeCoffeeScript: true
     },
     deps: ['css'],
-    stubModules: ['cs', 'coffee-script', 'lessc' ],
+    stubModules: ['cs', 'coffee-script'],
     paths: {
         md5: 'lib/md5',
         store: 'lib/store',
