@@ -30,7 +30,7 @@
     }
     var content = "";
     if (url && opts.iconOnly) {
-      //no content, and no label
+      item.addClass('tagbar-icon-only');
     } else if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
       content = "<a href='" + opts.tagUrl(data) + "'>" + data + "</a";
     } else if (opts.tagUrl) {
