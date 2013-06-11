@@ -163,7 +163,7 @@ define [
         .controller 'Splash', ($scope, $rootScope, $location, Server) ->
             #the actual method to join
             $scope.join = () ->
-                Server.join $scope.joinEmail
+                Server.join $scope.email
                 $scope.flashing = true
             $scope.joinAgain = () ->
                 $scope.joinEmail = ''

@@ -3,10 +3,10 @@
     <p class="lead">Keeping track of what <strong><em>we</em></strong> said we'd do.</p>
     <form animated-hide="flashing" class="form-inline">
         <div class="input-append">
-            <input ng-model="joinEmail" type="text" placeholder="email address here" class="larger">
-            <button ng-click="join()" class="btn btn-success">Join</button>
+            <input ng-model="email" type="text" placeholder="email address here" class="larger">
+            <button ng-click="join()" class="btn btn-success">Login</button>
         </div>
     </form>
-    <p animated-show="flashing" class="lead">You join email is on its way to {{joinEmail}}. You can always
+    <p animated-show="flashing" class="lead">Your login email is on its way to {{joinEmail}}. You can always
     <a ng-click="joinAgain()">try again</a>.</p>
 </div>
