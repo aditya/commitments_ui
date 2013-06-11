@@ -32,6 +32,7 @@ define ['angular',
                 untrash item
             $rootScope.$on 'emptytrash', (event, item) ->
                 save {}
+                $rootScope.$digest()
             do ->
                 items: ->
                     trashcan
