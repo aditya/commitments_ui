@@ -13,7 +13,7 @@
                             <span search-highlight="searchQuery" markdown focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
                         </td>
                         <td class="task-action" animated-visible="hover && !sorting">
-                            <span action="deleterecord" tooltip="'Delete this sub task'"><i class="icon-trash"></i></span>
+                            <span action="deleterecord" tooltip="'Delete this subtask'"><i class="icon-trash"></i></span>
                         </td>
                     </tr>
                 </table>
@@ -79,7 +79,7 @@
                     <span check ng-model="task.done" tooltip="'Mark done'"></span>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="subtask" tooltip="'Add a sub-task'"><i class="icon-level-down"></i></span>
+                    <span action="subtask" tooltip="'Add a subtask'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
                     <div search-highlight="searchQuery" markdown ng-model="task.what" class="larger">

@@ -4,18 +4,16 @@
 @tagTextColor: lighten(@textColor, 0%);
 @defaultHeight: 22px;
 
+.line-height {
+    line-height: @defaultHeight;
+}
+
 .tag {
     display: inline-block;
 }
 
 .tag-display {
     display: inline-block;
-}
-
-.tagbar-stripe {
-    span {
-        margin-left: 1px;
-    }
 }
 
 .tagbar-input {
@@ -27,14 +25,9 @@
     position: relative;
 }
 
-.tagbar-icon {
-    padding-top: @defaultPad;
-    margin-right: @defaultMargin;
-}
-
 .tagbar-search-choice {
-    border: 1px solid transparent;
-    display: inline-block;
+    .label;
+    background-color: @infoText;
 }
 
 .tagbar-search-choice-editable {
@@ -43,86 +36,54 @@
     }
 }
 
+.tagbar-status-icon {
+    display: inline;
+    font-size: 1.4em;
+    margin-right: @defaultMargin / 2;
+    position: relative;
+    top: 1px;
+}
+
 .tagbar-search-choice-label {
-    margin-left: 0px;
-    margin-right: 0px;
-    display: inline-block;
+    margin-left: @defaultMargin / 2;
+    margin-right: @defaultMargin / 2;
+    padding: 0px;
+    font-size: 1.1em;
+    display: inline;
+    .line-height;
     a {
       color: @white;
     }
 }
 
-.tagbar-search-choice-group {
-    height: auto;
-    display: inline-block;
+.tagbar-search-choice-close {
+    cursor: pointer;
+    margin-left: @defaultMargin / 2;
+    margin-right: @defaultMargin / 2;
+    padding: 0px;
+    font-size: 1.5em;
+    display: inline;
+    position: relative;
+    top: 2px;
 }
 
 .tagbar-item-icon {
-    display: inline-block;
+    display: inline;
     .border-radius(@baseBorderRadius);
+    border: 0px solid transparent;
     height: @defaultHeight;
+    margin-right: @defaultMargin / 2;
+    position: relative;
     margin-top: -3px;
-    margin-left: -3px;
-    margin-bottom: -3px;
-    margin-right: @defaultMargin;
+    margin-left: -1px;
+    margin-bottom: 0px;
 }
 
 .tagbar-result-icon {
-    vertical-align: middle;
+    display: inline;
     .border-radius(@baseBorderRadius);
-    height: 100%;
-    min-height: 16px;
-    margin-right: 3px;
-    height: @defaultHeight;
 }
 
-.tagbar-status-icon {
-    font-size: 1.2em;
-    margin-right: @defaultMargin / 2;
-}
-
-.tagbar-search-choice-content {
-    border: 1px solid transparent;
-    min-height: 16px;
-    padding: 2px;
-    position: relative;
-    vertical-align: middle;
-    @media (min-width: 720px) {
-        font-weight: bold;
-    }
-    @media (max-width: 720px) {
-        font-weight: normal;
-    }
-}
-
-button {
-    .tagbar-search-choice-content {
-        min-height: 12px;
-    }
-}
-
-.tagbar-search-choice-close {
-    cursor: pointer;
-    height: 100%;
-    margin-left: @defaultMargin;
-    margin-right: @defaultMargin / 2;
-    font-size: 1.5em;
-    vertical-align: middle;
-}
-
-.underlay {
-    margin-left: -@defaultMargin / 2;
-    padding-left: 1.5 * @defaultPad;
-}
-
-.tagbar-search-field {
-    position: relative;
-    height: 100%;
-    cursor: text;
-    &:focus {
-        margin-left: @defaultMargin;
-    }
-}
 
 .tagbar-highlighted {
     a {
@@ -145,9 +106,27 @@ button {
     li {
         float: left;
         list-style: none;
+        margin: @defaultMargin / 2;
+        margin-bottom: 0px;
+        padding: 0px !important;
+    }
+    li.tagbar-search-choice {
+        padding: 0px;
+        display: inline-block;
         height: @defaultHeight;
-        margin-bottom: @defaultMargin / 2;
-        margin-right: @defaultMargin / 2;
+        border: 1px solid transparent;
+    }
+    li.tagbar-search-field {
+        height: 100%;
+        cursor: text;
+        &:focus {
+            margin-left: @defaultMargin;
+        }
+    }
+    li.tagbar-icon {
+        margin: 0px;
+        margin-top: @defaultMargin / 2;
+        padding: 0px;
     }
 }
 
