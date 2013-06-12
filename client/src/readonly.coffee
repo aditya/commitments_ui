@@ -223,6 +223,7 @@ define [
         .directive('hotkey', [ '$rootScope', ($rootScope) ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
+                element.css 'cursor', 'pointer'
                 key_name = attrs.hotkey.split(',')
                 act = ->
                     console.log 'hotkey', key_name

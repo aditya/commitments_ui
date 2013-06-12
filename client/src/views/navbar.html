@@ -6,11 +6,13 @@
         <div class="navbar-view">
             <ul class="nav">
                 <li class="dropdown" >
-                    <a tooltip="user.email" gravatar data-toggle="dropdown" ng-model="user.email"></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="/#/settings">Settings</a></li>
-                        <li><a href="/#/logout">Logout</a></li>
-                    </ul>
+                    <a href="/#/todo" tooltip="user.email" gravatar  ng-model="user.email">
+                    </a>
+                </li>
+                <li>
+                <a href="/#/settings" tooltip="'Your settings'">
+                    <i class="icon-cogs"></i>
+                </a>
                 </li>
                 <li>
                 <a href="/#/trash" tooltip="'Look in the trash'">
@@ -38,11 +40,6 @@
                 <li>
                 <a hotkey="+,addtask,newtaskplaceholder" tooltip="'Add a new task'">
                     <i class="icon-plus"></i>
-                </a>
-                </li>
-                <li>
-                <a href="/#/todo" tooltip="'Your todo list'">
-                    <i class="icon-tasks"></i>
                 </a>
                 </li>
                 <li class="dropdown" ng-controller="Toolbox">
