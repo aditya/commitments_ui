@@ -124,7 +124,7 @@
     editable-record-placeholder
     ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
     <div class="task-core">
-        <span focus-on="'newtaskplaceholder'" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
+        <span focus-on="newtaskplaceholder" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
             <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
         </span>
     </div>

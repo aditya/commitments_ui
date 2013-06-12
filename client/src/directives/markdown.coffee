@@ -113,7 +113,7 @@ define ['angular',
                             codemirror.setOption('theme', 'neat')
                             codemirror.refresh()
                 if attrs.focusOn?
-                    element.scope().$on $scope.$eval(attrs.focusOn), ->
+                    element.scope().$on attrs.focusOn, ->
                         focus()
                 display.on 'click dblclick', (event) ->
                     if not display.hasClass 'readonly'
@@ -122,6 +122,8 @@ define ['angular',
                     if event.which is 27 #escape
                         event.target.blur()
                         event.stopPropagation()
+                element.on 'focus', (event) ->
+                    focus()
                 hilightCount = 0
                 $scope.$watch attrs.searchHighlight, (value) ->
                     if hilightCount++ > 0

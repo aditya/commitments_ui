@@ -235,6 +235,7 @@ define [
                     $rootScope.$apply ->
                         for en in _.rest(key_name)
                             $rootScope.$broadcast en
+                    false
                 element.on 'click', act
                 mousetrap.bind key_name[0], act
         ])
@@ -260,4 +261,11 @@ define [
                     if event.which is 27 #escape
                         element.blur()
                         event.stopPropagation()
+        ])
+        #
+        .directive('focusOn', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                $scope.$on attrs.focusOn, ->
+                    element.focus()
         ])
