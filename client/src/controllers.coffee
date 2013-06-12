@@ -1,4 +1,6 @@
 define [
+    'jquery',
+    'lessc',
     'md5',
     'angular',
     'lodash',
@@ -15,7 +17,7 @@ define [
     'text!src/views/notifications.html',
     'text!src/views/user.html',
     'cs!./editable',
-    'cs!./readonly'], (md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template, users_template, notifications_template, user_template) ->
+    'cs!./readonly'], ($, less, md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template, users_template, notifications_template, user_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .run(['$templateCache', ($templateCache) ->
             console.log 'here we go'
@@ -110,6 +112,12 @@ define [
                 )
         .run ($rootScope) ->
             $rootScope.debug = false
+            window.debug = ->
+                $('style').remove()
+                less.refresh()
+                less.watch()
+                $rootScope.debug = true
+                $rootScope.$digest()
         #Root application controller, deals with login and error messages
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #main event handling for being logged in or not

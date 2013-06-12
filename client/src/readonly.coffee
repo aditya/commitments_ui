@@ -22,6 +22,15 @@ define [
                     else
                         element.hide ANIMATION_SPEED
         ])
+        .directive('default', ['$rootScope', ($rootScope) ->
+            restrict: 'A'
+            require: 'ngModel'
+            priority: 1000
+            link: ($scope, element, attrs, ngModel) ->
+                $scope.$watch attrs.default, (value) ->
+                    if not ngModel.$viewValue and value
+                        ngModel.$setViewValue(value)
+        ])
         .directive('gravatar', [() ->
             restrict: 'A'
             require: 'ngModel'
@@ -31,10 +40,10 @@ define [
                 icon = angular.element("<img></img>")
                 element.append(icon)
                 ngModel.$render = ->
-                    if not ngModel.$viewValue
-                        ngModel.$setViewValue($scope.$eval(attrs.default))
                     hash = md5((ngModel.$viewValue or '').toLowerCase())
                     icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{size}"
+                $scope.$watch attrs.ngModel, ->
+                    ngModel.$render()
         ])
         .directive('username', [() ->
             restrict: 'A'
@@ -57,8 +66,12 @@ define [
                 display = angular.element "<span/>"
                 element.append display
                 ngModel.$render = ->
-                    if ngModel.$viewValue
-                        display.text moment(ngModel.$viewValue).fromNow()
+                    #always have a date value
+                    if not ngModel.$viewValue
+                        ngModel.$setViewValue Date.now()
+                    display.text moment(ngModel.$viewValue).fromNow()
+                $scope.$watch attrs.ngModel, ->
+                    ngModel.$render()
         ])
         .directive('animatedHide', [ ->
             restrict: 'A'
@@ -212,7 +225,7 @@ define [
             link: ($scope, element, attrs) ->
                 key_name = attrs.hotkey.split(',')
                 act = ->
-                    console.log key_name
+                    console.log 'hotkey', key_name
                     $rootScope.$apply ->
                         for en in _.rest(key_name)
                             $rootScope.$broadcast en
@@ -234,10 +247,8 @@ define [
             restrict: 'A'
             link: ($scope, element) ->
                 element.on 'focus', ->
-                    console.log 'focus'
                     element.addClass 'focused'
                 element.on 'blur', ->
-                    console.log 'blur'
                     element.removeClass 'focused'
                 element.on 'keydown', (event) ->
                     if event.which is 27 #escape
