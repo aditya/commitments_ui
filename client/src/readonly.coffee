@@ -126,14 +126,14 @@ define [
                     else
                         element.removeClass 'readonly'
         ])
-        .directive('delayed', ['$timeout', ($timeout) ->
+        .directive('delayed', ['$timeout', '$rootScope', ($timeout, $rootScope) ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 going = null
                 fire = ->
                     val = element.val()
                     $scope.$apply ->
-                        $scope.$emit attrs.delayed, val
+                        $rootScope.$broadcast attrs.delayed, val
                 element.on 'keyup', (event)->
                     if event.which is 27 #escape
                         element.val ''

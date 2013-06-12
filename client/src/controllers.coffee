@@ -55,6 +55,11 @@ define [
                     controller: 'Tasks'
                 )
                 .when(
+                    '/tasks',
+                    template: task_template
+                    controller: 'Tasks'
+                )
+                .when(
                     '/task/:taskid/:commentid',
                     template: task_template
                     controller: 'Tasks'
@@ -123,9 +128,6 @@ define [
                 $rootScope.loggedIn = false
                 $rootScope.flash "Logging you out"
                 $location.path '/'
-            #relay this event
-            $rootScope.$on 'searchquery', (event, query) ->
-                $rootScope.searchQuery = query
             #flash message, just a page with a message when all else fails
             $rootScope.flash = (message, isError) ->
                 if message
@@ -179,6 +181,11 @@ define [
                     $location.url $rootScope.lastTaskLocation
                 $timeout ->
                     $rootScope.$broadcast 'newtaskplaceholder'
+            $scope.$on 'searchquery', (event, query) ->
+                #on a query, navigate to the new search parameter
+                if query
+                    $location.url "/tasks?#{encodeURIComponent(query)}"
+                    $location.replace() if _.keys($location.search()).length
         #toolbox has all the boxes, not sure of a better name we can use, what
         #do you call a box of boxes? boxula? Each _box_ is a stored filter, either
         #on a tag or a pre-defined set of tasks
@@ -224,7 +231,7 @@ define [
         .controller 'Discussion', ($scope) ->
             null
         #task list level controller
-        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User) ->
+        .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User, LocalIndexes) ->
             console.log 'getting items for current user'
             #this gets it done, selecting items in a box and hooking them to
             #the scope to bind to the view
@@ -240,6 +247,10 @@ define [
                 selected.title = "Todo"
                 selected.allowNew = true
                 selected.hide = (x) -> x.done
+            else if $location.path().slice(-6) is '/tasks'
+                selected.title = "All"
+                selected.allowNew = true
+                selected.hide = -> false
             else if $location.path().slice(-5) is '/done'
                 selected.title = "Done"
                 selected.allowNew = false
@@ -260,36 +271,33 @@ define [
                 selected.stamp = (item) ->
                     item.tags = item.tags or {}
                     item.tags[tag] = Date.now()
-            #relay controller binding along to events, it's not convenient to
-            #type all this in an ng-click...
-            #re-ordering and sort of items turns into an event to get back
-            #to the server
-            #search is driven from the navbar, queries then make up a 'fake'
-            #box much like the selected tags, but it is instead a list of
-            #matching ids
-            #this isn't done with navigation, otherwise it would flash focus
-            #away from the desktop/input box and be a bit unpleasant
-            $scope.$watch 'searchQuery', (query) ->
-                #this will save the prior hiding function and swap it out
-                #with a search based hiding function
+            #search filtering
+            searchHide = -> false
+            buildSearchHide = (query) ->
+                #here is an actual query, the objects are already in memory
+                #so this isn't a copy, just a reference
                 if query
-                    #here is an actual query, the objects are already in memor
-                    #so this isn't a copy, just a reference
                     keys = {}
                     for result in LocalIndexes.fullTextSearch(query)
                         keys[result.ref] = result
-                    #stash the last hiding function if we haven't already
-                    if not $scope.selected.replaceHide
-                        $scope.selected.replaceHide = $scope.selected.hide
-                    $scope.selected.hide = (x) ->
-                        not keys[x.id]
+                    (task) ->
+                        not keys[task.id]
                 else
-                    if $scope.selected.replaceHide
-                        $scope.selected.hide = $scope.selected.replaceHide
-                        delete $scope.selected.replaceHide
+                    -> false
+            #search if we need to
+            if _.keys($location.search()).length
+                do ->
+                    $scope.searchQuery = _.keys($location.search())[0]
+                    searchHide = buildSearchHide($scope.searchQuery)
+            #redraw forced here, since we had a reload
+            $scope.$on 'databaserebuild', ->
+                $scope.items = Database.items()
+                searchHide = buildSearchHide($scope.searchQuery)
             $scope.tasksSorted = (tasks) ->
                 $scope.$emit 'taskssorted', User.email, tasks
-            #visibiliy for accept/reject/poke
+            #visibiliy for tasks accept/reject/poke
+            $scope.hide = (task) ->
+                selected.hide(task) or searchHide(task)
             $scope.hideAcceptReject = (task) ->
                 (not $scope.debug) and
                     (task.who is User.email or task.accept[User.email])

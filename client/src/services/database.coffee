@@ -39,6 +39,7 @@ define ['angular',
                     if _.indexOf(items_in_order, item) is -1
                         items_in_order.push item
                 LocalIndexes.update item, items
+                $rootScope.$broadcast 'itemindatabase', item
                 item
             #
             deleteItem = (item, fromserver, filename) ->
@@ -68,6 +69,7 @@ define ['angular',
                 items_in_order.splice 0
                 for item in serveritems
                     updateItem item, true
+                $rootScope.$broadcast 'databaserebuild'
             #single item update
             $rootScope.$on 'itemfromserver', (event, filename, item) ->
                 updateItem item, true, filename
