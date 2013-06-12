@@ -281,6 +281,7 @@ define [
                     do ->
                         $scope.searchQuery = _.keys($location.search())[0]
                         selected.searchHide = buildSearchHide($scope.searchQuery)
+                        selected.title = "Search"
             else if $location.path().slice(-5) is '/done'
                 selected.title = "Done"
                 selected.allowNew = false
