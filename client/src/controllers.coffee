@@ -251,13 +251,35 @@ define [
                 selected.title = "All"
                 selected.allowNew = true
                 selected.hide = -> false
+                #search filtering
+                buildSearchHide = (query) ->
+                    #here is an actual query, the objects are already in memory
+                    #so this isn't a copy, just a reference
+                    if query
+                        keys = {}
+                        for result in LocalIndexes.fullTextSearch(query)
+                            keys[result.ref] = result
+                        (task) ->
+                            not keys[task.id]
+                    else
+                        -> false
+                #search if we need to
+                #redraw forced here, since we had a reload
+                $scope.$on 'databaserebuild', ->
+                    $scope.items = Database.items()
+                    selected.searchHide = buildSearchHide($scope.searchQuery)
+                #all set up with search support functions, go ahead and search
+                if _.keys($location.search()).length
+                    do ->
+                        $scope.searchQuery = _.keys($location.search())[0]
+                        selected.searchHide = buildSearchHide($scope.searchQuery)
             else if $location.path().slice(-5) is '/done'
                 selected.title = "Done"
                 selected.allowNew = false
                 selected.hide = (x) -> (not x.done) or x.archived
             else if $location.path().slice(-9) is '/untagged'
                 selected.title = "Untagged"
-                selected.allowNew = false
+                selected.allowNew = true
                 selected.hide = (x) -> x.done or _.keys(x.tags).length
             else if $location.path().slice(0,5) is '/task'
                 selected.title = "Task"
@@ -269,35 +291,16 @@ define [
                 selected.allowNew = true
                 selected.hide = (x) -> (not (x.tags or {})[tag]) or x.archived or x.done
                 selected.stamp = (item) ->
+                    console.log 'stamping', tag
                     item.tags = item.tags or {}
                     item.tags[tag] = Date.now()
-            #search filtering
-            searchHide = -> false
-            buildSearchHide = (query) ->
-                #here is an actual query, the objects are already in memory
-                #so this isn't a copy, just a reference
-                if query
-                    keys = {}
-                    for result in LocalIndexes.fullTextSearch(query)
-                        keys[result.ref] = result
-                    (task) ->
-                        not keys[task.id]
-                else
-                    -> false
-            #search if we need to
-            if _.keys($location.search()).length
-                do ->
-                    $scope.searchQuery = _.keys($location.search())[0]
-                    searchHide = buildSearchHide($scope.searchQuery)
-            #redraw forced here, since we had a reload
-            $scope.$on 'databaserebuild', ->
-                $scope.items = Database.items()
-                searchHide = buildSearchHide($scope.searchQuery)
+                    console.log item
+            #sort event from a sort callback
             $scope.tasksSorted = (tasks) ->
                 $scope.$emit 'taskssorted', User.email, tasks
             #visibiliy for tasks accept/reject/poke
             $scope.hide = (task) ->
-                selected.hide(task) or searchHide(task)
+                selected.hide(task) or (selected.searchHide or -> false)(task)
             $scope.hideAcceptReject = (task) ->
                 (not $scope.debug) and
                     (task.who is User.email or task.accept[User.email])
@@ -306,7 +309,7 @@ define [
                     (not task.poke or task.poke[User.email])
         #Show a tasklist, provided data has been installed into .selected
         #by a higher level scope.
-        .controller 'TaskList', ($scope, $timeout, LocalIndexes, Task) ->
+        .controller 'TaskList', ($scope, $rootScope, $timeout, LocalIndexes, Task) ->
             #all the links and tags, used to make the autocomplete
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links
@@ -320,7 +323,7 @@ define [
             #as needed to appear in the current filter box, as well as the
             #actual update event
             $scope.$on 'newtask', (event, task) ->
-                console.log 'new', task
+                console.log 'new', task, $scope.selected.stamp
                 ($scope.selected.stamp or ->)(task)
                 Task.newtask task
         #each individual task

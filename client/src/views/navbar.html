@@ -5,15 +5,15 @@
     <div class="navbar-inner">
         <div class="navbar-view">
             <ul class="nav">
-                <li class="dropdown">
-                    <a gravatar data-toggle="dropdown" ng-model="user.email"></a>
+                <li class="dropdown" >
+                    <a tooltip="user.email" gravatar data-toggle="dropdown" ng-model="user.email"></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/#/settings">Settings</a></li>
                         <li><a href="/#/logout">Logout</a></li>
                     </ul>
                 </li>
                 <li>
-                <a href="/#/trash">
+                <a href="/#/trash" tooltip="'Look in the trash'">
                     <i class="icon-trash"></i>
                     <span
                         ng-show="trash.itemCount()"
@@ -22,12 +22,12 @@
                 </a>
                 </li>
                 <li>
-                <a href="/#/users">
+                <a href="/#/users" tooltip="'Check on other users'">
                     <i class="icon-user"></i>
                 </a>
                 </li>
                 <li>
-                <a href="/#/notifications">
+                <a href="/#/notifications" tooltip="'Read your notifications'">
                     <i class="icon-envelope-alt"></i>
                     <span
                         ng-show="notifications.unreadCount()"
@@ -36,17 +36,17 @@
                 </a>
                 </li>
                 <li>
-                <a hotkey="+,addtask,newtaskplaceholder">
+                <a hotkey="+,addtask,newtaskplaceholder" tooltip="'Add a new task'">
                     <i class="icon-plus"></i>
                 </a>
                 </li>
                 <li>
-                <a href="/#/todo">
+                <a href="/#/todo" tooltip="'Your todo list'">
                     <i class="icon-tasks"></i>
                 </a>
                 </li>
                 <li class="dropdown" ng-controller="Toolbox">
-                <a data-toggle="dropdown">
+                <a data-toggle="dropdown" tooltip="'Filter the todo list'">
                     <span tag ng-model="selected.title" item-icon-from="selected.iconfrom" icon-only></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
@@ -59,7 +59,7 @@
                 </li>
             </ul>
             <div class="form-search">
-                <span class="input-append">
+                <span class="input-append" tooltip="'Search your tasks'">
                     <input animated-focus delayed="searchquery" type="text" class="search-query">
                     <button type="submit" class="btn"><i class="icon-search"></i></button>
                 </span>

@@ -187,16 +187,17 @@ define [
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 $scope.$watch attrs.tooltip, (content) ->
-                    element.tooltip(
-                        trigger: 'hover'
-                        title: content
-                        placement: 'bottom'
-                        delay:
-                            show: ANIMATION_SPEED
-                            hide: ANIMATION_SPEED
-                    )
-                    element.on 'mousedown', ->
-                        element.tooltip 'hide'
+                    if content
+                        element.tooltip(
+                            trigger: 'hover'
+                            title: content
+                            placement: 'bottom'
+                            delay:
+                                show: ANIMATION_SPEED
+                                hide: ANIMATION_SPEED
+                        )
+                        element.on 'mousedown', ->
+                            element.tooltip 'hide'
         ])
         #a loading image, this just hides as soon as possible, meaning that
         #angular is on the air and running
