@@ -220,10 +220,15 @@ define [
                 element.hide()
         ])
         #a single hotkey binding
-        .directive('hotkey', [ '$rootScope', ($rootScope) ->
+        .directive('clickable', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 element.css 'cursor', 'pointer'
+        ])
+        #a single hotkey binding
+        .directive('hotkey', [ '$rootScope', ($rootScope) ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
                 key_name = attrs.hotkey.split(',')
                 act = ->
                     console.log 'hotkey', key_name

@@ -38,13 +38,13 @@
                 </a>
                 </li>
                 <li>
-                <a hotkey="+,addtask,newtaskplaceholder" tooltip="'Add a new task'">
+                <a clickable hotkey="+,addtask,newtaskplaceholder" tooltip="'Add a new task'">
                     <i class="icon-plus"></i>
                 </a>
                 </li>
                 <li class="dropdown" ng-controller="Toolbox">
                 <a data-toggle="dropdown" tooltip="'Filter the todo list'">
-                    <span tag ng-model="selected.title" item-icon-from="selected.iconfrom" icon-only></span>
+                    <span clickable tag ng-model="selected.title" item-icon-from="selected.iconfrom" icon-only></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="box in boxes" ng-model="box">
