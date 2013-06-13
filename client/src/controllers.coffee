@@ -250,6 +250,7 @@ define [
                 title: 'Archive'
                 allowNew: false
                 hide: -> false
+            $scope.readonly = true
             $scope.items = Database.archive()
             $scope.hide = -> false
             $scope.hideAcceptReject = -> true

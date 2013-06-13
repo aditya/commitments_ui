@@ -149,12 +149,17 @@ define ['md5',
                 #when you leave the item
                 $scope.$watch 'hover', (hovering) ->
                     if hovering
-                        #...but not show on items you drag over, that would be silly
-                        #so if we are already sorting, hovered over handles are hidden still
-                        if not $scope.sorting
-                            element.removeClass 'flipOutX'
-                            element.addClass 'animated flipInX'
+                        if $scope.$eval('readonly')
+                            #no drag handles on a read only view
+                        else
+                            #...but not show on items you drag over, that would be silly
+                            #so if we are already sorting, hovered over handles are hidden still
+                            if not $scope.sorting
+                                element.removeClass 'flipOutX'
+                                element.addClass 'animated flipInX'
                     else
+                        #hide in any case, even if it is read only, there won't
+                        #be much to see
                         element.removeClass 'flipInX'
                         element.addClass 'animated flipOutX'
         ])
