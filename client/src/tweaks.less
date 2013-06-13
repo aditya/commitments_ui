@@ -1,4 +1,14 @@
 
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/Roboto-Regular.ttf');
+}
+
 @defaultPad: 4px;
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
@@ -6,6 +16,14 @@
 @borderColor: darken(@wellBackground, 7%);
 @bodyBackground: lighten(@wellBackground, 50%);
 
+body {
+    background-image: url('../images/gray_jean.png');
+    background-color: @grayLighter;
+    .dragging, .dragging * {
+        cursor: move !important;
+    }
+    font-family: 'Roboto';
+}
 
 .center-layout(@max-width) {
     max-width: @max-width;
@@ -133,13 +151,6 @@
     .focus-editor;
 }
 
-body {
-    background-image: url('../images/gray_jean.png');
-    background-color: @grayLighter;
-    .dragging, .dragging * {
-        cursor: move !important;
-    }
-}
 
 .view {
     padding-top: 50px;
