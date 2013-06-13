@@ -10,7 +10,7 @@
                             <span check ng-model="subtask.done" tooltip="'Mark done'"></span>
                         </td>
                         <td class="task-what">
-                            <span search-highlight="searchQuery" markdown focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
+                            <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
                         </td>
                         <td class="task-action" animated-visible="hover && !sorting">
                             <span action="deleterecord" tooltip="'Delete this subtask'"><i class="icon-trash"></i></span>
@@ -82,7 +82,7 @@
                     <span action="subtask" ng-hide="readonly" tooltip="'Add a subtask'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
-                    <div search-highlight="searchQuery" markdown ng-model="task.what" class="larger">
+                    <div search-highlight="searchQuery" markdown readonly-if="readonly" ng-model="task.what" class="larger">
                         <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
                     </div>
                 </td>

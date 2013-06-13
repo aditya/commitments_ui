@@ -15,10 +15,8 @@ define ['angular',
                     $scope.$watch 'readonly', (ro) ->
                         readonly = ro
                         if ro
-                            element.css 'cursor', 'pointer'
                             element.addClass 'readonly'
                         else
-                            element.css 'cursor', 'default'
                             element.removeClass 'readonly'
                     element.on 'click', ->
                         if readonly

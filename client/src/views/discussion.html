@@ -28,13 +28,13 @@
                             <td class="fill"
                                 <div
                                     markdown multiline
-                                    readonly-if="user.email != comment.who"
+                                    readonly-if="(user.email != comment.who) || readonly"
                                     ng-model="comment.what">
                                     <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                                 </div>
                             </td>
                             <td animated-visible="hover && (user.email == comment.who)" class="task-action">
-                                <span action="deleterecord" tooltip="'Delete this comment'"><i class="icon-trash"></i></span>
+                                <span action="deleterecord" ng-hide="readonly" tooltip="'Delete this comment'"><i class="icon-trash"></i></span>
                             </td>
                         </tr>
                     </table>
@@ -42,7 +42,7 @@
             </tr>
         </table>
         </li>
-        <li class="row-fluid comment">
+        <li class="row-fluid comment" ng-hide="readonly">
         <table
             editable-record
             editable-record-placeholder
@@ -56,7 +56,8 @@
                 </td>
                 <td class="fill">
                     <div
-                        markdown multiline
+                        markdown
+                        multiline
                         placeholder="'Your comment here'"
                         ng-model="$$placeholder.what">
                         <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
