@@ -50,6 +50,7 @@
         <div
             requires-object="task.accept, task.reject"
             animated-hide="hideAcceptReject(task)"
+            ng-hide="readonly"
             class="alert">
             <span>Task from</span>
             <span gravatar ng-model="task.who"></span>
@@ -62,6 +63,7 @@
         <div
             requires-object="task.links"
             animated-hide="hidePokeStatus(task)"
+            ng-hide="readonly"
             class="alert">
             <span>Poke from</span>
             <span gravatar ng-model="task.poke.poker"></span>
@@ -79,7 +81,7 @@
                     <span check ng-model="task.done" tooltip="'Mark done'"></span>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="subtask" tooltip="'Add a subtask'"><i class="icon-level-down"></i></span>
+                    <span action="subtask" ng-hide="readonly" tooltip="'Add a subtask'"><i class="icon-level-down"></i></span>
                 </td>
                 <td class="task-what">
                     <div search-highlight="searchQuery" markdown ng-model="task.what" class="larger">
@@ -87,8 +89,8 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deletetask" eat-click ng-hide="task.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action="archivetask" eat-click ng-hide="!task.done" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
+                    <span action="deletetask" ng-hide="readonly" eat-click ng-hide="task.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="archivetask" ng-hide="readonly" eat-click ng-hide="!task.done" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>
@@ -103,7 +105,7 @@
         </ol>
         <div animated-show="(focused && task.what) || debug" class="task-extended">
             <ul requires-object="task.discussion" class="task-tools">
-                <li action="poketask"><i class="icon-hand-right"></i></li>
+                <li action="poketask" ng-hide="readonly"><i class="icon-hand-right"></i></li>
                 <li tags tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
                 <li tags tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
             </ul>
