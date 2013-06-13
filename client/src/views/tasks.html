@@ -50,7 +50,6 @@
         <div
             requires-object="task.accept, task.reject"
             animated-hide="hideAcceptReject(task)"
-            ng-hide="readonly"
             class="alert">
             <span>Task from</span>
             <span gravatar ng-model="task.who"></span>
@@ -63,7 +62,6 @@
         <div
             requires-object="task.links"
             animated-hide="hidePokeStatus(task)"
-            ng-hide="readonly"
             class="alert">
             <span>Poke from</span>
             <span gravatar ng-model="task.poke.poker"></span>

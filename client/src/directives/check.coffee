@@ -11,16 +11,27 @@ define ['angular',
                     icon = angular.element("<i/>")
                     element.addClass 'check'
                     element.append(icon)
-                    element.css 'cursor', 'pointer'
-                    element.on 'click', ->
-                        if ngModel.$viewValue
-                            value = 0
+                    readonly = false
+                    $scope.$watch 'readonly', (ro) ->
+                        readonly = ro
+                        if ro
+                            element.css 'cursor', 'pointer'
+                            element.addClass 'readonly'
                         else
-                            value = Date.now()
-                        $scope.$apply () ->
-                            ngModel.$setViewValue value
-                            ngModel.$render()
-                            $scope.$emit 'edit', attrs.ngModel, ngModel
+                            element.css 'cursor', 'default'
+                            element.removeClass 'readonly'
+                    element.on 'click', ->
+                        if readonly
+                            #no action
+                        else
+                            if ngModel.$viewValue
+                                value = 0
+                            else
+                                value = Date.now()
+                            $scope.$apply () ->
+                                ngModel.$setViewValue value
+                                ngModel.$render()
+                                $scope.$emit 'edit', attrs.ngModel, ngModel
                     ngModel.$render = ->
                         icon.removeClass 'icon-check'
                         icon.addClass 'icon-check-empty'
