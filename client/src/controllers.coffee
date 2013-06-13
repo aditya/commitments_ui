@@ -72,6 +72,11 @@ define [
                     controller: 'User'
                 )
                 .when(
+                    '/archive',
+                    template: task_template
+                    controller: 'Archive'
+                )
+                .when(
                     '/trash',
                     templateUrl: 'src/views/trash.html'
                     template: trash_template
@@ -238,6 +243,17 @@ define [
         #nothing much going on here
         .controller 'Discussion', ($scope) ->
             null
+        #archive list controller
+        .controller 'Archive', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User, LocalIndexes, Server) ->
+            console.log 'going to the archive'
+            $rootScope.selected =
+                title: 'Archive'
+                allowNew: false
+                hide: -> false
+            $scope.items = Database.archive()
+            $scope.hide = -> false
+            $scope.hideAcceptReject = -> true
+            $scope.hidePokeStatus = -> true
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User, LocalIndexes) ->
             console.log 'getting items for current user'
@@ -245,8 +261,6 @@ define [
             #the scope to bind to the view
             $scope.items = Database.items()
             selected = $rootScope.selected = {}
-            selected.itemCount = ->
-                _.reject $scope.items, selected.hide
             #hang on to this
             $rootScope.lastTaskLocation = $location.url()
             #process where we are looking, this is a bit of a sub-router, it is
@@ -319,6 +333,10 @@ define [
         #Show a tasklist, provided data has been installed into .selected
         #by a higher level scope.
         .controller 'TaskList', ($scope, $rootScope, $timeout, LocalIndexes, Task) ->
+            #filtered item count, this is used to control the display of items
+            #or a message if there is nothing
+            $scope.selected.itemCount = ->
+                _.reject $scope.items, $rootScope.selected.hide
             #all the links and tags, used to make the autocomplete
             $scope.tags = LocalIndexes.tags
             $scope.links = LocalIndexes.links

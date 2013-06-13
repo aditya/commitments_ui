@@ -12,6 +12,7 @@ define ['angular',
             items = {}
             items_by_file = {}
             items_in_order = []
+            items_in_archive = []
             #
             updateItem = (item, fromserver, filename) ->
                 console.log 'database', fromserver
@@ -58,6 +59,7 @@ define ['angular',
             #to get one database
             database =
                 items: -> items_in_order
+                archive: -> items_in_archive
             #save everything if there was a reconnect, safety-pup!
             $rootScope.$on 'reconnect', ->
                 for item in _.values(items)
@@ -70,6 +72,10 @@ define ['angular',
                 for item in serveritems
                     updateItem item, true
                 $rootScope.$broadcast 'databaserebuild'
+            $rootScope.$on 'archiveitemsfromserver', (event, serveritems) ->
+                items_in_archive.splice 0
+                for item in serveritems
+                    items_in_archive.push item
             #single item update
             $rootScope.$on 'itemfromserver', (event, filename, item) ->
                 updateItem item, true, filename

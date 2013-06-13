@@ -9,6 +9,16 @@
   src: url('/fonts/Roboto-Regular.ttf');
 }
 
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('/fonts/Ubuntu-Regular.ttf');
+}
+
 @defaultPad: 4px;
 @defaultMargin: 6px;
 @transparent: rgba(0,0,0,0);
@@ -22,7 +32,11 @@ body {
     .dragging, .dragging * {
         cursor: move !important;
     }
-    font-family: 'Roboto';
+    font-family: 'Open Sans';
+}
+
+h1 {
+  font-family: 'Ubuntu';
 }
 
 .center-layout(@max-width) {

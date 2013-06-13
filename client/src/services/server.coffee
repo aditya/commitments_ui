@@ -14,8 +14,11 @@ define ['angular',
             #helper to post a message into angular
             broadcast = (name, message...) ->
                 #move into the angular context
-                $rootScope.$apply ->
+                if $rootScope.$$phase
                     $rootScope.$broadcast name, message...
+                else
+                    $rootScope.$apply ->
+                        $rootScope.$broadcast name, message...
             #there is really just the one socket
             socket = null
             #goodbye cruel server
@@ -41,7 +44,7 @@ define ['angular',
                     'force new connection': true
                 #this is a successful login message
                 socket.on 'hello', (email) ->
-                    #let everything know
+                    #let everything know we are logged on
                     broadcast 'loginsuccess',
                         authtoken: authtoken
                         email: email
@@ -58,6 +61,12 @@ define ['angular',
                                 , (about) ->
                                     socket.itemPath = about.directory
                                     socket.emit 'watch', about
+                    #oh, and the archive ... build up that in memory database
+                    socket.emit 'exec',
+                        command: 'commitments'
+                        args: ['list', 'archived', 'tasks', email]
+                        , (items) ->
+                            broadcast 'archiveitemsfromserver', items
                     #...and notifications
                     socket.emit 'exec',
                         command: 'notify'
@@ -127,7 +136,7 @@ define ['angular',
                             for message in messages
                                 broadcast 'notification', message
                 , 500)
-            #
+            #asking for a user's items, useful to look at other users
             $rootScope.$on 'useritems', (event, user, callback) ->
                 socket.emit 'exec',
                     command: 'commitments'
@@ -159,7 +168,7 @@ define ['angular',
                     connect email, true
                 login: (authtoken) ->
                     connect authtoken
-                    $rootScope.$broadcast 'login'
+                    broadcast 'login'
                 logout: ->
                     disconnect()
-                    $rootScope.$broadcast 'logout'
+                    broadcast 'logout'
