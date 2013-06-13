@@ -43,7 +43,7 @@
     animated-hide="hide(item)"
     class="task">
     <div class="task-content" ng-init="task=item;">
-        <div handle class="icon-reorder task-handle"
+        <div handle class="icon-reorder task-handle" ng-hide="readonly"
             tooltip="'Drag to reorder'">
         </div>
         <!-- accept/reject -->
