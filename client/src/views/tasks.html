@@ -101,6 +101,7 @@
             <li ng-repeat="subtask in task.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
             </li>
         </ol>
+        <!--this is hooking to editableRecord to do some delay binding-->
         <div animated-show="(focused && task.what) || debug" class="task-extended">
             <ul requires-object="task.discussion" class="task-tools">
                 <li action="poketask" ng-hide="readonly"><i class="icon-hand-right"></i></li>
@@ -112,8 +113,8 @@
             </div>
             <hr/>
             <div class="task-footer">Last Updated:
-                <span username ng-model="task.lastUpdatedBy"></span>
-                <span postdate ng-model="task.lastUpdatedAt"></span>
+                <span username ng-model="editableRecord.lastUpdatedBy"></span>
+                <span postdate ng-model="editableRecord.lastUpdatedAt"></span>
             </div>
         </div>
     </div>
