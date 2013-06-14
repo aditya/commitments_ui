@@ -87,8 +87,8 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deletetask" ng-hide="readonly" eat-click ng-hide="task.done" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action="archivetask" ng-hide="readonly" eat-click ng-hide="!task.done" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
+                    <span action="deletetask" eat-click ng-hide="task.done || readonly" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="archivetask" eat-click ng-hide="!task.done || readonly" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>
@@ -104,8 +104,8 @@
         <div animated-show="(focused && task.what) || debug" class="task-extended">
             <ul requires-object="task.discussion" class="task-tools">
                 <li action="poketask" ng-hide="readonly"><i class="icon-hand-right"></i></li>
-                <li tags tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
-                <li tags tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
+                <li tags readonly-if="readonly" tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
+                <li tags readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
             </ul>
             <div class="task-discussion">
                 <div ng-include src="'src/views/discussion.html'"></div>

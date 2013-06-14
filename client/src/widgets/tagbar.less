@@ -56,7 +56,7 @@
     display: inline;
     .line-height;
     a {
-      color: @white;
+        color: @white;
     }
 }
 
@@ -131,7 +131,23 @@
         margin: 0px;
         margin-top: @defaultMargin;
         padding: 0px;
+        cursor: pointer;
+        &:hover {
+            .editable-text-shadow;
+        }
     }
+}
+
+.tagbar-choices.readonly {
+    .tagbar-icon {
+        cursor: default;
+        &:hover {
+            .readonly-text-shadow;
+        }
+    }
+}
+.tagbar-search-choice-close.readonly {
+    display: none;
 }
 
 .tagbar-results {

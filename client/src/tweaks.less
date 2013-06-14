@@ -84,16 +84,24 @@ h1 {
   .box-shadow(inset 0 1px 1px rgba(0,0,0,0.1));
 }
 
+.editable-text-shadow {
+    text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
+}
+
+.readonly-text-shadow {
+    text-shadow: none;
+}
+
 .action-icon {
   &:hover {
-    text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
+    .editable-text-shadow;
   }
   font-size: 1.25em;
 }
 
 .no-action-icon {
   &:hover {
-    text-shadow:  none;
+    .readonly-text-shadow;
   }
   font-size: 1.25em;
 }
@@ -257,14 +265,14 @@ h1 {
 .check {
   cursor: pointer;
   &:hover {
-    text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
+    .editable-text-shadow;
   }
 }
 
 .check.readonly {
   cursor: default;
   &:hover {
-    text-shadow:  none;
+    .readonly-text-shadow;
   }
 }
 
@@ -432,10 +440,6 @@ h1 {
         padding: 0px;
         margin-top: @defaultMargin / 2;
         margin-right: @defaultMargin * 2;
-        .action-icon;
-      }
-      .tagbar-icon {
-        padding-top: @defaultPad;
         .action-icon;
       }
       .info-icon {

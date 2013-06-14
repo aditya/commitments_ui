@@ -311,8 +311,10 @@
       this.opts.element.trigger('blur');
     },
     focusSearch: function () {
-      this.search.focus()
-      this.resizeSearch(true);
+      if (this.enabled) {
+        this.search.focus()
+        this.resizeSearch(true);
+      }
     },
     selectHighlighted: function () {
       var highlighted = $(".tagbar-highlighted", this.container),

@@ -50,6 +50,15 @@ define ['angular',
                         if not ngModel.$viewValue
                             ngModel.$setViewValue {}
                         input.tagbar 'val', ngModel.$viewValue
+                    $scope.$watch 'readonly-if', (readonly) ->
+                        if readonly
+                            element.addClass 'readonly'
+                            element.find('*').addClass 'readonly'
+                            input.tagbar 'disable'
+                        else
+                            element.removeClass 'readonly'
+                            element.find('*').removeClass 'readonly'
+                            input.tagbar 'enable'
         ])
         #used to display just one tag by itself
         .directive('tag', [() ->
