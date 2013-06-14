@@ -29,7 +29,9 @@ define ['md5',
                 element.on 'click', (event) ->
                     event.stopPropagation()
                     #tell the parent list all about it
-                    $scope.$emit 'selectrecord', ngModel.$modelValue
+                    $scope.$apply ->
+                        $scope.$emit 'selectrecord', ngModel.$modelValue
+                        $scope.editableRecord = ngModel.$modelValue
                 #listening for the focus event, in order to bind
                 #entended/hidden properties, this is coming 'down' from the
                 #parent list
