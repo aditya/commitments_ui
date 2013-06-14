@@ -132,18 +132,14 @@
         margin-top: @defaultMargin;
         padding: 0px;
         cursor: pointer;
-        &:hover {
-            .editable-text-shadow;
-        }
+        .action-icon;
     }
 }
 
 .tagbar-choices.readonly {
-    .tagbar-icon {
+    li.tagbar-icon {
         cursor: default;
-        &:hover {
-            .readonly-text-shadow;
-        }
+        .no-action-icon;
     }
 }
 .tagbar-search-choice-close.readonly {

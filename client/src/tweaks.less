@@ -25,6 +25,8 @@
 @fillBackground: fade(@wellBackground, 60%);
 @borderColor: darken(@wellBackground, 7%);
 @bodyBackground: lighten(@wellBackground, 50%);
+@navbarLinkColor: @grayDark;
+@navbarLinkColorHover: @linkColor;
 
 body {
   background-image: url('../images/gray_jean.png');
@@ -85,7 +87,7 @@ h1 {
 }
 
 .editable-text-shadow {
-    text-shadow:  0px 1px 1px rgba(0,0,0,.075), 0px 0px 8px rgba(82,168,236,.6);
+    text-shadow: none;
 }
 
 .readonly-text-shadow {
@@ -93,15 +95,19 @@ h1 {
 }
 
 .action-icon {
+  color: @navbarLinkColor;
   &:hover {
+    color: @navbarLinkColorHover;
     .editable-text-shadow;
   }
   font-size: 1.25em;
 }
 
 .no-action-icon {
+  color: @navbarLinkColor;
   &:hover {
     .readonly-text-shadow;
+    color: @navbarLinkColor;
   }
   font-size: 1.25em;
 }
@@ -264,24 +270,20 @@ h1 {
 
 .check {
   cursor: pointer;
+  color: @navbarLinkColor;
   &:hover {
+    color: @navbarLinkColorHover;
     .editable-text-shadow;
   }
 }
 
 .check.readonly {
+  color: @navbarLinkColor;
   cursor: default;
   &:hover {
+    color: @navbarLinkColor;
     .readonly-text-shadow;
   }
-}
-
-.date-play {
-  font-size: 1.25em;
-}
-
-.count-play {
-  font-size: 1.25em;
 }
 
 .icon {
