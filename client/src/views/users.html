@@ -12,12 +12,12 @@
         </td>
         <td class="user-tasks" ng-controller="UserTasks">
           <table>
-            <tr ng-repeat="item in items[user]" class="user-task">
+            <tr ng-repeat="task in items[user]" class="user-task">
               <td class="user-task-check">
                 <i class="icon-li icon-check-empty"></i>
               </td>
               <td class="user-task-what">
-                <div render-markdown ng-model="item.what"></div>
+                <a ng-href="/#/task/{{task.id}}" render-markdown ng-model="task.what"></a>
               </td>
             </tr>
           </table>

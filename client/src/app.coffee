@@ -10,3 +10,10 @@ define ['angular',
     ], (angular, jquery) ->
     jquery ->
         angular.bootstrap document, ['Root']
+        window.debugCSS = ->
+            require ['lessc'], (less) ->
+                $('style').remove()
+                less.refreshStyles()
+                less.refresh(true)
+                #less.watch()
+            'hot loading css'
