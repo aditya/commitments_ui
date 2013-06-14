@@ -8,10 +8,14 @@ define ['angular',
     module = angular.module('editable')
         .directive('renderMarkdown', ['$timeout', ($timeout) ->
             restrict: 'A'
-            link: ($scope, element) ->
+            require: '?ngModel'
+            link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'markdown'
-                text = element.text()
-                element.html marked(text)
+                if ngModel
+                    $scope.$watch attrs.ngModel, (text) ->
+                        element.html marked(text)
+                else
+                    element.html marked(element.text())
         ])
         .directive('markdown', ['$timeout', ($timeout) ->
             restrict: 'A'
