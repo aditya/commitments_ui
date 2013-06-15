@@ -41,6 +41,15 @@ h1 {
     font-family: 'Ubuntu';
 }
 
+input, textarea {
+    outline: none;
+    &:focus {
+        cursor: input;
+        border-color: @inputBorder !important;
+        .box-shadow(none) !important;
+    }
+}
+
 .center-layout(@max-width) {
     max-width: @max-width;
     margin-left: auto;
@@ -69,36 +78,23 @@ h1 {
 }
 
 .focus-editor {
-    .border-radius(@baseBorderRadius);
-    border: 1px solid @inputBorder;
-    border-color: rgba(82,168,236,.8);
-    outline: 0;
-    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
+    outline: none;
+    border: 1px solid transparent;
+    border-bottom: 1px dotted @navbarLinkColor;
+    .border-radius(0);
 }
 
 .hover-editor  {
-    border: 1px solid @inputBorder;
-    border-color: rgba(82,168,236,.8);
-    .border-radius(@baseBorderRadius);
-}
-
-.editable-shadow {
-    .box-shadow(inset 0 1px 1px rgba(0,0,0,0.1));
-}
-
-.editable-text-shadow {
-    text-shadow: none;
-}
-
-.readonly-text-shadow {
-    text-shadow: none;
+    outline: none;
+    border: 1px solid transparent;
+    border-bottom: 1px dotted @navbarLinkColorHover;
+    .border-radius(0);
 }
 
 .action-icon {
     color: @navbarLinkColor;
     &:hover {
         color: @navbarLinkColorHover;
-        .editable-text-shadow;
     }
     font-size: 1.25em;
 }
@@ -106,7 +102,6 @@ h1 {
 .no-action-icon {
     color: @navbarLinkColor;
     &:hover {
-        .readonly-text-shadow;
         color: @navbarLinkColor;
     }
     font-size: 1.25em;
@@ -161,13 +156,13 @@ h1 {
     padding: 0px;
 }
 
+.no-shadow {
+    .box-shadow(0 0px 0px rgba(0,0,0,0.0));
+}
+
 .cut-width {
     min-width: 24px;
     max-width: 28px;
-}
-
-.shadowed {
-    .box-shadow(0 1px 5px rgba(0,0,0,.2));
 }
 
 .display {
@@ -265,7 +260,6 @@ h1 {
 
 .markdown.readonly {
     border: 1px solid @transparent;
-    .box-shadow(0 0px 0px rgba(0,0,0,0.0));
 }
 
 .check {
@@ -273,7 +267,6 @@ h1 {
     color: @navbarLinkColor;
     &:hover {
         color: @navbarLinkColorHover;
-        .editable-text-shadow;
     }
 }
 
@@ -282,7 +275,6 @@ h1 {
     cursor: default;
     &:hover {
         color: @navbarLinkColor;
-        .readonly-text-shadow;
     }
 }
 
@@ -556,7 +548,10 @@ h1 {
         }
         .user-task-what {
             a {
-                color: @textColor;
+                color: @navbarLinkColor;
+                &:hover {
+                    color: @navbarLinkColorHover;
+                }
             }
             padding: 0px;
             height: auto;
@@ -688,6 +683,15 @@ hr {
                 }
                 padding-right: 1.5 * @defaultPad;
                 padding-left: 1.5 * @defaultPad;
+            }
+            ul {
+                .tagbar-search-choice {
+                    background-color: @red;
+                    background-color: @navbarLinkColor;
+                    &:hover {
+                        background-color: @navbarLinkColor;
+                    }
+                }
             }
             .gravatar {
                 display: inline-block;
