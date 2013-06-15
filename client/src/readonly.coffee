@@ -90,6 +90,15 @@ define [
                         element.show(ANIMATION_SPEED)
                     counter++
         ])
+        .directive('animatedHideOn', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                #event driven animated hide
+                for event in attrs.animatedHideOn.split(',')
+                    event = event.trim()
+                    $scope.$on event,  ->
+                        element.hide(ANIMATION_SPEED)
+        ])
         .directive('animatedShow', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

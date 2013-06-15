@@ -41,6 +41,7 @@
     ng-controller="Task"
     ng-model="item"
     animated-hide="hide(item)"
+    animated-hide-on="deletetask, archivetask"
     class="task">
     <div class="task-content" ng-init="task=item;">
         <div handle class="icon-reorder task-handle" ng-hide="readonly"
