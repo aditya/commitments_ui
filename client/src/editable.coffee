@@ -43,7 +43,7 @@ define ['md5',
                         $scope.focused = false
                     if not $scope.$$phase
                         $scope.$digest()
-                $scope.$on 'deselect', ->
+                $scope.$on 'deselect', (event) ->
                     $scope.focused = false
                 $scope.$on 'edit', ->
                     if attrs.editableRecord

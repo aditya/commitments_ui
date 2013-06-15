@@ -289,10 +289,12 @@ define [
                     selected.searchHide = buildSearchHide($scope.searchQuery)
                 #all set up with search support functions, go ahead and search
                 if _.keys($location.search()).length
-                    do ->
-                        $scope.searchQuery = _.keys($location.search())[0]
-                        selected.searchHide = buildSearchHide($scope.searchQuery)
-                        selected.title = "Search"
+                    $scope.searchQuery = _.keys($location.search())[0]
+                    selected.searchHide = buildSearchHide($scope.searchQuery)
+                    selected.title = "Search"
+                    $scope.$on 'deselect', ->
+                        $location.url '/todo'
+                        $location.replace()
             else if $location.path().slice(-5) is '/done'
                 selected.title = "Done"
                 selected.allowNew = false
