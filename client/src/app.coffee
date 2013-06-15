@@ -13,7 +13,10 @@ define ['angular',
         window.debugCSS = ->
             require ['lessc'], (less) ->
                 $('style').remove()
-                less.refreshStyles()
-                less.refresh(true)
-                #less.watch()
+                link = document.createElement 'link'
+                link.rel = "stylesheet/less"
+                link.type = "text/css"
+                link.href = "root.less"
+                less.sheets.push link
+                less.watch()
             'hot loading css'
