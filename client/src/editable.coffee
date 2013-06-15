@@ -31,7 +31,6 @@ define ['md5',
                     #tell the parent list all about it
                     $scope.$apply ->
                         $scope.$emit 'selectrecord', ngModel.$modelValue
-                        $scope.editableRecord = ngModel.$modelValue
                 #listening for the focus event, in order to bind
                 #entended/hidden properties, this is coming 'down' from the
                 #parent list
@@ -129,6 +128,9 @@ define ['md5',
                         if attrs.onReorder
                             $scope.$apply ->
                                 $scope.$eval(attrs.onReorder) new_order
+                        else
+                            $scope.$apply ->
+                                $scope.$emit 'reorder', new_order
                         _super $item, targetContainer
                     isValidTarget: (item, container, totalSlots, toSlot) ->
                         #if there is a placeholder we can't drag to the last record
