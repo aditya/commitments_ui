@@ -426,6 +426,8 @@ define [
         #local trash can to allow undelete
         .controller 'Trash', ($rootScope, $scope, $timeout, Trash) ->
             $scope.trash = Trash
+            $rootScope.selected =
+                title: 'Trash'
         #all the people in all the boxes...
         .controller 'Users', ($scope, $timeout, LocalIndexes) ->
             $scope.$watch LocalIndexes.linkSignature, ->
