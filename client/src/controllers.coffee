@@ -393,6 +393,13 @@ define [
                         $ "<span class='icon-hand-right'/>"
                     else
                         $ "<span class='icon-question'/>"
+            #dynamic inclusion, this is a performance trick to have less going
+            #on inside angular js except when it would be visible on screen
+            $scope.extendedTemplate = (focused) ->
+                if focused
+                    'taskextended.html'
+                else
+                    ''
         #notifications, button and dropdown
         .controller 'Notifications', ($scope, $rootScope, Notifications) ->
             $rootScope.iconFor = (notification) ->

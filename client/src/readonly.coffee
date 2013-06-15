@@ -278,3 +278,11 @@ define [
                 $scope.$on attrs.focusOn, ->
                     element.focus()
         ])
+        #
+        .directive('readonlyHref', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                element.attr 'href', $scope.$eval(attrs.readonlyHref)
+                $scope.$on attrs.focusOn, ->
+                    element.focus()
+        ])
