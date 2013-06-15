@@ -1,27 +1,54 @@
+<script type="text/ng-template" id="taskextended.html">
+  <!--Subtasks-->
+  <ol editable-list
+      editable-list-reorder
+      editable-list-nested
+      drag-handle=".subtask-handle"
+      ng-model="task.subitems" class="tasks-subtasks">
+      <li ng-repeat="subtask in task.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
+      </li>
+  </ol>
+  <!--Comments, tags, links, actions-->
+  <div class="task-extended">
+      <ul requires-object="task.discussion" class="task-tools">
+          <li action="poketask" ng-hide="readonly"><i class="icon-hand-right"></i></li>
+          <li tags readonly-if="readonly" tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
+          <li tags readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
+      </ul>
+      <div class="task-discussion">
+          <div ng-include src="'src/views/discussion.html'"></div>
+      </div>
+      <hr/>
+      <div class="task-footer">Last Updated:
+          <span username ng-model="task.lastUpdatedBy"></span>
+          <span postdate ng-model="task.lastUpdatedAt"></span>
+      </div>
+  </div>
+</script>
 <script type="text/ng-template" id="subtask.html">
-<div>
-                <table class="task-core">
-                    <tr>
-                        <td class="task-action">
-                            <div handle class="icon-reorder subtask-handle" tooltip="'Drag to reorder'" >
-                            </div>
-                        </td>
-                        <td class="task-check">
-                            <span check ng-model="subtask.done" tooltip="'Mark done'"></span>
-                        </td>
-                        <td class="task-what">
-                            <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
-                        </td>
-                        <td class="task-action" animated-visible="hover && !sorting">
-                            <span action="deleterecord" tooltip="'Delete this subtask'"><i class="icon-trash"></i></span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <ol class="tasks-subtasks">
-            <li ng-repeat="subtask in subtask.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
-            </li>
-            </ol>
+  <div>
+      <table class="task-core">
+          <tr>
+              <td class="task-action">
+                  <div handle class="icon-reorder subtask-handle" tooltip="'Drag to reorder'" >
+                  </div>
+              </td>
+              <td class="task-check">
+                  <span check ng-model="subtask.done" tooltip="'Mark done'"></span>
+              </td>
+              <td class="task-what">
+                  <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
+              </td>
+              <td class="task-action" animated-visible="hover && !sorting">
+                  <span action="deleterecord" tooltip="'Delete this subtask'"><i class="icon-trash"></i></span>
+              </td>
+          </tr>
+      </table>
+  </div>
+  <ol class="tasks-subtasks">
+  <li ng-repeat="subtask in subtask.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
+  </li>
+  </ol>
 </script>
 
 <ol
@@ -93,30 +120,8 @@
                 </td>
             </tr>
         </table>
-        <ol animated-show="focused || debug"
-            editable-list
-            editable-list-reorder
-            editable-list-nested
-            drag-handle=".subtask-handle"
-            ng-model="task.subitems" class="tasks-subtasks">
-            <li ng-repeat="subtask in task.subitems" editable-record ng-model="subtask" ng-include="'subtask.html'" class="task-subtask">
-            </li>
-        </ol>
-        <!--this is hooking to editableRecord to do some delay binding-->
-        <div animated-show="(focused && task.what) || debug" class="task-extended">
-            <ul requires-object="task.discussion" class="task-tools">
-                <li action="poketask" ng-hide="readonly"><i class="icon-hand-right"></i></li>
-                <li tags readonly-if="readonly" tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="editableRecord.tags"></li>
-                <li tags readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="editableRecord.links"></li>
-            </ul>
-            <div class="task-discussion">
-                <div ng-include src="'src/views/discussion.html'"></div>
-            </div>
-            <hr/>
-            <div class="task-footer">Last Updated:
-                <span username ng-model="editableRecord.lastUpdatedBy"></span>
-                <span postdate ng-model="editableRecord.lastUpdatedAt"></span>
-            </div>
+        <!--extended information about the task, only show when focused-->
+        <div ng-include src="'taskextended.html'" animated-show="focused || debug">
         </div>
     </div>
     </li>
