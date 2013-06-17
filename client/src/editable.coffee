@@ -4,7 +4,6 @@ define ['md5',
     'jquery-sortable'
     ], (md5, moment, _) ->
     counter = 0;
-    ANIMATION_SPEED = 200
     module = angular.module('editable', ['Root'])
         .directive('editableRecord', ['$timeout', ($timeout) ->
             scope: true
@@ -26,11 +25,24 @@ define ['md5',
                 #hang on to the data in jquery
                 $scope.$watch attrs.ngModel, (model) ->
                     element.data 'record', model
+                #explicit click to select
                 element.on 'click', (event) ->
                     event.stopPropagation()
                     #tell the parent list all about it
                     $scope.$apply ->
                         $scope.$emit 'selectrecord', ngModel.$modelValue
+                #hovering does an auto select
+                enterAt = Number.POSITIVE_INFINITY
+                DELAY_TO_AUTOSELECT = 1000
+                element.on 'mouseenter', ->
+                    enterAt = Date.now()
+                    $timeout ->
+                        if enterAt < Date.now()
+                            $scope.$emit 'selectrecord', ngModel.$modelValue
+                    , DELAY_TO_AUTOSELECT
+                element.on 'mouseleave', ->
+                    enterAt = Number.POSITIVE_INFINITY
+                    console.log 'leave', enterAt
                 #listening for the focus event, in order to bind
                 #entended/hidden properties, this is coming 'down' from the
                 #parent list
@@ -107,6 +119,8 @@ define ['md5',
                         $rootScope.sorting = true
                         element.addClass 'sorting'
                         $item.addClass 'sorted'
+                        $scope.$apply ->
+                            $scope.$broadcast 'deselect'
                         _super $item, container
                     onDrop: ($item, targetContainer, _super) ->
                         $rootScope.sorting = false
