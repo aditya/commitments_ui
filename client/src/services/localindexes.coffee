@@ -2,17 +2,10 @@
 Local in memory indexes drive full text search and tagging.
 ###
 define ['angular',
-    'cs!src/inverted/inverted',
     'lunr',
     'lodash'
-    'cs!./root'], (angular, inverted, lunr, _, root) ->
+    'cs!./root'], (angular, lunr, _, root) ->
         root.factory 'LocalIndexes', ->
-            #parsing functions to keep track of all links and tags
-            parseTags = (document, callback) ->
-                for tag, v of (document?.tags or {})
-                    callback tag
-            #inverted indexing for tags
-            tagIndex = inverted.index [parseTags], (x) -> x.id
             #full text index for searchacross items
             fullTextIndex = lunr ->
                 @field 'what', 8
@@ -21,7 +14,6 @@ define ['angular',
                 @field 'tags', 2
                 @field 'comments', 1
                 @ref 'id'
-
             fullTextIndex.addToIndex = (item) ->
                 #using clone as the deep visitor
                 subtask_accumulator = []
@@ -37,36 +29,36 @@ define ['angular',
                     tags: (_.keys(item.tags).join ' ') or ''
                     comments: _.pluck(item?.discussion?.comments, 'what').join ' '
             links = {}
-            update_links = (items) ->
+            updateLinks = (items) ->
                 links = {}
                 for id, item of items
                     for link, v of (item.links or {})
                         links[link] = true
+            tags = {}
+            updateTags = (items) ->
+                tags = {}
+                for id, item of items
+                    for tag, v of (item.tags or {})
+                        if not item.done
+                            tags[tag] = true
             do ->
                 update: (item, items) ->
                     #indexing to drive the tags, autocomplete, and screens
-                    tagIndex.add item
                     fullTextIndex.addToIndex item
-                    update_links items
+                    updateLinks items
+                    updateTags items
                 delete: (item, items) ->
-                    tagIndex.remove item
                     fullTextIndex.remove
                         id: item.id
-                    update_links items
-                tags: ->
-                    tagIndex.terms()
+                    updateLinks items
+                    updateTags items
                 tagSignature: ->
-                    tagIndex.terms().join('')
+                    _.keys(tags).join ''
+                tags: ->
+                    _.keys tags
                 linkSignature: ->
                     _.keys(links).join ''
-                links: (filter) ->
-                    _.select _.keys(links), filter
-                itemsByTag: (tags, filter) ->
-                    if _.isString tags
-                        by_tag = {tags: {}}
-                        by_tag.tags[tags] = 1
-                    else
-                        by_tag = tags
-                    tagIndex.search(by_tag, filter)
+                links: ->
+                    _.keys links
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)
