@@ -209,9 +209,13 @@ define [
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 $scope.$watch attrs.tooltip, (content) ->
+                    if attrs.hotkey
+                        hotkey = attrs.hotkey.split(',')[0]
+                        content = "#{content}<br/><i>Hotkey: #{hotkey}</i>"
                     if content
                         element.tooltip(
                             trigger: 'hover'
+                            html: true
                             title: content
                             placement: 'bottom'
                             delay:
