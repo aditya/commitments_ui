@@ -340,38 +340,42 @@
     },
     initContainer: function () {
       this.search.bind("keydown", this.bind(function (e) {
-        //key sequences that close
-        if (e.which === KEY.BACKSPACE && this.search.text() === "") {
-          this.close();
-          return;
-        }
         //if we are opened, key sequences that navigate selected items
         if (this.opened()) {
           switch (e.which) {
             case KEY.UP:
-              case KEY.DOWN:
+            case KEY.DOWN:
               this.moveHighlight((e.which === KEY.UP) ? -1 : 1);
-            killEvent(e);
-            return;
+              killEvent(e);
+              return;
             case KEY.ENTER:
-              case KEY.TAB:
-              this.selectHighlighted();
-            killEvent(e);
-            return;
+            case KEY.TAB:
+              if (this.search.text() === "") {
+                this.search.blur();
+              } else {
+                this.selectHighlighted();
+              }
+              killEvent(e);
+              return;
             case KEY.ESC:
               this.cancel(e);
-            this.search.blur();
-            killEvent(e);
-            return;
+              this.search.blur();
+              killEvent(e);
+              return;
+            case KEY.BACKSPACE:
+              if (this.search.text() === "") {
+                this.close();
+              }
+              return;
           }
         } else {
           //and when we are closed, key sequences that just exit the field
           switch (e.which) {
             case KEY.ESC:
-              case KEY.ENTER:
+            case KEY.ENTER:
               this.search.blur();
-            killEvent(e);
-            return;
+              killEvent(e);
+              return;
           }
         }
       }));
