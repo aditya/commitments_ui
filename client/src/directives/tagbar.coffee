@@ -45,11 +45,25 @@ define ['angular',
                     $scope.$watch attrs.ngModel, (model) ->
                         ngModel.$render()
                     , true
+                    #rendering with optional search word highlighting
+                    hilightCount = 0
+                    $scope.$watch attrs.searchHighlight, (value) ->
+                        if hilightCount++ > 0
+                            ngModel.$render()
                     #rendering is really just setting the values
                     ngModel.$render = () ->
                         if not ngModel.$viewValue
                             ngModel.$setViewValue {}
                         input.tagbar 'val', ngModel.$viewValue
+                        if attrs.searchHighlight
+                            search = $scope.$eval(attrs.searchHighlight)
+                            if search
+                                for word in search.split(' ')
+                                    word = word.trim()
+                                    if word
+                                        re = new RegExp(word, 'gi')
+                                        element.find('.tagbar-search-choice-text').each ->
+                                            $(this).html $(this).text().replace(re, '<span class="highlight">$&</span>')
                     $scope.$watch 'readonly-if', (readonly) ->
                         if readonly
                             element.addClass 'readonly'

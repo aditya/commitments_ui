@@ -12,8 +12,8 @@
   <div class="task-extended">
       <ul requires-object="task.discussion" class="task-tools">
           <li action="poketask" ng-hide="readonly"><i class="icon-hand-right"></i></li>
-          <li tags readonly-if="readonly" tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
-          <li tags readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
+          <li tags search-highlight="searchQuery" readonly-if="readonly" tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
+          <li tags search-highlight="searchQuery" readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
       </ul>
       <div class="task-discussion">
           <div ng-include src="'src/views/discussion.html'"></div>

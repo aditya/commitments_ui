@@ -32,11 +32,11 @@
     if (url && opts.iconOnly) {
       item.addClass('tagbar-icon-only');
     } else if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
-      content = "<a href='" + opts.tagUrl(data) + "'>" + data + "</a";
+      content = "<a href='" + opts.tagUrl(data) + "' class='tagbar-search-choice-text'>" + data + "</a>";
     } else if (opts.tagUrl) {
-      content = "<a href='" + opts.tagUrl + "'>" + data + "</a";
+      content = "<a href='" + opts.tagUrl + "' class='tagbar-search-choice-text'>" + data + "</a>";
     } else {
-      content = data;
+      content = "<span class='tagbar-search-choice-text'>" + data + "</span>";
     }
     if (content) {
       label = $("<span class='tagbar-search-choice-label'>" + content + "</span>");
