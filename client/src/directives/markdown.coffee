@@ -159,6 +159,9 @@ define ['angular',
                 $scope.$watch attrs.searchHighlight, (value) ->
                     if hilightCount++ > 0
                         ngModel.$render()
+                $scope.$on 'deselect', ->
+                    cancelEdit = true
+                    forceBlur()
                 ngModel.$render = () ->
                     #markdown based display
                     content = ngModel.$viewValue or ''
