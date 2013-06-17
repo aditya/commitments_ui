@@ -2,9 +2,9 @@
     <ul editable-list
         editable-list-nested
         editable-list-blank-record
-        ng-model="editableRecord.discussion.comments" class="container-fluid unstyled comments">
+        ng-model="task.discussion.comments" class="container-fluid unstyled comments">
         <li
-        ng-repeat="comment in editableRecord.discussion.comments"
+        ng-repeat="comment in task.discussion.comments"
         class="row-fluid comment">
         <table editable-record ng-model="comment" class="full-width">
             <tr>
@@ -30,7 +30,6 @@
                                     markdown multiline
                                     readonly-if="(user.email != comment.who) || readonly"
                                     ng-model="comment.what">
-                                    <span ng-show="focused" ng-include src="'src/views/discussionhelp.html'"></span>
                                 </div>
                             </td>
                             <td animated-visible="hover && (user.email == comment.who)" class="task-action">
