@@ -195,15 +195,13 @@ define [
                 twizzler = $('<span class="icon-question"></span>')
                 element.append twizzler
                 twizzler.tooltip
+                    trigger: 'hover'
                     html: true
                     title: content.html()
                     placement: 'bottom'
                     delay:
                         show: ANIMATION_SPEED
                         hide: ANIMATION_SPEED
-                twizzler.on 'click', (event)->
-                    event.stopPropagation()
-                    twizzler.tooltip('show')
         ])
         .directive('tooltip', [ ->
             restrict: 'A'
@@ -211,7 +209,7 @@ define [
                 $scope.$watch attrs.tooltip, (content) ->
                     if attrs.hotkey
                         hotkey = attrs.hotkey.split(',')[0]
-                        content = "#{content}<br/><i>Hotkey: #{hotkey}</i>"
+                        content = "#{content}<br/>Hotkey: <em>#{hotkey}</em>"
                     if content
                         element.tooltip(
                             trigger: 'hover'

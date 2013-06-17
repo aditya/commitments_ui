@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="taskextended.html">
-  <!--Subtasks-->
+<!--Subtasks-->
   <ol editable-list
       editable-list-reorder
       editable-list-nested
@@ -26,7 +26,7 @@
   </div>
 </script>
 <script type="text/ng-template" id="subtask.html">
-  <div>
+<div>
       <table class="task-core">
           <tr>
               <td class="task-action">
@@ -37,7 +37,7 @@
                   <span check ng-model="subtask.done" tooltip="'Mark done'"></span>
               </td>
               <td class="task-what">
-                  <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" class="larger"></span>
+                  <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" tooltip="'Click and start typing, <em>↵</em> to save'" class="larger"></span>
               </td>
               <td class="task-action" animated-visible="hover && !sorting">
                   <span action="deleterecord" tooltip="'Delete this subtask'"><i class="icon-trash"></i></span>
@@ -52,90 +52,90 @@
 </script>
 
 <ol
-    ng-controller="TaskList"
-    editable-list
-    editable-list-reorder
-    on-reorder="tasksSorted"
-    editable-list-new="newtask"
-    drag-handle=".task-handle"
-    ng-model="items"
-    class="tasks">
-    <li class="alert" ng-show="selected.itemCount() == 0">
-    Nothing to see here...
-    </li>
-    <li ng-repeat="item in items"
-    editable-record="updatetask"
-    ng-controller="Task"
-    ng-model="item"
-    animated-hide="hide(item)"
-    animated-hide-on="deletetask, archivetask"
-    class="task">
-    <div class="task-content" ng-init="task=item;">
-        <div handle class="icon-reorder task-handle" ng-hide="readonly"
-            tooltip="'Drag to reorder'">
-        </div>
-        <!-- accept/reject -->
-        <div
-            requires-object="task.accept, task.reject"
-            animated-hide="hideAcceptReject(task)"
-            class="alert">
-            <span>Task from</span>
-            <span gravatar ng-model="task.who"></span>
-            <span class="btn-group">
-                <button action="accepttask" class="btn btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
-                <button action="rejecttask" class="btn btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
-            </span>
-        </div>
-        <!-- poke -->
-        <div
-            requires-object="task.links"
-            animated-hide="hidePokeStatus(task)"
-            class="alert">
-            <span>Poke from</span>
-            <span gravatar ng-model="task.poke.poker"></span>
-            <span class="btn-group">
-                <button action="notstartedtask" class="btn "><i class="icon-frown icon-large"></i> Not Started</button>
-                <button action="inprogresstask" class="btn "><i class="icon-smile icon-large"></i> In Progress</button>
-                <button action="blockedtask" class="btn btn-danger"><i class="icon-exclamation icon-large"></i> Blocked</button>
-                <button action="donetask" class="btn btn-success"><i class="icon-check icon-large"></i> Done</button>
-            </span>
-        </div>
-        <!-- this is the main visible todo -->
-        <table class="task-core">
-            <tr>
-                <td class="task-check">
-                    <span check ng-model="task.done" tooltip="'Mark done'"></span>
-                </td>
-                <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="subtask" ng-hide="readonly" tooltip="'Add a subtask'"><i class="icon-level-down"></i></span>
-                </td>
-                <td class="task-what">
-                    <div search-highlight="searchQuery" markdown readonly-if="readonly" ng-model="task.what" class="larger">
-                        <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
-                    </div>
-                </td>
-                <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deletetask" eat-click ng-hide="hideDelete(task)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action="archivetask" eat-click ng-hide="hideArchive(task)" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
-                </td>
-            </tr>
-        </table>
-        <!--extended information about the task, only show when focused-->
-        <div ng-include="extendedTemplate(focused)" animated-show="focused || debug">
-        </div>
+  ng-controller="TaskList"
+  editable-list
+  editable-list-reorder
+  on-reorder="tasksSorted"
+  editable-list-new="newtask"
+  drag-handle=".task-handle"
+  ng-model="items"
+  class="tasks">
+  <li class="alert" ng-show="selected.itemCount() == 0">
+  Nothing to see here...
+  </li>
+  <li ng-repeat="item in items"
+  editable-record="updatetask"
+  ng-controller="Task"
+  ng-model="item"
+  animated-hide="hide(item)"
+  animated-hide-on="deletetask, archivetask"
+  class="task">
+  <div class="task-content" ng-init="task=item;">
+    <div handle class="icon-reorder task-handle" ng-hide="readonly"
+      tooltip="'Drag to reorder'">
     </div>
-    </li>
-    <!--the new record placeholder-->
-    <li
-    editable-record
-    editable-record-placeholder
-    ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
-    <div class="task-content">
-        <div class="task-core">
-            <span focus-on="newtaskplaceholder" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
-                <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
-            </span>
-        </div>
+    <!-- accept/reject -->
+    <div
+      requires-object="task.accept, task.reject"
+      animated-hide="hideAcceptReject(task)"
+      class="alert">
+      <span>Task from</span>
+      <span gravatar ng-model="task.who"></span>
+      <span class="btn-group">
+        <button action="accepttask" class="btn btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
+        <button action="rejecttask" class="btn btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
+      </span>
     </div>
-    </li>
+    <!-- poke -->
+    <div
+      requires-object="task.links"
+      animated-hide="hidePokeStatus(task)"
+      class="alert">
+      <span>Poke from</span>
+      <span gravatar ng-model="task.poke.poker"></span>
+      <span class="btn-group">
+        <button action="notstartedtask" class="btn "><i class="icon-frown icon-large"></i> Not Started</button>
+        <button action="inprogresstask" class="btn "><i class="icon-smile icon-large"></i> In Progress</button>
+        <button action="blockedtask" class="btn btn-danger"><i class="icon-exclamation icon-large"></i> Blocked</button>
+        <button action="donetask" class="btn btn-success"><i class="icon-check icon-large"></i> Done</button>
+      </span>
+    </div>
+    <!-- this is the main visible todo -->
+    <table class="task-core">
+      <tr>
+        <td class="task-check">
+          <span check ng-model="task.done" tooltip="'Mark done'"></span>
+        </td>
+        <td class="task-action">
+          <span action="subtask" tooltip="'Add a subtask'" animated-visible="hover && !sorting" ng-hide="readonly"><i class="icon-level-down"></i></span>
+        </td>
+        <td class="task-what">
+          <div search-highlight="searchQuery" markdown readonly-if="readonly" ng-model="task.what" tooltip="'Click and start typing, <em>↵</em> to save'" class="larger">
+            <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
+          </div>
+        </td>
+        <td class="task-action" >
+          <span action="deletetask" animated-visible="hover && !sorting" eat-click ng-hide="hideDelete(task)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+          <span action="archivetask" animated-visible="hover && !sorting" eat-click ng-hide="hideArchive(task)" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
+        </td>
+      </tr>
+    </table>
+    <!--extended information about the task, only show when focused-->
+    <div ng-include="extendedTemplate(focused)" animated-show="focused || debug">
+    </div>
+  </div>
+  </li>
+  <!--the new record placeholder-->
+  <li
+  editable-record
+  editable-record-placeholder
+  ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
+  <div class="task-content">
+    <div class="task-core">
+      <span focus-on="newtaskplaceholder" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
+        <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
+      </span>
+    </div>
+  </div>
+  </li>
 </ol>

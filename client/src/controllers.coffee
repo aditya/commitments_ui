@@ -11,19 +11,17 @@ define [
     'text!src/views/navbar.html',
     'text!src/views/taskhelp.html',
     'text!src/views/discussion.html',
-    'text!src/views/discussionhelp.html',
     'text!src/views/users.html',
     'text!src/views/notifications.html',
     'text!src/views/user.html',
     'cs!./editable',
-    'cs!./readonly'], ($, md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, discussionhelp_template, users_template, notifications_template, user_template) ->
+    'cs!./readonly'], ($, md5, angular, _, store, services, task_template, trash_template, splash_template, navbar_template, taskhelp_template, discussion_template, users_template, notifications_template, user_template) ->
     module = angular.module('Root', ['RootServices', 'editable', 'readonly'])
         .run(['$templateCache', ($templateCache) ->
             console.log 'here we go'
             $templateCache.put 'src/views/navbar.html', navbar_template
             $templateCache.put 'src/views/taskhelp.html', taskhelp_template
             $templateCache.put 'src/views/discussion.html', discussion_template
-            $templateCache.put 'src/views/discussionhelp.html', discussionhelp_template
             $templateCache.put 'src/views/users.html', users_template
             $templateCache.put 'src/views/notifications.html', notifications_template
             $templateCache.put 'src/views/user.html', user_template
@@ -251,6 +249,8 @@ define [
             $scope.hide = -> false
             $scope.hideAcceptReject = -> true
             $scope.hidePokeStatus = -> true
+            $scope.hideDelete = -> true
+            $scope.hideArchive = -> true
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User, LocalIndexes) ->
             console.log 'getting items for current user'
