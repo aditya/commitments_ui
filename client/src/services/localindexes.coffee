@@ -67,8 +67,8 @@ define ['angular',
                 tags: ->
                     _.sortBy _.keys(tags), (tag) -> -1 * tags[tag]
                 linkSignature: ->
-                    _.sortBy _.keys(links), (links) -> -1 * tags[tag]
+                    _.keys(links).join ''
                 links: (match) ->
-                    _.keys links
+                    _.sortBy _.keys(links), (link) -> -1 * links[link]
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)
