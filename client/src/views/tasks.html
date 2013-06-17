@@ -115,8 +115,8 @@
                     </div>
                 </td>
                 <td class="task-action" animated-visible="hover && !sorting">
-                    <span action="deletetask" eat-click ng-hide="task.done || readonly" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
-                    <span action="archivetask" eat-click ng-hide="!task.done || readonly" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
+                    <span action="deletetask" eat-click ng-hide="hideDelete(task)" tooltip="'Straight to the trash!'"><i class="icon-trash"></i></span>
+                    <span action="archivetask" eat-click ng-hide="hideArchive(task)" tooltip="'Archive old tasks'"><i class="icon-download-alt"></i></span>
                 </td>
             </tr>
         </table>

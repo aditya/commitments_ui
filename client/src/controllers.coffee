@@ -329,12 +329,17 @@ define [
             $scope.hidePokeStatus = (task) ->
                 (not $scope.debug) and
                     (not task.poke or task.poke[User.email])
+            #visibility control for archive and delete
+            $scope.hideDelete = (task) ->
+                task.done or $scope.readonly
+            $scope.hideArchive = (task) ->
+                (not task.done) or $scope.readonly
         #Show a tasklist, provided data has been installed into .selected
         #by a higher level scope.
         .controller 'TaskList', ($scope, $rootScope, $timeout, LocalIndexes, Task) ->
             #filtered item count, this is used to control the display of items
             #or a message if there is nothing
-            $scope.selected.itemCount = ->
+            $rootScope.selected.itemCount = ->
                 _.reject $scope.items, $rootScope.selected.hide
             #all the links and tags, used to make the autocomplete
             $scope.tags = LocalIndexes.tags
@@ -451,6 +456,7 @@ define [
                 console.log 'you clicked yourself'
                 $location.path "/todo"
             else
+                selected = $rootScope.selected = {}
                 console.log 'getting items for other user', $routeParams.email
                 $scope.from = $routeParams.email
                 $scope.tasksSorted = (tasks) ->
@@ -458,6 +464,8 @@ define [
                 $scope.items = []
                 $scope.hideAcceptReject = -> true
                 $scope.hidePokeStatus = -> true
+                $scope.hideDelete = -> true
+                $scope.hideArchive = -> true
                 #for this user, go and get their items
                 $rootScope.$broadcast 'useritems', $scope.from, (items) ->
                     console.log $scope.from, items
