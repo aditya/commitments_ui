@@ -214,6 +214,9 @@ define [
                 ,
                     title: 'Untagged'
                     url: '/#/untagged'
+                ,
+                    title: 'divider'
+                    url: '/#/todo'
                 )
                 #now build up a 'box' for each tag, not sure why I want to call
                 #it a box, just that the tags are drawn on screen in a... box?
@@ -224,7 +227,8 @@ define [
                         tag: term
                     )
                 for tagTerm in LocalIndexes.tags()
-                    make tagTerm
+                    if LocalIndexes.tagCount tagTerm
+                        make tagTerm
                 #ok, so, I really don't understand why this is required, but
                 #without it my boxes list in the navbar is just plain empty
                 $scope.boxes = $rootScope.boxes
@@ -342,8 +346,10 @@ define [
             $rootScope.selected.itemCount = ->
                 _.reject $scope.items, $rootScope.selected.hide
             #all the links and tags, used to make the autocomplete
-            $scope.tags = LocalIndexes.tags
-            $scope.links = LocalIndexes.links
+            $scope.tags = (query) ->
+                _.select LocalIndexes.tags(), query
+            $scope.links = (query) ->
+                _.select LocalIndexes.links(), query
             #url rendering, allows navigation from within tags
             $scope.tagUrl = (tag) ->
                 "/#/tag?#{encodeURIComponent(tag)}"

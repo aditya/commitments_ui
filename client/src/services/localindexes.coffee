@@ -33,14 +33,22 @@ define ['angular',
                 links = {}
                 for id, item of items
                     for link, v of (item.links or {})
-                        links[link] = true
+                        if links[link]
+                            link[link] += 1
+                        else
+                            links[link] = 1
             tags = {}
             updateTags = (items) ->
                 tags = {}
                 for id, item of items
                     for tag, v of (item.tags or {})
                         if not item.done
-                            tags[tag] = true
+                            if tags[tag]
+                                tags[tag] += 1
+                            else
+                                tags[tag] = 1
+                        else
+                            tags[tag] = 0
             do ->
                 update: (item, items) ->
                     #indexing to drive the tags, autocomplete, and screens
@@ -54,11 +62,13 @@ define ['angular',
                     updateTags items
                 tagSignature: ->
                     _.keys(tags).join ''
+                tagCount: (tag) ->
+                    tags[tag]
                 tags: ->
-                    _.keys tags
+                    _.sortBy _.keys(tags), (tag) -> -1 * tags[tag]
                 linkSignature: ->
-                    _.keys(links).join ''
-                links: ->
+                    _.sortBy _.keys(links), (links) -> -1 * tags[tag]
+                links: (match) ->
                     _.keys links
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)
