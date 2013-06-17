@@ -55,10 +55,26 @@ define ['angular',
                 twizzlerOK = $('<span class="twizzler icon-ok-sign"></span>').hide()
                 twizzlerOK.on 'click', ->
                     forceBlur()
+                twizzlerOK.tooltip(
+                    trigger: 'hover'
+                    title: "Save"
+                    placement: 'bottom'
+                    delay:
+                        show: ANIMATION_SPEED
+                        hide: ANIMATION_SPEED
+                )
                 twizzlerCancel = $('<span class="twizzler icon-remove-sign"></span>').hide()
                 twizzlerCancel.on 'click', ->
                     cancelEdit = true
                     forceBlur()
+                twizzlerCancel.tooltip(
+                    trigger: 'hover'
+                    title: "Cancel"
+                    placement: 'bottom'
+                    delay:
+                        show: ANIMATION_SPEED
+                        hide: ANIMATION_SPEED
+                )
                 element.append twizzlerLess, twizzlerMore, twizzlerOK, twizzlerCancel
                 #these are the handlers that apply the edits
                 forceBlur = ->
