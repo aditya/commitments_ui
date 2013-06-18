@@ -31,18 +31,6 @@ define ['md5',
                     #tell the parent list all about it
                     $scope.$apply ->
                         $scope.$emit 'selectrecord', ngModel.$modelValue
-                #hovering does an auto select
-                enterAt = Number.POSITIVE_INFINITY
-                DELAY_TO_AUTOSELECT = 1000
-                element.on 'mouseenter', ->
-                    enterAt = Date.now()
-                    $timeout ->
-                        if enterAt < Date.now()
-                            $scope.$emit 'selectrecord', ngModel.$modelValue
-                    , DELAY_TO_AUTOSELECT
-                element.on 'mouseleave', ->
-                    enterAt = Number.POSITIVE_INFINITY
-                    console.log 'leave', enterAt
                 #listening for the focus event, in order to bind
                 #entended/hidden properties, this is coming 'down' from the
                 #parent list
