@@ -37,7 +37,7 @@
                   <span check ng-model="subtask.done" tooltip="'Mark done'"></span>
               </td>
               <td class="task-what">
-                  <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what" tooltip="'Click and start typing, <em>↵</em> to save'" class="larger"></span>
+                  <span search-highlight="searchQuery" markdown readonly-if="readonly" focus-on="subtask.id" placeholder="'New subtask here'" ng-model="subtask.what"></span>
               </td>
               <td class="task-action" animated-visible="hover && !sorting">
                   <span action="deleterecord" tooltip="'Delete this subtask'"><i class="icon-trash"></i></span>
@@ -110,8 +110,8 @@
           <span action="subtask" tooltip="'Add a subtask'" animated-visible="hover && !sorting" ng-hide="readonly"><i class="icon-level-down"></i></span>
         </td>
         <td class="task-what">
-          <div search-highlight="searchQuery" markdown readonly-if="readonly" ng-model="task.what" tooltip="'Click and start typing, <em>↵</em> to save'" class="larger">
-            <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
+          <div search-highlight="searchQuery" markdown readonly-if="readonly" ng-model="task.what">
+            <span ng-include="'src/views/taskhelp.html'"></span>
           </div>
         </td>
         <td class="task-action" >
@@ -132,8 +132,8 @@
   ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
   <div class="task-content">
     <div class="task-core">
-      <span focus-on="newtaskplaceholder" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder larger">
-        <span ng-show="focused" ng-include src="'src/views/taskhelp.html'"></span>
+      <span focus-on="newtaskplaceholder" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder">
+        <span ng-include="'src/views/taskhelp.html'"></span>
       </span>
     </div>
   </div>

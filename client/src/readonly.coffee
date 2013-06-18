@@ -4,8 +4,8 @@ define [
     'mousetrap',
     'grid',
     ], (md5, __ignore__bootstrap__, mousetrap, grid) ->
-    AUTOHIDE_DELAY = 3000
     ANIMATION_SPEED = 100
+    TOOLTIP_SPEED = 600
     KEY_DELAY = 300
     module = angular.module('readonly', [])
         .directive('flashMessage', [() ->
@@ -189,19 +189,17 @@ define [
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 element.addClass 'help'
-                #capture the existing content, we'll use it later in a popup
-                content = element.children()
-                content.hide()
-                twizzler = $('<span class="icon-question"></span>')
-                element.append twizzler
-                twizzler.tooltip
+                element.hide()
+                element.parent().parent().tooltip
                     trigger: 'hover'
                     html: true
-                    title: content.html()
+                    title: element.html()
                     placement: 'bottom'
                     delay:
-                        show: ANIMATION_SPEED
+                        show: TOOLTIP_SPEED
                         hide: ANIMATION_SPEED
+                element.parent().parent().on 'mousedown', ->
+                    element.parent().parent().tooltip 'hide'
         ])
         .directive('tooltip', [ ->
             restrict: 'A'
@@ -217,7 +215,7 @@ define [
                             title: content
                             placement: 'bottom'
                             delay:
-                                show: ANIMATION_SPEED
+                                show: TOOLTIP_SPEED
                                 hide: ANIMATION_SPEED
                         )
                         element.on 'mousedown', ->
