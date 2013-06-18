@@ -116,16 +116,14 @@ define ['md5',
                     nested: attrs.editableListNested?
                     placeholder: '<li class="icon-chevron-right placeholder"/>'
                     onDragStart: ($item, container, _super) ->
-                        $rootScope.sorting = true
+                        $scope.sorting = true
                         element.addClass 'sorting'
-                        $item.addClass 'sorted'
                         $scope.$apply ->
                             $scope.$broadcast 'deselect'
                         _super $item, container
                     onDrop: ($item, targetContainer, _super) ->
-                        $rootScope.sorting = false
+                        $scope.sorting = false
                         element.removeClass 'sorting'
-                        $item.removeClass 'sorted'
                         new_order = []
                         serialized = element.sortable('serialize')
                         recurse = (buffer, source) ->
@@ -173,8 +171,11 @@ define ['md5',
                             element.removeClass 'flipOutX'
                             element.addClass 'animated flipInX'
                     else
-                        element.removeClass 'flipInX'
-                        element.addClass 'animated flipOutX'
+                        #do not hide the drag handles while dragging, otherwise
+                        #the dragged objects look weak
+                        if not $scope.sorting
+                            element.removeClass 'flipInX'
+                            element.addClass 'animated flipOutX'
         ])
         .directive('editableList', ['$timeout', ($timeout) ->
             scope: true

@@ -408,8 +408,11 @@ define [
                         $ "<span class='icon-question'/>"
             #dynamic inclusion, this is a performance trick to have less going
             #on inside angular js except when it would be visible on screen
-            $scope.extendedTemplate = (focused) ->
-                if focused
+            $scope.extendedTemplate = ->
+                if $scope.sorting
+                    #do not expand while sorting, it is disturbing
+                    ''
+                else if $scope.focused
                     'taskextended.html'
                 else
                     ''
