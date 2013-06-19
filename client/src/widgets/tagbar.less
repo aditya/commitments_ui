@@ -26,21 +26,42 @@
     position: relative;
 }
 
+.tagbar-search-choice {
+    padding: 0px;
+    display: inline-block;
+}
+
+.tagbar-search-choice-icon-only {
+    display: none !important;
+}
+
+.tagbar-search-choice-icon-only.hover {
+    display: inline-block !important;
+    position: absolute;
+    z-index: 1000;
+}
+
+.tagbar-search-choice-icon {
+    display: inline;
+    .pull-left;
+    .border-radius(@baseBorderRadius);
+    border: 1px solid @navbarLinkColor;
+    height: @defaultHeight;
+}
+
+.hover.tagbar-search-choice-icon {
+    border: 1px solid @navbarLinkColorHover;
+}
+
 .tagbar-search-choice-display {
     .label;
     .pull-left;
     background-color: @navbarLinkColor;
     .border-radius(@baseBorderRadius);
-    .closer {
-        display: none;
-    }
-    &:hover {
-        .border-radius(@baseBorderRadius);
-        background-color: @navbarLinkColorHover;
-        .closer {
-            display: inline;
-        }
-    }
+}
+
+.tagbar-search-choice-display.hover {
+    background-color: @navbarLinkColorHover;
 }
 
 .tagbar-status-icon {
@@ -69,25 +90,14 @@
     margin-left: @defaultMargin / 2;
     margin-right: @defaultMargin / 2;
     padding: 0px;
-    font-size: 1.5em;
-    display: inline;
+    font-size: 1.4em;
+    display: none;
     position: relative;
     top: 2px;
 }
 
-.tagbar-search-choice-icon {
+.tagbar-search-choice-close.hover {
     display: inline;
-    .pull-left;
-    .border-radius(@baseBorderRadius);
-    border: 1px solid @navbarLinkColor;
-    height: @defaultHeight;
-    position: relative;
-    margin-right: -4px;
-}
-
-.tagbar-result-icon {
-    display: inline;
-    .border-radius(@baseBorderRadius);
 }
 
 
@@ -116,21 +126,6 @@
         margin-bottom: 0px;
         padding: 0px !important;
     }
-    li.tagbar-search-choice {
-        padding: 0px;
-        display: inline-block;
-        height: @defaultHeight;
-        border: 1px solid transparent;
-    }
-    li.tagbar-search-field {
-        height: 100%;
-        cursor: text;
-        &:focus {
-            margin-left: @defaultMargin;
-        }
-        .focus-editor;
-        .no-shadow;
-    }
     li.tagbar-icon {
         margin: 0px;
         margin-top: @defaultMargin;
@@ -138,6 +133,16 @@
         cursor: pointer;
         .action-icon;
     }
+}
+
+.tagbar-search-field {
+    height: 100%;
+    cursor: text;
+    &:focus {
+        margin-left: @defaultMargin;
+    }
+    .focus-editor;
+    .no-shadow;
 }
 
 .tagbar-choices.readonly {
@@ -165,3 +170,9 @@
     }
 }
 
+.tagbar-result-icon {
+    display: inline;
+    .border-radius(@baseBorderRadius);
+    height: @defaultHeight;
+    margin-right: @defaultMargin / 2;
+}

@@ -47,7 +47,15 @@
       var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
       display.append(closer);
     }
+    if (icon) {
+        display.addClass('tagbar-search-choice-icon-only');
+    }
     item.append(display);
+    item.hover( function(){
+        item.find('*').addClass('hover');
+    }, function(){
+        item.find('*').removeClass('hover');
+    });
     return item;
   }
 
