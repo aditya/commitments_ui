@@ -240,6 +240,7 @@
       this.populateResults([]);
       this.search.text("");
       this.resizeSearch();
+      this.container.find('*').removeClass('focus');
     },
     ensureHighlightVisible: function () {
       var results = this.container.find(".tagbar-results");
@@ -392,6 +393,7 @@
       this.search.bind("input paste focus", this.bind(this.open));
       this.search.bind("blur", this.bind(this.blur));
       this.search.bind("input paste focus", this.bind(this.resizeSearch));
+      this.search.bind("focus", this.bind(this.resizeSearch));
       this.container.bind("click", this.bind(this.focusSearch));
       this.clear()
     },
@@ -433,6 +435,9 @@
     resizeSearch: function (force) {
       var width = this.measureTextWidth(this.search, force);
       this.search.width(width).show();
+      //this seems like an odd place to put this, but it avoids a focus
+      //infinte loop
+      this.container.find('*').addClass('focus');
     },
     val: function (data) {
       if (arguments.length === 0) return this.values || {};

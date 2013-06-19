@@ -26,6 +26,7 @@
     position: relative;
 }
 
+
 .tagbar-search-choice {
     padding: 0px;
     display: inline-block;
@@ -35,10 +36,8 @@
     display: none !important;
 }
 
-.tagbar-search-choice-icon-only.hover {
+.tagbar-search-choice-icon-only.focus {
     display: inline-block !important;
-    position: absolute;
-    z-index: 1000;
 }
 
 .tagbar-search-choice-icon {
@@ -47,6 +46,8 @@
     .border-radius(@baseBorderRadius);
     border: 1px solid @navbarLinkColor;
     height: @defaultHeight;
+    position: relative;
+    margin-right: -4px;
 }
 
 .hover.tagbar-search-choice-icon {
@@ -100,6 +101,9 @@
     display: inline;
 }
 
+.tagbar-search-choice-close.focus {
+    display: inline;
+}
 
 .tagbar-highlighted {
     a {
