@@ -3,6 +3,10 @@ define ['angular',
     'lodash',
     'tagbar',
     'cs!src/editable'], (angular, _) ->
+    #yep -- make a gravatar
+    gravatarUrl = (hash, iconSize) ->
+        "http://www.gravatar.com/avatar/#{hash}.jpg?d=identicon&s=#{iconSize}"
+    #
     module = angular.module('editable')
         #used to display an editable tag selection box
         .directive('tags', ['$timeout', ($timeout) ->
@@ -44,7 +48,7 @@ define ['angular',
                         iconUrl: (tagValue) ->
                             if attrs.itemIconFrom is 'gravatar'
                                 hash = md5((tagValue or '').toLowerCase())
-                                return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
+                                return gravatarUrl(hash, iconSize)
                             null
                         statusIcon: $scope.$eval(attrs.statusIconFrom) or null
                         tagClickable: $scope.$eval(attrs.tagClickEvent)
@@ -94,7 +98,7 @@ define ['angular',
                         iconUrl: (tagValue) ->
                             if $scope.$eval(attrs.itemIconFrom) is 'gravatar'
                                 hash = md5((tagValue or '').toLowerCase())
-                                return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
+                                return gravatarUrl(hash, iconSize)
                             null
                     element.onetag(ngModel.$viewValue, options)
         ])

@@ -41,7 +41,7 @@ define [
                 element.append(icon)
                 ngModel.$render = ->
                     hash = md5((ngModel.$viewValue or '').toLowerCase())
-                    icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{size}"
+                    icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=identicon&s=#{size}"
                 $scope.$watch attrs.ngModel, ->
                     ngModel.$render()
         ])
