@@ -315,10 +315,18 @@
           this.search.removeClass("tagbar-active");
         })});
     },
+    deferBlur: function () {
+      //defer blur, as elements may be hidden, this is a nice trick as
+      //mousedown > blur > mouseup > click this.shouldDeferBlur = true;
+      this.shouldDeferBlur = true;
+    },
     blur: function () {
-      this.clear();
-      //propagate blur up to the root element
-      this.opts.element.trigger('blur');
+      if (this.shouldDeferBlur) {
+      } else {
+        this.clear();
+      }
+      //this is a one time counter and is now consumed
+      this.shouldDeferBlur = false;
     },
     focusSearch: function () {
       if (this.enabled) {
@@ -395,9 +403,11 @@
       this.search.bind("input paste focus", this.bind(this.resizeSearch));
       this.search.bind("focus", this.bind(this.resizeSearch));
       this.container.bind("click", this.bind(this.focusSearch));
+      this.container.on("mousedown", ".tagbar-search-choice", this.bind(this.deferBlur));
       this.clear()
     },
     focus: function () {
+      this.shouldDeferBlur = false;
       this.focusSearch()
       this.opts.element.triggerHandler("focus");
     },
@@ -412,12 +422,12 @@
     addSelectedChoice: function (data, value, supressChange) {
       var item = makeATag(data, this.opts);
       item.find('.closer').bind("click dblclick", this.bind(function (e) {
-        if (!this.enabled) return;
         $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
           $(e.target).parent(".tagbar-search-choice").remove();
           delete this.values[data];
           this.clear();
           this.triggerChange();
+          this.focus();
         })).dequeue();
         killEvent(e);
       }));

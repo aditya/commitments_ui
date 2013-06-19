@@ -26,17 +26,17 @@
     position: relative;
 }
 
-
 .tagbar-search-choice {
     padding: 0px;
     display: inline-block;
+    .border-radius(@baseBorderRadius);
 }
 
 .tagbar-search-choice-icon-only {
     display: none !important;
 }
 
-.tagbar-search-choice-icon-only.focus {
+.focus.tagbar-search-choice-icon-only {
     display: inline-block !important;
 }
 
@@ -95,10 +95,6 @@
     display: none;
     position: relative;
     top: 2px;
-}
-
-.tagbar-search-choice-close.hover {
-    display: inline;
 }
 
 .tagbar-search-choice-close.focus {
