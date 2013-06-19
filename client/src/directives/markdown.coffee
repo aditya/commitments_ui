@@ -4,6 +4,7 @@ define ['angular',
     'marked'
     'codemirrormarkdown',
     'cs!src/editable'], (angular, _, marked) ->
+    AUTOSAVE_DELAY = 5000
     ANIMATION_SPEED = 200
     module = angular.module('editable')
         .directive('renderMarkdown', ['$timeout', ($timeout) ->
@@ -40,7 +41,6 @@ define ['angular',
                             display.removeClass 'readonly'
                 if attrs.readonly?
                     display.addClass 'readonly'
-                cancelEdit = false
                 element.append display, attachTo
                 twizzlerMore = $('<span class="twizzler icon-double-angle-right"></span>').hide()
                 twizzlerMore.on 'click', ->
@@ -52,58 +52,33 @@ define ['angular',
                     display.addClass 'collapsed', ANIMATION_SPEED
                     twizzlerLess.hide()
                     twizzlerMore.show()
-                twizzlerOK = $('<span class="twizzler icon-ok-sign"></span>').hide()
-                twizzlerOK.on 'click', ->
-                    forceBlur()
-                twizzlerOK.tooltip(
-                    trigger: 'hover'
-                    title: "Save"
-                    placement: 'bottom'
-                    delay:
-                        show: ANIMATION_SPEED
-                        hide: ANIMATION_SPEED
-                )
-                twizzlerCancel = $('<span class="twizzler icon-remove-sign"></span>').hide()
-                twizzlerCancel.on 'click', ->
-                    cancelEdit = true
-                    forceBlur()
-                twizzlerCancel.tooltip(
-                    trigger: 'hover'
-                    title: "Cancel"
-                    placement: 'bottom'
-                    delay:
-                        show: ANIMATION_SPEED
-                        hide: ANIMATION_SPEED
-                )
-                element.append twizzlerLess, twizzlerMore, twizzlerOK, twizzlerCancel
+                element.append twizzlerLess, twizzlerMore
                 #these are the handlers that apply the edits
-                forceBlur = ->
+                save = ->
                     if codemirror
-                        if not cancelEdit
-                            value = codemirror.getValue().trimLeft().trimRight()
-                            if value is ngModel.$viewValue
-                                #no need to fire an edit if there is no change
-                            else if (not value) and (not ngModel.$viewValue)
-                            else
-                                $scope.$apply ->
-                                    ngModel.$setViewValue(value)
-                                    ngModel.$render()
-                                    $scope.$emit 'edit'
+                        value = codemirror.getValue().trimLeft().trimRight()
+                        if value is ngModel.$viewValue
+                            #no need to fire an edit if there is no change
+                        else if (not value) and (not ngModel.$viewValue)
+                        else
+                            $scope.$apply ->
+                                ngModel.$setViewValue(value)
+                                $scope.$emit 'edit'
+                forceBlur = ->
+                    save()
+                    if codemirror
                         attachTo.hide ANIMATION_SPEED, ->
-                            display.show ANIMATION_SPEED
                             $('.CodeMirror', attachTo).remove()
                             codemirror = null
-                    twizzlerOK.hide ANIMATION_SPEED
-                    twizzlerCancel.hide ANIMATION_SPEED
+                            $scope.$apply ->
+                                ngModel.$render()
+                            display.show ANIMATION_SPEED
                 #hook on to any way in the field
                 focus = ->
                     if element.hasClass 'readonly'
                         return
-                    cancelEdit = false
                     #only hook up the editor if there isn't one
                     if not codemirror
-                        twizzlerOK.show ANIMATION_SPEED
-                        twizzlerCancel.show ANIMATION_SPEED
                         codemirror = CodeMirror attachTo[0]
                         codemirror.setOption 'lineWrapping', true
                         $('.CodeMirror', attachTo).addClass 'editing'
@@ -117,7 +92,6 @@ define ['angular',
                                 'Ctrl-Enter': (cm) ->
                                     forceBlur()
                                 Esc: (cm) ->
-                                    cancelEdit = true
                                     forceBlur()
                         else
                             #trap enter, preventing multiple lines being added
@@ -132,18 +106,17 @@ define ['angular',
                                     #supress, not allowing line navigation
                                     null
                                 Esc: (cm) ->
-                                    cancelEdit = true
                                     forceBlur()
                         codemirror.setValue ngModel.$viewValue or ''
+                        codemirror.on 'blur', ->
+                            forceBlur()
+                        codemirror.on 'change', _.debounce(save, AUTOSAVE_DELAY)
                         display.hide 100
                         attachTo.show 100, ->
                             codemirror.focus()
                             codemirror.setOption('mode', 'markdown')
                             codemirror.setOption('theme', 'neat')
                             codemirror.refresh()
-                    else
-                        codemirror.focus()
-                        codemirror.refresh()
                 #event that might trigger a forced focus
                 if attrs.focusOn?
                     element.scope().$on attrs.focusOn, ->
@@ -159,9 +132,6 @@ define ['angular',
                 $scope.$watch attrs.searchHighlight, (value) ->
                     if hilightCount++ > 0
                         ngModel.$render()
-                $scope.$on 'deselect', ->
-                    cancelEdit = true
-                    forceBlur()
                 ngModel.$render = () ->
                     #markdown based display
                     content = ngModel.$viewValue or ''
