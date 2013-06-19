@@ -28,19 +28,21 @@
 .tagbar-search-choice {
     .label;
     background-color: @navbarLinkColor;
+    .border-radius(@baseBorderRadius);
+    .closer {
+        display: none;
+    }
     &:hover {
+        .border-radius(@baseBorderRadius);
         background-color: @navbarLinkColorHover;
+        .closer {
+            display: inline;
+        }
     }
 }
 
 .tagbar-icon-only {
     background-color: transparent;
-}
-
-.tagbar-search-choice-editable {
-    &:hover {
-        .focus-editor;
-    }
 }
 
 .tagbar-status-icon {
@@ -77,7 +79,7 @@
 .tagbar-item-icon {
     display: inline;
     .border-radius(@baseBorderRadius);
-    border: 1px solid transparent;
+    border: 0px solid transparent;
     height: @defaultHeight;
     margin-right: @defaultMargin / 2;
     position: relative;
