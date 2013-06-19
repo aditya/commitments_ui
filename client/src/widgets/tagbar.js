@@ -155,10 +155,9 @@
       this.search = this.container.find(".tagbar-search-field");
       //forward the tab index, this makes it a lot friendlier for full on
       this.search.attr("tabIndex", this.elementTabIndex);
-      this.resultsPage = 0;
-      this.context = null;
       this.initContainer();
       if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']")) this.disable();
+      this.opts.element.trigger('initialized');
     },
     destroy: function () {
       this.container.remove();
@@ -310,7 +309,7 @@
         control: this,
         term: text,
         callback: this.bind(function (data) {
-          this.populateResults(data.results, {term: text, page: this.resultsPage, context:null});
+          this.populateResults(data.results, {term: text});
           this.ensureSomethingHighlighted();
           this.search.removeClass("tagbar-active");
         })});
@@ -346,14 +345,12 @@
         "class": "tagbar-container tagbar-container-multi"
       }).html([
         "<ul class='tagbar-choices'>",
-        "  <li class='tagbar-icon icon-" + this.opts.icon + "'></li>",
         "  <li class='tagbar-search-field' contentEditable>" ,
         "  </li>",
         "</ul>",
         "<ul class='tagbar-results dropdown-menu'>",
         "</ul>",
         ].join(""));
-        $(".tagbar-icon", container).bind("click", this.bind(this.focusSearch));
         return container;
     },
     initContainer: function () {

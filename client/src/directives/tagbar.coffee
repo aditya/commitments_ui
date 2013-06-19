@@ -10,14 +10,28 @@ define ['angular',
             require: 'ngModel'
             compile: (templateElement, templateAttrs) ->
                 templateElement.addClass 'tags'
-                templateAttrs.icon = templateAttrs.icon or 'tags'
                 iconSize = templateAttrs.itemIconSize or 32
                 ($scope, element, attrs, ngModel) ->
                     input = angular.element('<span class="tag-display"/>')
                     element.css 'cursor', 'default'
                     element.append input
+                    #just propagate tag values back to the model
+                    input.on 'change', (event) ->
+                        $scope.$apply ->
+                            ngModel.$setViewValue input.tagbar('val')
+                            #no need for a render here, this control is doing
+                            #a more thorough job of updating its ui
+                            $scope.$emit 'edit'
+                    #initialization event will be fired by the tagbar
+                    input.on 'initialized', (event) ->
+                        #hook up a display icon if specified, this is inside
+                        #the element, so if clicked will bubble events to the
+                        #tagbar itself
+                        if templateAttrs.icon
+                            input.find('.tagbar-choices').prepend(
+                                "<li class='tagbar-icon icon-#{templateAttrs.icon}'></li")
+                    #set up the tagbar
                     input.tagbar
-                        icon: templateAttrs.icon
                         query: (query) ->
                             if attrs.tagsQuery
                                 matches = $scope.$eval(attrs.tagsQuery) (term) ->
@@ -35,13 +49,6 @@ define ['angular',
                         statusIcon: $scope.$eval(attrs.statusIconFrom) or null
                         tagClickable: $scope.$eval(attrs.tagClickEvent)
                         tagUrl: $scope.$eval(attrs.tagUrl)
-                    #just propagate tag values back to the model
-                    input.on 'change', (event) ->
-                        $scope.$apply ->
-                            ngModel.$setViewValue input.tagbar('val')
-                            #no need for a render here, this control is doing
-                            #a more thorough job of updating its ui
-                            $scope.$emit 'edit'
                     $scope.$watch attrs.ngModel, (model) ->
                         ngModel.$render()
                     , true
