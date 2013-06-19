@@ -14,24 +14,25 @@
     } else {
       var item = $("<span class='tagbar-search-choice'></span>");
     }
-    //just a display item, likely to be a gravatar
+    //just a display item, likely to be a gravatar, this is separate from
+    //the tag, it will be shown by itself for compactness
     if (opts.iconUrl) {
       var url = opts.iconUrl(data);
       if (url) {
-        var icon = $("<image class='tagbar-item-icon' src='" + url + "'/>");
+        var icon = $("<image class='tagbar-search-choice-icon' src='" + url + "'/>");
         item.append(icon);
       }
     }
+    //here is the container for the content
     //status icons show a bit more than just a display item
+    var display = $("<span class='tagbar-search-choice-display'/>");
     if (opts.statusIcon) {
       var statusIcon = $(opts.statusIcon(data));
       statusIcon.addClass('tagbar-status-icon');
-      item.append(statusIcon);
+      display.append(statusIcon);
     }
     var content = "";
-    if (url && opts.iconOnly) {
-      item.addClass('tagbar-icon-only');
-    } else if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
+    if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
       content = "<a href='" + opts.tagUrl(data) + "' class='tagbar-search-choice-text'>" + data + "</a>";
     } else if (opts.tagUrl) {
       content = "<a href='" + opts.tagUrl + "' class='tagbar-search-choice-text'>" + data + "</a>";
@@ -40,13 +41,13 @@
     }
     if (content) {
       label = $("<span class='tagbar-search-choice-label'>" + content + "</span>");
-      item.append(label)
+      display.append(label)
     }
     if (opts.allowClose && label) {
       var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
-      item.append(closer);
-      item.addClass('tagbar-search-choice-editable');
+      display.append(closer);
     }
+    item.append(display);
     return item;
   }
 

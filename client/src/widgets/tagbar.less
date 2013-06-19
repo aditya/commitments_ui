@@ -3,9 +3,10 @@
 @tagBorderColor: darken(@tagColor, 5%);
 @tagTextColor: lighten(@textColor, 0%);
 @defaultHeight: 22px;
+@defaultLineHeight: 20px;
 
 .line-height {
-    line-height: @defaultHeight;
+    line-height: @defaultLineHeight;
 }
 
 .tag {
@@ -25,8 +26,9 @@
     position: relative;
 }
 
-.tagbar-search-choice {
+.tagbar-search-choice-display {
     .label;
+    .pull-left;
     background-color: @navbarLinkColor;
     .border-radius(@baseBorderRadius);
     .closer {
@@ -41,14 +43,11 @@
     }
 }
 
-.tagbar-icon-only {
-    background-color: transparent;
-}
-
 .tagbar-status-icon {
     display: inline;
     font-size: 1.4em;
-    margin-right: @defaultMargin / 2;
+    margin-left: @defaultMargin / 2;
+    margin-left: @defaultMargin / 2;
     position: relative;
     top: 1px;
 }
@@ -76,15 +75,14 @@
     top: 2px;
 }
 
-.tagbar-item-icon {
+.tagbar-search-choice-icon {
     display: inline;
+    .pull-left;
     .border-radius(@baseBorderRadius);
-    border: 0px solid transparent;
+    border: 1px solid @navbarLinkColor;
     height: @defaultHeight;
-    margin-right: @defaultMargin / 2;
     position: relative;
-    margin-top: -3px;
-    margin-left: 0px;
+    margin-right: -4px;
 }
 
 .tagbar-result-icon {

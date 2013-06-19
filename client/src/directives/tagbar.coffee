@@ -89,6 +89,5 @@ define ['angular',
                                 hash = md5((tagValue or '').toLowerCase())
                                 return "http://www.gravatar.com/avatar/#{hash}.jpg?d=mm&s=#{iconSize}"
                             null
-                        iconOnly: attrs.iconOnly?
                     element.onetag(ngModel.$viewValue, options)
         ])
