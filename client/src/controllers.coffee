@@ -119,6 +119,8 @@ define [
                 $rootScope.$digest()
         #Root application controller, deals with login and error messages
         .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
+            #preloaded to avoid
+            $rootScope.selected = {}
             #main event handling for being logged in or not
             $rootScope.$on 'loginsuccess', (event, identity) ->
                 $rootScope.loggedIn = true
@@ -465,8 +467,6 @@ define [
                 console.log 'you clicked yourself'
                 $location.path "/todo"
             else
-                selected = $rootScope.selected = {}
-                console.log 'getting items for other user', $routeParams.email
                 $scope.from = $routeParams.email
                 $scope.tasksSorted = (tasks) ->
                     $scope.$emit 'taskssorted', $scope.from, tasks
@@ -475,6 +475,7 @@ define [
                 $scope.hidePokeStatus = -> true
                 $scope.hideDelete = -> true
                 $scope.hideArchive = -> true
+                $scope.hide = (x) -> x.done
                 #for this user, go and get their items
                 $rootScope.$broadcast 'useritems', $scope.from, (items) ->
                     console.log $scope.from, items
