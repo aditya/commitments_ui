@@ -132,7 +132,7 @@
   ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
   <div class="task-content">
     <div class="task-core">
-      <span focus-on="newtaskplaceholder" markdown ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder">
+      <span focus-on="newtaskplaceholder" markdown escape-to-cancel no-autosave ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder">
         <span ng-include="'src/views/taskhelp.html'"></span>
       </span>
     </div>

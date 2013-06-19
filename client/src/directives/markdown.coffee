@@ -55,21 +55,25 @@ define ['angular',
                 element.append twizzlerLess, twizzlerMore
                 #these are the handlers that apply the edits
                 save = ->
-                    if codemirror
+                    if codemirror and not codemirror.cancelEdit?
                         value = codemirror.getValue().trimLeft().trimRight()
                         if value is ngModel.$viewValue
                             #no need to fire an edit if there is no change
                         else if (not value) and (not ngModel.$viewValue)
+                            #the un-fun empty equals
                         else
+                            ngModel.$setViewValue(value)
                             $scope.$apply ->
-                                ngModel.$setViewValue(value)
                                 $scope.$emit 'edit'
+                #blur handling is the main way to save and re-render
                 forceBlur = ->
                     save()
                     if codemirror
+                        #unhook the guard first, otherwise we can double blur
+                        #when using a hotkey
+                        codemirror = null
                         attachTo.hide ANIMATION_SPEED, ->
                             $('.CodeMirror', attachTo).remove()
-                            codemirror = null
                             $scope.$apply ->
                                 ngModel.$render()
                             display.show ANIMATION_SPEED
@@ -92,6 +96,8 @@ define ['angular',
                                 'Ctrl-Enter': (cm) ->
                                     forceBlur()
                                 Esc: (cm) ->
+                                    if attrs.escapeToCancel?
+                                        codemirror.cancelEdit = true
                                     forceBlur()
                         else
                             #trap enter, preventing multiple lines being added
@@ -106,11 +112,16 @@ define ['angular',
                                     #supress, not allowing line navigation
                                     null
                                 Esc: (cm) ->
+                                    if attrs.escapeToCancel?
+                                        codemirror.cancelEdit = true
                                     forceBlur()
                         codemirror.setValue ngModel.$viewValue or ''
                         codemirror.on 'blur', ->
                             forceBlur()
-                        codemirror.on 'change', _.debounce(save, AUTOSAVE_DELAY)
+                        if attrs.noAutosave?
+                            #nothing to do here just yet
+                        else
+                            codemirror.on 'change', _.debounce(save, AUTOSAVE_DELAY)
                         display.hide 100
                         attachTo.show 100, ->
                             codemirror.focus()
