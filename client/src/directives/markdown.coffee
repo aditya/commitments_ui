@@ -139,10 +139,11 @@ define ['angular',
                 element.on 'focus', (event) ->
                     focus()
                 #markdown rendering with optional search word highlighting
-                hilightCount = 0
-                $scope.$watch attrs.searchHighlight, (value) ->
-                    if hilightCount++ > 0
-                        ngModel.$render()
+                if attrs.searchHighlight
+                    hilightCount = 0
+                    $scope.$watch attrs.searchHighlight, (value) ->
+                        if hilightCount++ > 0
+                            ngModel.$render()
                 ngModel.$render = () ->
                     #markdown based display
                     content = ngModel.$viewValue or ''
