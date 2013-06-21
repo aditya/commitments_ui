@@ -26,21 +26,22 @@
     position: relative;
 }
 
-.tagbar-search-choice {
+//styles for individual tags
+.tagbar-tag {
     padding: 0px;
     display: inline-block;
     .border-radius(@baseBorderRadius);
 }
 
-.tagbar-search-choice-icon-only {
+.tagbar-tag-has-icon {
     display: none !important;
 }
 
-.focus.tagbar-search-choice-icon-only {
+.focus.tagbar-has-icon {
     display: inline-block !important;
 }
 
-.tagbar-search-choice-icon {
+.tagbar-tag-icon {
     display: inline;
     .pull-left;
     .border-radius(@baseBorderRadius);
@@ -50,43 +51,39 @@
     margin-right: -4px;
 }
 
-.hover.tagbar-search-choice-icon {
+.hover.tagbar-tag-icon {
     border: 1px solid @navbarLinkColorHover;
 }
 
-.tagbar-search-choice-display {
+.tagbar-tag-display {
     .label;
     .pull-left;
     background-color: @navbarLinkColor;
     .border-radius(@baseBorderRadius);
 }
 
-.tagbar-search-choice-display.hover {
+.hover.tagbar-tag-display {
     background-color: @navbarLinkColorHover;
 }
 
-.tagbar-status-icon {
-    display: inline;
-    font-size: 1.4em;
-    margin-left: @defaultMargin / 2;
-    margin-left: @defaultMargin / 2;
-    position: relative;
-    top: 1px;
+.focus.tagbar-tag-display {
+    display: inline-block !important;
 }
 
-.tagbar-search-choice-label {
+.tagbar-tag-text {
     margin-left: @defaultMargin / 2;
     margin-right: @defaultMargin / 2;
     padding: 0px;
     font-size: 1.1em;
     display: inline;
     .line-height;
-    a {
+    color: @white;
+    &:hover {
         color: @white;
     }
 }
 
-.tagbar-search-choice-close {
+.tagbar-tag-delete {
     cursor: pointer;
     margin-left: @defaultMargin / 2;
     margin-right: @defaultMargin / 2;
@@ -97,20 +94,10 @@
     top: 2px;
 }
 
-.tagbar-search-choice-close.focus {
+.focus.tagbar-tag-delete {
     display: inline;
 }
 
-.tagbar-highlighted {
-    a {
-        color: @dropdownLinkColorActive !important;
-        text-decoration: none;
-        outline: 0;
-        #gradient > .vertical(@dropdownLinkBackgroundActive, darken(@dropdownLinkBackgroundActive, 5%));
-    }
-}
-
-//when a query is active
 .tagbar-active {
 }
 
@@ -175,4 +162,13 @@
     .border-radius(@baseBorderRadius);
     height: @defaultHeight;
     margin-right: @defaultMargin / 2;
+}
+
+.tagbar-highlighted {
+    a {
+        color: @dropdownLinkColorActive !important;
+        text-decoration: none;
+        outline: 0;
+        background-color: @navbarLinkColorHover;
+    }
 }

@@ -113,7 +113,7 @@ define [
                     controller: 'Splash'
                 )
         .run ($rootScope) ->
-            $rootScope.debug = false
+            $rootScope.debug = true
             window.debug = ->
                 $rootScope.debug = true
                 $rootScope.$digest()
@@ -414,7 +414,7 @@ define [
                 if $scope.sorting
                     #do not expand while sorting, it is disturbing
                     ''
-                else if $scope.focused
+                else if $scope.focused or $scope.debug
                     'taskextended.html'
                 else
                     ''

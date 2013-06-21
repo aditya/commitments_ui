@@ -6,6 +6,33 @@ define ['angular',
     #yep -- make a gravatar
     gravatarUrl = (hash, iconSize) ->
         "http://www.gravatar.com/avatar/#{hash}.jpg?d=identicon&s=#{iconSize}"
+    #building a single, stand along tag element
+    makeATag = (options) ->
+        #the main item, this stores the tag content
+        tag = $ "<li class='tagbar-tag'/>"
+        #display area, this is the main content
+        display = $ "<span class='tagbar-tag-display'/>"
+        #each tag may have an icon callback
+        if options.iconUrl and typeof(options.iconUrl) is 'function'
+            iconUrl = options.iconUrl options.data
+            if iconUrl
+                icon = $ "<image class='tagbar-tag-icon' src='#{iconUrl}'/>"
+                tag.append icon
+                display.addClass 'tagbar-tag-has-icon'
+        #tags might be links, or just text
+        if options.tagUrl and typeof(options.tagUrl) is 'function'
+            display.append "<a href='#{options.tagUrl(options.data)}' class='tagbar-tag-text'>#{options.data}</a>"
+        else if options.tagUrl
+            display.append "<a href='#{options.tagUrl}' class='tagbar-tag-text'>#{options.data}</a>"
+        else if options.data
+            display.append "<span class='tagbar-tag-text'>#{options.data}</span>"
+        #and a delete handle
+        if options.allowDelete
+            display.append "<span class='tagbar-tag-delete icon-remove-sign'/>"
+        tag.append display
+        #hover marking
+        tag.hover (-> tag.find('*').addClass('hover')), (-> tag.find('*').removeClass('hover'))
+        tag
     #
     module = angular.module('editable')
         #used to display an editable tag selection box
@@ -36,6 +63,7 @@ define ['angular',
                                 "<li class='tagbar-icon icon-#{templateAttrs.icon}'></li")
                     #set up the tagbar
                     input.tagbar
+                        makeATag: makeATag
                         query: (query) ->
                             if attrs.tagsQuery
                                 matches = $scope.$eval(attrs.tagsQuery) (term) ->
@@ -53,6 +81,7 @@ define ['angular',
                         statusIcon: $scope.$eval(attrs.statusIconFrom) or null
                         tagClickable: $scope.$eval(attrs.tagClickEvent)
                         tagUrl: $scope.$eval(attrs.tagUrl)
+                        allowDelete: true
                     $scope.$watch attrs.ngModel, (model) ->
                         ngModel.$render()
                     , true
@@ -100,5 +129,7 @@ define ['angular',
                                 hash = md5((tagValue or '').toLowerCase())
                                 return gravatarUrl(hash, iconSize)
                             null
-                    element.onetag(ngModel.$viewValue, options)
+                        data: ngModel.$viewValue
+                    element.children().remove()
+                    element.append makeATag(options)
         ])

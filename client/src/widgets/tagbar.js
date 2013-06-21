@@ -1,63 +1,5 @@
 (function ($, undefined) {
   "use strict";
-  if (window.tagbar !== undefined) {
-    return;
-  }
-
-  function makeATag(data, opts) {
-    data = data || '';
-    opts = opts || $.fn.tagbar.defaults;
-    var item = null;
-    //this is the main tag display
-    if (opts.listItem) {
-      var item = $("<li class='tagbar-search-choice'></li>");
-    } else {
-      var item = $("<span class='tagbar-search-choice'></span>");
-    }
-    //just a display item, likely to be a gravatar, this is separate from
-    //the tag, it will be shown by itself for compactness
-    if (opts.iconUrl) {
-      var url = opts.iconUrl(data);
-      if (url) {
-        var icon = $("<image class='tagbar-search-choice-icon' src='" + url + "'/>");
-        item.append(icon);
-      }
-    }
-    //here is the container for the content
-    //status icons show a bit more than just a display item
-    var display = $("<span class='tagbar-search-choice-display'/>");
-    if (opts.statusIcon) {
-      var statusIcon = $(opts.statusIcon(data));
-      statusIcon.addClass('tagbar-status-icon');
-      display.append(statusIcon);
-    }
-    var content = "";
-    if (opts.tagUrl && (typeof(opts.tagUrl) === 'function') && opts.tagUrl(this)) {
-      content = "<a href='" + opts.tagUrl(data) + "' class='tagbar-search-choice-text'>" + data + "</a>";
-    } else if (opts.tagUrl) {
-      content = "<a href='" + opts.tagUrl + "' class='tagbar-search-choice-text'>" + data + "</a>";
-    } else {
-      content = "<span class='tagbar-search-choice-text'>" + data + "</span>";
-    }
-    if (content) {
-      label = $("<span class='tagbar-search-choice-label'>" + content + "</span>");
-      display.append(label)
-    }
-    if (opts.allowClose && label) {
-      var closer = $("<span class='closer tagbar-search-choice-close icon-remove-sign'></span>");
-      display.append(closer);
-    }
-    if (icon) {
-        display.addClass('tagbar-search-choice-icon-only');
-    }
-    item.append(display);
-    item.hover( function(){
-        item.find('*').addClass('hover');
-    }, function(){
-        item.find('*').removeClass('hover');
-    });
-    return item;
-  }
 
   var KEY = {
     TAB: 9,
@@ -400,7 +342,7 @@
       this.search.bind("input paste focus", this.bind(this.resizeSearch));
       this.search.bind("focus", this.bind(this.resizeSearch));
       this.container.bind("click", this.bind(this.focusSearch));
-      this.container.on("mousedown", ".tagbar-search-choice", this.bind(this.deferBlur));
+      this.container.on("mousedown", ".tagbar-tag", this.bind(this.deferBlur));
       this.clear()
     },
     focus: function () {
@@ -417,10 +359,11 @@
       this.focusSearch();
     },
     addSelectedChoice: function (data, value, supressChange) {
-      var item = makeATag(data, this.opts);
-      item.find('.closer').bind("click dblclick", this.bind(function (e) {
-        $(e.target).closest(".tagbar-search-choice").fadeOut('fast', this.bind(function(){
-          $(e.target).parent(".tagbar-search-choice").remove();
+      this.opts.data = data
+      var item = this.opts.makeATag(this.opts);
+      item.find('.tagbar-tag-delete').bind("click dblclick", this.bind(function (e) {
+        $(e.target).closest(".tagbar-tag").fadeOut('fast', this.bind(function(){
+          $(e.target).parent(".tagbar-tag").remove();
           delete this.values[data];
           this.clear();
           this.triggerChange();
@@ -429,6 +372,10 @@
         killEvent(e);
       }));
       item.insertBefore(this.search);
+      this.opts.element.trigger('tagadded', {
+        element: item,
+        tag: data
+      });
       this.values[data] = value || Date.now();
       if (!supressChange) {
         this.triggerChange();
@@ -452,7 +399,7 @@
       //the actual data needs to be cleared out, will be filled in
       //by adding selected choices
       this.values = {};
-      $(".tagbar-search-choice", this.container).remove();
+      $(".tagbar-tag", this.container).remove();
       //now add in all the items, forgiving the input as an array
       if (Array.isArray(data)) {
         $(arguments[0]).each(function () {
@@ -498,13 +445,5 @@
     minimumInputLength: 0,
     maximumInputLength: 128,
     tagSeparators: [',', ';'],
-    allowClose: true,
-    iconOnly: false
-  };
-  // plugin to make just one tag
-  $.fn.onetag = function(data, passedOptions) {
-      var opts = $.extend({}, $.fn.tagbar.defaults, passedOptions);
-      opts.allowClose = false;
-      this.empty().append(makeATag(data, opts));
   };
 }(jQuery));
