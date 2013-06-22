@@ -6,8 +6,8 @@
         <div class="navbar-view">
             <ul class="nav">
                 <li class="dropdown" >
-                    <a href="/#/todo" tooltip="user.email" gravatar  ng-model="user.email">
-                    </a>
+                <a href="/#/todo" tooltip="user.email" gravatar="user.email">
+                </a>
                 </li>
                 <li>
                 <a href="/#/settings" tooltip="'Your settings'">
@@ -48,14 +48,19 @@
                 </a>
                 </li>
                 <li class="dropdown" ng-controller="Toolbox">
-                <a data-toggle="dropdown" tooltip="'Filter the todo list'">
-                    <span clickable tag ng-model="selected.title" item-icon-from="selected.iconfrom"></span>
+                <a data-toggle="dropdown" tooltip="'Filter the todo list'" class="toolbox">
+                    <span ng-hide="!selected.gravatar" clickable gravatar="selected.gravatar" class="tagbar-tag-icon"></span>
+                    <span ng-hide="selected.gravatar" clickable ng-model="selected.title" item-icon-from="selected.iconfrom" class="tagbar-tag navtag">
+                        <span class="tagbar-tag-display">
+                            <span class="tagbar-tag-text">{{selected.title}}</span>
+                        </span>
+                    </span>
                 </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li ng-repeat="box in boxes" ng-model="box" ng-class="box.title">
-                    <a readonly-href="box.url || tagUrl(box.tag)">
-                        <span tag ng-model="box.title" tag-url="box.url || tagUrl(box.tag)"></span>
-                    </a>
+                <ul class="dropdown-menu tagbar-menu" role="menu">
+                    <li ng-repeat="box in boxes" class="tagbar-tag">
+                    <span class="tagbar-tag-display">
+                        <a readonly-href="box.url || tagUrl(box.tag)" class="tagbar-tag-text">{{box.title}}</a>
+                    </span>
                     </li>
                 </ul>
                 </li>

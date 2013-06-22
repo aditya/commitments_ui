@@ -479,7 +479,7 @@ define [
                     console.log $scope.from, items
                     $scope.items = items
                     $rootScope.selected =
-                        iconfrom: 'gravatar'
+                        gravatar: $scope.from
                         itemCount: -> items.length
                         title: $scope.from
                         allowNew: true

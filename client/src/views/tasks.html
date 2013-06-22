@@ -18,7 +18,7 @@
                 <li action="edittags" class="icon-tags" tooltip="'Add tags to organize'"></li>
                 <li ng-repeat="(tag, value) in task.tags" class="tagbar-tag">
                     <span class="tagbar-tag-display">
-                        <a href="{{tagUrl(tag)}}" class="tagbar-tag-text">{{tag}}</a>
+                        <a readonly-href="tagUrl(tag)" class="tagbar-tag-text">{{tag}}</a>
                         <span delete-key="tag" class="tagbar-tag-delete icon-remove-sign"></span>
                     </span>
                 </li>
