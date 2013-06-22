@@ -1,8 +1,6 @@
 #A very fancy checkbox using icons rather than input controls
 define ['angular',
-    'lodash',
-    'tagbar',
-    'cs!src/editable'], (angular, _) ->
+    'cs!src/editable'], (angular) ->
     module = angular.module('editable')
         .directive('check', [ ->
             restrict: 'A'
