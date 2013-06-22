@@ -276,6 +276,7 @@ define [
             restrict: 'A'
             link: ($scope, element, attrs) ->
                 $scope.$on attrs.focusOn, ->
+                    console.log 'focus', element
                     element.focus()
         ])
         #

@@ -12,7 +12,19 @@
   <div class="task-extended">
       <ul requires-object="task.discussion" class="task-tools">
           <li action="poketask" ng-hide="readonly" tooltip="'Poke other users for status on a task'"><i class="icon-hand-right"></i></li>
-          <li tags search-highlight="searchQuery" tooltip="'Add tags'" readonly-if="readonly" tags-query="tags" tag-url="tagUrl" icon="tags" ng-model="task.tags"></li>
+          <li ng-model="task.tags">
+            <ul>
+                <li action="edittags" class="icon-tags" tooltip="'Add tags to organize'"></li>
+                <li ng-repeat="(tag, value) in task.tags" class="tagbar-tag">
+                    <span class="tagbar-tag-display">
+                        <a href="{{tagUrl(tag)}}" class="tagbar-tag-text">{{tag}}</a>
+                        <span class="tagbar-tag-delete icon-remove-sign"></span>
+                    </span>
+                </li>
+                <li autocomplete-tagger="tags" focus-on="edittags">
+                </li>
+            </ul>
+          </li>
           <li tags search-highlight="searchQuery" tooltip="'Share'" readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
       </ul>
       <div class="task-discussion">

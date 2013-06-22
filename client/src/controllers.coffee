@@ -348,10 +348,8 @@ define [
             $rootScope.selected.itemCount = ->
                 _.reject $scope.items, $rootScope.selected.hide
             #all the links and tags, used to make the autocomplete
-            $scope.tags = (query) ->
-                _.select LocalIndexes.tags(), query
-            $scope.links = (query) ->
-                _.select LocalIndexes.links(), query
+            $scope.tags = -> LocalIndexes.tags()
+            $scope.links = -> LocalIndexes.links()
             #url rendering, allows navigation from within tags
             $scope.tagUrl = (tag) ->
                 "/#/tag?#{encodeURIComponent(tag)}"

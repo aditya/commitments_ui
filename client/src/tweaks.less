@@ -42,12 +42,26 @@ h1 {
     font-family: 'Ubuntu';
 }
 
-input, textarea {
+input, textarea, .autocomplete-tagger {
     outline: none;
+    .no-shadow;
+    cursor: input;
     &:focus {
         cursor: input;
-        border-color: @inputBorder !important;
         .box-shadow(none) !important;
+        .focus-editor;
+    }
+    &:hover {
+        .hover-editor;
+    }
+}
+
+.search-query {
+    &:focus {
+         border: 1px solid @borderColor !important;
+    }
+    &:hover {
+         border: 1px solid @navbarLinkColorHover !important;
     }
 }
 
@@ -451,6 +465,12 @@ input, textarea {
                 height: 22px;
                 margin-right: @defaultMargin / 2;
             }
+            .typeahead {
+                li {
+                    float: none;
+                    display: list-item;
+                }
+            }
         }
         .task-dicussion {
             .clearfix;
@@ -750,4 +770,11 @@ hr {
         margin-top: @defaultMargin;
         margin-bottom: @defaultMargin;
     }
+}
+
+.autocomplete-tagger {
+    height: 100%;
+    cursor: text;
+    margin-top: @defaultMargin / 2;
+    margin-left: @defaultMargin / 2;
 }

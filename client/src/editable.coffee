@@ -4,6 +4,30 @@ define ['md5',
     'jquery-sortable'
     ], (md5, moment, _) ->
     counter = 0;
+    #sizer element, this is used for font relative treachery
+    measureTextWidth = (element) ->
+        sizer = $('#editSizer')
+        if not sizer.length
+            sizer = $(document).append($("<div id='editSizer'/>")).find("#editSizer")
+        style = element[0].currentStyle or window.getComputedStyle(element[0], null)
+        sizer.css({
+            position: "absolute",
+            left: "-10000px",
+            top: "-10000px",
+            display: "none",
+            margin: style.margin,
+            padding: style.padding,
+            fontSize: style.fontSize,
+            fontFamily: style.fontFamily,
+            fontStyle: style.fontStyle,
+            fontWeight: style.fontWeight,
+            letterSpacing: style.letterSpacing,
+            textTransform: style.textTransform,
+            whiteSpace: "nowrap"
+        })
+        sizer.text(element.text() + '__')
+        console.log sizer
+        sizer.width()
     module = angular.module('editable', ['Root'])
         .directive('editableRecord', ['$timeout', ($timeout) ->
             scope: true
@@ -212,4 +236,34 @@ define ['md5',
             link: ($scope, element, attrs) ->
                 if not $scope.$eval(attrs.requiresArray)
                     $scope.$eval("#{attrs.requiresArray}=[]")
+        ])
+        #user input to allow tag entry and add into a model
+        .directive('autocompleteTagger', [ ->
+            restrict: 'A'
+            require: '^ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                #setup
+                element.addClass 'autocomplete-tagger'
+                #this is nice, makes it self resize unlike an input
+                element.attr 'contentEditable', true
+                #poking under the hood to angular bind the data source
+                typeahead = element.typeahead().data('typeahead')
+                $scope.$watch attrs.autocompleteTagger, (autocomplete) ->
+                    typeahead.source = (query) ->
+                        ret = autocomplete()
+                        ret.unshift query
+                        ret
+                #events
+                #here is an odd one, it is easy to end up with a lot of &nbsp;
+                #so that should really be blank
+                element.on 'keypress', ->
+                    if element.val().trim() is ''
+                        element.val('')
+                #and here is the real action
+                element.on 'change', ->
+                    tag = element.val().trim()
+                    element.val('')
+                    $scope.$apply ->
+                        ngModel.$modelValue[tag] = Date.now()
+                        $scope.$emit 'edit'
         ])

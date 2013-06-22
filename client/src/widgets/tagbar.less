@@ -9,17 +9,6 @@
     line-height: @defaultLineHeight;
 }
 
-.tag {
-    display: inline-block;
-}
-
-.tag-display {
-    display: inline-block;
-}
-
-.tagbar-input {
-}
-
 .tagbar-container {
     display: inline-block;
     vertical-align: bottom;
@@ -30,6 +19,7 @@
 .tagbar-tag {
     padding: 0px;
     display: inline-block;
+    margin-right: @defaultMargin;
     .border-radius(@baseBorderRadius);
 }
 
@@ -60,10 +50,9 @@
     .pull-left;
     background-color: @navbarLinkColor;
     .border-radius(@baseBorderRadius);
-}
-
-.hover.tagbar-tag-display {
-    background-color: @navbarLinkColorHover;
+    &:hover {
+        background-color: @navbarLinkColorHover;
+    }
 }
 
 .focus.tagbar-tag-display {
@@ -89,14 +78,10 @@
     margin-right: @defaultMargin / 2;
     padding: 0px;
     font-size: 1.4em;
-    display: none;
     position: relative;
     top: 2px;
 }
 
-.focus.tagbar-tag-delete {
-    display: inline;
-}
 
 .tagbar-active {
 }
@@ -120,26 +105,6 @@
         cursor: pointer;
         .action-icon;
     }
-}
-
-.tagbar-search-field {
-    height: 100%;
-    cursor: text;
-    &:focus {
-        margin-left: @defaultMargin;
-    }
-    .focus-editor;
-    .no-shadow;
-}
-
-.tagbar-choices.readonly {
-    li.tagbar-icon {
-        cursor: default;
-        .no-action-icon;
-    }
-}
-.tagbar-search-choice-close.readonly {
-    display: none;
 }
 
 .tagbar-results {

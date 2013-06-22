@@ -9,6 +9,13 @@ define ['angular',
     'cs!./directives/markdown',
     ], (angular, jquery) ->
     jquery ->
+        #allow val to work with content editable. nice trick
+        jquery.valHooks['li'] =
+            get: (element) ->
+                jquery(element).text()
+            set: (element, value) ->
+                jquery(element).text(value)
+        #fire up out angular app
         angular.bootstrap document, ['Root']
         window.debugCSS = ->
             require ['lessc'], (less) ->
