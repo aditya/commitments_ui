@@ -12,6 +12,7 @@
   <div class="task-extended">
       <ul requires-object="task.discussion" class="task-tools">
           <li action="poketask" ng-hide="readonly" tooltip="'Poke other users for status on a task'"><i class="icon-hand-right"></i></li>
+          <!-- tags -->
           <li editable-tags ng-model="task.tags">
             <ul>
                 <li action="edittags" class="icon-tags" tooltip="'Add tags to organize'"></li>
@@ -25,7 +26,21 @@
                 </li>
             </ul>
           </li>
-          <li tags search-highlight="searchQuery" tooltip="'Share'" readonly-if="readonly" tags-query="links" tag-url="userUrl" item-icon-from="gravatar" status-icon-from="pokestatus" icon="user" ng-model="task.links"></li>
+          <!-- links -->
+          <li editable-tags ng-model="task.links">
+            <ul>
+                <li action="editlinks" class="icon-user" tooltip="'Share with others by email address'"></li>
+                <li ng-repeat="(link, value) in task.links" class="tagbar-tag">
+                    <span gravatar="link" class="tagbar-tag-icon"></span>
+                    <span class="tagbar-tag-display">
+                        <a href="{{userUrl(link)}}" class="tagbar-tag-text">{{link}}</a>
+                        <span delete-key="link" class="tagbar-tag-delete icon-remove-sign"></span>
+                    </span>
+                </li>
+                <li autocomplete-tagger="links" focus-on="editlinks">
+                </li>
+            </ul>
+          </li>
       </ul>
       <div class="task-discussion">
           <div ng-include src="'src/views/discussion.html'"></div>
@@ -92,7 +107,7 @@
       animated-hide="hideAcceptReject(task)"
       class="alert">
       <span>Task from</span>
-      <span gravatar ng-model="task.who"></span>
+      <span gravatar="task.who"></span>
       <span class="btn-group">
         <button action="accepttask" class="btn btn-small btn-success"><i class="icon-ok-sign icon-large"></i> Accept</button>
         <button action="rejecttask" class="btn btn-small btn-danger"><i class="icon-remove-sign icon-large"></i> Reject</button>
@@ -104,7 +119,7 @@
       animated-hide="hidePokeStatus(task)"
       class="alert">
       <span>Poke from</span>
-      <span gravatar ng-model="task.poke.poker"></span>
+      <span gravatar="task.poke.poker"></span>
       <span class="btn-group">
         <button action="notstartedtask" class="btn btn-small"><i class="icon-frown icon-large"></i> Not Started</button>
         <button action="inprogresstask" class="btn btn-small"><i class="icon-smile icon-large"></i> In Progress</button>

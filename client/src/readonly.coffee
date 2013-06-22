@@ -22,28 +22,18 @@ define [
                     else
                         element.hide ANIMATION_SPEED
         ])
-        .directive('default', ['$rootScope', ($rootScope) ->
-            restrict: 'A'
-            require: 'ngModel'
-            priority: 1000
-            link: ($scope, element, attrs, ngModel) ->
-                $scope.$watch attrs.default, (value) ->
-                    if not ngModel.$viewValue and value
-                        ngModel.$setViewValue(value)
-        ])
         .directive('gravatar', [() ->
             restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs, ngModel) ->
+            link: ($scope, element, attrs) ->
                 element.addClass 'gravatar'
                 size = attrs.size or 50
                 icon = angular.element("<img></img>")
                 element.append(icon)
-                ngModel.$render = ->
-                    hash = md5((ngModel.$viewValue or '').toLowerCase())
+                $scope.$watch attrs.gravatar, (gravatar)->
+                    if not gravatar
+                        gravatar = $scope.$eval(attrs.default)
+                    hash = md5((gravatar or '').toLowerCase())
                     icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=identicon&s=#{size}"
-                $scope.$watch attrs.ngModel, ->
-                    ngModel.$render()
         ])
         .directive('username', [() ->
             restrict: 'A'
