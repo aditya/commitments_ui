@@ -272,11 +272,17 @@ define ['md5',
                         ret.unshift query
                         ret
                 #events
-                #here is an odd one, it is easy to end up with a lot of &nbsp;
-                #so that should really be blank
-                element.on 'keypress', ->
+                element.on 'blur', (event) ->
+                    #never hold on to old value
+                    element.val('')
+                element.on 'keyup', (event) ->
+                    #here is an odd one, it is easy to end up with a lot of &nbsp;
+                    #so that should really be blank
                     if element.val().trim() is ''
                         element.val('')
+                    #force blur on escape
+                    if event.keyCode is 27
+                        element.blur()
                 #and here is the real action
                 element.on 'change', ->
                     tag = element.val().trim()
