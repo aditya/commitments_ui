@@ -237,6 +237,24 @@ define ['md5',
                 if not $scope.$eval(attrs.requiresArray)
                     $scope.$eval("#{attrs.requiresArray}=[]")
         ])
+        #ahh tagging!
+        .directive('editableTags', [ ->
+            restrict: 'A'
+            require: 'ngModel'
+            scope: true
+            link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'tags'
+                #events, coming on up
+                #emit an edit to let the containing record save
+                $scope.$on 'add', (event, tag) ->
+                    event.stopPropagation()
+                    ngModel.$modelValue[tag] = Date.now()
+                    $scope.$emit 'edit'
+                $scope.$on 'delete', (event, tag) ->
+                    event.stopPropagation()
+                    delete ngModel.$modelValue[tag]
+                    $scope.$emit 'edit'
+        ])
         #user input to allow tag entry and add into a model
         .directive('autocompleteTagger', [ ->
             restrict: 'A'
@@ -264,6 +282,5 @@ define ['md5',
                     tag = element.val().trim()
                     element.val('')
                     $scope.$apply ->
-                        ngModel.$modelValue[tag] = Date.now()
-                        $scope.$emit 'edit'
+                        $scope.$emit 'add', tag
         ])

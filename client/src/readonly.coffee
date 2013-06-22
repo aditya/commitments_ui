@@ -169,12 +169,24 @@ define [
             require: '^ngModel'
             link: ($scope, element, attrs, ngModel) ->
                 element.addClass 'action'
-                element.css 'cursor', 'pointer'
                 #named event emission
                 if attrs.action
                     element.on 'click', ->
                         console.log 'action', attrs.action, ngModel.$modelValue
                         $scope.$emit attrs.action, ngModel.$modelValue
+        ])
+        #fire a delete event with a specific named key
+        .directive('deleteKey', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs, ngModel) ->
+                element.addClass 'delete-key'
+                #named delete event omission
+                deleteName = ''
+                $scope.$watch attrs.deleteKey, (key) ->
+                    deleteName = key
+                element.on 'click', ->
+                    console.log 'delete', deleteName
+                    $scope.$emit 'delete', deleteName
         ])
         #This is low priority, so that an element can have click handlers, but
         #ultimately is a firewall to keep clicks from making it out of an element

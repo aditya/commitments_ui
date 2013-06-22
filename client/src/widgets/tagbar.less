@@ -19,7 +19,8 @@
 .tagbar-tag {
     padding: 0px;
     display: inline-block;
-    margin-right: @defaultMargin;
+    margin-right: @defaultMargin / 2;
+    margin-bottom: @defaultMargin / 2;
     .border-radius(@baseBorderRadius);
 }
 
@@ -83,9 +84,6 @@
 }
 
 
-.tagbar-active {
-}
-
 .tagbar-choices {
     border: none;
     background-color: transparent;
@@ -107,21 +105,6 @@
     }
 }
 
-.tagbar-results {
-    width: 100%;
-    min-width: 220px;
-    height: auto;
-    max-height: 160px;
-    overflow: scroll;
-    position: absolute;
-    li {
-        list-style: none;
-        display: list-item;
-        text-align: left;
-        width: 100%;
-    }
-}
-
 .tagbar-result-icon {
     display: inline;
     .border-radius(@baseBorderRadius);
@@ -129,11 +112,3 @@
     margin-right: @defaultMargin / 2;
 }
 
-.tagbar-highlighted {
-    a {
-        color: @dropdownLinkColorActive !important;
-        text-decoration: none;
-        outline: 0;
-        background-color: @navbarLinkColorHover;
-    }
-}
