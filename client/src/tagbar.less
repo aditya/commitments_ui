@@ -24,14 +24,6 @@
     .border-radius(@baseBorderRadius);
 }
 
-.tagbar-tag-has-icon {
-    display: none !important;
-}
-
-.focus.tagbar-has-icon {
-    display: inline-block !important;
-}
-
 .tagbar-tag-icon {
     display: inline;
     .pull-left;
@@ -49,10 +41,6 @@
     &:hover {
         background-color: @navbarLinkColorHover;
     }
-}
-
-.focus.tagbar-tag-display {
-    display: inline-block !important;
 }
 
 .tagbar-tag-text {
@@ -76,34 +64,5 @@
     font-size: 1.4em;
     position: relative;
     top: 2px;
-}
-
-
-.tagbar-choices {
-    border: none;
-    background-color: transparent;
-    position: relative;
-    margin: 0px;
-    li {
-        float: left;
-        list-style: none;
-        margin: @defaultMargin / 2;
-        margin-bottom: 0px;
-        padding: 0px !important;
-    }
-    li.tagbar-icon {
-        margin: 0px;
-        margin-top: @defaultMargin;
-        padding: 0px;
-        cursor: pointer;
-        .action-icon;
-    }
-}
-
-.tagbar-result-icon {
-    display: inline;
-    .border-radius(@baseBorderRadius);
-    height: @defaultHeight;
-    margin-right: @defaultMargin / 2;
 }
 
