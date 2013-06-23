@@ -34,9 +34,13 @@ define ['angular',
                         blank_record =
                             id: md5(Date.now() + '')
                         task.subitems.push blank_record
-                        blank_record
                     else
-                        _.last task.subitems
+                        blank_record = _.last task.subitems
+                    #event for the new record id, but delayed so there is a
+                    #chance to bind first
+                    $timeout ->
+                        $rootScope.$broadcast blank_record.id
+                    blank_record
                 deletetask: (task) ->
                     #you really only truly delete tasks you create, otherwise
                     #it is the same thing as rejecting

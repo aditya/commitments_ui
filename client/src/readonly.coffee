@@ -291,9 +291,12 @@ define [
         .directive('focusOn', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->
-                $scope.$on attrs.focusOn, ->
+                $scope.$on $scope.$eval(attrs.focusOn), ->
                     console.log 'focus', element
                     element.focus()
+                    #special focus event for content edit, this works around
+                    #focus not being trapped on spans and divs for markdown
+                    element.trigger 'spanfocus'
         ])
         #
         .directive('readonlyHref', [ ->

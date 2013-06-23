@@ -454,16 +454,10 @@ define ['md5',
                             codemirror.setOption('mode', 'markdown')
                             codemirror.setOption('theme', 'neat')
                             codemirror.refresh()
-                #event that might trigger a forced focus
-                if attrs.focusOn?
-                    element.scope().$on attrs.focusOn, ->
-                        focus()
                 #grab the focus and push it through to a codemirror
-                element.on 'click dblclick', (event) ->
+                element.on 'click dblclick focus spanfocus', (event) ->
                     if not display.hasClass 'readonly'
                         focus()
-                element.on 'focus', (event) ->
-                    focus()
                 #markdown rendering with optional search word highlighting
                 if attrs.searchHighlight
                     hilightCount = 0

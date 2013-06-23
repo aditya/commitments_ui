@@ -1,5 +1,4 @@
 <script type="text/ng-template" id="taskextended.html">
-<!--Subtasks-->
   <ol editable-list
       editable-list-reorder
       editable-list-nested
@@ -22,7 +21,7 @@
                         <span animated-show="tagEditing" delete-key="tag" class="tagbar-tag-delete icon-remove-sign"></span>
                     </span>
                 </li>
-                <li autocomplete-tagger="tags" focus-on="edittags">
+                <li autocomplete-tagger="tags" focus-on="'edittags'">
                 </li>
             </ul>
           </li>
@@ -37,7 +36,7 @@
                         <span delete-key="link" class="tagbar-tag-delete icon-remove-sign"></span>
                     </span>
                 </li>
-                <li autocomplete-tagger="links" focus-on="editlinks">
+                <li autocomplete-tagger="links" focus-on="'editlinks'">
                 </li>
             </ul>
           </li>
@@ -52,6 +51,7 @@
       </div>
   </div>
 </script>
+<!--Subtasks-->
 <script type="text/ng-template" id="subtask.html">
 <div>
       <table class="task-core">
@@ -159,7 +159,7 @@
   ng-model="$$placeholder" ng-show="selected.allowNew" class="task">
   <div class="task-content">
     <div class="task-core">
-      <span focus-on="newtaskplaceholder" markdown escape-to-cancel no-autosave ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder">
+      <span focus-on="'newtaskplaceholder'" markdown escape-to-cancel no-autosave ng-model="$$placeholder.what" placeholder="'New task here'" class="task-placeholder">
         <span ng-include="'src/views/taskhelp.html'"></span>
       </span>
     </div>
