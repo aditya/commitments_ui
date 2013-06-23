@@ -31,9 +31,9 @@
             <ul>
                 <li action="editlinks" class="icon-user" tooltip="'Share with others by email address'"></li>
                 <li ng-repeat="(link, value) in task.links" class="tagbar-tag">
-                    <span gravatar="link" class="tagbar-tag-icon"></span>
+                    <a readonly-href="userUrl(link)"><span gravatar="link" class="tagbar-tag-icon"></span></a>
                     <span class="tagbar-tag-display">
-                        <a href="{{userUrl(link)}}" class="tagbar-tag-text">{{link}}</a>
+                        <a readonly-href="userUrl(link)" class="tagbar-tag-text">{{link}}</a>
                         <span delete-key="link" class="tagbar-tag-delete icon-remove-sign"></span>
                     </span>
                 </li>
