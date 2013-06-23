@@ -113,7 +113,7 @@ define [
                     controller: 'Splash'
                 )
         .run ($rootScope) ->
-            $rootScope.debug = true
+            $rootScope.debug = false
             window.debug = ->
                 $rootScope.debug = true
                 $rootScope.$digest()
