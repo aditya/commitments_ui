@@ -28,11 +28,25 @@ define [
                 element.addClass 'gravatar'
                 size = attrs.size or 50
                 icon = angular.element("<img></img>")
+                user = ''
                 element.append(icon)
+                content = ->
+                    user
+                element.tooltip(
+                    trigger: 'hover'
+                    html: true
+                    title: content
+                    placement: 'bottom'
+                    delay:
+                        show: TOOLTIP_SPEED
+                        hide: ANIMATION_SPEED
+                )
                 $scope.$watch attrs.gravatar, (gravatar)->
                     if not gravatar
-                        gravatar = $scope.$eval(attrs.default)
-                    hash = md5((gravatar or '').toLowerCase())
+                        user = $scope.$eval(attrs.default)
+                    else
+                        user = gravatar
+                    hash = md5((user or '').toLowerCase())
                     icon.attr 'src', "http://www.gravatar.com/avatar/#{hash}.jpg?d=identicon&s=#{size}"
         ])
         .directive('username', [() ->
