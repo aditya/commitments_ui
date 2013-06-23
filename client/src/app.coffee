@@ -4,7 +4,6 @@ define ['angular',
     './etc',
     'cs!./services',
     'cs!./controllers',
-    'cs!./directives/markdown',
     ], (angular, jquery) ->
     jquery ->
         #allow val to work with content editable. nice trick
