@@ -290,3 +290,36 @@ define ['md5',
                     $scope.$apply ->
                         $scope.$emit 'add', tag
         ])
+        .directive('check', [ ->
+            restrict: 'A'
+            require: 'ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                    icon = angular.element("<i/>")
+                    element.addClass 'check'
+                    element.append(icon)
+                    readonly = false
+                    $scope.$watch 'readonly', (ro) ->
+                        readonly = ro
+                        if ro
+                            element.addClass 'readonly'
+                        else
+                            element.removeClass 'readonly'
+                    element.on 'click', ->
+                        if readonly
+                            #no action
+                        else
+                            if ngModel.$viewValue
+                                value = 0
+                            else
+                                value = Date.now()
+                            $scope.$apply () ->
+                                ngModel.$setViewValue value
+                                ngModel.$render()
+                                $scope.$emit 'edit', attrs.ngModel, ngModel
+                    ngModel.$render = ->
+                        icon.removeClass 'icon-check'
+                        icon.addClass 'icon-check-empty'
+                        if ngModel.$viewValue
+                            icon.addClass 'icon-check'
+                            icon.removeClass 'icon-check-empty'
+        ])

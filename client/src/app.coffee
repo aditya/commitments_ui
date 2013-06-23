@@ -4,7 +4,6 @@ define ['angular',
     './etc',
     'cs!./services',
     'cs!./controllers',
-    'cs!./directives/check',
     'cs!./directives/markdown',
     ], (angular, jquery) ->
     jquery ->
