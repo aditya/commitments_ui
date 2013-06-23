@@ -19,7 +19,7 @@
                 <li ng-repeat="(tag, value) in task.tags" class="tagbar-tag">
                     <span class="tagbar-tag-display">
                         <a readonly-href="tagUrl(tag)" class="tagbar-tag-text">{{tag}}</a>
-                        <span delete-key="tag" class="tagbar-tag-delete icon-remove-sign"></span>
+                        <span animated-show="tagEditing" delete-key="tag" class="tagbar-tag-delete icon-remove-sign"></span>
                     </span>
                 </li>
                 <li autocomplete-tagger="tags" focus-on="edittags">
@@ -32,7 +32,7 @@
                 <li action="editlinks" class="icon-user" tooltip="'Share with others by email address'"></li>
                 <li ng-repeat="(link, value) in task.links" class="tagbar-tag">
                     <a readonly-href="userUrl(link)"><span gravatar="link" class="tagbar-tag-icon"></span></a>
-                    <span class="tagbar-tag-display">
+                    <span animated-show="tagEditing" class="tagbar-tag-display">
                         <a readonly-href="userUrl(link)" class="tagbar-tag-text">{{link}}</a>
                         <span delete-key="link" class="tagbar-tag-delete icon-remove-sign"></span>
                     </span>

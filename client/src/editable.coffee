@@ -276,9 +276,14 @@ define ['md5',
                         ret.unshift query
                         ret
                 #events
+                element.on 'focus', (event) ->
+                    $scope.$apply ->
+                        $scope.tagEditing = true
                 element.on 'blur', (event) ->
                     #never hold on to old value
                     element.val('')
+                    $scope.$apply ->
+                        $scope.tagEditing = false
                 element.on 'keyup', (event) ->
                     #here is an odd one, it is easy to end up with a lot of &nbsp;
                     #so that should really be blank
@@ -289,6 +294,7 @@ define ['md5',
                         element.blur()
                 #and here is the real action
                 element.on 'change', ->
+                    #tag value is sent along to the enclosing tag
                     tag = element.val().trim()
                     element.val('')
                     $scope.$apply ->
