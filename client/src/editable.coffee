@@ -296,6 +296,13 @@ define ['md5',
                     #force blur on escape
                     if event.keyCode is 27
                         element.blur()
+                    #a little more poking, make the menu show on the screen, this is assuming
+                    #no horizontal scroll
+                    console.log typeahead.$menu.offset().left, typeahead.$menu.width(), $(window).width()
+                    if (typeahead.$menu.offset().left + typeahead.$menu.width()) > $(window).width()
+                        typeahead.$menu.addClass('pull-right').css('left', 'auto').css('right', 0)
+                    else
+                        typeahead.$menu.removeClass 'pull-right'
                 #and here is the real action
                 element.on 'change', ->
                     #tag value is sent along to the enclosing tag
