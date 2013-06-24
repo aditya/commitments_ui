@@ -13,9 +13,9 @@
         </td>
         <td class="user-tasks" ng-controller="UserTasks">
           <table>
-            <tr ng-repeat="task in items[user]" class="user-task">
-              <td class="user-task-check">
-                <i class="icon-li icon-check-empty"></i>
+            <tr ng-repeat="task in items[user]" ng-model="task" class="user-task">
+              <td class="user-task-action" >
+                <i action="poketask" class="icon-hand-right" tooltip="'Poke for a status update'"></i>
               </td>
               <td class="user-task-what">
                 <a ng-href="/#/task/{{task.id}}" render-markdown ng-model="task.what"></a>

@@ -52,13 +52,9 @@ define ['angular',
                 archivetask: (task) ->
                     task.archived = true
                     $rootScope.$broadcast 'archiveitem', task
-                poketask: (task) ->
-                    task.poke = {}
-                    #poke is all about asking for new status, so it resets
-                    for user, ignore of task.links
-                        task.poke[user] = null
-                    task.links[User.email] = Date.now()
-                    task.poke[User.email] = 'poker'
+                poketask: (task, user) ->
+                    task.poke = task.poke or {}
+                    task.poke[user] = null
                     task.poke.poker = User.email
                     service.updatetask task
             #factory these up rather than copy pasta

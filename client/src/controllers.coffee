@@ -113,7 +113,7 @@ define [
                     controller: 'Splash'
                 )
         .run ($rootScope) ->
-            $rootScope.debug = true
+            $rootScope.debug = false
             window.debug = ->
                 $rootScope.debug = true
                 $rootScope.$digest()
@@ -333,8 +333,7 @@ define [
                 (not $scope.debug) and
                     (task.who is User.email or task.accept[User.email])
             $scope.hidePokeStatus = (task) ->
-                (not $scope.debug) and
-                    (not task.poke or task.poke[User.email])
+                (not $scope.debug) and (not task.poke or task.poke[User.email])
             #visibility control for archive and delete
             $scope.hideDelete = (task) ->
                 task.done or $scope.readonly
@@ -438,7 +437,7 @@ define [
                 allowNew: false
         #Tasks for each user, setting up a scope to query out their current
         #task list
-        .controller 'UserTasks', ($rootScope, $scope, $timeout) ->
+        .controller 'UserTasks', ($rootScope, $scope, $timeout, Task) ->
             #for this user, go and get their items
             $rootScope.$broadcast 'useritems', $scope.user, (items) ->
                 #items not yet done
@@ -447,6 +446,9 @@ define [
                 items = items.slice(0, 2)
                 $scope.$apply ->
                     $scope.items[$scope.user] = items
+            #poke a single user, just this one action
+            $scope.$on 'poketask', (event, task) ->
+                Task.poketask task, $scope.user
         #All about a single user
         .controller 'User', ($rootScope, $scope, $routeParams, $timeout, $location, User) ->
             if $routeParams.email is User.email

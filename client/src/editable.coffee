@@ -65,6 +65,7 @@ define ['md5',
                 $scope.$on 'selectedrecord', (event, data) ->
                     if data is ngModel.$modelValue
                         $scope.focused = true
+                        console.log data
                         #may need to digest, and only on the focus, the unfocsed
                         #things will get covered in the same digest loop implicitly
                     else
