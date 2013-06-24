@@ -245,7 +245,7 @@ define [
             $scope.hideAcceptReject = -> true
             $scope.hidePokeStatus = -> true
             $scope.hideDelete = -> true
-            $scope.hideArchive = -> true
+            $scope.hideArchive = -> false
         #task list level controller
         .controller 'Tasks', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User, LocalIndexes) ->
             console.log 'getting items for current user'
