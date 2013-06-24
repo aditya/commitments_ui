@@ -112,7 +112,6 @@ input, textarea, .autocomplete-tagger {
     &:hover {
         color: @navbarLinkColorHover;
     }
-    font-size: 1.25em;
 }
 
 .no-action-icon {
@@ -120,11 +119,9 @@ input, textarea, .autocomplete-tagger {
     &:hover {
         color: @navbarLinkColor;
     }
-    font-size: 1.25em;
 }
 
 .info-icon {
-    font-size: 1.25em;
 }
 
 .a-lot-larger {
@@ -139,16 +136,12 @@ input, textarea, .autocomplete-tagger {
     font-size: 1.1em;
 }
 
-.a-bit-smaller {
-    font-size: 0.9em;
+.smaller {
+    font-size: 0.8em;
 }
 
 .offset-top {
     margin-top: @defaultMargin / 2;
-}
-
-.smaller {
-    font-size: 0.8em;
 }
 
 .fill {
@@ -179,10 +172,6 @@ input, textarea, .autocomplete-tagger {
 .cut-width {
     min-width: 24px;
     max-width: 28px;
-}
-
-.display {
-    .larger;
 }
 
 .indent {
@@ -234,10 +223,6 @@ input, textarea, .autocomplete-tagger {
 
 .transparent {
     opacity: 0;
-}
-
-.display {
-    padding: @defaultPad;
 }
 
 .markdown {
@@ -296,7 +281,7 @@ input, textarea, .autocomplete-tagger {
 }
 
 .icon {
-    font-size: 1.5em;
+    .a-lot-larger;
     &.icon-border {
         border-width: 2px;
         .border-radius(4px);
@@ -380,9 +365,6 @@ input, textarea, .autocomplete-tagger {
     list-style: none;
     .no-margin;
     .no-padding;
-    li.placeholder {
-        .icon-2x;
-    }
     .handle {
         position: absolute;
         margin-top: @defaultMargin / 2;
@@ -390,7 +372,7 @@ input, textarea, .autocomplete-tagger {
         .action-icon;
         color: @navbarLinkColor;
         cursor: move;
-        font-size: 2.0em;
+        .a-lot-larger;
     }
     .task {
         .tasks-subtasks {
@@ -404,15 +386,19 @@ input, textarea, .autocomplete-tagger {
             }
         }
         .task-content {
+            .well;
             margin-left: @defaultPad * 4;
             margin-right: @defaultPad * 4;
-            .well;
+            margin-bottom: @defaultPad;
+            margin-top: 0px;
+            padding: 0px;
             position: relative;
         }
         .task-footer {
             color: @grayLight;
             margin: @defaultMargin;
             .full-width;
+            .smaller;
         }
         .task-core {
             .full-width;
@@ -433,7 +419,6 @@ input, textarea, .autocomplete-tagger {
             }
         }
         .task-placeholder, .task-what {
-            .larger;
         }
         .task-tools {
             .clearfix;
@@ -455,10 +440,7 @@ input, textarea, .autocomplete-tagger {
                 margin-top: @defaultMargin / 2;
                 margin-right: @defaultMargin * 2;
                 .action-icon;
-            }
-            .info-icon {
-                margin-right: 6px;
-                padding-top: @defaultPad;
+                .larger;
             }
             .gravatar {
                 img {
@@ -486,27 +468,14 @@ input, textarea, .autocomplete-tagger {
         .markdown {
             .full-width;
         }
-        .task-check, .task-nest {
-            width: 24px;
-            i {
-                .icon-2x;
-            }
-            padding-top: @defaultPad;
-            padding-left: @defaultPad;
-        }
         .task-action {
-            width: 16px;
+            width: 14px;
             i {
                 .action-icon;
-                font-size: 1.5em;
+                .a-lot-larger;
             }
             padding-top: @defaultPad;
             padding-left: @defaultPad;
-        }
-        .task-indent {
-            width: 0px;
-            margin: 0px;
-            padding: 0px;
         }
         .task-pad {
             width: 16px;
@@ -569,7 +538,6 @@ input, textarea, .autocomplete-tagger {
             vertical-align: top;
             padding: 0px;
             padding-right: @defaultPad;
-            font-size: 1.25em;
             height: auto;
             .action {
                 .action-icon;
@@ -615,11 +583,6 @@ input, textarea, .autocomplete-tagger {
     top: -1.5 * @defaultMargin;
     left: -2.5 * @defaultMargin;
     z-index: 100;
-    @media (max-width: 720px) {
-        .badge {
-            font-size: 0.8em;
-        }
-    }
 }
 
 .search-query {
@@ -628,16 +591,6 @@ input, textarea, .autocomplete-tagger {
     }
     @media (max-width: 720px) {
         width: 150px;
-    }
-}
-
-.tagbar-search-choice-content {
-    @media (min-width: 720px) {
-        font-weight: bold;
-    }
-    @media (max-width: 720px) {
-        font-weight: normal;
-        .smaller;
     }
 }
 
@@ -654,7 +607,6 @@ input, textarea, .autocomplete-tagger {
 
 .CodeMirror {
     font-family: @baseFontFamily;
-    .larger;
 }
 
 hr {
@@ -707,7 +659,7 @@ hr {
         li {
             a {
                 i {
-                    font-size: 1.5em;
+                    .a-lot-larger;
                     vertical-align: middle;
                 }
                 padding-right: 1.5 * @defaultPad;
