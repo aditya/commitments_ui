@@ -31,7 +31,6 @@ define ['md5',
             whiteSpace: "nowrap"
         })
         sizer.text(element.text() + '__')
-        console.log sizer
         sizer.width()
     module = angular.module('editable', ['Root'])
         .directive('editableRecord', ['$timeout', ($timeout) ->
@@ -493,7 +492,7 @@ define ['md5',
         ])
         #dirty flag tracking, this 'edits' local storage, but is hooked into
         #record selection, as it is part of a record display
-        .directive('dirty', ['$timeout', ($timeout) ->
+        .directive('dirty', [ ->
             restrict: 'A'
             require: '^ngModel'
             link: ($scope, element, attrs, ngModel) ->
@@ -501,24 +500,23 @@ define ['md5',
                     "dirty.#{item.id}"
                 redraw = (dirtval) ->
                     dirtflag = Number(store.get(key(ngModel.$modelValue)) or 0)
-                    console.log ngModel.$modelValue.id, dirtval, dirtflag
                     if dirtval > dirtflag
                         element.show(ANIMATION_SPEED)
                     else
                         element.hide(ANIMATION_SPEED)
+                trapDirty = false
                 $scope.$watch attrs.dirty, (dirtval) ->
+                    if trapDirty
+                        trapDirty = false
+                        store.set key(ngModel.$modelValue), dirtval
                     redraw dirtval
                 #on an edit or a focus, update the dirty flag
                 $scope.$on 'selectedrecord', (event, data) ->
                     if data is ngModel.$modelValue
-                        console.log ngModel.$modelValue.id, 'focus dirt'
                         store.set key(ngModel.$modelValue), Date.now()
                         redraw $scope.$eval(attrs.dirty)
                 $scope.$on 'edit', ->
-                    console.log ngModel.$modelValue.id, 'edit dirt'
                     #run this loop after the edit is complete, the actual
                     #dirty flag is going to be updated by 'the database'
-                    $timeout ->
-                        store.set key(ngModel.$modelValue), Date.now()
-                        redraw $scope.$eval(attrs.dirty)
+                    trapDirty = true
         ])

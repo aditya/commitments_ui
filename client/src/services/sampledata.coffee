@@ -126,6 +126,7 @@ define ['angular',
                                     fakeDeleteCount = 0
                                     fakeCount = 0
                             #an update
+                            fakeServerUpdate.lastUpdatedAt = Date.now()
                             $rootScope.$broadcast 'itemfromserver', 'fake', fakeServerUpdate
                             #delete the last add
                             $rootScope.$broadcast 'deleteitemfromserver', 'fake',
@@ -136,6 +137,7 @@ define ['angular',
                                 id: lastAddedId
                                 what: "Inserted #{Date.now()}"
                                 who: User.email
+                                lastUpdatedAt: Date.now()
                             $rootScope.$broadcast 'notification',
                                 when: Date.now()
                                 data:
