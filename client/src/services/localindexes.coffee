@@ -28,47 +28,12 @@ define ['angular',
                     who: _.keys(item.links).join ' '
                     tags: (_.keys(item.tags).join ' ') or ''
                     comments: _.pluck(item?.discussion?.comments, 'what').join ' '
-            links = {}
-            updateLinks = (items) ->
-                links = {}
-                for id, item of items
-                    for link, v of (item.links or {})
-                        if links[link]
-                            link[link] += 1
-                        else
-                            links[link] = 1
-            tags = {}
-            updateTags = (items) ->
-                tags = {}
-                for id, item of items
-                    for tag, v of (item.tags or {})
-                        if not item.done
-                            if tags[tag]
-                                tags[tag] += 1
-                            else
-                                tags[tag] = 1
-                        else
-                            tags[tag] = 0
             do ->
                 update: (item, items) ->
                     #indexing to drive the tags, autocomplete, and screens
                     fullTextIndex.addToIndex item
-                    updateLinks items
-                    updateTags items
                 delete: (item, items) ->
                     fullTextIndex.remove
                         id: item.id
-                    updateLinks items
-                    updateTags items
-                tagSignature: ->
-                    _.keys(tags).join ''
-                tagCount: (tag) ->
-                    tags[tag]
-                tags: ->
-                    _.sortBy _.keys(tags), (tag) -> -1 * tags[tag]
-                linkSignature: ->
-                    _.keys(links).join ''
-                links: (match) ->
-                    _.sortBy _.keys(links), (link) -> -1 * links[link]
                 fullTextSearch: (query) ->
                     fullTextIndex.search(query)

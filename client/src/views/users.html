@@ -1,11 +1,9 @@
 <div
   ng-controller="Users"
   ng-model="user"
-  grid=".user"
-  grid-watch="items"
-  class="users"
+  class="users row"
   >
-  <div class="user" ng-repeat="user in users">
+  <div class="user span3" ng-repeat="user in users">
     <table>
       <tr>
         <td class="user-avatar">

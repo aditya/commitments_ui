@@ -199,15 +199,14 @@ define [
         #do you call a box of boxes? boxula? Each _box_ is a stored filter, either
         #on a tag or a pre-defined set of tasks
         .controller 'Toolbox', ($scope, $rootScope, $timeout, LocalIndexes, Database) ->
-            $scope.boxes = []
+            boxes = $scope.boxes = []
             $scope.tagUrl = (tag) ->
                 "/#/tag?#{encodeURIComponent(tag)}"
             #here are the various boxes and filters
-            rebuild = ->
+            $scope.rebuild = ->
                 console.log 'rebuild boxes'
-                $rootScope.boxes = []
                 #always have the todo and done boxes
-                $rootScope.boxes.push(
+                boxes.push(
                     title: 'Todo'
                     url: '/#/todo'
                 ,
@@ -216,27 +215,17 @@ define [
                 ,
                     title: 'Untagged'
                     url: '/#/untagged'
-                ,
-                    title: 'divider'
-                    url: '/#/todo'
                 )
                 #now build up a 'box' for each tag, not sure why I want to call
                 #it a box, just that the tags are drawn on screen in a... box?
                 #or maybe that it reminds me of a mailbox
                 make = (term) ->
-                    $rootScope.boxes.push(
+                    boxes.push(
                         title: term
                         tag: term
                     )
-                for tagTerm in LocalIndexes.tags()
-                    if LocalIndexes.tagCount tagTerm
-                        make tagTerm
-                #ok, so, I really don't understand why this is required, but
-                #without it my boxes list in the navbar is just plain empty
-                $scope.boxes = $rootScope.boxes
-            #watch the index to see if we should rebuild the facet filtersk
-            $scope.$watch LocalIndexes.tagSignature, ->
-                rebuild()
+                #All the unique tags
+                _.map Database.tags(), make
         #nothing nuch going on here
         .controller 'Settings', ($rootScope, $scope) ->
             null
@@ -427,14 +416,14 @@ define [
             $scope.trash = Trash
             $rootScope.selected =
                 title: 'Trash'
-        #all the people in all the boxes...
-        .controller 'Users', ($scope, $rootScope, $timeout, LocalIndexes) ->
-            $scope.$watch LocalIndexes.linkSignature, ->
-                $scope.users = LocalIndexes.links()
+        #all the people linked in all the items
+        .controller 'Users', ($scope, $rootScope, $timeout, Database) ->
+            $scope.$watch Database.opCounter, ->
+                $scope.users = Database.links()
                 $scope.items = {}
-            $rootScope.selected =
-                title: "All Users"
-                allowNew: false
+                $rootScope.selected =
+                    title: "All Users"
+                    allowNew: false
         #Tasks for each user, setting up a scope to query out their current
         #task list
         .controller 'UserTasks', ($rootScope, $scope, $timeout, Task) ->

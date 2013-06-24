@@ -39,7 +39,7 @@
                     <i class="icon-plus"></i>
                 </a>
                 </li>
-                <li class="dropdown" ng-controller="Toolbox">
+                <li class="dropdown" ng-controller="Toolbox" ng-click="rebuild()">
                 <a data-toggle="dropdown" tooltip="'Filter the todo list'" class="toolbox">
                     <span ng-hide="!selected.gravatar" clickable gravatar="selected.gravatar" class="tagbar-tag-icon"></span>
                     <span ng-hide="selected.gravatar" clickable ng-model="selected.title" item-icon-from="selected.iconfrom" class="tagbar-tag navtag">

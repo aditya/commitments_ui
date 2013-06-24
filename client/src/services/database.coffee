@@ -13,6 +13,7 @@ define ['angular',
             items_by_file = {}
             items_in_order = []
             items_in_archive = []
+            op_counter = 0
             #
             updateItem = (item, fromserver, filename) ->
                 console.log 'database', fromserver
@@ -39,8 +40,9 @@ define ['angular',
                     items[item.id] = item
                     if _.indexOf(items_in_order, item) is -1
                         items_in_order.push item
-                LocalIndexes.update item, items
+                LocalIndexes.update item, items_in_order
                 $rootScope.$broadcast 'itemindatabase', item
+                op_counter++
                 item
             #
             deleteItem = (item, fromserver, filename) ->
@@ -52,14 +54,32 @@ define ['angular',
                     idx = _.findIndex items_in_order, (x) -> x.id is item.id
                     if idx > -1
                         items_in_order.splice idx, 1
-                    LocalIndexes.delete item, items
+                    LocalIndexes.delete item, items_in_order
+                op_counter++
                 item
             #here is the database service construction function itself
             #call this in controllers, or really - just the root most controller
             #to get one database
             database =
+                opCounter: -> op_counter
                 items: -> items_in_order
                 archive: -> items_in_archive
+                tags: ->
+                    _.uniq(
+                        _.flatten(
+                            _.map( _.map(items_in_order, (x) -> x.tags or {}),
+                                _.keys
+                            )
+                        )
+                    ).sort()
+                links: ->
+                    _.uniq(
+                        _.flatten(
+                            _.map( _.map(items_in_order, (x) -> x.links or {}),
+                                _.keys
+                            )
+                        )
+                    ).sort()
             #save everything if there was a reconnect, safety-pup!
             $rootScope.$on 'reconnect', ->
                 for item in _.values(items)

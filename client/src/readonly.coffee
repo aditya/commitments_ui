@@ -2,8 +2,7 @@ define [
     'md5',
     'bootstrap',
     'mousetrap',
-    'grid',
-    ], (md5, __ignore__bootstrap__, mousetrap, grid) ->
+    ], (md5, __ignore__bootstrap__, mousetrap) ->
     ANIMATION_SPEED = 100
     TOOLTIP_SPEED = 600
     KEY_DELAY = 300
@@ -272,23 +271,6 @@ define [
                     false
                 element.on 'click', act
                 mousetrap.bind key_name[0], act
-        ])
-        #grid a licious grid
-        .directive('grid', [ '$timeout', ($timeout) ->
-            restrict: 'A'
-            require: 'ngModel'
-            link: ($scope, element, attrs) ->
-                $timeout ->
-                    element.gridalicious(
-                        animate: false
-                        selector: attrs.grid
-                    )
-                if attrs.gridWatch
-                    $scope.$watch attrs.gridWatch, ->
-                        element.gridalicious(
-                            animate: false
-                            selector: attrs.grid
-                        )
         ])
         .directive('animatedFocus', [ ->
             restrict: 'A'
