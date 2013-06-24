@@ -11,7 +11,7 @@
   <div class="task-extended">
       <ul requires-object="task.discussion" class="task-tools">
           <!-- tags -->
-          <li editable-tags ng-model="task.tags">
+          <li editable-tags requires-object="task.tags" ng-model="task.tags">
             <ul>
                 <li action="edittags" class="icon-tags" tooltip="'Add tags to organize'"></li>
                 <li ng-repeat="(tag, value) in task.tags" class="tagbar-tag">
@@ -25,7 +25,7 @@
             </ul>
           </li>
           <!-- links -->
-          <li editable-tags ng-model="task.links">
+          <li editable-tags requires-object="task.links" ng-model="task.links">
             <ul>
                 <li action="editlinks" class="icon-user" tooltip="'Share with others by email address'"></li>
                 <li ng-repeat="(link, value) in task.links" class="tagbar-tag">
