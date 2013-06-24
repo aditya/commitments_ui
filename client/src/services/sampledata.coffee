@@ -39,6 +39,7 @@ sampledata =
         reject:
             'nandrews@glgroup.com': 1
             'farai@glgroup.com': 1
+        lastUpdatedAt: Date.now()
     ,
         id: 'b'
         what: 'There is always more to do'
@@ -82,8 +83,9 @@ define ['angular',
     'lodash',
     'cs!./root',
     'cs!./user',
+    'cs!./dirty',
     ], (angular, _, root) ->
-        root.factory 'SampleData', ($rootScope, $timeout, User) ->
+        root.factory 'SampleData', ($rootScope, $timeout, User, Dirty) ->
             () ->
                 console.log 'here comes the samples'
                 #here is some nice fake sample data, but only if we got
@@ -95,6 +97,7 @@ define ['angular',
                     if User.email isnt item.who
                         item.links[User.email] = 1
                     $rootScope.$broadcast 'itemfromserver', 'fake', item
+                    Dirty.unview item
                 for item in samplenotifications
                     $rootScope.$broadcast 'notification', item
                 fakeCount = 0

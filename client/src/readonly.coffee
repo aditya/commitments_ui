@@ -134,6 +134,20 @@ define [
                         element.removeClass 'flipInX'
                         element.addClass 'animated flipOutX'
         ])
+        .directive('dirty', ['Dirty', '$rootScope', (Dirty) ->
+            restrict: 'A'
+            require: '^ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                redraw = (dirtval) ->
+                    if Dirty.dirty ngModel.$modelValue, dirtval
+                        element.show(ANIMATION_SPEED)
+                    else
+                        element.hide(ANIMATION_SPEED)
+                $scope.$watch attrs.dirty, (dirtval) ->
+                    redraw dirtval
+                $scope.$watch 'dirty.updated', (id) ->
+                    redraw $scope.$eval(attrs.dirty)
+        ])
         .directive('activeIf', [ ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

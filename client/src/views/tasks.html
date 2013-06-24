@@ -149,6 +149,10 @@
         <!--extended information about the task, only show when focused-->
         <div ng-include="extendedTemplate()" animated-show="focused || debug">
         </div>
+        <div class="icon-bookmark task-dirty"
+            dirty="task.lastUpdatedAt"
+            tooltip="'There are updates since you last looked'">
+        </div>
     </div>
     </li>
     <!--the new record placeholder-->

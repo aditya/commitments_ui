@@ -377,6 +377,17 @@ input, textarea, .autocomplete-tagger {
         cursor: move;
         .a-lot-larger;
     }
+    .task-dirty {
+        position: absolute;
+        right: -14px;
+        top: 0px;
+        color: @red;
+        .a-lot-larger;
+        -webkit-transform:rotate(-90deg);
+        //this is really a 'shadow as an outline', need a better way to stroke
+        //text
+        text-shadow: 0px 0px 1px @black;
+    }
     .task {
         .tasks-subtasks {
             list-style: none;

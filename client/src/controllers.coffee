@@ -118,7 +118,7 @@ define [
                 $rootScope.debug = true
                 $rootScope.$digest()
         #Root application controller, deals with login and error messages
-        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
+        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash, Dirty) ->
             #preloaded to avoid
             $rootScope.selected = {}
             #main event handling for being logged in or not
@@ -159,6 +159,7 @@ define [
             $rootScope.user = User
             $rootScope.trash = Trash
             $rootScope.database = Database
+            $rootScope.dirty = Dirty
             $rootScope.loggedIn = false
             #here we go
             Server.tryToBeLoggedIn()
@@ -466,17 +467,16 @@ define [
                 $scope.hide = (x) -> x.done
                 #for this user, go and get their items
                 $rootScope.$broadcast 'useritems', $scope.from, (items) ->
-                    console.log $scope.from, items
-                    $scope.items = items
-                    $rootScope.selected =
-                        gravatar: $scope.from
-                        itemCount: -> items.length
-                        title: $scope.from
-                        allowNew: true
-                        stamp: (item) ->
-                            #make sure this is linked to the target user, we are in
-                            #their list after all
-                            item.links = item.links or {}
-                            item.links[$scope.from] = Date.now()
-                    $timeout ->
-                        $scope.$digest()
+                    $scope.$apply ->
+                        console.log $scope.from, items
+                        $scope.items = items
+                        $rootScope.selected =
+                            gravatar: $scope.from
+                            itemCount: -> items.length
+                            title: $scope.from
+                            allowNew: true
+                            stamp: (item) ->
+                                #make sure this is linked to the target user, we are in
+                                #their list after all
+                                item.links = item.links or {}
+                                item.links[$scope.from] = Date.now()
