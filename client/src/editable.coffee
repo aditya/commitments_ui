@@ -255,6 +255,7 @@ define ['md5',
                     event.stopPropagation()
                     delete ngModel.$modelValue[tag]
                     $scope.$emit 'edit'
+                    element.find('.autocomplete-tagger').focus()
         ])
         #user input to allow tag entry and add into a model
         .directive('autocompleteTagger', [ ->
