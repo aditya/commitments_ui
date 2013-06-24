@@ -152,6 +152,15 @@ define [
                     else
                         element.removeClass 'readonly'
         ])
+        .directive('attentionIf', [ ->
+            restrict: 'A'
+            link: ($scope, element, attrs) ->
+                $scope.$watch attrs.attentionIf, (val) ->
+                    if val
+                        element.addClass 'attention'
+                    else
+                        element.removeClass 'attention'
+        ])
         .directive('delayed', ['$timeout', '$rootScope', ($timeout, $rootScope) ->
             restrict: 'A'
             link: ($scope, element, attrs) ->

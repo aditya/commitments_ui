@@ -16,11 +16,7 @@
                 </li>
                 <li>
                 <a href="/#/trash" tooltip="'Look in the trash'">
-                    <i class="icon-trash"></i>
-                    <span
-                        ng-show="trash.itemCount()"
-                        class="badge badge-important">{{trash.itemCount()}}
-                    </span>
+                    <i class="icon-trash" attention-if="trash.itemCount()"></i>
                 </a>
                 </li>
                 <li>
@@ -36,10 +32,6 @@
                 <li>
                 <a href="/#/notifications" tooltip="'Read your notifications'">
                     <i class="icon-envelope-alt"></i>
-                    <span
-                        ng-show="notifications.unreadCount()"
-                        class="badge badge-important">{{notifications.unreadCount()}}
-                    </span>
                 </a>
                 </li>
                 <li>
