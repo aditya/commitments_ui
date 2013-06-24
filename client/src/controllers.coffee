@@ -330,14 +330,14 @@ define [
                 (not task.done) or $scope.readonly
         #Show a tasklist, provided data has been installed into .selected
         #by a higher level scope.
-        .controller 'TaskList', ($scope, $rootScope, $timeout, LocalIndexes, Task) ->
+        .controller 'TaskList', ($scope, $rootScope, $timeout, Database, Task) ->
             #filtered item count, this is used to control the display of items
             #or a message if there is nothing
             $rootScope.selected.itemCount = ->
                 _.reject $scope.items, $rootScope.selected.hide
             #all the links and tags, used to make the autocomplete
-            $scope.tags = -> LocalIndexes.tags()
-            $scope.links = -> LocalIndexes.links()
+            $scope.tags = Database.tags
+            $scope.links = Database.links
             #url rendering, allows navigation from within tags
             $scope.tagUrl = (tag) ->
                 "/#/tag?#{encodeURIComponent(tag)}"

@@ -268,18 +268,24 @@ define ['md5',
                 element.attr 'contentEditable', true
                 #poking under the hood to angular bind the data source
                 typeahead = element.typeahead().data('typeahead')
-                $scope.$watch attrs.autocompleteTagger, (autocomplete) ->
-                    typeahead.source = (query) ->
-                        ret = autocomplete()
-                        ret.unshift query
-                        ret
+                autocompleteData = []
+                typeahead.source = (query) ->
+                    if autocompleteData.length is 0
+                        autocompleteData = $scope.$eval(attrs.autocompleteTagger)()
+                    ret = _.clone autocompleteData
+                    ret.unshift query
+                    ret
                 #events
                 element.on 'focus', (event) ->
+                    #content editable can end up with some odd stuff, so empty out
+                    element.val('')
+                    autocompleteData = []
                     $scope.$apply ->
                         $scope.tagEditing = true
                 element.on 'blur', (event) ->
                     #never hold on to old value
                     element.val('')
+                    autocompleteData = []
                     $scope.$apply ->
                         $scope.tagEditing = false
                 element.on 'keyup', (event) ->
@@ -294,7 +300,9 @@ define ['md5',
                 element.on 'change', ->
                     #tag value is sent along to the enclosing tag
                     tag = element.val().trim()
+                    #clean out to be reloaded on the next search
                     element.val('')
+                    autocompleteData = []
                     $scope.$apply ->
                         $scope.$emit 'add', tag
         ])
