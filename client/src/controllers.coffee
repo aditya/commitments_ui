@@ -429,10 +429,13 @@ define [
             $rootScope.selected =
                 title: 'Trash'
         #all the people in all the boxes...
-        .controller 'Users', ($scope, $timeout, LocalIndexes) ->
+        .controller 'Users', ($scope, $rootScope, $timeout, LocalIndexes) ->
             $scope.$watch LocalIndexes.linkSignature, ->
                 $scope.users = LocalIndexes.links()
                 $scope.items = {}
+            $rootScope.selected =
+                title: "All Users"
+                allowNew: false
         #Tasks for each user, setting up a scope to query out their current
         #task list
         .controller 'UserTasks', ($rootScope, $scope, $timeout) ->
@@ -442,9 +445,8 @@ define [
                 items = _.filter items, (x) -> not x.done
                 #top 2, just a preference
                 items = items.slice(0, 2)
-                $scope.items[$scope.user] = items
-                $timeout ->
-                    $scope.$digest()
+                $scope.$apply ->
+                    $scope.items[$scope.user] = items
         #All about a single user
         .controller 'User', ($rootScope, $scope, $routeParams, $timeout, $location, User) ->
             if $routeParams.email is User.email

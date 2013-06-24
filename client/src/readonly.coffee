@@ -274,6 +274,12 @@ define [
                         animate: false
                         selector: attrs.grid
                     )
+                if attrs.gridWatch
+                    $scope.$watch attrs.gridWatch, ->
+                        element.gridalicious(
+                            animate: false
+                            selector: attrs.grid
+                        )
         ])
         .directive('animatedFocus', [ ->
             restrict: 'A'
