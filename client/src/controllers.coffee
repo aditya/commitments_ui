@@ -118,7 +118,7 @@ define [
                 $rootScope.debug = true
                 $rootScope.$digest()
         #Root application controller, deals with login and error messages
-        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash, Dirty) ->
+        .controller 'Application', ($rootScope, $location, Server, Database, Notifications, User, Trash) ->
             #preloaded to avoid
             $rootScope.selected = {}
             #main event handling for being logged in or not
@@ -159,7 +159,6 @@ define [
             $rootScope.user = User
             $rootScope.trash = Trash
             $rootScope.database = Database
-            $rootScope.dirty = Dirty
             $rootScope.loggedIn = false
             #here we go
             Server.tryToBeLoggedIn()

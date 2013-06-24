@@ -1,10 +1,11 @@
 define ['md5',
     'moment',
     'lodash',
-    'marked'
+    'marked',
+    'store',
     'codemirrormarkdown',
     'jquery-sortable'
-    ], (md5, moment, _, marked) ->
+    ], (md5, moment, _, marked, store) ->
     counter = 0;
     AUTOSAVE_DELAY = 5000
     ANIMATION_SPEED = 200
@@ -489,4 +490,35 @@ define ['md5',
                             else
                                 twizzlerMore.hide()
                         , ANIMATION_SPEED
+        ])
+        #dirty flag tracking, this 'edits' local storage, but is hooked into
+        #record selection, as it is part of a record display
+        .directive('dirty', ['$timeout', ($timeout) ->
+            restrict: 'A'
+            require: '^ngModel'
+            link: ($scope, element, attrs, ngModel) ->
+                key = (item) ->
+                    "dirty.#{item.id}"
+                redraw = (dirtval) ->
+                    dirtflag = Number(store.get(key(ngModel.$modelValue)) or 0)
+                    console.log ngModel.$modelValue.id, dirtval, dirtflag
+                    if dirtval > dirtflag
+                        element.show(ANIMATION_SPEED)
+                    else
+                        element.hide(ANIMATION_SPEED)
+                $scope.$watch attrs.dirty, (dirtval) ->
+                    redraw dirtval
+                #on an edit or a focus, update the dirty flag
+                $scope.$on 'selectedrecord', (event, data) ->
+                    if data is ngModel.$modelValue
+                        console.log ngModel.$modelValue.id, 'focus dirt'
+                        store.set key(ngModel.$modelValue), Date.now()
+                        redraw $scope.$eval(attrs.dirty)
+                $scope.$on 'edit', ->
+                    console.log ngModel.$modelValue.id, 'edit dirt'
+                    #run this loop after the edit is complete, the actual
+                    #dirty flag is going to be updated by 'the database'
+                    $timeout ->
+                        store.set key(ngModel.$modelValue), Date.now()
+                        redraw $scope.$eval(attrs.dirty)
         ])
