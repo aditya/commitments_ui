@@ -5,7 +5,7 @@ define [
     ], (md5, __ignore__bootstrap__, mousetrap) ->
     ANIMATION_SPEED = 100
     TOOLTIP_SPEED = 600
-    KEY_DELAY = 300
+    KEY_DELAY = 500
     module = angular.module('readonly', [])
         .directive('flashMessage', [() ->
             restrict: 'A'

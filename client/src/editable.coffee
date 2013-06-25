@@ -488,7 +488,7 @@ define ['md5',
                                 word = word.trim()
                                 content =
                                    content.replace(
-                                       new RegExp(word, 'gi'),
+                                       new RegExp(RegExp.escape(word), 'gi'),
                                        '<span class="highlight">$&</span>')
                     rendered = marked content
                     display.html rendered
