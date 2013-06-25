@@ -65,21 +65,21 @@ define ['angular',
                 items: -> items_in_order
                 archive: -> items_in_archive
                 tags: ->
-                    _.uniq(
-                        _.flatten(
-                            _.map( _.map(items_in_order, (x) -> x.tags or {}),
-                                _.keys
-                            )
-                        )
-                    ).sort()
+                    _(items_in_order)
+                        .map((x) -> x.tags or {})
+                        .map(_.keys)
+                        .flatten()
+                        .uniq()
+                        .sort()
+                        .value()
                 links: ->
-                    _.uniq(
-                        _.flatten(
-                            _.map( _.map(items_in_order, (x) -> x.links or {}),
-                                _.keys
-                            )
-                        )
-                    ).sort()
+                    _(items_in_order)
+                        .map((x) -> x.links or {})
+                        .map(_.keys)
+                        .flatten()
+                        .uniq()
+                        .sort()
+                        .value()
             #save everything if there was a reconnect, safety-pup!
             $rootScope.$on 'reconnect', ->
                 for item in _.values(items)

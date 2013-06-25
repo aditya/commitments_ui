@@ -14,7 +14,14 @@ samplenotifications =
         when: Date.now()
         data:
             tags: [ 'poke' ]
-            message: 'POKE!'
+    ,
+        when: Date.now()
+        data:
+            tags: [ 'done' ]
+    ,
+        when: Date.now()
+        data:
+            tags: [ 'undone' ]
     ]
 #Build up some sample data for UI testing, this is used when we don't have
 #a server going to allow interactive testing
@@ -97,6 +104,9 @@ define ['angular',
                     item.lastUpdatedAt = Date.now()
                     $rootScope.$broadcast 'itemfromserver', 'fake', item
                 for item in samplenotifications
+                    item.data.context = sampledata[0]
+                    item.data.link = sampledata[0].id
+                    item.data.from = sampledata[0].who
                     $rootScope.$broadcast 'notification', item
                 fakeCount = 0
                 fakeDeleteCount = 0

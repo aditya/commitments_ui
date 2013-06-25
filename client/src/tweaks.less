@@ -295,7 +295,7 @@ input, textarea, .autocomplete-tagger {
 
 .gravatar {
     img {
-        border: 1px solid @navbarLinkColor;
+        border: 1px solid @borderColor;
         color: @borderColor;
         .border-radius(@baseBorderRadius);
         padding: 0px;
@@ -505,10 +505,10 @@ input, textarea, .autocomplete-tagger {
     .row;
     .no-margin;
     .notification {
-        padding: @defaultPad;
         .no-margin;
         .alert;
         .alert-info;
+        padding: @defaultPad;
         margin-bottom: @defaultMargin;
         a {
             .alert-info;
@@ -518,16 +518,21 @@ input, textarea, .autocomplete-tagger {
             .fill;
             vertical-align: middle;
         }
+        .notification-link {
+            .fill;
+        }
         .notification-icon {
             width: 30px;
-            opacity: 0.5;
-            font-size: 1.5em;
+            opacity: 0.8;
             vertical-align: top;
         }
-        .notification-user {
-            width: 30px;
-            font-size: 1.5em;
+        .notification-gravatar {
             vertical-align: top;
+            border-right: @infoBorder 1px solid;
+            width: 40px;
+        }
+        .notification-core {
+            width: 100%;
         }
         td {
             .default-padding;

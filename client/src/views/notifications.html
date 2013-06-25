@@ -8,22 +8,30 @@
     <li
     ng-repeat="notification in notifications.items"
     class="notification">
-    <table>
+    <table class="notification-core">
         <tr>
-            <td class="notification-icon">
-                <i class="notification-icon {{iconFor(notification)}}"></i>
+            <td class="notification-gravatar">
+                <div gravatar="notification.data.from"></div>
             </td>
-            <td class="notification-message">
-                <div>
-                    <span gravatar="notification.data.from" ng-visible="notification.data.from"></span>
-                    <span postdate ng-model="notification.when"></span>
-                </div>
-                <div>
-                    <span class="notification-message">
-                        <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
-                    </span>
-                </div>
-                <div markdown readonly ng-model="notification.data.message"></div>
+            <td class="fill">
+                <table>
+                    <tr>
+                        <td class="fill">
+                            <span class="notification-icon {{iconFor(notification)}}"></span>
+                            <span postdate ng-model="notification.when"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="fill">
+                            <div class="notification-link">
+                                <span >
+                                    <a ng-href="/#/task/{{notification.data.link}}">{{notification.data.context.what}}</a>
+                                </span>
+                            </div>
+                            <div class="notification-message" markdown readonly ng-model="notification.data.message"></div>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
