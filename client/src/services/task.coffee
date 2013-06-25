@@ -8,12 +8,9 @@ define ['angular',
         root.factory 'Task', ($timeout, $rootScope, User) ->
             service =
                 newtask: (task) ->
-                    if not task.who
-                        task.who = User.email
-                    if not task.id
-                        task.id = md5("#{Date.now()}")
-                    if not task.when
-                        task.when = Date.now()
+                    task.who = task.who or User.email
+                    task.id = task.id or md5("#{Date.now()}")
+                    task.when = task.when or Date.now()
                     service.updatetask task
                 updatetask: (task) ->
                     $rootScope.$broadcast 'updateitem', task

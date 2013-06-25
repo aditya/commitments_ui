@@ -16,7 +16,6 @@ define ['angular',
             op_counter = 0
             #
             updateItem = (item, fromserver, filename) ->
-                console.log 'database', fromserver
                 if not item
                     return
                 if not fromserver

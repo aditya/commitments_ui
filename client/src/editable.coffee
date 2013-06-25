@@ -86,7 +86,7 @@ define ['md5',
                 #on an edit, treat this as a real record
                 $scope.$on 'edit', (event) ->
                     event.stopPropagation()
-                    #new record is ready, emit events on pu the chain
+                    #new record is ready, emit events
                     $scope.$emit 'newrecord', $scope.$$placeholder
                     #and a fresh placeholder
                     $scope.$$placeholder = {}
@@ -214,8 +214,9 @@ define ['md5',
                     list.push record
                     $timeout ->
                         $scope.$broadcast 'selectedrecord', record
-                    if attrs.editableListNew
-                        $scope.$emit attrs.editableListNew, record
+                    #and fire off an event if specified
+                    if attrs.editableList
+                        $scope.$emit attrs.editableList, record
                     $scope.$emit 'edit'
         ])
         .directive('requiresObject', [ ->

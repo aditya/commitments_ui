@@ -110,7 +110,7 @@ define ['angular',
                         broadcast 'deletefilefromserver', item.filename, item.data
             #
             $rootScope.$on 'updateitem', (event, item) ->
-                console.log 'server'
+                console.log 'server', item
                 socket.emit 'exec',
                     command: 'commitments'
                     args: ['update', 'task']

@@ -1,12 +1,16 @@
 <div ng-controller="Discussion" class="discussion">
-    <ul editable-list
+    <ul
+        editable-list="newcomment"
         editable-list-nested
         editable-list-blank-record
         ng-model="task.discussion.comments" class="container-fluid unstyled comments">
         <li
         ng-repeat="comment in task.discussion.comments"
         class="row-fluid comment">
-        <table editable-record ng-model="comment" class="full-width">
+        <table
+            editable-record="updatecomment"
+            ng-model="comment"
+            class="full-width">
             <tr>
                 <td class="comment-gravatar">
                     <div gravatar="comment.who" default="user.email"></div>

@@ -230,8 +230,18 @@ define [
         .controller 'Settings', ($rootScope, $scope) ->
             null
         #nothing much going on here
-        .controller 'Discussion', ($scope) ->
-            null
+        .controller 'Discussion', ($scope, Comment) ->
+            #relay events to the task service, but in the local scope
+            #to allow digest and redraw
+            handle = (event_name, action) ->
+                console.log 'handle', event_name
+                $scope.$on event_name, (event, task) ->
+                    console.log event_name
+                    action task
+            #register them all, this way you can just add methods on to Task
+            #that are new event handlers
+            for event_name, action of Comment
+                handle event_name, action
         #archive list controller
         .controller 'Archive', ($scope, $rootScope, $location, $timeout, $routeParams, Database, User, LocalIndexes, Server) ->
             console.log 'going to the archive'
